@@ -12,6 +12,10 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
+  // Expose env vars from three prefixes so the same code works whether the
+  // deploy uses our own VITE_* keys or the ones Vercel's Supabase integration
+  // auto-provisions (workhub_* / NEXT_PUBLIC_workhub_*).
+  envPrefix: ["VITE_", "NEXT_PUBLIC_", "workhub_"],
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
