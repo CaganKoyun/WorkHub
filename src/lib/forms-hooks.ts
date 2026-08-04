@@ -129,7 +129,7 @@ export function useCreateForm() {
   const { currentWorkspace } = useWorkspace();
   return useMutation({
     mutationFn: async (input: {
-      name: string; description?: string; fields: FormField[];
+      name: string; description?: string | null; fields: FormField[];
       is_public?: boolean; target_kind?: FormTargetKind;
       target_project_id?: string | null;
     }) => {
