@@ -44,6 +44,7 @@ import Timesheet from "./pages/Timesheet";
 import CustomFields from "./pages/CustomFields";
 import Docs from "./pages/Docs";
 import Chat from "./pages/Chat";
+import Automations from "./pages/Automations";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
 import Goals from "./pages/Goals";
@@ -103,6 +104,7 @@ const App = () => (
                 <Route path="/docs/:id" element={<ProtectedRoute><WorkspaceGate><Docs /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/chat" element={<ProtectedRoute><WorkspaceGate><Chat /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/chat/:channelId" element={<ProtectedRoute><WorkspaceGate><Chat /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/automations" element={<ProtectedRoute><WorkspaceGate><Automations /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/goals" element={<ProtectedRoute><WorkspaceGate><Goals /></WorkspaceGate></ProtectedRoute>} />

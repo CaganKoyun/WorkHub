@@ -3590,6 +3590,84 @@ export type Database = {
           },
         ]
       }
+      automations: {
+        Row: {
+          actions: Json
+          conditions: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          enabled: boolean
+          id: string
+          last_run_at: string | null
+          name: string
+          run_count: number
+          trigger: Json
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          actions?: Json
+          conditions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          name: string
+          run_count?: number
+          trigger: Json
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          actions?: Json
+          conditions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          name?: string
+          run_count?: number
+          trigger?: Json
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      automation_runs: {
+        Row: {
+          automation_id: string
+          created_at: string
+          detail: string | null
+          id: string
+          outcome: string
+          task_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          automation_id: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          outcome: string
+          task_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          automation_id?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          outcome?: string
+          task_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       chat_channels: {
         Row: {
           archived_at: string | null
