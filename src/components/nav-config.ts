@@ -2,7 +2,7 @@ import {
   LayoutDashboard, Bug, BarChart3, Package, Users, FolderKanban, CheckSquare,
   Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles,
   ScrollText, Rocket, Plug, Building2, Compass, Layers, LineChart, Boxes,
-  RefreshCw,
+  RefreshCw, FileText,
 } from "lucide-react";
 
 export type NavItem = {
@@ -117,6 +117,7 @@ export const clusters: NavCluster[] = [
         label: "AI",
         items: [
           { icon: Sparkles, label: "Chief of Staff", path: "/ai-chat" },
+          { icon: FileText, label: "Templates", path: "/templates" },
           { icon: Plug, label: "Integrations", path: "/integrations" },
         ],
       },
