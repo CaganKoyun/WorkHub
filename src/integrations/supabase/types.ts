@@ -3590,6 +3590,81 @@ export type Database = {
           },
         ]
       }
+      chat_channels: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_private: boolean
+          name: string
+          slug: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean
+          name: string
+          slug: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          author_id: string | null
+          body: string
+          channel_id: string
+          created_at: string
+          edited_at: string | null
+          id: string
+          mentions: string[]
+          parent_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          channel_id: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          mentions?: string[]
+          parent_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          channel_id?: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          mentions?: string[]
+          parent_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       docs: {
         Row: {
           archived_at: string | null
