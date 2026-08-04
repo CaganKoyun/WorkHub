@@ -99,6 +99,7 @@ export const clusters: NavCluster[] = [
       {
         label: "Operations",
         items: [
+          { icon: Users, label: "Teams", path: "/teams" },
           { icon: Package, label: "Assets", path: "/assets" },
           { icon: Users, label: "Employees", path: "/employees" },
           { icon: Building2, label: "Company", path: "/company" },
@@ -148,6 +149,7 @@ export const PATH_MODULE: Record<string, string> = {
   "/assets": "assets",
   "/employees": "people",
   "/company": "people",
+  "/teams": "people",
 };
 
 export function visibleClusters(enabledModules: string[] | null | undefined): NavCluster[] {

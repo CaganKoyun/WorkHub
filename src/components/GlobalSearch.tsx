@@ -117,6 +117,7 @@ const NAV_JUMPS = [
   { label: "My issues",      icon: CheckSquare,   to: "/tasks",    hint: "G M" },
   { label: "Issues",         icon: Layers,        to: "/issues",   hint: "G T" },
   { label: "Cycles",         icon: RefreshCw,     to: "/cycles",   hint: "G C" },
+  { label: "Teams",          icon: Users,         to: "/teams" },
   { label: "Projects",       icon: FolderKanban,  to: "/projects", hint: "G P" },
   { label: "Bugs",           icon: Bug,           to: "/bugs" },
   { label: "CRM",            icon: Building2,     to: "/crm" },
