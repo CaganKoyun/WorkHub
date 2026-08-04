@@ -3,6 +3,7 @@ export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 export interface Task {
   id: string;
+  tracking_id: string;
   project_id: string;
   parent_task_id: string | null;
   title: string;

@@ -31,6 +31,8 @@ import { Plus, Pencil, Trash2, ArrowLeft, UserPlus, X, Calendar as CalendarIcon,
 import { toast } from 'sonner';
 import { TaskFormDialog } from '../tasks/TaskFormDialog';
 import { TaskDetailDialog } from '../tasks/TaskDetailDialog';
+import { TaskRow } from '../tasks/TaskRow';
+import { TaskStatusIcon, TaskPriorityIcon } from '../tasks/TaskStatusIcon';
 import { RelatedObjectsPanel } from '@/components/graph/RelatedObjectsPanel';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { ProjectOverviewTab } from './tabs/ProjectOverviewTab';
@@ -48,19 +50,23 @@ function TaskCard({ task, onOpen }: { task: Task; onOpen: () => void }) {
       {...attributes}
       {...listeners}
       onClick={onOpen}
-      className={`p-3 rounded-md border bg-card hover:border-primary cursor-grab active:cursor-grabbing ${isDragging ? 'opacity-40' : ''}`}
+      className={`p-2.5 rounded-md border border-border/70 bg-card hover:border-primary/50 cursor-grab active:cursor-grabbing transition-colors ${isDragging ? 'opacity-40' : ''}`}
     >
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <p className="text-sm font-medium leading-tight">{task.title}</p>
+      <div className="flex items-center gap-1.5 mb-1.5">
+        <TaskPriorityIcon priority={task.priority} size={12} />
+        <span className="font-mono text-[10.5px] text-muted-foreground/80 tabular-nums">{task.tracking_id ?? 'WH-—'}</span>
+        <TaskStatusIcon status={task.status} size={12} />
       </div>
-      <div className="flex flex-wrap gap-1 mb-2">
-        <Badge className={`text-[10px] ${TASK_PRIORITY_COLORS[task.priority]}`}>{TASK_PRIORITY_LABELS[task.priority]}</Badge>
-        {task.tags.slice(0, 2).map(t => (
-          <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>
-        ))}
-      </div>
+      <p className="text-[13px] font-medium leading-snug text-foreground">{task.title}</p>
+      {task.tags.length > 0 && (
+        <div className="mt-1.5 flex flex-wrap gap-1">
+          {task.tags.slice(0, 3).map(t => (
+            <span key={t} className="rounded border border-border bg-secondary/40 px-1.5 py-0.5 text-[10px] text-muted-foreground">{t}</span>
+          ))}
+        </div>
+      )}
       {task.due_date && (
-        <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+        <div className="mt-1.5 flex items-center gap-1 text-[10.5px] text-muted-foreground">
           <CalendarIcon className="h-3 w-3" /> {task.due_date}
         </div>
       )}
@@ -73,11 +79,12 @@ function KanbanColumn({ status, tasks, onOpen }: { status: TaskStatus; tasks: Ta
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col gap-2 p-3 rounded-lg border bg-muted/30 min-h-[300px] ${isOver ? 'border-primary bg-accent/50' : ''}`}
+      className={`flex flex-col gap-2 p-2.5 rounded-lg border border-border/60 bg-secondary/30 min-h-[300px] transition-colors ${isOver ? 'border-primary/50 bg-primary/5' : ''}`}
     >
-      <div className="flex items-center justify-between mb-1">
-        <Badge className={`text-xs border ${TASK_STATUS_COLORS[status]}`}>{TASK_STATUS_LABELS[status]}</Badge>
-        <span className="text-xs text-muted-foreground">{tasks.length}</span>
+      <div className="flex items-center gap-2 mb-1 px-0.5">
+        <TaskStatusIcon status={status} size={12} />
+        <span className="text-[12px] font-medium text-foreground">{TASK_STATUS_LABELS[status]}</span>
+        <span className="text-[11px] font-mono tabular-nums text-muted-foreground/70">{tasks.length}</span>
       </div>
       {tasks.map(t => <TaskCard key={t.id} task={t} onOpen={() => onOpen(t)} />)}
     </div>
@@ -240,30 +247,29 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
               <Plus className="h-4 w-4 mr-1" />Görev ekle
             </Button>
           </div>
-          <div className="rounded-md border divide-y">
+          <div className="rounded-md border border-border/60 overflow-hidden">
             {(tasks ?? []).length === 0 ? (
               <p className="p-6 text-center text-sm text-muted-foreground">Görev yok</p>
             ) : (tasks ?? []).map(t => (
-              <div key={t.id} className="p-3 flex items-center gap-3 hover:bg-accent/50 cursor-pointer" onClick={() => setOpenTask(t)}>
-                <Badge className={`text-[10px] border ${TASK_STATUS_COLORS[t.status]}`}>{TASK_STATUS_LABELS[t.status]}</Badge>
-                <span className="flex-1 text-sm">{t.title}</span>
-                <Badge className={`text-[10px] ${TASK_PRIORITY_COLORS[t.priority]}`}>{TASK_PRIORITY_LABELS[t.priority]}</Badge>
-                {t.due_date && <span className="text-xs text-muted-foreground">{t.due_date}</span>}
-                {t.assignee_id && (
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback className="text-[10px]">{profileMap.get(t.assignee_id)?.name?.[0] ?? '?'}</AvatarFallback>
-                  </Avatar>
-                )}
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={e => { e.stopPropagation(); setEditingTask(t); setTaskDialogOpen(true); }}>
-                  <Pencil className="h-3.5 w-3.5" />
-                </Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={e => {
-                  e.stopPropagation();
-                  if (confirm('Görevi silmek istiyor musun?')) deleteTask.mutate({ id: t.id, project_id: projectId });
-                }}>
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
-              </div>
+              <TaskRow
+                key={t.id}
+                task={t}
+                assigneeName={t.assignee_id ? profileMap.get(t.assignee_id)?.name : null}
+                onClick={() => setOpenTask(t)}
+                rightSlot={
+                  <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={e => { e.stopPropagation(); setEditingTask(t); setTaskDialogOpen(true); }}>
+                      <Pencil className="h-3 w-3" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={e => {
+                      e.stopPropagation();
+                      if (confirm('Görevi silmek istiyor musun?')) deleteTask.mutate({ id: t.id, project_id: projectId });
+                    }}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                }
+              />
             ))}
           </div>
         </TabsContent>

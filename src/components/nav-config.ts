@@ -135,13 +135,14 @@ export const PATH_MODULE: Record<string, string> = {
   "/tasks": "work",
   "/bugs": "work",
   "/product": "work",
-  "/analytics": "work",
+  "/analytics": "revenue",
   "/crm": "crm",
   "/finance": "finance",
   "/goals": "goals",
   "/risks": "goals",
   "/assets": "assets",
   "/employees": "people",
+  "/company": "people",
 };
 
 export function visibleClusters(enabledModules: string[] | null | undefined): NavCluster[] {

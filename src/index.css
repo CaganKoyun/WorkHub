@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
@@ -7,121 +7,133 @@
 
 @layer base {
   /* ---------------------------------------------------------------
-     Asana-style system: white workspace, permanently dark navigation,
-     warm-grey hairlines, coral accent.
+     Linear-inspired design system.
+     Dark-first (default). Magic Blue #5E6AD2 as brand primary.
      --------------------------------------------------------------- */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 220 4% 12%;          /* #1E1F21 */
+    /* Dark canvas (Linear default) */
+    --background: 240 10% 6%;              /* #0F0F13 */
+    --foreground: 220 12% 96%;             /* #F4F5F8 Mercury White */
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 4% 12%;
+    --card: 240 10% 8%;                    /* subtle panel */
+    --card-foreground: 220 12% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 4% 12%;
+    --popover: 240 10% 10%;
+    --popover-foreground: 220 12% 96%;
 
-    --primary: 0 79% 68%;              /* #F06A6A coral */
+    --primary: 235 62% 65%;                /* #5E6AD2 Magic Blue */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 20 14% 96%;           /* #F9F8F8 */
-    --secondary-foreground: 220 4% 12%;
+    --secondary: 240 6% 14%;               /* chip / subtle button */
+    --secondary-foreground: 220 12% 92%;
 
-    --muted: 20 14% 96%;
-    --muted-foreground: 210 2% 43%;    /* #6D6E6F */
+    --muted: 240 6% 12%;
+    --muted-foreground: 220 8% 62%;        /* #8A8F98 */
 
-    --accent: 20 12% 94%;
-    --accent-foreground: 220 4% 12%;
+    --accent: 240 6% 16%;
+    --accent-foreground: 220 12% 96%;
 
-    --destructive: 3 68% 52%;
+    --destructive: 0 72% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 152 48% 40%;
+    --success: 152 55% 48%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 33 90% 52%;
-    --warning-foreground: 0 0% 100%;
+    --warning: 38 92% 58%;
+    --warning-foreground: 240 10% 8%;
 
-    --info: 213 74% 56%;
+    --info: 213 90% 65%;
     --info-foreground: 0 0% 100%;
 
-    --border: 20 11% 92%;              /* #EDEAE9 */
-    --input: 20 11% 88%;
-    --ring: 0 79% 68%;
+    --border: 240 6% 16%;                  /* ~6% white */
+    --input: 240 6% 18%;
+    --ring: 235 62% 65%;
 
     --radius: 0.5rem;
 
-    /* Workspace canvas behind boards/lists */
-    --canvas: 20 14% 97%;
+    /* Workspace canvas (same as bg in dark) */
+    --canvas: 240 10% 6%;
 
-    /* Navigation is charcoal in BOTH themes (Asana behaviour) */
-    --sidebar-background: 220 4% 12%;  /* #1E1F21 */
-    --sidebar-foreground: 220 3% 74%;
-    --sidebar-primary: 0 79% 68%;
+    /* Sidebar — even darker than canvas (Linear does this) */
+    --sidebar-background: 240 12% 4%;      /* #08080B */
+    --sidebar-foreground: 220 8% 68%;      /* muted text */
+    --sidebar-primary: 235 62% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 225 4% 20%;      /* #303134 */
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 225 4% 22%;
-    --sidebar-ring: 0 79% 68%;
+    --sidebar-accent: 240 8% 12%;          /* hover row */
+    --sidebar-accent-foreground: 220 12% 96%;
+    --sidebar-border: 240 6% 14%;
+    --sidebar-ring: 235 62% 65%;
 
-    --severity-critical: 3 68% 52%;
-    --severity-high: 20 90% 55%;
-    --severity-medium: 33 90% 52%;
-    --severity-low: 152 48% 40%;
+    /* Task/issue status hues — Linear-inspired */
+    --status-backlog: 220 8% 55%;          /* gray dashed */
+    --status-todo: 220 8% 70%;
+    --status-in-progress: 38 92% 58%;      /* amber */
+    --status-review: 262 70% 66%;          /* purple */
+    --status-done: 235 62% 65%;            /* magic blue */
+    --status-canceled: 0 0% 45%;
+
+    /* Priority scale */
+    --priority-urgent: 0 72% 60%;
+    --priority-high: 20 90% 60%;
+    --priority-medium: 38 90% 58%;
+    --priority-low: 220 10% 60%;
+    --priority-none: 220 6% 40%;
+
+    --severity-critical: 0 72% 60%;
+    --severity-high: 20 90% 58%;
+    --severity-medium: 38 92% 58%;
+    --severity-low: 152 55% 48%;
   }
 
-  .dark {
-    --background: 220 5% 9%;
-    --foreground: 0 0% 96%;
+  /* Light theme (opt-in via `light` class or html:not(.dark)) */
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 8%;
 
-    --card: 220 5% 12%;
-    --card-foreground: 0 0% 96%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 8%;
 
-    --popover: 220 5% 13%;
-    --popover-foreground: 0 0% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
 
-    --primary: 0 79% 68%;
+    --primary: 235 62% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 4% 16%;
-    --secondary-foreground: 0 0% 94%;
+    --secondary: 240 6% 96%;
+    --secondary-foreground: 240 10% 8%;
 
-    --muted: 220 4% 16%;
-    --muted-foreground: 220 3% 62%;
+    --muted: 240 6% 96%;
+    --muted-foreground: 220 6% 45%;
 
-    --accent: 220 4% 19%;
-    --accent-foreground: 0 0% 96%;
+    --accent: 240 6% 94%;
+    --accent-foreground: 240 10% 8%;
 
-    --destructive: 3 70% 58%;
+    --destructive: 0 72% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 152 48% 48%;
+    --success: 152 55% 40%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 33 92% 58%;
+    --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --info: 213 80% 62%;
+    --info: 213 80% 52%;
     --info-foreground: 0 0% 100%;
 
-    --border: 220 4% 20%;
-    --input: 220 4% 22%;
-    --ring: 0 79% 68%;
+    --border: 240 6% 90%;
+    --input: 240 6% 88%;
+    --ring: 235 62% 60%;
 
-    --canvas: 220 5% 11%;
+    --canvas: 240 6% 98%;
 
-    --sidebar-background: 220 5% 7%;
-    --sidebar-foreground: 220 3% 68%;
-    --sidebar-primary: 0 79% 68%;
+    --sidebar-background: 240 10% 4%;
+    --sidebar-foreground: 220 8% 72%;
+    --sidebar-primary: 235 62% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 4% 16%;
+    --sidebar-accent: 240 8% 12%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 220 4% 18%;
-    --sidebar-ring: 0 79% 68%;
-
-    --severity-critical: 3 74% 62%;
-    --severity-high: 20 95% 60%;
-    --severity-medium: 33 95% 58%;
-    --severity-low: 152 50% 50%;
+    --sidebar-border: 240 6% 12%;
+    --sidebar-ring: 235 62% 65%;
   }
 }
 
@@ -131,24 +143,26 @@
   }
 
   html {
-    background-color: hsl(0 0% 100%);
+    background-color: hsl(240 10% 6%);
+    color-scheme: dark;
   }
 
-  html.dark {
-    background-color: hsl(220 5% 9%);
+  html.light {
+    background-color: hsl(0 0% 100%);
+    color-scheme: light;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 13px;
     letter-spacing: -0.003em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-semibold tracking-tight text-foreground;
     letter-spacing: -0.02em;
   }
 
@@ -156,6 +170,17 @@
     font-variant-numeric: tabular-nums;
     font-family: 'Geist Mono', 'SF Mono', ui-monospace, monospace;
   }
+
+  /* Native scrollbar in dark canvas */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background-color: hsl(var(--muted-foreground) / 0.4); background-clip: padding-box; }
+  ::-webkit-scrollbar-track { background: transparent; }
 }
 
 @layer utilities {
@@ -165,7 +190,23 @@
   .scrollbar-thin::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 4px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 
-  /* Asana page-header tab strip */
+  /* Linear-style compact issue row */
+  .issue-row {
+    @apply flex h-9 items-center gap-3 border-b border-border/60 px-4 text-[13px] transition-colors hover:bg-sidebar-accent/40;
+  }
+  .issue-row:last-child { border-bottom-width: 0; }
+
+  /* Linear-style chip button (used in New Issue modal etc.) */
+  .chip {
+    @apply inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 text-[12px] font-medium text-muted-foreground transition-colors hover:border-muted-foreground/40 hover:text-foreground;
+  }
+
+  /* Keyboard shortcut hint */
+  .kbd {
+    @apply inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-secondary/60 px-1 font-mono text-[10.5px] text-muted-foreground;
+  }
+
+  /* Legacy Asana tab kept for now (Project tabs use it) */
   .asana-tab {
     @apply relative inline-flex h-11 items-center whitespace-nowrap px-3 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground;
   }
@@ -174,6 +215,6 @@
   }
   .asana-tab[data-active="true"]::after {
     content: "";
-    @apply absolute inset-x-2 bottom-0 h-[2px] rounded-t bg-foreground;
+    @apply absolute inset-x-2 bottom-0 h-[2px] rounded-t bg-primary;
   }
 }

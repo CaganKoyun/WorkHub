@@ -3653,6 +3653,7 @@ export type Database = {
           status: Database["public"]["Enums"]["task_status"]
           tags: string[]
           title: string
+          tracking_id: string
           updated_at: string
           workspace_id: string
         }
@@ -3673,6 +3674,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["task_status"]
           tags?: string[]
           title: string
+          tracking_id?: string
           updated_at?: string
           workspace_id?: string
         }
@@ -3693,6 +3695,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["task_status"]
           tags?: string[]
           title?: string
+          tracking_id?: string
           updated_at?: string
           workspace_id?: string
         }
