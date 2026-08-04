@@ -166,7 +166,7 @@ export function normalizeDate(raw: string): string | null {
   const t = raw.trim();
   // Already ISO
   if (/^\d{4}-\d{2}-\d{2}(T|$)/.test(t)) return t.slice(0, 10);
-  const parts = t.split(/[\/\-.]/).map(p => p.trim());
+  const parts = t.split(/[/\-.]/).map(p => p.trim());
   if (parts.length === 3) {
     const [a, b, c] = parts;
     // Heuristic: if first is 4-digit → YYYY-MM-DD
