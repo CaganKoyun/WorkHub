@@ -3590,6 +3590,90 @@ export type Database = {
           },
         ]
       }
+      forms: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          fields: Json
+          id: string
+          is_open: boolean
+          is_public: boolean
+          name: string
+          slug: string
+          submission_count: number
+          submit_message: string
+          target_kind: string
+          target_project_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          fields?: Json
+          id?: string
+          is_open?: boolean
+          is_public?: boolean
+          name: string
+          slug: string
+          submission_count?: number
+          submit_message?: string
+          target_kind?: string
+          target_project_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          fields?: Json
+          id?: string
+          is_open?: boolean
+          is_public?: boolean
+          name?: string
+          slug?: string
+          submission_count?: number
+          submit_message?: string
+          target_kind?: string
+          target_project_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      form_submissions: {
+        Row: {
+          created_at: string
+          form_id: string
+          id: string
+          submitter_email: string | null
+          task_id: string | null
+          values: Json
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          form_id: string
+          id?: string
+          submitter_email?: string | null
+          task_id?: string | null
+          values?: Json
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          form_id?: string
+          id?: string
+          submitter_email?: string | null
+          task_id?: string | null
+          values?: Json
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       automations: {
         Row: {
           actions: Json
