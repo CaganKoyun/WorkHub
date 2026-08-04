@@ -3590,6 +3590,93 @@ export type Database = {
           },
         ]
       }
+      tickets: {
+        Row: {
+          assignee_id: string | null
+          body: string
+          created_at: string
+          first_response_at: string | null
+          id: string
+          priority: Database["public"]["Enums"]["ticket_priority"]
+          requester_email: string | null
+          requester_name: string | null
+          resolved_at: string | null
+          sla_due_at: string | null
+          status: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          submitter_ip: string | null
+          tracking_id: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          body?: string
+          created_at?: string
+          first_response_at?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          requester_email?: string | null
+          requester_name?: string | null
+          resolved_at?: string | null
+          sla_due_at?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          submitter_ip?: string | null
+          tracking_id?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          assignee_id?: string | null
+          body?: string
+          created_at?: string
+          first_response_at?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          requester_email?: string | null
+          requester_name?: string | null
+          resolved_at?: string | null
+          sla_due_at?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject?: string
+          submitter_ip?: string | null
+          tracking_id?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      ticket_replies: {
+        Row: {
+          author_id: string | null
+          body: string
+          created_at: string
+          id: string
+          is_internal: boolean
+          ticket_id: string
+          workspace_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          ticket_id: string
+          workspace_id: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          ticket_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       whiteboards: {
         Row: {
           archived_at: string | null
@@ -5154,6 +5241,8 @@ export type Database = {
         | "url" | "email"
       workflow_state_category: "backlog" | "unstarted" | "started" | "completed" | "canceled"
       task_status: "backlog" | "todo" | "in_progress" | "review" | "done"
+      ticket_status: "open" | "in_progress" | "waiting" | "resolved" | "closed"
+      ticket_priority: "low" | "medium" | "high" | "urgent"
       workspace_plan: "trial" | "starter" | "growth" | "scale" | "enterprise"
       workspace_role:
         | "owner"
@@ -5422,6 +5511,8 @@ export const Constants = {
       ],
       workflow_state_category: ["backlog", "unstarted", "started", "completed", "canceled"],
       task_status: ["backlog", "todo", "in_progress", "review", "done"],
+      ticket_status: ["open", "in_progress", "waiting", "resolved", "closed"],
+      ticket_priority: ["low", "medium", "high", "urgent"],
       workspace_plan: ["trial", "starter", "growth", "scale", "enterprise"],
       workspace_role: [
         "owner",

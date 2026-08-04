@@ -10,7 +10,7 @@ import {
 import {
   FolderKanban, CheckSquare, Bug, ScrollText, Inbox, Building2, Loader2,
   Plus, Home, Layers, Sparkles, Target, DollarSign, Package, Users,
-  Settings, ArrowRight, RefreshCw, FileText, BarChart3, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare,
+  Settings, ArrowRight, RefreshCw, FileText, BarChart3, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones,
 } from "lucide-react";
 
 interface SearchHit {
@@ -162,6 +162,7 @@ const NAV_JUMPS = [
   { label: "Otomasyonlar",   icon: Zap,           to: "/automations" },
   { label: "Formlar",        icon: ClipboardList, to: "/forms" },
   { label: "Panolar",        icon: PenSquare,     to: "/whiteboards" },
+  { label: "Service Desk",   icon: Headphones,    to: "/desk" },
   { label: "Templates",      icon: FileText,      to: "/templates" },
   { label: "Import",         icon: Plus,          to: "/import" },
   { label: "Timesheet",      icon: Settings,      to: "/timesheet" },
