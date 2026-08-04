@@ -3677,6 +3677,45 @@ export type Database = {
         }
         Relationships: []
       }
+      time_entries: {
+        Row: {
+          billable: boolean
+          created_at: string
+          duration_seconds: number | null
+          ended_at: string | null
+          id: string
+          note: string | null
+          started_at: string
+          task_id: string
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          billable?: boolean
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          note?: string | null
+          started_at?: string
+          task_id: string
+          user_id: string
+          workspace_id?: string
+        }
+        Update: {
+          billable?: boolean
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          note?: string | null
+          started_at?: string
+          task_id?: string
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       task_assignees: {
         Row: {
           assigned_at: string
@@ -4534,6 +4573,10 @@ export type Database = {
           total_points: number
           done_points: number
         }[]
+      }
+      time_task_totals: {
+        Args: { _task_id: string }
+        Returns: { user_id: string; total_seconds: number }[]
       }
       fin_burn_rate: { Args: { _days?: number }; Returns: number }
       fin_cash_balance: { Args: never; Returns: number }

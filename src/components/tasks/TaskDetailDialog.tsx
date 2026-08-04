@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Plus, X, GitMerge, GitBranch, ListTree, UserPlus } from 'lucide-react';
 import { RichTextDisplay } from '@/components/RichTextEditor';
+import { TaskTimer } from './TaskTimer';
 import { toast } from 'sonner';
 import { TaskStatusIcon, TaskPriorityIcon } from './TaskStatusIcon';
 
@@ -284,6 +285,9 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
               ))}
             </div>
           )}
+
+          {/* Time tracking */}
+          <TaskTimer taskId={task.id} />
 
           {/* Sub-tasks */}
           <section>

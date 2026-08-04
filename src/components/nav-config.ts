@@ -2,7 +2,7 @@ import {
   LayoutDashboard, Bug, BarChart3, Package, Users, FolderKanban, CheckSquare,
   Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles,
   ScrollText, Rocket, Plug, Building2, Compass, Layers, LineChart, Boxes,
-  RefreshCw, FileText,
+  RefreshCw, FileText, Timer,
 } from "lucide-react";
 
 export type NavItem = {
@@ -55,6 +55,12 @@ export const clusters: NavCluster[] = [
           { icon: BarChart3, label: "Workload", path: "/workload" },
           { icon: Bug, label: "Bugs", path: "/bugs" },
           { icon: Rocket, label: "Product", path: "/product" },
+        ],
+      },
+      {
+        label: "Time",
+        items: [
+          { icon: Timer, label: "Timesheet", path: "/timesheet" },
         ],
       },
     ],
@@ -142,6 +148,7 @@ export const PATH_MODULE: Record<string, string> = {
   "/issues": "work",
   "/cycles": "work",
   "/workload": "work",
+  "/timesheet": "work",
   "/bugs": "work",
   "/product": "work",
   "/analytics": "revenue",

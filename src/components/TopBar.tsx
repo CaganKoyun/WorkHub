@@ -1,11 +1,40 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChevronRight, Sparkles } from "lucide-react";
+import { ChevronRight, Sparkles, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./NotificationBell";
 import { GlobalSearch } from "./GlobalSearch";
 import { clusterForPath, labelForPath } from "./nav-config";
+import { useActiveTimer, useStopTimer, useElapsedSeconds, formatHMS } from "@/lib/time-tracking-hooks";
+
+function ActiveTimerChip() {
+  const navigate = useNavigate();
+  const { data: active } = useActiveTimer();
+  const stop = useStopTimer();
+  const elapsed = useElapsedSeconds(active?.started_at);
+  if (!active) return null;
+  return (
+    <div className="flex items-center gap-1 rounded-full border border-[hsl(var(--status-in-progress))/50] bg-[hsl(var(--status-in-progress))/12] px-1.5 py-0.5 text-[11.5px]">
+      <button
+        type="button"
+        onClick={() => navigate('/timesheet')}
+        className="font-mono tabular-nums text-[hsl(var(--status-in-progress))]"
+        title="Timesheet'e git"
+      >
+        {formatHMS(elapsed)}
+      </button>
+      <button
+        type="button"
+        onClick={() => stop.mutate()}
+        className="h-4 w-4 grid place-items-center rounded-full hover:bg-[hsl(var(--status-in-progress))/20]"
+        title="Timer'ı durdur"
+      >
+        <Square className="h-2.5 w-2.5" fill="currentColor" />
+      </button>
+    </div>
+  );
+}
 
 export function TopBar() {
   const navigate = useNavigate();
@@ -42,6 +71,7 @@ export function TopBar() {
       <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
 
       <div className="flex items-center gap-1">
+        <ActiveTimerChip />
         <Button
           size="sm"
           variant="ghost"
