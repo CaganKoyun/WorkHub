@@ -1,0 +1,12 @@
+project_id = "oyqydukugbevddpibkzr"
+[functions.ai-chat]
+verify_jwt = true
+
+[functions.mcp-oauth-callback]
+verify_jwt = false
+
+[functions.review-reminder]
+verify_jwt = false
+
+[functions.signal-scan]
+verify_jwt = false
