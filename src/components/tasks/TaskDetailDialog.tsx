@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Plus, X, GitMerge, GitBranch, ListTree, UserPlus } from 'lucide-react';
+import { RichTextDisplay } from '@/components/RichTextEditor';
 import { toast } from 'sonner';
 import { TaskStatusIcon, TaskPriorityIcon } from './TaskStatusIcon';
 
@@ -269,8 +270,8 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
           </section>
 
           {task.description && (
-            <div className="rounded-md border border-border/60 bg-secondary/30 p-3 text-[13px] whitespace-pre-wrap">
-              {task.description}
+            <div className="rounded-md border border-border/60 bg-secondary/30 p-3">
+              <RichTextDisplay html={task.description} />
             </div>
           )}
 

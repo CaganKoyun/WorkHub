@@ -6,6 +6,7 @@ import type { Task, TaskStatus, TaskPriority, RecurrenceFreq, TaskRecurrence } f
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { RichTextEditor } from '@/components/RichTextEditor';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -103,7 +104,7 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
           </div>
           <div className="space-y-2">
             <Label>Açıklama</Label>
-            <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} />
+            <RichTextEditor value={description} onChange={setDescription} placeholder="Ne yapılması lazım?" minHeight={100} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
