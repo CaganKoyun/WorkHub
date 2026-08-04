@@ -1,6 +1,26 @@
 export type TaskStatus = 'backlog' | 'todo' | 'in_progress' | 'review' | 'done';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 
+export type RecurrenceFreq = 'daily' | 'weekly' | 'monthly' | 'yearly';
+
+export type TaskRecurrence = {
+  freq: RecurrenceFreq;
+  interval: number;
+  /** ISO date at which the series ends; omit for indefinite. */
+  until?: string | null;
+  /** Total occurrences allowed; omit for indefinite. */
+  count?: number | null;
+  // Index signature so the shape is assignable to Supabase's Json type.
+  [key: string]: string | number | null | undefined;
+};
+
+export const RECURRENCE_LABELS: Record<RecurrenceFreq, string> = {
+  daily: 'Günlük',
+  weekly: 'Haftalık',
+  monthly: 'Aylık',
+  yearly: 'Yıllık',
+};
+
 export interface Task {
   id: string;
   tracking_id: string;
@@ -18,6 +38,9 @@ export interface Task {
   actual_hours: number | null;
   story_points: number | null;
   cycle_id: string | null;
+  recurrence: TaskRecurrence | null;
+  recurrence_source_id: string | null;
+  recurrence_count_completed: number;
   position: number;
   completed_at: string | null;
   created_at: string;

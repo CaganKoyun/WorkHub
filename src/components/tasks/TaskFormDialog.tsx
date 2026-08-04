@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useCreateTask, useUpdateTask, useTasks } from '@/lib/tasks-hooks';
 import { useCycles } from '@/lib/cycles-hooks';
-import { TASK_STATUS_LABELS, TASK_PRIORITY_LABELS } from '@/lib/tasks-types';
-import type { Task, TaskStatus, TaskPriority } from '@/lib/tasks-types';
+import { TASK_STATUS_LABELS, TASK_PRIORITY_LABELS, RECURRENCE_LABELS } from '@/lib/tasks-types';
+import type { Task, TaskStatus, TaskPriority, RecurrenceFreq, TaskRecurrence } from '@/lib/tasks-types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -39,6 +39,9 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
   const [parentId, setParentId] = useState<string>('none');
   const [cycleId, setCycleId] = useState<string>('none');
   const [points, setPoints] = useState('');
+  const [recurrenceOn, setRecurrenceOn] = useState(false);
+  const [recFreq, setRecFreq] = useState<RecurrenceFreq>('weekly');
+  const [recInterval, setRecInterval] = useState('1');
   const { data: cycles } = useCycles();
 
   useEffect(() => {
@@ -54,6 +57,9 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
       setParentId(task?.parent_task_id ?? defaultParentId ?? 'none');
       setCycleId(task?.cycle_id ?? 'none');
       setPoints(task?.story_points?.toString() ?? '');
+      setRecurrenceOn(!!task?.recurrence);
+      setRecFreq((task?.recurrence?.freq ?? 'weekly') as RecurrenceFreq);
+      setRecInterval(String(task?.recurrence?.interval ?? 1));
     }
   }, [open, task, defaultParentId]);
 
@@ -73,6 +79,10 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
       parent_task_id: parentId === 'none' ? null : parentId,
       cycle_id: cycleId === 'none' ? null : cycleId,
       story_points: points ? Number(points) : null,
+      recurrence: recurrenceOn ? ({
+        freq: recFreq,
+        interval: Math.max(1, Number(recInterval) || 1),
+      } satisfies TaskRecurrence) : null,
     };
     try {
       if (task) await update.mutateAsync({ id: task.id, ...payload });
@@ -180,6 +190,41 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
               <Label>Story points</Label>
               <Input type="number" step="0.5" min="0" value={points} onChange={e => setPoints(e.target.value)} placeholder="3" />
             </div>
+          </div>
+          <div className="space-y-2 rounded-md border border-border/60 p-3">
+            <label className="flex items-center gap-2 text-[13px] font-medium cursor-pointer">
+              <input
+                type="checkbox"
+                checked={recurrenceOn}
+                onChange={e => setRecurrenceOn(e.target.checked)}
+                className="h-4 w-4 rounded border-border accent-primary"
+              />
+              Tekrarlanan görev
+            </label>
+            {recurrenceOn && (
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div>
+                  <Label className="text-[11px] text-muted-foreground">Sıklık</Label>
+                  <Select value={recFreq} onValueChange={v => setRecFreq(v as RecurrenceFreq)}>
+                    <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {(['daily','weekly','monthly','yearly'] as RecurrenceFreq[]).map(f => (
+                        <SelectItem key={f} value={f}>{RECURRENCE_LABELS[f]}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-[11px] text-muted-foreground">Her N {RECURRENCE_LABELS[recFreq].toLowerCase()}</Label>
+                  <Input type="number" min="1" max="365" value={recInterval} onChange={e => setRecInterval(e.target.value)} className="h-8" />
+                </div>
+              </div>
+            )}
+            {recurrenceOn && (
+              <p className="text-[11px] text-muted-foreground pt-1">
+                Task "Tamamlandı" olarak işaretlendiğinde bir sonraki tekrarı otomatik oluşur.
+              </p>
+            )}
           </div>
           <div className="flex gap-2 pt-2">
             <Button type="submit" disabled={create.isPending || update.isPending}>Kaydet</Button>

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { Repeat } from "lucide-react";
 import { TaskStatusIcon, TaskPriorityIcon } from "./TaskStatusIcon";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Task } from "@/lib/tasks-types";
@@ -30,6 +31,15 @@ export function TaskRow({
       </span>
       <TaskStatusIcon status={task.status} />
       <span className="min-w-0 flex-1 truncate text-foreground">{task.title}</span>
+
+      {task.recurrence && (
+        <span
+          title={`Tekrar: her ${task.recurrence.interval || 1} ${task.recurrence.freq}`}
+          className="hidden md:inline-flex h-4 w-4 items-center justify-center text-muted-foreground/70 shrink-0"
+        >
+          <Repeat className="h-3 w-3" />
+        </span>
+      )}
 
       {projectName && (
         <span className="hidden md:inline-block max-w-[140px] truncate text-[11.5px] text-muted-foreground shrink-0">

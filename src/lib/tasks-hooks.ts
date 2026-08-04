@@ -80,6 +80,7 @@ export function useCreateTask() {
           parent_task_id: input.parent_task_id ?? null,
           cycle_id: input.cycle_id ?? null,
           story_points: input.story_points ?? null,
+          recurrence: input.recurrence ?? null,
         })
         .select()
         .single();
