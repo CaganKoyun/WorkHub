@@ -7,24 +7,22 @@
 -- ============================================================================
 
 -- ---------- helper functions (SECURITY DEFINER, pinned search_path) ----------
+-- NOTE: is_workspace_member is defined in 20260728113849_... with the canonical
+-- argument order (_workspace_id, _user_id). Do NOT redefine it here — a
+-- CREATE OR REPLACE with different parameter names is rejected by Postgres
+-- (SQLSTATE 42P13). All callers use the canonical order.
 
-CREATE OR REPLACE FUNCTION public.is_workspace_member(_user uuid, _ws uuid)
+-- is_workspace_admin: use the canonical (_workspace_id, _user_id) order too.
+-- Drop-and-create so a stale definition with a different signature won't block
+-- fresh deploys (Supabase Preview / clean DB).
+DROP FUNCTION IF EXISTS public.is_workspace_admin(uuid, uuid);
+CREATE OR REPLACE FUNCTION public.is_workspace_admin(_workspace_id uuid, _user_id uuid)
 RETURNS boolean
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
 AS $$
   SELECT EXISTS (
     SELECT 1 FROM public.workspace_members
-    WHERE user_id = _user AND workspace_id = _ws AND is_active
-  );
-$$;
-
-CREATE OR REPLACE FUNCTION public.is_workspace_admin(_user uuid, _ws uuid)
-RETURNS boolean
-LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.workspace_members
-    WHERE user_id = _user AND workspace_id = _ws AND is_active
+    WHERE workspace_id = _workspace_id AND user_id = _user_id AND is_active
       AND role IN ('owner','admin','manager')
   );
 $$;
@@ -142,33 +140,33 @@ BEGIN
     -- 6) canonical workspace-scoped policies
     EXECUTE format(
       'CREATE POLICY %I ON public.%I FOR SELECT TO authenticated
-         USING (public.is_workspace_member(auth.uid(), workspace_id))',
+         USING (public.is_workspace_member(workspace_id, auth.uid()))',
       t || '_ws_select', t);
 
     EXECUTE format(
       'CREATE POLICY %I ON public.%I FOR INSERT TO authenticated
-         WITH CHECK (public.is_workspace_member(auth.uid(), workspace_id))',
+         WITH CHECK (public.is_workspace_member(workspace_id, auth.uid()))',
       t || '_ws_insert', t);
 
     IF has_created_by THEN
       EXECUTE format(
         'CREATE POLICY %I ON public.%I FOR UPDATE TO authenticated
-           USING (public.is_workspace_member(auth.uid(), workspace_id)
-                  AND (created_by = auth.uid() OR public.is_workspace_admin(auth.uid(), workspace_id)))',
+           USING (public.is_workspace_member(workspace_id, auth.uid())
+                  AND (created_by = auth.uid() OR public.is_workspace_admin(workspace_id, auth.uid())))',
         t || '_ws_update', t);
       EXECUTE format(
         'CREATE POLICY %I ON public.%I FOR DELETE TO authenticated
-           USING (public.is_workspace_member(auth.uid(), workspace_id)
-                  AND (created_by = auth.uid() OR public.is_workspace_admin(auth.uid(), workspace_id)))',
+           USING (public.is_workspace_member(workspace_id, auth.uid())
+                  AND (created_by = auth.uid() OR public.is_workspace_admin(workspace_id, auth.uid())))',
         t || '_ws_delete', t);
     ELSE
       EXECUTE format(
         'CREATE POLICY %I ON public.%I FOR UPDATE TO authenticated
-           USING (public.is_workspace_member(auth.uid(), workspace_id))',
+           USING (public.is_workspace_member(workspace_id, auth.uid()))',
         t || '_ws_update', t);
       EXECUTE format(
         'CREATE POLICY %I ON public.%I FOR DELETE TO authenticated
-           USING (public.is_workspace_admin(auth.uid(), workspace_id))',
+           USING (public.is_workspace_admin(workspace_id, auth.uid()))',
         t || '_ws_delete', t);
     END IF;
 

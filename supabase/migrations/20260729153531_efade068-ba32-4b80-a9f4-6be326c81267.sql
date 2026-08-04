@@ -13,9 +13,9 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON public.project_messages TO authenticated
 GRANT ALL ON public.project_messages TO service_role;
 ALTER TABLE public.project_messages ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "pm ws select" ON public.project_messages FOR SELECT TO authenticated
-  USING (public.is_workspace_member(auth.uid(), workspace_id));
+  USING (public.is_workspace_member(workspace_id, auth.uid()));
 CREATE POLICY "pm ws insert" ON public.project_messages FOR INSERT TO authenticated
-  WITH CHECK (author_id = auth.uid() AND public.is_workspace_member(auth.uid(), workspace_id));
+  WITH CHECK (author_id = auth.uid() AND public.is_workspace_member(workspace_id, auth.uid()));
 CREATE POLICY "pm ws update" ON public.project_messages FOR UPDATE TO authenticated
   USING (author_id = auth.uid());
 CREATE POLICY "pm ws delete" ON public.project_messages FOR DELETE TO authenticated
@@ -39,9 +39,9 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON public.project_files TO authenticated;
 GRANT ALL ON public.project_files TO service_role;
 ALTER TABLE public.project_files ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "pf ws select" ON public.project_files FOR SELECT TO authenticated
-  USING (public.is_workspace_member(auth.uid(), workspace_id));
+  USING (public.is_workspace_member(workspace_id, auth.uid()));
 CREATE POLICY "pf ws insert" ON public.project_files FOR INSERT TO authenticated
-  WITH CHECK (uploaded_by = auth.uid() AND public.is_workspace_member(auth.uid(), workspace_id));
+  WITH CHECK (uploaded_by = auth.uid() AND public.is_workspace_member(workspace_id, auth.uid()));
 CREATE POLICY "pf ws delete" ON public.project_files FOR DELETE TO authenticated
   USING (uploaded_by = auth.uid());
 CREATE INDEX IF NOT EXISTS idx_pf_project ON public.project_files(project_id, created_at DESC);
