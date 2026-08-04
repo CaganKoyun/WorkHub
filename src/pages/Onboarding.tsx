@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { Building2, Users, Sparkles, LayoutGrid, ArrowRight, Check, Loader2, X, Plus } from "lucide-react";
+import { StackedLogo } from "@/components/StackedLogo";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const MODULES = [
@@ -21,10 +23,11 @@ const MODULES = [
 ];
 
 const STEPS = [
-  { id: 1, label: "Company", icon: Building2 },
-  { id: 2, label: "Modules", icon: LayoutGrid },
+  { id: 0, label: "Welcome",     icon: Sparkles },
+  { id: 1, label: "Company",     icon: Building2 },
+  { id: 2, label: "Modules",     icon: LayoutGrid },
   { id: 3, label: "Invite team", icon: Users },
-  { id: 4, label: "Sample data", icon: Sparkles },
+  { id: 4, label: "Ready",       icon: Check },
 ];
 
 export default function Onboarding() {
@@ -166,36 +169,60 @@ export default function Onboarding() {
     } finally { setSaving(false); }
   };
 
+  const current = STEPS.find(s => s.id === step) ?? STEPS[0];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30 grid place-items-center px-4 py-10">
-      <div className="w-full max-w-2xl">
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Set up your workspace</h1>
-          <p className="text-sm text-muted-foreground mt-1">4 quick steps to get your company running on FounderOS.</p>
-        </div>
-
-        {/* Stepper */}
-        <div className="flex items-center justify-between mb-6">
-          {STEPS.map((s, i) => {
-            const active = step === s.id;
-            const done = step > s.id;
-            const Icon = s.icon;
-            return (
-              <div key={s.id} className="flex-1 flex items-center">
-                <div className={`h-8 w-8 rounded-full border flex items-center justify-center text-xs shrink-0
-                  ${done ? "bg-primary text-primary-foreground border-primary" :
-                    active ? "border-primary text-primary" : "border-border text-muted-foreground"}`}>
-                  {done ? <Check className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
-                </div>
-                <div className="ml-2 text-xs font-medium hidden sm:block">{s.label}</div>
-                {i < STEPS.length - 1 && <div className={`flex-1 h-px mx-3 ${done ? "bg-primary" : "bg-border"}`} />}
+    <div className="min-h-screen bg-background flex flex-col items-center px-4 py-16">
+      <div className="w-full max-w-md flex-1 flex flex-col items-center justify-center">
+        {step === 0 ? (
+          // Welcome screen — Linear splash style
+          <div className="text-center space-y-6">
+            <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
+              <StackedLogo size={30} color="currentColor" />
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-tight">Welcome to WorkHub</h1>
+              <p className="text-[13.5px] text-muted-foreground">
+                Bir işletim sistemi: task, karar, müşteri ve nakit tek yerde.
+                5 dakika içinde workspace'in hazır.
+              </p>
+            </div>
+            <Button size="lg" onClick={() => setStep(1)} className="min-w-[200px]">
+              Get started <ArrowRight className="h-4 w-4 ml-1.5" />
+            </Button>
+            {workspaces.length > 0 && !forceNew && (
+              <button
+                type="button"
+                onClick={() => nav("/home")}
+                className="text-[11.5px] text-muted-foreground hover:text-foreground underline underline-offset-4"
+              >
+                Zaten {workspaces.length} workspace'in var, uygulamaya git
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="w-full space-y-8">
+            <div className="text-center space-y-2">
+              <div className="inline-flex h-8 items-center rounded-full border border-border/70 bg-secondary/40 px-3 text-[10.5px] font-medium uppercase tracking-wider text-muted-foreground">
+                <current.icon className="h-3 w-3 mr-1.5" />
+                Step {step} of 4 · {current.label}
               </div>
-            );
-          })}
-        </div>
+              <h1 className="text-[22px] font-semibold tracking-tight">
+                {step === 1 && "Şirketini tanıt"}
+                {step === 2 && "Modüllerini seç"}
+                {step === 3 && "Ekibini davet et"}
+                {step === 4 && "Son bir dokunuş"}
+              </h1>
+              <p className="text-[13px] text-muted-foreground">
+                {step === 1 && "Bu bilgiler workspace'in kimliği olur."}
+                {step === 2 && "İhtiyacın olmayanlar arayüzü kalabalıklaştırmaz."}
+                {step === 3 && "Şimdi ekle veya sonra Teams sayfasından davet gönder."}
+                {step === 4 && "Boş bir workspace'e giriş yapmayasın diye örnek veri açayım mı?"}
+              </p>
+            </div>
 
-        <Card className="p-6">
-          {step === 1 && (
+            <div className="space-y-5">
+              {step === 1 && (
             <div className="space-y-4">
               <div><Label>Company name *</Label><Input value={name} onChange={e=>setName(e.target.value)} placeholder="Acme Inc." /></div>
               <div className="grid grid-cols-2 gap-3">
@@ -316,14 +343,25 @@ export default function Onboarding() {
               </div>
             </div>
           )}
-        </Card>
-
-        {workspaces.length > 0 && step === 1 && !forceNew && (
-          <div className="mt-4 text-center text-xs text-muted-foreground">
-            You already belong to {workspaces.length} workspace{workspaces.length>1?"s":""}. <button className="underline" onClick={()=>nav("/home")}>Skip and go to app →</button>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Progress dots — Linear signature */}
+      {step > 0 && (
+        <div className="mt-8 flex items-center gap-1.5">
+          {[1, 2, 3, 4].map(n => (
+            <span
+              key={n}
+              className={cn(
+                "h-1.5 rounded-full transition-all",
+                n === step ? "w-6 bg-primary" : n < step ? "w-1.5 bg-primary/60" : "w-1.5 bg-border",
+              )}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
