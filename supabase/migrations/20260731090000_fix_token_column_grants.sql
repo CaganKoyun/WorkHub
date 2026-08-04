@@ -28,5 +28,6 @@ GRANT UPDATE (name, url, transport)
 -- yüzeyde katalog gösterilmiyor); authenticated'a daralt.
 REVOKE SELECT ON public.integrations_catalog FROM anon;
 DROP POLICY IF EXISTS "catalog readable by everyone" ON public.integrations_catalog;
+DROP POLICY IF EXISTS "catalog readable by authenticated" ON public.integrations_catalog;
 CREATE POLICY "catalog readable by authenticated"
   ON public.integrations_catalog FOR SELECT TO authenticated USING (true);
