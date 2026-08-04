@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useCreateTask, useUpdateTask, useTasks } from '@/lib/tasks-hooks';
+import { useCycles } from '@/lib/cycles-hooks';
 import { TASK_STATUS_LABELS, TASK_PRIORITY_LABELS } from '@/lib/tasks-types';
 import type { Task, TaskStatus, TaskPriority } from '@/lib/tasks-types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -36,6 +37,9 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
   const [estimated, setEstimated] = useState('');
   const [tags, setTags] = useState('');
   const [parentId, setParentId] = useState<string>('none');
+  const [cycleId, setCycleId] = useState<string>('none');
+  const [points, setPoints] = useState('');
+  const { data: cycles } = useCycles();
 
   useEffect(() => {
     if (open) {
@@ -48,6 +52,8 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
       setEstimated(task?.estimated_hours?.toString() ?? '');
       setTags((task?.tags ?? []).join(', '));
       setParentId(task?.parent_task_id ?? defaultParentId ?? 'none');
+      setCycleId(task?.cycle_id ?? 'none');
+      setPoints(task?.story_points?.toString() ?? '');
     }
   }, [open, task, defaultParentId]);
 
@@ -65,6 +71,8 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
       estimated_hours: estimated ? Number(estimated) : null,
       tags: tags.split(',').map(s => s.trim()).filter(Boolean),
       parent_task_id: parentId === 'none' ? null : parentId,
+      cycle_id: cycleId === 'none' ? null : cycleId,
+      story_points: points ? Number(points) : null,
     };
     try {
       if (task) await update.mutateAsync({ id: task.id, ...payload });
@@ -151,6 +159,27 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label>Cycle</Label>
+              <Select value={cycleId} onValueChange={setCycleId}>
+                <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Cycle yok</SelectItem>
+                  {(cycles ?? []).map(c => (
+                    <SelectItem key={c.id} value={c.id}>
+                      <span className="font-mono text-[11px] text-muted-foreground mr-1.5">#{c.number}</span>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Story points</Label>
+              <Input type="number" step="0.5" min="0" value={points} onChange={e => setPoints(e.target.value)} placeholder="3" />
+            </div>
           </div>
           <div className="flex gap-2 pt-2">
             <Button type="submit" disabled={create.isPending || update.isPending}>Kaydet</Button>

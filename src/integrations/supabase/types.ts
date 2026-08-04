@@ -3590,6 +3590,51 @@ export type Database = {
           },
         ]
       }
+      cycles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          end_date: string
+          goal: string | null
+          id: string
+          name: string
+          number: number
+          start_date: string
+          status: Database["public"]["Enums"]["cycle_status"]
+          team_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          end_date: string
+          goal?: string | null
+          id?: string
+          name: string
+          number?: number
+          start_date: string
+          status?: Database["public"]["Enums"]["cycle_status"]
+          team_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          end_date?: string
+          goal?: string | null
+          id?: string
+          name?: string
+          number?: number
+          start_date?: string
+          status?: Database["public"]["Enums"]["cycle_status"]
+          team_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       task_dependencies: {
         Row: {
           blocked_task_id: string
@@ -3683,6 +3728,7 @@ export type Database = {
           assignee_id: string | null
           completed_at: string | null
           created_at: string
+          cycle_id: string | null
           description: string | null
           due_date: string | null
           estimated_hours: number | null
@@ -3693,6 +3739,7 @@ export type Database = {
           project_id: string
           reporter_id: string
           status: Database["public"]["Enums"]["task_status"]
+          story_points: number | null
           tags: string[]
           title: string
           tracking_id: string
@@ -3704,6 +3751,7 @@ export type Database = {
           assignee_id?: string | null
           completed_at?: string | null
           created_at?: string
+          cycle_id?: string | null
           description?: string | null
           due_date?: string | null
           estimated_hours?: number | null
@@ -3714,6 +3762,7 @@ export type Database = {
           project_id: string
           reporter_id: string
           status?: Database["public"]["Enums"]["task_status"]
+          story_points?: number | null
           tags?: string[]
           title: string
           tracking_id?: string
@@ -3725,6 +3774,7 @@ export type Database = {
           assignee_id?: string | null
           completed_at?: string | null
           created_at?: string
+          cycle_id?: string | null
           description?: string | null
           due_date?: string | null
           estimated_hours?: number | null
@@ -3735,6 +3785,7 @@ export type Database = {
           project_id?: string
           reporter_id?: string
           status?: Database["public"]["Enums"]["task_status"]
+          story_points?: number | null
           tags?: string[]
           title?: string
           tracking_id?: string
@@ -4328,6 +4379,15 @@ export type Database = {
         Returns: string
       }
       current_workspace_id: { Args: never; Returns: string }
+      cycle_progress: {
+        Args: { _cycle_id: string }
+        Returns: {
+          total_tasks: number
+          done_tasks: number
+          total_points: number
+          done_points: number
+        }[]
+      }
       fin_burn_rate: { Args: { _days?: number }; Returns: number }
       fin_cash_balance: { Args: never; Returns: number }
       fin_lookup_fx: {
@@ -4498,7 +4558,8 @@ export type Database = {
       risk_level: "low" | "medium" | "high" | "critical"
       risk_status: "open" | "mitigating" | "accepted" | "closed"
       task_priority: "low" | "medium" | "high" | "urgent"
-      task_status: "todo" | "in_progress" | "review" | "done"
+      cycle_status: "planned" | "active" | "completed"
+      task_status: "backlog" | "todo" | "in_progress" | "review" | "done"
       workspace_plan: "trial" | "starter" | "growth" | "scale" | "enterprise"
       workspace_role:
         | "owner"
@@ -4759,7 +4820,8 @@ export const Constants = {
       risk_level: ["low", "medium", "high", "critical"],
       risk_status: ["open", "mitigating", "accepted", "closed"],
       task_priority: ["low", "medium", "high", "urgent"],
-      task_status: ["todo", "in_progress", "review", "done"],
+      cycle_status: ["planned", "active", "completed"],
+      task_status: ["backlog", "todo", "in_progress", "review", "done"],
       workspace_plan: ["trial", "starter", "growth", "scale", "enterprise"],
       workspace_role: [
         "owner",

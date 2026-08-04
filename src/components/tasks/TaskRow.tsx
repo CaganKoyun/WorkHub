@@ -37,6 +37,12 @@ export function TaskRow({
         </span>
       )}
 
+      {task.story_points != null && (
+        <span className="hidden md:inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-secondary/40 px-1.5 font-mono text-[10.5px] tabular-nums text-muted-foreground shrink-0">
+          {task.story_points}
+        </span>
+      )}
+
       {task.due_date && (
         <span className="text-[11.5px] tabular-nums text-muted-foreground shrink-0">
           {format(new Date(task.due_date), "MMM d")}

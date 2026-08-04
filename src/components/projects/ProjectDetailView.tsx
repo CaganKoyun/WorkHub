@@ -127,7 +127,7 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
   }, [profiles]);
 
   const groupedTasks = useMemo(() => {
-    const groups: Record<TaskStatus, Task[]> = { todo: [], in_progress: [], review: [], done: [] };
+    const groups: Record<TaskStatus, Task[]> = { backlog: [], todo: [], in_progress: [], review: [], done: [] };
     (tasks ?? []).forEach(t => { groups[t.status].push(t); });
     return groups;
   }, [tasks]);

@@ -34,6 +34,7 @@ import ProjectDetail from "./pages/ProjectDetail";
 import ProjectEdit from "./pages/ProjectEdit";
 import Tasks from "./pages/Tasks";
 import Issues from "./pages/Issues";
+import Cycles from "./pages/Cycles";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
 import Goals from "./pages/Goals";
@@ -81,6 +82,7 @@ const App = () => (
                 <Route path="/projects/:id/edit" element={<ProtectedRoute><WorkspaceGate><ProjectEdit /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/tasks" element={<ProtectedRoute><WorkspaceGate><Tasks /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/issues" element={<ProtectedRoute><WorkspaceGate><Issues /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/cycles" element={<ProtectedRoute><WorkspaceGate><Cycles /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/goals" element={<ProtectedRoute><WorkspaceGate><Goals /></WorkspaceGate></ProtectedRoute>} />

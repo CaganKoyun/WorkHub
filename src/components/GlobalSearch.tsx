@@ -10,7 +10,7 @@ import {
 import {
   FolderKanban, CheckSquare, Bug, ScrollText, Inbox, Building2, Loader2,
   Plus, Home, Layers, Sparkles, Target, DollarSign, Package, Users,
-  Settings, ArrowRight,
+  Settings, ArrowRight, RefreshCw,
 } from "lucide-react";
 
 interface SearchHit {
@@ -116,6 +116,7 @@ const NAV_JUMPS = [
   { label: "Inbox",          icon: Inbox,         to: "/inbox",    hint: "G I" },
   { label: "My issues",      icon: CheckSquare,   to: "/tasks",    hint: "G M" },
   { label: "Issues",         icon: Layers,        to: "/issues",   hint: "G T" },
+  { label: "Cycles",         icon: RefreshCw,     to: "/cycles",   hint: "G C" },
   { label: "Projects",       icon: FolderKanban,  to: "/projects", hint: "G P" },
   { label: "Bugs",           icon: Bug,           to: "/bugs" },
   { label: "CRM",            icon: Building2,     to: "/crm" },

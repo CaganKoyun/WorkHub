@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useWorkspaceIssues } from '@/lib/tasks-hooks';
 import { useProjects } from '@/lib/projects-hooks';
 import {
@@ -10,16 +9,17 @@ import { TaskRow } from '@/components/tasks/TaskRow';
 import { TaskStatusIcon } from '@/components/tasks/TaskStatusIcon';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Search, SlidersHorizontal, LayoutList, LayoutGrid } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 type GroupBy = 'status' | 'priority' | 'project' | 'none';
+type Scope = 'active' | 'backlog' | 'all';
 
 export default function Issues() {
-  const navigate = useNavigate();
   const { data: tasks, isLoading } = useWorkspaceIssues();
   const { data: projects } = useProjects();
+  const [scope, setScope] = useState<Scope>('active');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'all' | TaskStatus>('all');
   const [priority, setPriority] = useState<'all' | TaskPriority>('all');
@@ -31,8 +31,16 @@ export default function Issues() {
     [projects],
   );
 
+  const scoped = useMemo(() => {
+    const src = tasks ?? [];
+    if (scope === 'all') return src;
+    if (scope === 'backlog') return src.filter(t => t.status === 'backlog');
+    // active = every status EXCEPT backlog + not done
+    return src.filter(t => t.status !== 'backlog' && t.status !== 'done');
+  }, [tasks, scope]);
+
   const filtered = useMemo(() => {
-    let r = tasks ?? [];
+    let r = scoped;
     if (search) {
       const q = search.toLowerCase();
       r = r.filter(t =>
@@ -44,7 +52,16 @@ export default function Issues() {
     if (priority !== 'all') r = r.filter(t => t.priority === priority);
     if (projectFilter !== 'all') r = r.filter(t => t.project_id === projectFilter);
     return r;
-  }, [tasks, search, status, priority, projectFilter]);
+  }, [scoped, search, status, priority, projectFilter]);
+
+  const counts = useMemo(() => {
+    const src = tasks ?? [];
+    return {
+      active: src.filter(t => t.status !== 'backlog' && t.status !== 'done').length,
+      backlog: src.filter(t => t.status === 'backlog').length,
+      all: src.length,
+    };
+  }, [tasks]);
 
   const groups = useMemo(() => {
     if (groupBy === 'none') return [{ key: 'all', label: `All (${filtered.length})`, items: filtered }];
@@ -83,6 +100,28 @@ export default function Issues() {
       <div className="flex items-baseline justify-between">
         <h1 className="text-[20px] font-semibold tracking-tight">Issues</h1>
         <span className="text-[12px] text-muted-foreground tabular-nums">{filtered.length} / {tasks?.length ?? 0}</span>
+      </div>
+
+      {/* Active / Backlog / All tabs */}
+      <div className="border-b border-border">
+        {(['active', 'backlog', 'all'] as Scope[]).map(s => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => setScope(s)}
+            className={cn(
+              "relative inline-flex h-9 items-center gap-2 border-b-2 border-transparent px-3 text-[13px] font-medium transition-colors -mb-px",
+              scope === s
+                ? "border-primary text-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {s === 'active' ? 'Active' : s === 'backlog' ? 'Backlog' : 'All'}
+            <span className="font-mono text-[11px] tabular-nums text-muted-foreground/70">
+              {counts[s]}
+            </span>
+          </button>
+        ))}
       </div>
 
       {/* Filter bar */}

@@ -78,6 +78,8 @@ export function useCreateTask() {
           due_date: input.due_date ?? null,
           estimated_hours: input.estimated_hours ?? null,
           parent_task_id: input.parent_task_id ?? null,
+          cycle_id: input.cycle_id ?? null,
+          story_points: input.story_points ?? null,
         })
         .select()
         .single();
