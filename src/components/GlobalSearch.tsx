@@ -38,7 +38,24 @@ function useDebounced(value: string, ms: number) {
   return debounced;
 }
 
-/** Tüm çekirdek varlıklarda başlık + tracking_id araması. RLS workspace kapsamı sağlar. */
+/**
+ * Full-text search across tasks/projects/bugs/decisions/companies.
+ * Each searchable table has a generated `fts` tsvector column + GIN index
+ * (see 20260804180000_fts_search.sql). We build a prefix-friendly tsquery
+ * so "auth" matches "authentication".
+ */
+function buildTsQuery(raw: string): string {
+  // Escape reserved chars, split on whitespace, add :* prefix operator per term.
+  return raw
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w.replace(/[&|!():*]/g, ""))
+    .filter(Boolean)
+    .map((w) => `${w}:*`)
+    .join(" & ");
+}
+
 function useGlobalSearch(term: string) {
   return useQuery({
     queryKey: ["global-search", term],
@@ -46,27 +63,35 @@ function useGlobalSearch(term: string) {
     staleTime: 30_000,
     queryFn: async (): Promise<SearchResults> => {
       const t = term.trim();
-      const q = `%${t}%`;
-      // Tasks: search by title OR tracking_id
-      const taskQuery = supabase
-        .from("tasks")
-        .select("id,title,status,tracking_id,project_id")
-        .or(`title.ilike.${q},tracking_id.ilike.${q}`)
-        .limit(6);
-      const bugQuery = supabase
-        .from("bugs")
-        .select("id,title,severity,tracking_id")
-        .or(`title.ilike.${q},tracking_id.ilike.${q}`)
-        .limit(5);
+      const ilike = `%${t}%`;
+      const tsq = buildTsQuery(t);
+      const ts = { config: "simple" } as const;
 
-      const [projects, tasks, bugs, decisions, approvals, companies] = await Promise.all([
-        supabase.from("projects").select("id,name,status").ilike("name", q).limit(5),
-        taskQuery,
-        bugQuery,
-        supabase.from("decisions").select("id,title,status").ilike("title", q).limit(5),
-        supabase.from("approvals").select("id,title,status").ilike("title", q).limit(5),
-        supabase.from("crm_companies").select("id,name").ilike("name", q).limit(5),
+      // Tasks + bugs: FTS pass + tracking_id ilike pass, merged and deduped.
+      const [projects, tasksFts, tasksTrack, bugsFts, bugsTrack, decisions, approvals, companies] = await Promise.all([
+        supabase.from("projects").select("id,name,status").textSearch("fts", tsq, ts).limit(5),
+        supabase.from("tasks").select("id,title,status,tracking_id,project_id").textSearch("fts", tsq, ts).limit(6),
+        supabase.from("tasks").select("id,title,status,tracking_id,project_id").ilike("tracking_id", ilike).limit(3),
+        supabase.from("bugs").select("id,title,severity,tracking_id").textSearch("fts", tsq, ts).limit(5),
+        supabase.from("bugs").select("id,title,severity,tracking_id").ilike("tracking_id", ilike).limit(3),
+        supabase.from("decisions").select("id,title,status").textSearch("fts", tsq, ts).limit(5),
+        supabase.from("approvals").select("id,title,status").ilike("title", ilike).limit(5),
+        supabase.from("crm_companies").select("id,name").textSearch("fts", tsq, ts).limit(5),
       ]);
+
+      const mergeById = <T extends { id: string }>(...batches: (T[] | null | undefined)[]): T[] => {
+        const seen = new Set<string>();
+        const out: T[] = [];
+        for (const batch of batches) {
+          for (const r of batch ?? []) {
+            if (!seen.has(r.id)) { seen.add(r.id); out.push(r); }
+          }
+        }
+        return out;
+      };
+
+      const tasks = { data: mergeById(tasksFts.data as any[], tasksTrack.data as any[]) };
+      const bugs  = { data: mergeById(bugsFts.data as any[],  bugsTrack.data as any[]) };
       return {
         projects: (projects.data ?? []).map((p: any) => ({
           id: p.id, label: p.name, sublabel: p.status, to: `/projects/${p.id}`,
