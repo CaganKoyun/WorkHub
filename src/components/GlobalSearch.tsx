@@ -10,7 +10,7 @@ import {
 import {
   FolderKanban, CheckSquare, Bug, ScrollText, Inbox, Building2, Loader2,
   Plus, Home, Layers, Sparkles, Target, DollarSign, Package, Users,
-  Settings, ArrowRight, RefreshCw, FileText, BarChart3,
+  Settings, ArrowRight, RefreshCw, FileText, BarChart3, BookOpen,
 } from "lucide-react";
 
 interface SearchHit {
@@ -27,6 +27,7 @@ interface SearchResults {
   decisions: SearchHit[];
   approvals: SearchHit[];
   companies: SearchHit[];
+  docs: SearchHit[];
 }
 
 function useDebounced(value: string, ms: number) {
@@ -68,7 +69,7 @@ function useGlobalSearch(term: string) {
       const ts = { config: "simple" } as const;
 
       // Tasks + bugs: FTS pass + tracking_id ilike pass, merged and deduped.
-      const [projects, tasksFts, tasksTrack, bugsFts, bugsTrack, decisions, approvals, companies] = await Promise.all([
+      const [projects, tasksFts, tasksTrack, bugsFts, bugsTrack, decisions, approvals, companies, docs] = await Promise.all([
         supabase.from("projects").select("id,name,status").textSearch("fts", tsq, ts).limit(5),
         supabase.from("tasks").select("id,title,status,tracking_id,project_id").textSearch("fts", tsq, ts).limit(6),
         supabase.from("tasks").select("id,title,status,tracking_id,project_id").ilike("tracking_id", ilike).limit(3),
@@ -77,6 +78,7 @@ function useGlobalSearch(term: string) {
         supabase.from("decisions").select("id,title,status").textSearch("fts", tsq, ts).limit(5),
         supabase.from("approvals").select("id,title,status").ilike("title", ilike).limit(5),
         supabase.from("crm_companies").select("id,name").textSearch("fts", tsq, ts).limit(5),
+        supabase.from("docs").select("id,title,icon").textSearch("fts", tsq, ts).is("archived_at", null).limit(5),
       ]);
 
       const mergeById = <T extends { id: string }>(...batches: (T[] | null | undefined)[]): T[] => {
@@ -114,6 +116,9 @@ function useGlobalSearch(term: string) {
         companies: (companies.data ?? []).map((c: any) => ({
           id: c.id, label: c.name, to: "/crm",
         })),
+        docs: (docs.data ?? []).map((d: any) => ({
+          id: d.id, label: d.title, sublabel: d.icon ?? undefined, to: `/docs/${d.id}`,
+        })),
       };
     },
   });
@@ -126,6 +131,7 @@ const HIT_GROUPS: { key: keyof SearchResults; heading: string; icon: React.Eleme
   { key: "decisions", heading: "Decisions",    icon: ScrollText },
   { key: "approvals", heading: "Approvals",    icon: Inbox },
   { key: "companies", heading: "CRM Companies",icon: Building2 },
+  { key: "docs",      heading: "Docs",         icon: BookOpen },
 ];
 
 const QUICK_ACTIONS = [
@@ -151,6 +157,7 @@ const NAV_JUMPS = [
   { label: "Goals",          icon: Target,        to: "/goals" },
   { label: "Decisions",      icon: ScrollText,    to: "/decisions" },
   { label: "Chief of Staff", icon: Sparkles,      to: "/ai-chat",  hint: "G A" },
+  { label: "Docs",           icon: BookOpen,      to: "/docs",     hint: "G D" },
   { label: "Templates",      icon: FileText,      to: "/templates" },
   { label: "Import",         icon: Plus,          to: "/import" },
   { label: "Timesheet",      icon: Settings,      to: "/timesheet" },

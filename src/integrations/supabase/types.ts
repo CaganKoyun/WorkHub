@@ -3590,6 +3590,51 @@ export type Database = {
           },
         ]
       }
+      docs: {
+        Row: {
+          archived_at: string | null
+          body: string
+          created_at: string
+          created_by: string | null
+          icon: string | null
+          id: string
+          parent_id: string | null
+          position: number
+          title: string
+          updated_at: string
+          updated_by: string | null
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          icon?: string | null
+          id?: string
+          parent_id?: string | null
+          position?: number
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          icon?: string | null
+          id?: string
+          parent_id?: string | null
+          position?: number
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       custom_field_defs: {
         Row: {
           config: Json

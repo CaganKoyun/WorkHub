@@ -42,6 +42,7 @@ import Import from "./pages/Import";
 import WorkflowStates from "./pages/WorkflowStates";
 import Timesheet from "./pages/Timesheet";
 import CustomFields from "./pages/CustomFields";
+import Docs from "./pages/Docs";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
 import Goals from "./pages/Goals";
@@ -97,6 +98,8 @@ const App = () => (
                 <Route path="/workflow-states" element={<ProtectedRoute><WorkspaceGate><WorkflowStates /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/timesheet" element={<ProtectedRoute><WorkspaceGate><Timesheet /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/custom-fields" element={<ProtectedRoute><WorkspaceGate><CustomFields /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/docs" element={<ProtectedRoute><WorkspaceGate><Docs /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/docs/:id" element={<ProtectedRoute><WorkspaceGate><Docs /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/goals" element={<ProtectedRoute><WorkspaceGate><Goals /></WorkspaceGate></ProtectedRoute>} />
