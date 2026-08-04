@@ -3590,6 +3590,48 @@ export type Database = {
           },
         ]
       }
+      workflow_states: {
+        Row: {
+          category: Database["public"]["Enums"]["workflow_state_category"]
+          color: string
+          created_at: string
+          id: string
+          is_default: boolean
+          key: string
+          name: string
+          position: number
+          team_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["workflow_state_category"]
+          color?: string
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          key: string
+          name: string
+          position?: number
+          team_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["workflow_state_category"]
+          color?: string
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          key?: string
+          name?: string
+          position?: number
+          team_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       cycles: {
         Row: {
           created_at: string
@@ -4664,6 +4706,7 @@ export type Database = {
       risk_status: "open" | "mitigating" | "accepted" | "closed"
       task_priority: "low" | "medium" | "high" | "urgent"
       cycle_status: "planned" | "active" | "completed"
+      workflow_state_category: "backlog" | "unstarted" | "started" | "completed" | "canceled"
       task_status: "backlog" | "todo" | "in_progress" | "review" | "done"
       workspace_plan: "trial" | "starter" | "growth" | "scale" | "enterprise"
       workspace_role:
@@ -4926,6 +4969,7 @@ export const Constants = {
       risk_status: ["open", "mitigating", "accepted", "closed"],
       task_priority: ["low", "medium", "high", "urgent"],
       cycle_status: ["planned", "active", "completed"],
+      workflow_state_category: ["backlog", "unstarted", "started", "completed", "canceled"],
       task_status: ["backlog", "todo", "in_progress", "review", "done"],
       workspace_plan: ["trial", "starter", "growth", "scale", "enterprise"],
       workspace_role: [
