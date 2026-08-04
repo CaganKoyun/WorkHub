@@ -19,6 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Plus, X, GitMerge, GitBranch, ListTree, UserPlus } from 'lucide-react';
 import { RichTextDisplay } from '@/components/RichTextEditor';
 import { TaskTimer } from './TaskTimer';
+import { CustomFieldRenderer } from '@/components/CustomFieldRenderer';
 import { toast } from 'sonner';
 import { TaskStatusIcon, TaskPriorityIcon } from './TaskStatusIcon';
 
@@ -288,6 +289,9 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
 
           {/* Time tracking */}
           <TaskTimer taskId={task.id} />
+
+          {/* Custom fields */}
+          <CustomFieldRenderer entityType="task" entityId={task.id} />
 
           {/* Sub-tasks */}
           <section>

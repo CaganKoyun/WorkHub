@@ -3590,6 +3590,87 @@ export type Database = {
           },
         ]
       }
+      custom_field_defs: {
+        Row: {
+          config: Json
+          created_at: string
+          entity_type: string
+          id: string
+          is_archived: boolean
+          key: string
+          kind: Database["public"]["Enums"]["custom_field_kind"]
+          name: string
+          position: number
+          required: boolean
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          entity_type: string
+          id?: string
+          is_archived?: boolean
+          key: string
+          kind: Database["public"]["Enums"]["custom_field_kind"]
+          name: string
+          position?: number
+          required?: boolean
+          updated_at?: string
+          workspace_id?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          entity_type?: string
+          id?: string
+          is_archived?: boolean
+          key?: string
+          kind?: Database["public"]["Enums"]["custom_field_kind"]
+          name?: string
+          position?: number
+          required?: boolean
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      custom_field_values: {
+        Row: {
+          created_at: string
+          def_id: string
+          entity_id: string
+          entity_type: string
+          id: string
+          updated_at: string
+          updated_by: string | null
+          value: Json | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          def_id: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json | null
+          workspace_id?: string
+        }
+        Update: {
+          created_at?: string
+          def_id?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       workflow_states: {
         Row: {
           category: Database["public"]["Enums"]["workflow_state_category"]
@@ -4749,6 +4830,10 @@ export type Database = {
       risk_status: "open" | "mitigating" | "accepted" | "closed"
       task_priority: "low" | "medium" | "high" | "urgent"
       cycle_status: "planned" | "active" | "completed"
+      custom_field_kind:
+        | "text" | "long_text" | "number" | "currency" | "percent"
+        | "select" | "multi_select" | "date" | "datetime" | "boolean"
+        | "url" | "email"
       workflow_state_category: "backlog" | "unstarted" | "started" | "completed" | "canceled"
       task_status: "backlog" | "todo" | "in_progress" | "review" | "done"
       workspace_plan: "trial" | "starter" | "growth" | "scale" | "enterprise"
@@ -5012,6 +5097,11 @@ export const Constants = {
       risk_status: ["open", "mitigating", "accepted", "closed"],
       task_priority: ["low", "medium", "high", "urgent"],
       cycle_status: ["planned", "active", "completed"],
+      custom_field_kind: [
+        "text", "long_text", "number", "currency", "percent",
+        "select", "multi_select", "date", "datetime", "boolean",
+        "url", "email",
+      ],
       workflow_state_category: ["backlog", "unstarted", "started", "completed", "canceled"],
       task_status: ["backlog", "todo", "in_progress", "review", "done"],
       workspace_plan: ["trial", "starter", "growth", "scale", "enterprise"],

@@ -153,6 +153,9 @@ const NAV_JUMPS = [
   { label: "Chief of Staff", icon: Sparkles,      to: "/ai-chat",  hint: "G A" },
   { label: "Templates",      icon: FileText,      to: "/templates" },
   { label: "Import",         icon: Plus,          to: "/import" },
+  { label: "Timesheet",      icon: Settings,      to: "/timesheet" },
+  { label: "Workflow states",icon: Settings,      to: "/workflow-states" },
+  { label: "Custom fields",  icon: Settings,      to: "/custom-fields" },
   { label: "Settings",       icon: Settings,      to: "/settings" },
 ];
 
