@@ -47,6 +47,7 @@ import Chat from "./pages/Chat";
 import Automations from "./pages/Automations";
 import Forms from "./pages/Forms";
 import PublicForm from "./pages/PublicForm";
+import Whiteboards from "./pages/Whiteboards";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
 import Goals from "./pages/Goals";
@@ -109,6 +110,8 @@ const App = () => (
                 <Route path="/automations" element={<ProtectedRoute><WorkspaceGate><Automations /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/forms" element={<ProtectedRoute><WorkspaceGate><Forms /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/f/:slug" element={<PublicForm />} />
+                <Route path="/whiteboards" element={<ProtectedRoute><WorkspaceGate><Whiteboards /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/whiteboards/:id" element={<ProtectedRoute><WorkspaceGate><Whiteboards /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/goals" element={<ProtectedRoute><WorkspaceGate><Goals /></WorkspaceGate></ProtectedRoute>} />

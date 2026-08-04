@@ -3590,6 +3590,42 @@ export type Database = {
           },
         ]
       }
+      whiteboards: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          created_by: string | null
+          elements: Json
+          id: string
+          name: string
+          updated_at: string
+          updated_by: string | null
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          elements?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          elements?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       forms: {
         Row: {
           created_at: string
