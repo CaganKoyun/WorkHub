@@ -38,6 +38,7 @@ import Cycles from "./pages/Cycles";
 import Teams from "./pages/Teams";
 import Templates from "./pages/Templates";
 import Workload from "./pages/Workload";
+import Import from "./pages/Import";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
 import Goals from "./pages/Goals";
@@ -89,6 +90,7 @@ const App = () => (
                 <Route path="/teams" element={<ProtectedRoute><WorkspaceGate><Teams /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/templates" element={<ProtectedRoute><WorkspaceGate><Templates /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/workload" element={<ProtectedRoute><WorkspaceGate><Workload /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/import" element={<ProtectedRoute><WorkspaceGate><Import /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/goals" element={<ProtectedRoute><WorkspaceGate><Goals /></WorkspaceGate></ProtectedRoute>} />

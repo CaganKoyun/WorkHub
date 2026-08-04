@@ -152,6 +152,7 @@ const NAV_JUMPS = [
   { label: "Decisions",      icon: ScrollText,    to: "/decisions" },
   { label: "Chief of Staff", icon: Sparkles,      to: "/ai-chat",  hint: "G A" },
   { label: "Templates",      icon: FileText,      to: "/templates" },
+  { label: "Import",         icon: Plus,          to: "/import" },
   { label: "Settings",       icon: Settings,      to: "/settings" },
 ];
 
