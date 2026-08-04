@@ -162,6 +162,54 @@ export function useAddTaskComment() {
 }
 
 // ---------------------------------------------------------------------------
+// Multiple assignees (task_assignees junction)
+// ---------------------------------------------------------------------------
+export function useTaskAssignees(taskId: string | undefined) {
+  return useQuery({
+    queryKey: ['task-assignees', taskId],
+    enabled: !!taskId,
+    queryFn: async (): Promise<{ user_id: string; assigned_at: string }[]> => {
+      const { data, error } = await supabase
+        .from('task_assignees')
+        .select('user_id, assigned_at')
+        .eq('task_id', taskId!)
+        .order('assigned_at', { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as { user_id: string; assigned_at: string }[];
+    },
+  });
+}
+
+export function useAddTaskAssignee() {
+  const qc = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async ({ task_id, user_id, workspace_id }: { task_id: string; user_id: string; workspace_id: string }) => {
+      const { error } = await supabase
+        .from('task_assignees')
+        .insert({ task_id, user_id, workspace_id, assigned_by: user?.id ?? null });
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => qc.invalidateQueries({ queryKey: ['task-assignees', v.task_id] }),
+  });
+}
+
+export function useRemoveTaskAssignee() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ task_id, user_id }: { task_id: string; user_id: string }) => {
+      const { error } = await supabase
+        .from('task_assignees')
+        .delete()
+        .eq('task_id', task_id)
+        .eq('user_id', user_id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => qc.invalidateQueries({ queryKey: ['task-assignees', v.task_id] }),
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Sub-tasks
 // ---------------------------------------------------------------------------
 export function useSubtasks(parentTaskId: string | undefined) {

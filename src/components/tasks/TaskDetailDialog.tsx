@@ -4,6 +4,7 @@ import {
   useTaskComments, useAddTaskComment, useUpdateTask,
   useSubtasks, useTasks,
   useTaskDependencies, useAddTaskDependency, useRemoveTaskDependency,
+  useTaskAssignees, useAddTaskAssignee, useRemoveTaskAssignee,
 } from '@/lib/tasks-hooks';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { TASK_STATUS_LABELS, TASK_PRIORITY_LABELS } from '@/lib/tasks-types';
@@ -15,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Plus, X, GitMerge, GitBranch, ListTree } from 'lucide-react';
+import { Plus, X, GitMerge, GitBranch, ListTree, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { TaskStatusIcon, TaskPriorityIcon } from './TaskStatusIcon';
 
@@ -116,10 +117,14 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
   const updateTask = useUpdateTask();
   const { data: subtasks } = useSubtasks(task.id);
   const { data: deps } = useTaskDependencies(task.id);
+  const { data: extraAssignees } = useTaskAssignees(task.id);
   const addDep = useAddTaskDependency();
   const removeDep = useRemoveTaskDependency();
+  const addAssignee = useAddTaskAssignee();
+  const removeAssignee = useRemoveTaskAssignee();
   const { currentWorkspace } = useWorkspace();
   const [body, setBody] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const memberMap = new Map(members.map(m => [m.user_id, m.profile?.name ?? 'Kullanıcı']));
 
@@ -193,6 +198,75 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
               </span>
             )}
           </div>
+
+          {/* Additional assignees (multi) */}
+          <section>
+            <div className="mb-1.5 flex items-center justify-between">
+              <h4 className="flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <UserPlus className="h-3 w-3" /> Atananlar
+              </h4>
+              <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-6 text-[11px] gap-1">
+                    <Plus className="h-3 w-3" /> Ekle
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-64 p-2">
+                  <div className="max-h-56 overflow-y-auto space-y-0.5">
+                    {members.length === 0 && (
+                      <p className="text-[11px] text-muted-foreground text-center py-3">Ekip üyesi yok.</p>
+                    )}
+                    {members
+                      .filter(m => !(extraAssignees ?? []).some(a => a.user_id === m.user_id))
+                      .map(m => (
+                        <button
+                          key={m.user_id}
+                          type="button"
+                          onClick={() => {
+                            if (!currentWorkspace) return;
+                            addAssignee.mutate({ task_id: task.id, user_id: m.user_id, workspace_id: currentWorkspace.id });
+                            setPickerOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2 rounded-md px-2 py-1 text-left text-[12px] hover:bg-sidebar-accent/60"
+                        >
+                          <Avatar className="h-5 w-5">
+                            <AvatarFallback className="text-[9px] bg-sidebar-accent">
+                              {(m.profile?.name ?? '?')[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          {m.profile?.name ?? 'Kullanıcı'}
+                        </button>
+                      ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {(extraAssignees ?? []).map(a => (
+                <span
+                  key={a.user_id}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-secondary/40 pl-1 pr-1.5 py-0.5 text-[11.5px]"
+                >
+                  <Avatar className="h-4 w-4">
+                    <AvatarFallback className="text-[8px] bg-sidebar-accent">
+                      {(memberMap.get(a.user_id) ?? '?')[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  {memberMap.get(a.user_id) ?? 'Kullanıcı'}
+                  <button
+                    type="button"
+                    className="ml-0.5 opacity-50 hover:opacity-100"
+                    onClick={() => removeAssignee.mutate({ task_id: task.id, user_id: a.user_id })}
+                  >
+                    <X className="h-2.5 w-2.5" />
+                  </button>
+                </span>
+              ))}
+              {(extraAssignees?.length ?? 0) === 0 && (
+                <p className="text-[12px] text-muted-foreground/70">Sadece birincil atanan var.</p>
+              )}
+            </div>
+          </section>
 
           {task.description && (
             <div className="rounded-md border border-border/60 bg-secondary/30 p-3 text-[13px] whitespace-pre-wrap">
