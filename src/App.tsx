@@ -55,6 +55,8 @@ import MeetingNotes from "./pages/MeetingNotes";
 import AuditLog from "./pages/AuditLog";
 import SavedViews from "./pages/SavedViews";
 import ApiTokens from "./pages/ApiTokens";
+import ClientPortals from "./pages/ClientPortals";
+import PublicPortal from "./pages/PublicPortal";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
 import Goals from "./pages/Goals";
@@ -129,6 +131,8 @@ const App = () => (
                 <Route path="/audit" element={<ProtectedRoute><WorkspaceGate><AuditLog /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/views" element={<ProtectedRoute><WorkspaceGate><SavedViews /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/api-tokens" element={<ProtectedRoute><WorkspaceGate><ApiTokens /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/portals" element={<ProtectedRoute><WorkspaceGate><ClientPortals /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/portal/:token" element={<PublicPortal />} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/goals" element={<ProtectedRoute><WorkspaceGate><Goals /></WorkspaceGate></ProtectedRoute>} />

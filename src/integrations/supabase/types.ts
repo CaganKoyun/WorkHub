@@ -3590,6 +3590,84 @@ export type Database = {
           },
         ]
       }
+      client_portals: {
+        Row: {
+          can_comment: boolean
+          client_email: string
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          name: string
+          project_ids: string[]
+          revoked_at: string | null
+          token: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          can_comment?: boolean
+          client_email: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          name: string
+          project_ids?: string[]
+          revoked_at?: string | null
+          token: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          can_comment?: boolean
+          client_email?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          name?: string
+          project_ids?: string[]
+          revoked_at?: string | null
+          token?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      client_portal_comments: {
+        Row: {
+          body: string
+          created_at: string
+          guest_email: string
+          guest_name: string | null
+          id: string
+          portal_id: string
+          task_id: string
+          workspace_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          guest_email: string
+          guest_name?: string | null
+          id?: string
+          portal_id: string
+          task_id: string
+          workspace_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          guest_email?: string
+          guest_name?: string | null
+          id?: string
+          portal_id?: string
+          task_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       api_tokens: {
         Row: {
           created_at: string
@@ -5377,6 +5455,49 @@ export type Database = {
       verify_api_token: {
         Args: { _raw: string }
         Returns: { user_id: string; workspace_id: string; scopes: string[] }[]
+      }
+      portal_get: {
+        Args: { _token: string }
+        Returns: {
+          id: string
+          name: string
+          client_email: string
+          project_ids: string[]
+          can_comment: boolean
+          workspace_id: string
+        }[]
+      }
+      portal_projects: {
+        Args: { _token: string }
+        Returns: { id: string; name: string; status: string; description: string | null }[]
+      }
+      portal_tasks: {
+        Args: { _token: string; _project_id?: string }
+        Returns: {
+          id: string
+          tracking_id: string
+          title: string
+          description: string | null
+          status: string
+          priority: string
+          due_date: string | null
+          project_id: string
+          project_name: string
+        }[]
+      }
+      portal_task_comments: {
+        Args: { _token: string; _task_id: string }
+        Returns: {
+          id: string
+          guest_email: string
+          guest_name: string | null
+          body: string
+          created_at: string
+        }[]
+      }
+      portal_post_comment: {
+        Args: { _token: string; _task_id: string; _body: string; _guest_name?: string }
+        Returns: string
       }
       fin_burn_rate: { Args: { _days?: number }; Returns: number }
       fin_cash_balance: { Args: never; Returns: number }
