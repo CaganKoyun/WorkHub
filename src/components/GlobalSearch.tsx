@@ -170,6 +170,7 @@ const NAV_JUMPS = [
   { label: "API tokens",     icon: KeyRound,      to: "/api-tokens" },
   { label: "Müşteri portalları", icon: UserRound, to: "/portals" },
   { label: "Bildirim ayarları", icon: Settings,  to: "/notification-settings" },
+  { label: "Agent runs",     icon: Sparkles,      to: "/agent" },
   { label: "Templates",      icon: FileText,      to: "/templates" },
   { label: "Import",         icon: Plus,          to: "/import" },
   { label: "Timesheet",      icon: Settings,      to: "/timesheet" },

@@ -3590,6 +3590,45 @@ export type Database = {
           },
         ]
       }
+      agent_runs: {
+        Row: {
+          created_at: string
+          finished_at: string | null
+          id: string
+          plan: Json
+          prompt: string
+          results: Json
+          started_at: string | null
+          status: string
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          plan?: Json
+          prompt: string
+          results?: Json
+          started_at?: string | null
+          status?: string
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          plan?: Json
+          prompt?: string
+          results?: Json
+          started_at?: string | null
+          status?: string
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       push_subscriptions: {
         Row: {
           auth: string

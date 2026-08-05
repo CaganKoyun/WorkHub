@@ -128,6 +128,7 @@ export const clusters: NavCluster[] = [
         label: "AI",
         items: [
           { icon: Sparkles, label: "Chief of Staff", path: "/ai-chat" },
+          { icon: Sparkles, label: "Agent runs", path: "/agent" },
           { icon: Sparkles, label: "Toplantı notları", path: "/meetings" },
           { icon: MessageSquare, label: "Chat", path: "/chat" },
           { icon: BookOpen, label: "Docs", path: "/docs" },
