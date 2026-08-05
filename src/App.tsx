@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { WorkspaceProvider } from "@/contexts/WorkspaceContext";
+import { LangProvider } from "@/contexts/LangContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { WorkspaceGate } from "@/components/WorkspaceGate";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -89,6 +90,7 @@ const App = () => (
         <BrowserRouter>
           <AuthProvider>
             <WorkspaceProvider>
+              <LangProvider>
               <ShortcutsProvider>
               <Routes>
                 <Route path="/auth" element={<Auth />} />
@@ -164,6 +166,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </ShortcutsProvider>
+              </LangProvider>
             </WorkspaceProvider>
           </AuthProvider>
         </BrowserRouter>

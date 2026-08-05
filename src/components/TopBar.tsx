@@ -4,6 +4,7 @@ import { ChevronRight, Sparkles, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./NotificationBell";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { GlobalSearch } from "./GlobalSearch";
 import { clusterForPath, labelForPath } from "./nav-config";
 import { useActiveTimer, useStopTimer, useElapsedSeconds, formatHMS } from "@/lib/time-tracking-hooks";
@@ -82,6 +83,7 @@ export function TopBar() {
           Ask AI
         </Button>
         <NotificationBell />
+        <LanguageSwitcher />
         <ThemeToggle />
       </div>
     </header>
