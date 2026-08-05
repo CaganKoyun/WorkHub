@@ -3590,6 +3590,84 @@ export type Database = {
           },
         ]
       }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          last_used_at: string | null
+          p256dh: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          last_used_at?: string | null
+          p256dh: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          last_used_at?: string | null
+          p256dh?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      push_queue: {
+        Row: {
+          attempts: number
+          body: string | null
+          created_at: string
+          data: Json
+          id: string
+          last_error: string | null
+          scheduled_at: string
+          sent_at: string | null
+          status: string
+          title: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          last_error?: string | null
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: string
+          title: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          last_error?: string | null
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: string
+          title?: string
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       client_portals: {
         Row: {
           can_comment: boolean
@@ -5497,6 +5575,10 @@ export type Database = {
       }
       portal_post_comment: {
         Args: { _token: string; _task_id: string; _body: string; _guest_name?: string }
+        Returns: string
+      }
+      enqueue_push: {
+        Args: { _user_id: string; _title: string; _body?: string; _url?: string; _data?: Json }
         Returns: string
       }
       fin_burn_rate: { Args: { _days?: number }; Returns: number }

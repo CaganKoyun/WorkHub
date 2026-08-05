@@ -169,6 +169,7 @@ const NAV_JUMPS = [
   { label: "Görünümler",     icon: Bookmark,      to: "/views" },
   { label: "API tokens",     icon: KeyRound,      to: "/api-tokens" },
   { label: "Müşteri portalları", icon: UserRound, to: "/portals" },
+  { label: "Bildirim ayarları", icon: Settings,  to: "/notification-settings" },
   { label: "Templates",      icon: FileText,      to: "/templates" },
   { label: "Import",         icon: Plus,          to: "/import" },
   { label: "Timesheet",      icon: Settings,      to: "/timesheet" },

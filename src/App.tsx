@@ -58,6 +58,7 @@ import SavedViews from "./pages/SavedViews";
 import ApiTokens from "./pages/ApiTokens";
 import ClientPortals from "./pages/ClientPortals";
 import PublicPortal from "./pages/PublicPortal";
+import NotificationSettings from "./pages/NotificationSettings";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
 import Goals from "./pages/Goals";
@@ -135,6 +136,7 @@ const App = () => (
                 <Route path="/api-tokens" element={<ProtectedRoute><WorkspaceGate><ApiTokens /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/portals" element={<ProtectedRoute><WorkspaceGate><ClientPortals /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/portal/:token" element={<PublicPortal />} />
+                <Route path="/notification-settings" element={<ProtectedRoute><WorkspaceGate><NotificationSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/goals" element={<ProtectedRoute><WorkspaceGate><Goals /></WorkspaceGate></ProtectedRoute>} />
