@@ -10,6 +10,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { WorkspaceGate } from "@/components/WorkspaceGate";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { ShortcutsProvider } from "@/components/ShortcutsProvider";
 import Onboarding from "./pages/Onboarding";
 import AcceptInvite from "./pages/AcceptInvite";
 import WorkspaceSettings from "./pages/WorkspaceSettings";
@@ -85,6 +86,7 @@ const App = () => (
         <BrowserRouter>
           <AuthProvider>
             <WorkspaceProvider>
+              <ShortcutsProvider>
               <Routes>
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/invite/:token" element={<AcceptInvite />} />
@@ -155,6 +157,7 @@ const App = () => (
                 <Route path="/settings" element={<ProtectedRoute><WorkspaceGate><Settings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </ShortcutsProvider>
             </WorkspaceProvider>
           </AuthProvider>
         </BrowserRouter>
