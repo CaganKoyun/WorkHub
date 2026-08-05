@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, Bug, BarChart3, Package, Users, FolderKanban, CheckSquare,
-  Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles,
+  Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles, Shield,
   ScrollText, Rocket, Plug, Building2, Compass, Layers, LineChart, Boxes,
   RefreshCw, FileText, Timer, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones,
 } from "lucide-react";
@@ -111,6 +111,7 @@ export const clusters: NavCluster[] = [
           { icon: Package, label: "Assets", path: "/assets" },
           { icon: Users, label: "Employees", path: "/employees" },
           { icon: Building2, label: "Company", path: "/company" },
+          { icon: Shield, label: "Audit log", path: "/audit" },
         ],
       },
     ],
@@ -169,6 +170,7 @@ export const PATH_MODULE: Record<string, string> = {
   "/employees": "people",
   "/company": "people",
   "/teams": "people",
+  "/audit": "people",
 };
 
 export function visibleClusters(enabledModules: string[] | null | undefined): NavCluster[] {

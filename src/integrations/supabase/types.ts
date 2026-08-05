@@ -3590,6 +3590,51 @@ export type Database = {
           },
         ]
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          after: Json | null
+          before: Json | null
+          changed_keys: string[]
+          created_at: string
+          entity_id: string | null
+          entity_label: string | null
+          entity_type: string
+          id: string
+          metadata: Json
+          workspace_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          after?: Json | null
+          before?: Json | null
+          changed_keys?: string[]
+          created_at?: string
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_type: string
+          id?: string
+          metadata?: Json
+          workspace_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          after?: Json | null
+          before?: Json | null
+          changed_keys?: string[]
+          created_at?: string
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       meeting_notes: {
         Row: {
           action_items: Json
@@ -5175,6 +5220,41 @@ export type Database = {
           overdue_tasks: number
           completion_pct: number
         }[]
+      }
+      audit_log_page: {
+        Args: {
+          _workspace_id: string
+          _entity_type?: string
+          _actor_id?: string
+          _action_prefix?: string
+          _limit?: number
+          _offset?: number
+        }
+        Returns: {
+          action: string
+          actor_id: string | null
+          after: Json | null
+          before: Json | null
+          changed_keys: string[]
+          created_at: string
+          entity_id: string | null
+          entity_label: string | null
+          entity_type: string
+          id: string
+          metadata: Json
+          workspace_id: string
+        }[]
+      }
+      log_audit: {
+        Args: {
+          _workspace_id: string
+          _action: string
+          _entity_type: string
+          _entity_id?: string
+          _entity_label?: string
+          _metadata?: Json
+        }
+        Returns: string
       }
       fin_burn_rate: { Args: { _days?: number }; Returns: number }
       fin_cash_balance: { Args: never; Returns: number }
