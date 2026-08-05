@@ -13,9 +13,12 @@ import { Search } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { BulkBar } from '@/components/tasks/BulkBar';
+import { KanbanBoard } from '@/components/tasks/KanbanBoard';
+import { LayoutList, LayoutGrid } from 'lucide-react';
 
 type GroupBy = 'status' | 'priority' | 'project' | 'none';
 type Scope = 'active' | 'backlog' | 'all';
+type ViewMode = 'list' | 'board';
 
 export default function Issues() {
   const { data: tasks, isLoading } = useWorkspaceIssues();
@@ -26,6 +29,7 @@ export default function Issues() {
   const [priority, setPriority] = useState<'all' | TaskPriority>('all');
   const [projectFilter, setProjectFilter] = useState<'all' | string>('all');
   const [groupBy, setGroupBy] = useState<GroupBy>('status');
+  const [view, setView] = useState<ViewMode>('list');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const lastClickedIndexRef = useRef<number | null>(null);
 
@@ -185,17 +189,37 @@ export default function Issues() {
             ))}
           </SelectContent>
         </Select>
-        <div className="ml-auto flex items-center gap-1 rounded-md border border-border p-0.5">
-          {(['status', 'priority', 'project', 'none'] as GroupBy[]).map(g => (
+        <div className="ml-auto flex items-center gap-2">
+          <div className="flex items-center gap-1 rounded-md border border-border p-0.5">
             <button
-              key={g}
               type="button"
-              onClick={() => setGroupBy(g)}
-              className={`h-6 rounded px-2 text-[11px] font-medium transition-colors ${groupBy === g ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-            >
-              {g === 'none' ? 'flat' : g}
-            </button>
-          ))}
+              onClick={() => setView('list')}
+              className={cn('h-6 px-2 rounded text-[11px] font-medium transition-colors inline-flex items-center gap-1',
+                view === 'list' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground')}
+              title="Liste görünümü"
+            ><LayoutList className="h-3 w-3" /> List</button>
+            <button
+              type="button"
+              onClick={() => setView('board')}
+              className={cn('h-6 px-2 rounded text-[11px] font-medium transition-colors inline-flex items-center gap-1',
+                view === 'board' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground')}
+              title="Kanban görünümü"
+            ><LayoutGrid className="h-3 w-3" /> Board</button>
+          </div>
+          {view === 'list' && (
+            <div className="flex items-center gap-1 rounded-md border border-border p-0.5">
+              {(['status', 'priority', 'project', 'none'] as GroupBy[]).map(g => (
+                <button
+                  key={g}
+                  type="button"
+                  onClick={() => setGroupBy(g)}
+                  className={`h-6 rounded px-2 text-[11px] font-medium transition-colors ${groupBy === g ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                >
+                  {g === 'none' ? 'flat' : g}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -208,6 +232,8 @@ export default function Issues() {
         <div className="rounded-md border border-border/60 py-12 text-center text-[13px] text-muted-foreground">
           Görev yok.
         </div>
+      ) : view === 'board' ? (
+        <KanbanBoard tasks={filtered} projectMap={projectMap} />
       ) : (
         <div className="space-y-4">
           {groups.map(g => (
