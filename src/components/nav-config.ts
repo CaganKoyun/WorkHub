@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, Bug, BarChart3, Package, Users, FolderKanban, CheckSquare,
-  Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles, Shield, Bookmark,
+  Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles, Shield, Bookmark, KeyRound,
   ScrollText, Rocket, Plug, Building2, Compass, Layers, LineChart, Boxes,
   RefreshCw, FileText, Timer, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones,
 } from "lucide-react";
@@ -136,6 +136,7 @@ export const clusters: NavCluster[] = [
           { icon: Headphones, label: "Service Desk", path: "/desk" },
           { icon: FileText, label: "Templates", path: "/templates" },
           { icon: Plug, label: "Integrations", path: "/integrations" },
+          { icon: KeyRound, label: "API tokens", path: "/api-tokens" },
         ],
       },
     ],

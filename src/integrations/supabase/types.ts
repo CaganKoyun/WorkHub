@@ -3590,6 +3590,48 @@ export type Database = {
           },
         ]
       }
+      api_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          last_used_at: string | null
+          name: string
+          revoked_at: string | null
+          scopes: string[]
+          token_hash: string
+          token_prefix: string
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          name: string
+          revoked_at?: string | null
+          scopes?: string[]
+          token_hash: string
+          token_prefix: string
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          name?: string
+          revoked_at?: string | null
+          scopes?: string[]
+          token_hash?: string
+          token_prefix?: string
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       saved_views: {
         Row: {
           created_at: string
@@ -5318,6 +5360,23 @@ export type Database = {
           _metadata?: Json
         }
         Returns: string
+      }
+      create_api_token: {
+        Args: {
+          _workspace_id: string
+          _name: string
+          _scopes?: string[]
+          _expires_at?: string
+        }
+        Returns: { id: string; token: string }[]
+      }
+      revoke_api_token: {
+        Args: { _token_id: string }
+        Returns: boolean
+      }
+      verify_api_token: {
+        Args: { _raw: string }
+        Returns: { user_id: string; workspace_id: string; scopes: string[] }[]
       }
       fin_burn_rate: { Args: { _days?: number }; Returns: number }
       fin_cash_balance: { Args: never; Returns: number }
