@@ -10,8 +10,11 @@ import {
 import {
   FolderKanban, CheckSquare, Bug, ScrollText, Inbox, Building2, Loader2,
   Plus, Home, Layers, Sparkles, Target, DollarSign, Package, Users,
-  Settings, ArrowRight, RefreshCw, FileText, BarChart3, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones, Shield, Bookmark, KeyRound, UserRound,
+  Settings, ArrowRight, RefreshCw, FileText, BarChart3, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones, Shield, Bookmark, KeyRound, UserRound, Clock,
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { loadRecents, pushRecent, type RecentItem, type RecentKind } from "@/lib/recents";
 
 interface SearchHit {
   id: string;
@@ -124,15 +127,20 @@ function useGlobalSearch(term: string) {
   });
 }
 
-const HIT_GROUPS: { key: keyof SearchResults; heading: string; icon: React.ElementType }[] = [
-  { key: "tasks",     heading: "Issues",       icon: CheckSquare },
-  { key: "projects",  heading: "Projects",     icon: FolderKanban },
-  { key: "bugs",      heading: "Bugs",         icon: Bug },
-  { key: "decisions", heading: "Decisions",    icon: ScrollText },
-  { key: "approvals", heading: "Approvals",    icon: Inbox },
-  { key: "companies", heading: "CRM Companies",icon: Building2 },
-  { key: "docs",      heading: "Docs",         icon: BookOpen },
+const HIT_GROUPS: { key: keyof SearchResults; heading: string; icon: React.ElementType; kind: RecentKind }[] = [
+  { key: "tasks",     heading: "Issues",       icon: CheckSquare,  kind: "task" },
+  { key: "projects",  heading: "Projects",     icon: FolderKanban, kind: "project" },
+  { key: "bugs",      heading: "Bugs",         icon: Bug,          kind: "bug" },
+  { key: "decisions", heading: "Decisions",    icon: ScrollText,   kind: "decision" },
+  { key: "approvals", heading: "Approvals",    icon: Inbox,        kind: "approval" },
+  { key: "companies", heading: "CRM Companies",icon: Building2,    kind: "company" },
+  { key: "docs",      heading: "Docs",         icon: BookOpen,     kind: "doc" },
 ];
+
+const RECENT_ICON: Record<RecentKind, React.ElementType> = {
+  task: CheckSquare, project: FolderKanban, bug: Bug,
+  decision: ScrollText, approval: Inbox, company: Building2, doc: BookOpen,
+};
 
 const QUICK_ACTIONS = [
   { label: "New issue",    icon: Plus,          to: "/tasks?new=1",    hint: "C" },
@@ -185,11 +193,18 @@ export function GlobalSearch({ open, onOpenChange }: {
   onOpenChange: (open: boolean) => void;
 }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { currentWorkspace } = useWorkspace();
   const [term, setTerm] = useState("");
   const debounced = useDebounced(term, 200);
   const { data, isFetching } = useGlobalSearch(debounced);
+  const [recents, setRecents] = useState<RecentItem[]>([]);
+  useEffect(() => {
+    if (open) setRecents(loadRecents(user?.id ?? null, currentWorkspace?.id ?? null));
+  }, [open, user?.id, currentWorkspace?.id]);
 
-  const go = (to: string) => {
+  const go = (to: string, recent?: Omit<RecentItem, 'ts'>) => {
+    if (recent) pushRecent(user?.id ?? null, currentWorkspace?.id ?? null, recent);
     onOpenChange(false);
     setTerm("");
     navigate(to);
@@ -213,6 +228,31 @@ export function GlobalSearch({ open, onOpenChange }: {
           <CommandList className="max-h-[420px]">
             {!showResults ? (
               <>
+                {recents.length > 0 && (
+                  <>
+                    <CommandGroup heading="Recents">
+                      {recents.map((r) => {
+                        const Icon = RECENT_ICON[r.kind] ?? Clock;
+                        return (
+                          <CommandItem
+                            key={`recent-${r.kind}-${r.id}`}
+                            value={`recent ${r.label} ${r.sublabel ?? ""}`}
+                            onSelect={() => go(r.to, r)}
+                          >
+                            <Icon className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
+                            <span className="truncate">{r.label}</span>
+                            {r.sublabel && (
+                              <span className="ml-auto pl-3 font-mono text-[11px] tabular-nums text-muted-foreground/80">
+                                {r.sublabel}
+                              </span>
+                            )}
+                          </CommandItem>
+                        );
+                      })}
+                    </CommandGroup>
+                    <CommandSeparator />
+                  </>
+                )}
                 <CommandGroup heading="Create">
                   {QUICK_ACTIONS.map((a) => (
                     <CommandItem key={a.to} value={`create ${a.label}`} onSelect={() => go(a.to)}>
@@ -246,7 +286,10 @@ export function GlobalSearch({ open, onOpenChange }: {
                     <CommandItem
                       key={`${g.key}-${hit.id}`}
                       value={`${g.heading} ${hit.label} ${hit.sublabel ?? ""} ${hit.id}`}
-                      onSelect={() => go(hit.to)}
+                      onSelect={() => go(hit.to, {
+                        kind: g.kind, id: hit.id, label: hit.label,
+                        sublabel: hit.sublabel, to: hit.to,
+                      })}
                     >
                       <g.icon className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
                       <span className="truncate">{hit.label}</span>
