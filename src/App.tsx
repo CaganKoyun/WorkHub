@@ -53,6 +53,7 @@ import PublicSupport from "./pages/PublicSupport";
 import Portfolios from "./pages/Portfolios";
 import MeetingNotes from "./pages/MeetingNotes";
 import AuditLog from "./pages/AuditLog";
+import SavedViews from "./pages/SavedViews";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
 import Goals from "./pages/Goals";
@@ -125,6 +126,7 @@ const App = () => (
                 <Route path="/meetings" element={<ProtectedRoute><WorkspaceGate><MeetingNotes /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/meetings/:id" element={<ProtectedRoute><WorkspaceGate><MeetingNotes /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/audit" element={<ProtectedRoute><WorkspaceGate><AuditLog /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/views" element={<ProtectedRoute><WorkspaceGate><SavedViews /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/goals" element={<ProtectedRoute><WorkspaceGate><Goals /></WorkspaceGate></ProtectedRoute>} />

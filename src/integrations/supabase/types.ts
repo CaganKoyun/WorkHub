@@ -3590,6 +3590,69 @@ export type Database = {
           },
         ]
       }
+      saved_views: {
+        Row: {
+          created_at: string
+          description: string | null
+          filters: Json
+          group_by: string | null
+          id: string
+          is_shared: boolean
+          name: string
+          owner_id: string
+          sort: Json
+          target: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          filters?: Json
+          group_by?: string | null
+          id?: string
+          is_shared?: boolean
+          name: string
+          owner_id: string
+          sort?: Json
+          target: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          filters?: Json
+          group_by?: string | null
+          id?: string
+          is_shared?: boolean
+          name?: string
+          owner_id?: string
+          sort?: Json
+          target?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      saved_view_favorites: {
+        Row: {
+          created_at: string
+          user_id: string
+          view_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+          view_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+          view_id?: string
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           action: string
