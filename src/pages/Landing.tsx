@@ -79,8 +79,9 @@ const Landing = () => {
       </nav>
 
       {/* Hero */}
-      <section className="border-b border-border bg-canvas px-6 pb-0 pt-16">
-        <div className="mx-auto max-w-[1000px] text-center">
+      <section className="relative overflow-hidden border-b border-border bg-canvas px-6 pb-0 pt-20">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] glow-primary" aria-hidden />
+        <div className="relative mx-auto max-w-[1000px] text-center">
           <div className="inline-flex h-7 items-center gap-2 rounded-full border border-border bg-background px-3 text-[11.5px] font-medium text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
             The Operating System for founders
@@ -122,8 +123,8 @@ const Landing = () => {
         </div>
 
         {/* Product mock */}
-        <div className="mx-auto mt-14 max-w-[1120px]">
-          <div className="overflow-hidden rounded-t-xl border border-b-0 border-border bg-background shadow-[0_-2px_40px_-12px_rgba(0,0,0,0.18)]">
+        <div className="relative mx-auto mt-16 max-w-[1120px]">
+          <div className="overflow-hidden rounded-t-xl border border-b-0 border-border bg-background elevation-2">
             <div className="flex">
               {/* rail */}
               <div className="hidden w-[52px] shrink-0 flex-col items-center gap-3 bg-sidebar py-3 sm:flex">
@@ -232,11 +233,11 @@ const Landing = () => {
 
           <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
             {features.map(f => (
-              <div key={f.title} className="bg-background p-6 transition-colors hover:bg-canvas">
-                <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
+              <div key={f.title} className="group relative bg-background p-6 transition-colors hover:bg-canvas">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/15 transition-colors group-hover:bg-primary/15">
                   <f.icon className="h-[18px] w-[18px]" />
                 </span>
-                <h3 className="mt-4 text-[15px] font-semibold">{f.title}</h3>
+                <h3 className="mt-5 text-[15px] font-semibold tracking-tight">{f.title}</h3>
                 <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">{f.desc}</p>
               </div>
             ))}
@@ -322,19 +323,22 @@ const Landing = () => {
 
       {/* CTA */}
       <section className="px-6 pb-20">
-        <div className="mx-auto max-w-[1120px] rounded-2xl bg-sidebar px-8 py-14 text-center">
-          <h2 className="mx-auto max-w-[620px] text-[clamp(1.7rem,3.2vw,2.4rem)] font-semibold leading-tight tracking-[-0.03em] text-sidebar-accent-foreground">
-            Run the whole company from one place
-          </h2>
-          <p className="mx-auto mt-3 max-w-[520px] text-[15px] text-sidebar-foreground">
-            Set up your workspace in two minutes. Invite your team when you're ready.
-          </p>
-          <Link
-            to="/auth"
-            className="mt-7 inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-[14.5px] font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Get started <ArrowRight className="h-4 w-4" />
-          </Link>
+        <div className="relative mx-auto max-w-[1120px] overflow-hidden rounded-2xl border border-border bg-sidebar px-8 py-14 text-center elevation-2">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-full glow-primary opacity-70" aria-hidden />
+          <div className="relative">
+            <h2 className="mx-auto max-w-[620px] text-[clamp(1.7rem,3.2vw,2.4rem)] font-semibold leading-tight tracking-[-0.03em] text-sidebar-accent-foreground">
+              Run the whole company from one place
+            </h2>
+            <p className="mx-auto mt-3 max-w-[520px] text-[15px] text-sidebar-foreground">
+              Set up your workspace in two minutes. Invite your team when you're ready.
+            </p>
+            <Link
+              to="/auth"
+              className="mt-7 inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-[14.5px] font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Get started <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
 

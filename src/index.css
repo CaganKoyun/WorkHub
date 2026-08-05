@@ -11,26 +11,26 @@
      Dark-first (default). Magic Blue #5E6AD2 as brand primary.
      --------------------------------------------------------------- */
   :root {
-    /* Dark canvas (Linear default) */
-    --background: 240 10% 6%;              /* #0F0F13 */
-    --foreground: 220 12% 96%;             /* #F4F5F8 Mercury White */
+    /* Dark canvas — deeper near-black with cool tint for depth. */
+    --background: 240 12% 5%;              /* #0B0B0F */
+    --foreground: 220 14% 97%;             /* #F5F6F9 */
 
-    --card: 240 10% 8%;                    /* subtle panel */
-    --card-foreground: 220 12% 96%;
+    --card: 240 11% 7%;                    /* subtle panel */
+    --card-foreground: 220 14% 97%;
 
-    --popover: 240 10% 10%;
-    --popover-foreground: 220 12% 96%;
+    --popover: 240 11% 9%;
+    --popover-foreground: 220 14% 97%;
 
-    --primary: 235 62% 65%;                /* #5E6AD2 Magic Blue */
+    --primary: 234 63% 66%;                /* indigo-violet accent */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 6% 14%;               /* chip / subtle button */
+    --secondary: 240 7% 13%;               /* chip / subtle button */
     --secondary-foreground: 220 12% 92%;
 
-    --muted: 240 6% 12%;
-    --muted-foreground: 220 8% 62%;        /* #8A8F98 */
+    --muted: 240 7% 11%;
+    --muted-foreground: 220 9% 63%;
 
-    --accent: 240 6% 16%;
+    --accent: 240 7% 15%;
     --accent-foreground: 220 12% 96%;
 
     --destructive: 0 72% 60%;
@@ -45,31 +45,30 @@
     --info: 213 90% 65%;
     --info-foreground: 0 0% 100%;
 
-    --border: 240 6% 16%;                  /* ~6% white */
-    --input: 240 6% 18%;
-    --ring: 235 62% 65%;
+    --border: 240 6% 15%;
+    --input: 240 6% 17%;
+    --ring: 234 63% 66%;
 
     --radius: 0.5rem;
 
-    /* Workspace canvas (same as bg in dark) */
-    --canvas: 240 10% 6%;
+    --canvas: 240 12% 5%;
 
-    /* Sidebar — even darker than canvas (Linear does this) */
-    --sidebar-background: 240 12% 4%;      /* #08080B */
-    --sidebar-foreground: 220 8% 68%;      /* muted text */
-    --sidebar-primary: 235 62% 65%;
+    /* Sidebar — pushed a hair darker than canvas for depth. */
+    --sidebar-background: 240 14% 3.5%;
+    --sidebar-foreground: 220 9% 69%;
+    --sidebar-primary: 234 63% 66%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 8% 12%;          /* hover row */
-    --sidebar-accent-foreground: 220 12% 96%;
-    --sidebar-border: 240 6% 14%;
-    --sidebar-ring: 235 62% 65%;
+    --sidebar-accent: 240 9% 11%;
+    --sidebar-accent-foreground: 220 14% 97%;
+    --sidebar-border: 240 6% 13%;
+    --sidebar-ring: 234 63% 66%;
 
-    /* Task/issue status hues — Linear-inspired */
-    --status-backlog: 220 8% 55%;          /* gray dashed */
+    /* Task/issue status hues */
+    --status-backlog: 220 8% 55%;
     --status-todo: 220 8% 70%;
-    --status-in-progress: 38 92% 58%;      /* amber */
-    --status-review: 262 70% 66%;          /* purple */
-    --status-done: 235 62% 65%;            /* magic blue */
+    --status-in-progress: 38 92% 58%;
+    --status-review: 262 70% 66%;
+    --status-done: 234 63% 66%;
     --status-canceled: 0 0% 45%;
 
     /* Priority scale */
@@ -143,7 +142,7 @@
   }
 
   html {
-    background-color: hsl(240 10% 6%);
+    background-color: hsl(240 12% 5%);
     color-scheme: dark;
   }
 
@@ -186,6 +185,39 @@
 @layer utilities {
   .hairline { box-shadow: inset 0 0 0 1px hsl(var(--border)); }
   .bg-canvas { background-color: hsl(var(--canvas)); }
+
+  /* Soft elevation for cards / modals on dark canvas. */
+  .elevation-1 {
+    box-shadow:
+      0 1px 0 0 hsl(0 0% 100% / 0.02) inset,
+      0 1px 2px 0 hsl(240 20% 2% / 0.5),
+      0 8px 24px -8px hsl(240 20% 2% / 0.4);
+  }
+  .elevation-2 {
+    box-shadow:
+      0 1px 0 0 hsl(0 0% 100% / 0.03) inset,
+      0 2px 6px -1px hsl(240 20% 2% / 0.6),
+      0 24px 60px -16px hsl(240 20% 2% / 0.55);
+  }
+
+  /* Radial primary glow behind hero / feature accents. */
+  .glow-primary {
+    background-image: radial-gradient(
+      60% 60% at 50% 0%,
+      hsl(var(--primary) / 0.22) 0%,
+      hsl(var(--primary) / 0.06) 40%,
+      transparent 70%
+    );
+  }
+
+  /* Subtle dotted / grid canvas backdrop. */
+  .bg-grid-fade {
+    background-image:
+      linear-gradient(to bottom, transparent 0, hsl(var(--background)) 85%),
+      linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 100% 100%, 48px 48px, 48px 48px;
+  }
   .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
   .scrollbar-thin::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 4px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
