@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Hash, Plus, Send, Trash2, MessageCircle, X, AtSign } from 'lucide-react';
+import { MicButton } from '@/components/MicButton';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -119,6 +120,12 @@ function Composer({ channelId, parentId, membersById, members, autoFocus }: {
           rows={1}
           placeholder={parentId ? 'Yanıtla…' : 'Mesaj yaz… (Enter = gönder, Shift+Enter = satır)'}
           className="flex-1 resize-none bg-transparent px-2 py-1.5 text-[13px] focus:outline-none max-h-40"
+        />
+        <MicButton
+          size="sm"
+          className="shrink-0"
+          onFinal={(t) => setText(prev => (prev ? prev + ' ' : '') + t)}
+          title="Sesli mesaj yaz"
         />
         <Button
           size="icon" onClick={submit} disabled={!text.trim() || send.isPending}

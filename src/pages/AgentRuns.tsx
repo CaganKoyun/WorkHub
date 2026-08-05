@@ -13,6 +13,7 @@ import {
   Bot, Sparkles, Play, CheckCircle2, AlertTriangle, XCircle, Trash2,
   ChevronRight, ChevronDown, Wand2,
 } from 'lucide-react';
+import { MicButton } from '@/components/MicButton';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -94,6 +95,11 @@ function Composer() {
           className="w-full bg-transparent px-3 py-2.5 text-[13.5px] focus:outline-none resize-none"
         />
         <div className="flex items-center gap-1.5 flex-wrap border-t border-border/40 px-2.5 py-1.5">
+          <MicButton
+            size="sm"
+            onFinal={(t) => setText(prev => (prev ? prev + ' ' : '') + t)}
+            title="Direktifi sesli yaz"
+          />
           <span className="text-[10.5px] uppercase tracking-wider text-muted-foreground">Örnekler:</span>
           {EXAMPLES.map(e => (
             <button key={e} onClick={() => setText(e)}
