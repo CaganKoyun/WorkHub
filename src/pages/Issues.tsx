@@ -15,6 +15,8 @@ import { cn } from '@/lib/utils';
 import { BulkBar } from '@/components/tasks/BulkBar';
 import { KanbanBoard } from '@/components/tasks/KanbanBoard';
 import { LayoutList, LayoutGrid } from 'lucide-react';
+import { useRealtime } from '@/lib/realtime';
+import { useQueryClient } from '@tanstack/react-query';
 
 type GroupBy = 'status' | 'priority' | 'project' | 'none';
 type Scope = 'active' | 'backlog' | 'all';
@@ -23,6 +25,10 @@ type ViewMode = 'list' | 'board';
 export default function Issues() {
   const { data: tasks, isLoading } = useWorkspaceIssues();
   const { data: projects } = useProjects();
+  const qcTasks = useQueryClient();
+  useRealtime('tasks', () => {
+    qcTasks.invalidateQueries({ queryKey: ['workspace-issues'] });
+  });
   const [scope, setScope] = useState<Scope>('active');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'all' | TaskStatus>('all');

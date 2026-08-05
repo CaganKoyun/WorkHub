@@ -79,7 +79,7 @@ export function useChannelMessages(channelId: string | undefined) {
   return useQuery({
     queryKey: ['chat-messages', channelId],
     enabled: !!channelId,
-    refetchInterval: 5000,
+    // Realtime kanalı Chat.tsx içinde subscribe olur; polling gerek yok.
     queryFn: async (): Promise<ChatMessage[]> => {
       const { data, error } = await supabase
         .from('chat_messages')
@@ -99,7 +99,7 @@ export function useThreadReplies(rootId: string | undefined) {
   return useQuery({
     queryKey: ['chat-thread', rootId],
     enabled: !!rootId,
-    refetchInterval: 5000,
+    // Realtime kanalı Chat.tsx içinde subscribe olur; polling gerek yok.
     queryFn: async (): Promise<ChatMessage[]> => {
       const { data, error } = await supabase
         .from('chat_messages')
@@ -117,7 +117,7 @@ export function useReplyCounts(channelId: string | undefined) {
   return useQuery({
     queryKey: ['chat-reply-counts', channelId],
     enabled: !!channelId,
-    refetchInterval: 10_000,
+    // Reply counts realtime tarafından tetiklenir; polling gerek yok.
     queryFn: async (): Promise<Record<string, number>> => {
       const { data, error } = await supabase
         .from('chat_messages')

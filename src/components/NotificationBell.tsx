@@ -3,6 +3,9 @@ import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useNotifications, useMarkNotificationsRead } from "@/lib/notification-hooks";
+import { useRealtime } from "@/lib/realtime";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 
 function timeAgo(iso: string): string {
@@ -16,8 +19,13 @@ function timeAgo(iso: string): string {
 
 export function NotificationBell() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: notifications } = useNotifications();
   const markRead = useMarkNotificationsRead();
+  const qc = useQueryClient();
+  useRealtime('notifications', () => {
+    qc.invalidateQueries({ queryKey: ['notifications'] });
+  }, { filter: user?.id ? `user_id=eq.${user.id}` : undefined, enabled: !!user?.id });
 
   const items = notifications ?? [];
   const unread = items.filter((n) => !n.read_at);

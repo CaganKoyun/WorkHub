@@ -12,6 +12,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Hash, Plus, Send, Trash2, MessageCircle, X, AtSign } from 'lucide-react';
 import { MicButton } from '@/components/MicButton';
+import { useRealtime } from '@/lib/realtime';
+import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -302,6 +304,12 @@ export default function Chat() {
   const { data: replyCounts } = useReplyCounts(activeId);
   const { data: members } = useWorkspaceMembers();
   const del = useDeleteMessage();
+  const qc = useQueryClient();
+  useRealtime('chat_messages', () => {
+    qc.invalidateQueries({ queryKey: ['chat-messages', activeId] });
+    qc.invalidateQueries({ queryKey: ['chat-reply-counts', activeId] });
+    if (threadRoot) qc.invalidateQueries({ queryKey: ['chat-thread', threadRoot] });
+  }, { filter: activeId ? `channel_id=eq.${activeId}` : undefined, enabled: !!activeId });
 
   const membersById = useMemo(
     () => new Map((members ?? []).map(m => [m.user_id, m])),
