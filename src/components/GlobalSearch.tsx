@@ -163,6 +163,7 @@ const NAV_JUMPS = [
   { label: "Formlar",        icon: ClipboardList, to: "/forms" },
   { label: "Panolar",        icon: PenSquare,     to: "/whiteboards" },
   { label: "Service Desk",   icon: Headphones,    to: "/desk" },
+  { label: "Portföyler",     icon: Building2,     to: "/portfolios" },
   { label: "Templates",      icon: FileText,      to: "/templates" },
   { label: "Import",         icon: Plus,          to: "/import" },
   { label: "Timesheet",      icon: Settings,      to: "/timesheet" },

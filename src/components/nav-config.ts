@@ -51,6 +51,7 @@ export const clusters: NavCluster[] = [
           { icon: Layers, label: "Issues", path: "/issues" },
           { icon: RefreshCw, label: "Cycles", path: "/cycles" },
           { icon: FolderKanban, label: "Projects", path: "/projects" },
+          { icon: Briefcase, label: "Portföyler", path: "/portfolios" },
           { icon: CheckSquare, label: "My Tasks", path: "/tasks" },
           { icon: BarChart3, label: "Workload", path: "/workload" },
           { icon: Bug, label: "Bugs", path: "/bugs" },
@@ -150,6 +151,7 @@ export const navItems: NavItem[] = clusters.flatMap(c =>
 // ---------------------------------------------------------------------------
 export const PATH_MODULE: Record<string, string> = {
   "/projects": "work",
+  "/portfolios": "work",
   "/tasks": "work",
   "/issues": "work",
   "/cycles": "work",

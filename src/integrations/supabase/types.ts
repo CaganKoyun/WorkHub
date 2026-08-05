@@ -3590,6 +3590,63 @@ export type Database = {
           },
         ]
       }
+      portfolios: {
+        Row: {
+          archived_at: string | null
+          color: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          owner_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          owner_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      portfolio_projects: {
+        Row: {
+          created_at: string
+          portfolio_id: string
+          project_id: string
+        }
+        Insert: {
+          created_at?: string
+          portfolio_id: string
+          project_id: string
+        }
+        Update: {
+          created_at?: string
+          portfolio_id?: string
+          project_id?: string
+        }
+        Relationships: []
+      }
       tickets: {
         Row: {
           assignee_id: string | null
@@ -5063,6 +5120,19 @@ export type Database = {
       time_task_totals: {
         Args: { _task_id: string }
         Returns: { user_id: string; total_seconds: number }[]
+      }
+      portfolio_rollup: {
+        Args: { _portfolio_id: string }
+        Returns: {
+          project_id: string
+          project_name: string
+          project_status: string
+          total_tasks: number
+          done_tasks: number
+          active_tasks: number
+          overdue_tasks: number
+          completion_pct: number
+        }[]
       }
       fin_burn_rate: { Args: { _days?: number }; Returns: number }
       fin_cash_balance: { Args: never; Returns: number }

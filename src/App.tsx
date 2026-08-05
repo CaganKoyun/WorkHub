@@ -50,6 +50,7 @@ import PublicForm from "./pages/PublicForm";
 import Whiteboards from "./pages/Whiteboards";
 import ServiceDesk from "./pages/ServiceDesk";
 import PublicSupport from "./pages/PublicSupport";
+import Portfolios from "./pages/Portfolios";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
 import Goals from "./pages/Goals";
@@ -117,6 +118,8 @@ const App = () => (
                 <Route path="/desk" element={<ProtectedRoute><WorkspaceGate><ServiceDesk /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/desk/:id" element={<ProtectedRoute><WorkspaceGate><ServiceDesk /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/support/:workspaceId" element={<PublicSupport />} />
+                <Route path="/portfolios" element={<ProtectedRoute><WorkspaceGate><Portfolios /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/portfolios/:id" element={<ProtectedRoute><WorkspaceGate><Portfolios /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/goals" element={<ProtectedRoute><WorkspaceGate><Goals /></WorkspaceGate></ProtectedRoute>} />
