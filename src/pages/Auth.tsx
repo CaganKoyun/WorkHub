@@ -5,16 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, CheckCircle2, Sparkles, Target, BarChart3 } from "lucide-react";
+import { Loader2, CheckCircle2, Sparkles, Target, BarChart3, Linkedin } from "lucide-react";
 import { StackedLogo } from "@/components/StackedLogo";
 import { useToast } from "@/hooks/use-toast";
 import { lovable } from "@/integrations/lovable/index";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Auth() {
   const { user, loading, signIn, signUp } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isLinkedInLoading, setIsLinkedInLoading] = useState(false);
+  const [isMicrosoftLoading, setIsMicrosoftLoading] = useState(false);
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -43,6 +46,34 @@ export default function Auth() {
       setIsGoogleLoading(false);
     }
   };
+
+  // Both providers must be enabled in Supabase Dashboard → Authentication →
+  // Providers, with Client ID / Secret + the callback URL
+  // https://<PROJECT>.supabase.co/auth/v1/callback registered on the
+  // provider's side. See docs/SSO.md.
+  const oauth = async (
+    provider: "linkedin_oidc" | "azure",
+    setLoading: (v: boolean) => void,
+    label: string,
+  ) => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin,
+          scopes: provider === "azure" ? "email openid profile" : undefined,
+        },
+      });
+      if (error) toast({ title: `${label} sign-in failed`, description: error.message, variant: "destructive" });
+    } catch (error: any) {
+      toast({ title: `${label} sign-in failed`, description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleLinkedInSignIn  = () => oauth("linkedin_oidc", setIsLinkedInLoading, "LinkedIn");
+  const handleMicrosoftSignIn = () => oauth("azure",         setIsMicrosoftLoading, "Microsoft");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -158,6 +189,38 @@ export default function Auth() {
             )}
             Continue with Google
           </Button>
+
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant="outline"
+              className="h-10 gap-2 text-[13px]"
+              onClick={handleLinkedInSignIn}
+              disabled={isLinkedInLoading}
+            >
+              {isLinkedInLoading
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : <Linkedin className="h-4 w-4" />}
+              LinkedIn
+            </Button>
+            <Button
+              variant="outline"
+              className="h-10 gap-2 text-[13px]"
+              onClick={handleMicrosoftSignIn}
+              disabled={isMicrosoftLoading}
+            >
+              {isMicrosoftLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="1"  y="1"  width="10" height="10" fill="currentColor" />
+                  <rect x="13" y="1"  width="10" height="10" fill="currentColor" opacity="0.75" />
+                  <rect x="1"  y="13" width="10" height="10" fill="currentColor" opacity="0.5" />
+                  <rect x="13" y="13" width="10" height="10" fill="currentColor" opacity="0.35" />
+                </svg>
+              )}
+              Microsoft
+            </Button>
+          </div>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
