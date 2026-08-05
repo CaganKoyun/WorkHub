@@ -87,7 +87,8 @@ export default function Roadmap() {
           Henüz proje yok. <Link to="/projects/new" className="text-primary hover:underline">Yeni proje</Link>.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-border bg-card elevation-1">
+        <div className="overflow-x-auto scrollbar-thin rounded-xl border border-border bg-card elevation-1">
+          <div className="min-w-[720px]">
           {/* Month header */}
           <div className="flex border-b border-border">
             <div className="w-56 shrink-0 border-r border-border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
@@ -165,6 +166,7 @@ export default function Roadmap() {
                 </div>
               );
             })}
+          </div>
           </div>
         </div>
       )}

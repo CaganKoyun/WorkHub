@@ -100,7 +100,8 @@ export function BulkBar({ selectedIds, onClear, className }: Props) {
 
   return (
     <div className={cn(
-      'fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 rounded-lg border border-border/60 bg-surface px-3 py-2 shadow-2xl',
+      'fixed inset-x-2 bottom-3 z-40 flex max-w-full items-center gap-2 overflow-x-auto rounded-lg border border-border/60 bg-surface px-3 py-2 shadow-2xl scrollbar-thin',
+      'sm:inset-x-auto sm:left-1/2 sm:bottom-4 sm:max-w-none sm:-translate-x-1/2 sm:overflow-visible',
       'animate-in slide-in-from-bottom-2',
       busy && 'opacity-70 pointer-events-none',
       className,
