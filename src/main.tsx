@@ -1,5 +1,8 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import { registerServiceWorker } from "./lib/pwa";
+
+registerServiceWorker();
 
 // ---------------------------------------------------------------------------
 // Startup diagnostic. This MUST run before any module that touches Supabase

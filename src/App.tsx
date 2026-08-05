@@ -9,6 +9,7 @@ import { WorkspaceProvider } from "@/contexts/WorkspaceContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { WorkspaceGate } from "@/components/WorkspaceGate";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import Onboarding from "./pages/Onboarding";
 import AcceptInvite from "./pages/AcceptInvite";
 import WorkspaceSettings from "./pages/WorkspaceSettings";
@@ -77,6 +78,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <InstallPrompt />
         <BrowserRouter>
           <AuthProvider>
             <WorkspaceProvider>
