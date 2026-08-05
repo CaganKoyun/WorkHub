@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { buildShortcuts, type ShortcutDef } from '@/lib/keybinds';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { GlobalSearch } from '@/components/GlobalSearch';
+import { QuickAddIssue } from '@/components/QuickAddIssue';
 import { Keyboard } from 'lucide-react';
 
 /**
@@ -14,12 +15,13 @@ export function ShortcutsProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
 
   const bundle = useMemo(() => buildShortcuts({
     navigate,
     openPalette: () => setPaletteOpen(true),
     openHelp: () => setHelpOpen(true),
-    newIssue: () => navigate('/tasks?new=1'),
+    newIssue: () => setQuickAddOpen(true),
   }), [navigate]);
 
   useEffect(() => bundle.install(), [bundle]);
@@ -28,6 +30,7 @@ export function ShortcutsProvider({ children }: { children: React.ReactNode }) {
     <>
       {children}
       <GlobalSearch open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <QuickAddIssue open={quickAddOpen} onOpenChange={setQuickAddOpen} />
       <HelpOverlay open={helpOpen} onOpenChange={setHelpOpen} shortcuts={bundle.shortcuts} />
     </>
   );
