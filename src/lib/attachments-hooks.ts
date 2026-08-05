@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+export { formatBytes } from './attachments-utils';
 
 export interface Attachment {
   id: string;
@@ -28,7 +29,7 @@ export function useTaskAttachments(taskId: string | undefined) {
     enabled: !!taskId,
     queryFn: async (): Promise<Attachment[]> => {
       const { data, error } = await (supabase as any)
-        .from('attachments')
+        .from('task_attachments')
         .select('*')
         .eq('task_id', taskId!)
         .order('created_at', { ascending: false });
@@ -54,7 +55,7 @@ export function useUploadTaskAttachment() {
       });
       if (up.error) throw up.error;
       const { data, error } = await (supabase as any)
-        .from('attachments')
+        .from('task_attachments')
         .insert({
           workspace_id: currentWorkspace.id,
           task_id: taskId,
@@ -83,7 +84,7 @@ export function useDeleteAttachment() {
     mutationFn: async (att: Attachment) => {
       await supabase.storage.from(BUCKET).remove([att.storage_path]);
       const { error } = await (supabase as any)
-        .from('attachments')
+        .from('task_attachments')
         .delete()
         .eq('id', att.id);
       if (error) throw error;
@@ -107,11 +108,3 @@ export async function signedDownloadUrl(path: string): Promise<string> {
   return data.signedUrl;
 }
 
-export function formatBytes(n: number | null | undefined): string {
-  if (!n || n <= 0) return '0 B';
-  const units = ['B', 'KB', 'MB', 'GB'];
-  let i = 0;
-  let v = n;
-  while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
-  return `${v.toFixed(v < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
-}

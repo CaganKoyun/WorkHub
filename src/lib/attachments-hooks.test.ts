@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatBytes } from './attachments-hooks';
+import { formatBytes } from './attachments-utils';
 
 describe('formatBytes', () => {
   it('handles empty', () => {
