@@ -20,6 +20,8 @@ import { Plus, X, GitMerge, GitBranch, ListTree, UserPlus } from 'lucide-react';
 import { RichTextDisplay } from '@/components/RichTextEditor';
 import { TaskTimer } from './TaskTimer';
 import { CustomFieldRenderer } from '@/components/CustomFieldRenderer';
+import { RollupPanel } from './RollupPanel';
+import type { FormulaContext } from '@/lib/formula-eval';
 import { toast } from 'sonner';
 import { TaskStatusIcon, TaskPriorityIcon } from './TaskStatusIcon';
 
@@ -290,8 +292,33 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
           {/* Time tracking */}
           <TaskTimer taskId={task.id} />
 
-          {/* Custom fields */}
-          <CustomFieldRenderer entityType="task" entityId={task.id} />
+          {/* Rollup panel + custom fields — share one formula context */}
+          {(() => {
+            const formulaContext: FormulaContext = {
+              self: {
+                id: task.id,
+                due_date: task.due_date,
+                created_at: task.created_at,
+                completed_at: task.completed_at,
+                story_points: task.story_points,
+                estimated_hours: task.estimated_hours,
+                actual_hours: task.actual_hours,
+              },
+              subtasks: (subtasks ?? []).map(s => ({
+                id: s.id,
+                status: s.status,
+                story_points: s.story_points,
+                estimated_hours: s.estimated_hours,
+                actual_hours: s.actual_hours,
+              })),
+            };
+            return (
+              <>
+                <RollupPanel ctx={formulaContext} />
+                <CustomFieldRenderer entityType="task" entityId={task.id} formulaContext={formulaContext} />
+              </>
+            );
+          })()}
 
           {/* Sub-tasks */}
           <section>

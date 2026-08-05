@@ -9,11 +9,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { evalFormula, formatFormulaValue, type FormulaContext } from '@/lib/formula-eval';
+import { Sigma } from 'lucide-react';
 
 interface Props {
   entityType: EntityType;
   entityId: string;
   className?: string;
+  /** Passed for entities that support formula fields (currently: task). */
+  formulaContext?: FormulaContext;
 }
 
 /**
@@ -21,7 +25,7 @@ interface Props {
  * value changes. Use inside TaskDetailDialog etc. — form-side reuse can
  * follow later.
  */
-export function CustomFieldRenderer({ entityType, entityId, className }: Props) {
+export function CustomFieldRenderer({ entityType, entityId, className, formulaContext }: Props) {
   const { data: defs, isLoading: defsLoading } = useCustomFieldDefs(entityType);
   const { data: values } = useCustomFieldValues(entityType, entityId);
   const upsert = useUpsertCustomFieldValue();
@@ -41,8 +45,29 @@ export function CustomFieldRenderer({ entityType, entityId, className }: Props) 
   return (
     <div className={cn('space-y-3', className)}>
       {(defs ?? []).map(def => (
-        <FieldEditor key={def.id} def={def} value={byDef.get(def.id)} onSave={(v) => save(def, v)} />
+        def.kind === 'formula'
+          ? <FormulaField key={def.id} def={def} ctx={formulaContext} />
+          : <FieldEditor key={def.id} def={def} value={byDef.get(def.id)} onSave={(v) => save(def, v)} />
       ))}
+    </div>
+  );
+}
+
+function FormulaField({ def, ctx }: { def: CustomFieldDef; ctx?: FormulaContext }) {
+  const formula = (def.config as { formula?: string }).formula ?? '';
+  const suffix = (def.config as { suffix?: string }).suffix ?? '';
+  const computed = ctx ? evalFormula(formula, ctx) : null;
+  return (
+    <div className="grid grid-cols-[130px_1fr] items-center gap-3">
+      <Label className="text-[11.5px] text-muted-foreground truncate flex items-center gap-1">
+        <Sigma className="h-3 w-3" /> {def.name}
+      </Label>
+      <div className="flex items-baseline gap-2 text-[12.5px]">
+        <span className="font-mono font-medium tabular-nums">
+          {formatFormulaValue(computed, suffix ? ` ${suffix}` : undefined)}
+        </span>
+        <span className="text-[10.5px] text-muted-foreground/70 font-mono truncate">= {formula}</span>
+      </div>
     </div>
   );
 }

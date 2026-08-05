@@ -10,8 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Trash2, Settings2 } from 'lucide-react';
+import { Plus, Trash2, Settings2, Sigma } from 'lucide-react';
 import { toast } from 'sonner';
+import { FORMULA_EXAMPLES } from '@/lib/formula-eval';
 
 const ENTITY_LABELS: Record<EntityType, string> = {
   task: 'Görevler',
@@ -31,6 +32,8 @@ function CreateDefDialog({
   const [kind, setKind] = useState<CustomFieldKind>('text');
   const [required, setRequired] = useState(false);
   const [optionsText, setOptionsText] = useState('');
+  const [formula, setFormula] = useState('');
+  const [formulaSuffix, setFormulaSuffix] = useState('');
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +47,11 @@ function CreateDefDialog({
       }));
       config.options = opts;
     }
+    if (kind === 'formula') {
+      if (!formula.trim()) { toast.error('Formül zorunlu'); return; }
+      config.formula = formula.trim();
+      if (formulaSuffix.trim()) config.suffix = formulaSuffix.trim();
+    }
     try {
       await create.mutateAsync({
         entity_type: entityType, key, name: name.trim(), kind,
@@ -51,6 +59,7 @@ function CreateDefDialog({
       });
       toast.success('Alan eklendi');
       setName(''); setOptionsText(''); setRequired(false);
+      setFormula(''); setFormulaSuffix('');
       onOpenChange(false);
     } catch (err: any) {
       toast.error(err.message);
@@ -77,6 +86,22 @@ function CreateDefDialog({
               </SelectContent>
             </Select>
           </div>
+          {kind === 'formula' && (
+            <div className="space-y-1.5">
+              <Label className="flex items-center gap-1.5"><Sigma className="h-3.5 w-3.5" /> Formül</Label>
+              <Input value={formula} onChange={e => setFormula(e.target.value)} placeholder="Örn: sum(subtasks.story_points)" className="font-mono text-[12px]" />
+              <div className="flex flex-wrap gap-1 pt-1">
+                {FORMULA_EXAMPLES.slice(0, 6).map(ex => (
+                  <button key={ex.formula} type="button" onClick={() => setFormula(ex.formula)}
+                    className="text-[10.5px] px-1.5 py-0.5 rounded border border-border/60 bg-secondary/40 text-muted-foreground hover:text-foreground font-mono">
+                    {ex.label}
+                  </button>
+                ))}
+              </div>
+              <Label className="text-[11px] text-muted-foreground pt-1">Sonek (opsiyonel)</Label>
+              <Input value={formulaSuffix} onChange={e => setFormulaSuffix(e.target.value)} placeholder="Örn: gün, sa, %" className="text-[12px] h-8" />
+            </div>
+          )}
           {KIND_NEEDS_OPTIONS.has(kind) && (
             <div className="space-y-1.5">
               <Label>Seçenekler (satır başına 1)</Label>

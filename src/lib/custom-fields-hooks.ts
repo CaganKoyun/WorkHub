@@ -6,7 +6,7 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 export type CustomFieldKind =
   | 'text' | 'long_text' | 'number' | 'currency' | 'percent'
   | 'select' | 'multi_select' | 'date' | 'datetime' | 'boolean'
-  | 'url' | 'email';
+  | 'url' | 'email' | 'formula';
 
 export type EntityType = 'task' | 'project' | 'bug' | 'deal' | 'customer';
 
@@ -61,6 +61,7 @@ export const KIND_LABELS: Record<CustomFieldKind, string> = {
   boolean: 'Evet/Hayır',
   url: 'URL',
   email: 'E-posta',
+  formula: 'Formül',
 };
 
 // ---------------------------------------------------------------------------

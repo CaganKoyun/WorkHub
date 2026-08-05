@@ -5673,7 +5673,7 @@ export type Database = {
       custom_field_kind:
         | "text" | "long_text" | "number" | "currency" | "percent"
         | "select" | "multi_select" | "date" | "datetime" | "boolean"
-        | "url" | "email"
+        | "url" | "email" | "formula"
       workflow_state_category: "backlog" | "unstarted" | "started" | "completed" | "canceled"
       task_status: "backlog" | "todo" | "in_progress" | "review" | "done"
       ticket_status: "open" | "in_progress" | "waiting" | "resolved" | "closed"
@@ -5940,7 +5940,7 @@ export const Constants = {
       task_priority: ["low", "medium", "high", "urgent"],
       cycle_status: ["planned", "active", "completed"],
       custom_field_kind: [
-        "text", "long_text", "number", "currency", "percent",
+        "text", "long_text", "number", "currency", "percent", "formula",
         "select", "multi_select", "date", "datetime", "boolean",
         "url", "email",
       ],
