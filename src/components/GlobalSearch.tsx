@@ -164,6 +164,7 @@ const NAV_JUMPS = [
   { label: "Panolar",        icon: PenSquare,     to: "/whiteboards" },
   { label: "Service Desk",   icon: Headphones,    to: "/desk" },
   { label: "Portföyler",     icon: Building2,     to: "/portfolios" },
+  { label: "Toplantı notları", icon: Sparkles,    to: "/meetings" },
   { label: "Templates",      icon: FileText,      to: "/templates" },
   { label: "Import",         icon: Plus,          to: "/import" },
   { label: "Timesheet",      icon: Settings,      to: "/timesheet" },

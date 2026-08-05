@@ -3590,6 +3590,48 @@ export type Database = {
           },
         ]
       }
+      meeting_notes: {
+        Row: {
+          action_items: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          meeting_at: string
+          project_id: string | null
+          summary: string
+          title: string
+          transcript: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          action_items?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meeting_at?: string
+          project_id?: string | null
+          summary?: string
+          title?: string
+          transcript?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          action_items?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meeting_at?: string
+          project_id?: string | null
+          summary?: string
+          title?: string
+          transcript?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       portfolios: {
         Row: {
           archived_at: string | null
