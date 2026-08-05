@@ -171,6 +171,7 @@ const NAV_JUMPS = [
   { label: "Müşteri portalları", icon: UserRound, to: "/portals" },
   { label: "Bildirim ayarları", icon: Settings,  to: "/notification-settings" },
   { label: "Agent runs",     icon: Sparkles,      to: "/agent" },
+  { label: "Skor tablosu",   icon: Sparkles,      to: "/leaderboard" },
   { label: "Templates",      icon: FileText,      to: "/templates" },
   { label: "Import",         icon: Plus,          to: "/import" },
   { label: "Timesheet",      icon: Settings,      to: "/timesheet" },

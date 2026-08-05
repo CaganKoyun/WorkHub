@@ -3590,6 +3590,42 @@ export type Database = {
           },
         ]
       }
+      xp_events: {
+        Row: {
+          created_at: string
+          detail: string | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          kind: string
+          points: number
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kind: string
+          points: number
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kind?: string
+          points?: number
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       agent_runs: {
         Row: {
           created_at: string
@@ -5619,6 +5655,49 @@ export type Database = {
       enqueue_push: {
         Args: { _user_id: string; _title: string; _body?: string; _url?: string; _data?: Json }
         Returns: string
+      }
+      award_xp: {
+        Args: {
+          _workspace_id: string
+          _user_id: string
+          _kind: string
+          _points: number
+          _entity_type?: string
+          _entity_id?: string
+          _detail?: string
+        }
+        Returns: string
+      }
+      workspace_leaderboard: {
+        Args: { _workspace_id: string; _limit?: number }
+        Returns: {
+          user_id: string
+          full_name: string | null
+          avatar_url: string | null
+          total_xp: number
+          event_count: number
+          level: number
+          next_level_xp: number
+          in_level_xp: number
+        }[]
+      }
+      user_streak: {
+        Args: { _workspace_id: string; _user_id: string }
+        Returns: number
+      }
+      user_xp_feed: {
+        Args: { _workspace_id: string; _user_id: string; _limit?: number }
+        Returns: {
+          id: string
+          workspace_id: string
+          user_id: string
+          kind: string
+          points: number
+          entity_type: string | null
+          entity_id: string | null
+          detail: string | null
+          created_at: string
+        }[]
       }
       fin_burn_rate: { Args: { _days?: number }; Returns: number }
       fin_cash_balance: { Args: never; Returns: number }
