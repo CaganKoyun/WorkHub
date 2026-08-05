@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useWorkspaceIssues } from '@/lib/tasks-hooks';
 import { useProjects } from '@/lib/projects-hooks';
 import {
@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { BulkBar } from '@/components/tasks/BulkBar';
 
 type GroupBy = 'status' | 'priority' | 'project' | 'none';
 type Scope = 'active' | 'backlog' | 'all';
@@ -25,6 +26,18 @@ export default function Issues() {
   const [priority, setPriority] = useState<'all' | TaskPriority>('all');
   const [projectFilter, setProjectFilter] = useState<'all' | string>('all');
   const [groupBy, setGroupBy] = useState<GroupBy>('status');
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const lastClickedIndexRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selected.size > 0) {
+        setSelected(new Set());
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selected.size]);
 
   const projectMap = useMemo(
     () => new Map((projects ?? []).map(p => [p.id, p])),
@@ -94,6 +107,16 @@ export default function Issues() {
       items,
     }));
   }, [filtered, groupBy, projectMap]);
+
+  const flatIds = useMemo(() => groups.flatMap(g => g.items.map(t => t.id)), [groups]);
+
+  // Drop selection of anything that fell out of the filtered view.
+  useEffect(() => {
+    if (selected.size === 0) return;
+    const visible = new Set(flatIds);
+    const next = new Set([...selected].filter(id => visible.has(id)));
+    if (next.size !== selected.size) setSelected(next);
+  }, [flatIds]);
 
   return (
     <div className="mx-auto max-w-5xl space-y-4 p-6">
@@ -197,19 +220,61 @@ export default function Issues() {
               <div>
                 {g.items.map(t => {
                   const project = projectMap.get(t.project_id);
+                  const flatIndex = flatIds.indexOf(t.id);
+                  const isSel = selected.has(t.id);
+                  const onCheck = (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    const next = new Set(selected);
+                    // Shift-range from last-clicked → this
+                    if (e.shiftKey && lastClickedIndexRef.current !== null) {
+                      const [lo, hi] = [
+                        Math.min(lastClickedIndexRef.current, flatIndex),
+                        Math.max(lastClickedIndexRef.current, flatIndex),
+                      ];
+                      for (let i = lo; i <= hi; i++) next.add(flatIds[i]);
+                    } else {
+                      if (isSel) next.delete(t.id); else next.add(t.id);
+                    }
+                    lastClickedIndexRef.current = flatIndex;
+                    setSelected(next);
+                  };
                   return (
-                    <TaskRow
-                      key={t.id}
-                      task={t}
-                      projectName={project?.name}
-                      href={`/projects/${t.project_id}`}
-                    />
+                    <div key={t.id} className={cn(
+                      'group/select flex items-stretch',
+                      isSel && 'bg-primary/5',
+                    )}>
+                      <div
+                        onClick={onCheck}
+                        className={cn(
+                          'flex items-center pl-2 pr-1 cursor-pointer transition-opacity',
+                          isSel || selected.size > 0 ? 'opacity-100' : 'opacity-0 group-hover/select:opacity-100',
+                        )}
+                        title="Seç (Shift-click aralık, Esc temizle)"
+                      >
+                        <input
+                          type="checkbox" checked={isSel} readOnly
+                          className="h-3.5 w-3.5 accent-primary pointer-events-none"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <TaskRow
+                          task={t}
+                          projectName={project?.name}
+                          href={selected.size > 0 ? undefined : `/projects/${t.project_id}`}
+                        />
+                      </div>
+                    </div>
                   );
                 })}
               </div>
             </section>
           ))}
         </div>
+      )}
+
+      {selected.size > 0 && (
+        <BulkBar selectedIds={[...selected]} onClear={() => setSelected(new Set())} />
       )}
     </div>
   );
