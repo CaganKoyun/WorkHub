@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { NotifPreferences } from '@/components/NotifPreferences';
 
 function deviceIcon(ua: string | null) {
   if (!ua) return Globe;
@@ -168,6 +169,9 @@ export default function NotificationSettings() {
           </div>
         )}
       </div>
+
+      {/* Preferences */}
+      <NotifPreferences />
 
       {/* Docs */}
       <div className="rounded-md border border-border/60 bg-secondary/10 p-4 text-[12px] space-y-2">
