@@ -137,7 +137,7 @@ export function ProjectFilesTab({
                 </p>
               </button>
               {f.uploaded_by === user?.id && (
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => del.mutate({ file: f, project_id: projectId })}>
+                <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Dosyayı sil" onClick={() => del.mutate({ file: f, project_id: projectId })}>
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               )}

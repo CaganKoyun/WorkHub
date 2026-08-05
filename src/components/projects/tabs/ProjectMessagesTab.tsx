@@ -71,7 +71,7 @@ export function ProjectMessagesTab({
                         <p className="text-xs text-muted-foreground">{p?.name ?? 'Kullanıcı'} · {new Date(m.created_at).toLocaleString('tr-TR')}</p>
                       </div>
                       {m.author_id === user?.id && (
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => del.mutate({ id: m.id, project_id: projectId })}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Mesajı sil" onClick={() => del.mutate({ id: m.id, project_id: projectId })}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       )}
