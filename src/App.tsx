@@ -42,6 +42,7 @@ import Templates from "./pages/Templates";
 import Workload from "./pages/Workload";
 import Insights from "./pages/Insights";
 import Roadmap from "./pages/Roadmap";
+import Admin from "./pages/Admin";
 import Import from "./pages/Import";
 import WorkflowStates from "./pages/WorkflowStates";
 import Timesheet from "./pages/Timesheet";
@@ -119,6 +120,7 @@ const App = () => (
                 <Route path="/workload" element={<ProtectedRoute><WorkspaceGate><Workload /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/insights" element={<ProtectedRoute><WorkspaceGate><Insights /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/roadmap" element={<ProtectedRoute><WorkspaceGate><Roadmap /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute><WorkspaceGate><Admin /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/import" element={<ProtectedRoute><WorkspaceGate><Import /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/workflow-states" element={<ProtectedRoute><WorkspaceGate><WorkflowStates /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/timesheet" element={<ProtectedRoute><WorkspaceGate><Timesheet /></WorkspaceGate></ProtectedRoute>} />

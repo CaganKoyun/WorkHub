@@ -117,6 +117,7 @@ export const clusters: NavCluster[] = [
           { icon: Building2, label: "Company", path: "/company" },
           { icon: UserRound, label: "Portallar", path: "/portals" },
           { icon: Shield, label: "Audit log", path: "/audit" },
+          { icon: Shield, label: "Admin", path: "/admin" },
         ],
       },
     ],
@@ -182,6 +183,7 @@ export const PATH_MODULE: Record<string, string> = {
   "/teams": "people",
   "/leaderboard": "people",
   "/audit": "people",
+  "/admin": "people",
   "/portals": "people",
 };
 
