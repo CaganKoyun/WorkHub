@@ -21,6 +21,7 @@ import { RichTextDisplay } from '@/components/RichTextEditor';
 import { TaskTimer } from './TaskTimer';
 import { CustomFieldRenderer } from '@/components/CustomFieldRenderer';
 import { RollupPanel } from './RollupPanel';
+import { TaskAttachments } from './TaskAttachments';
 import type { FormulaContext } from '@/lib/formula-eval';
 import { toast } from 'sonner';
 import { TaskStatusIcon, TaskPriorityIcon } from './TaskStatusIcon';
@@ -401,6 +402,9 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
               </div>
             </div>
           </section>
+
+          {/* Attachments */}
+          <TaskAttachments taskId={task.id} />
 
           {/* Comments */}
           <section>
