@@ -2,7 +2,7 @@ import {
   LayoutDashboard, Bug, BarChart3, Package, Users, FolderKanban, CheckSquare,
   Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles, Shield, Bookmark, KeyRound, UserRound, Trophy,
   ScrollText, Rocket, Plug, Building2, Compass, Layers, LineChart, Boxes,
-  RefreshCw, FileText, Timer, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones,
+  RefreshCw, FileText, Timer, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones, Activity,
 } from "lucide-react";
 
 export type NavItem = {
@@ -55,6 +55,7 @@ export const clusters: NavCluster[] = [
           { icon: Briefcase, label: "Portföyler", path: "/portfolios" },
           { icon: CheckSquare, label: "My Tasks", path: "/tasks" },
           { icon: BarChart3, label: "Workload", path: "/workload" },
+          { icon: Activity, label: "Insights", path: "/insights" },
           { icon: Bug, label: "Bugs", path: "/bugs" },
           { icon: Rocket, label: "Product", path: "/product" },
         ],
@@ -163,6 +164,7 @@ export const PATH_MODULE: Record<string, string> = {
   "/issues": "work",
   "/cycles": "work",
   "/workload": "work",
+  "/insights": "work",
   "/timesheet": "work",
   "/views": "work",
   "/bugs": "work",
