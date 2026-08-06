@@ -107,14 +107,17 @@ export function guessTaskField(header: string): string | null {
   return map[h] ?? null;
 }
 
-/** Task field descriptor used by the importer UI. */
-export interface TaskFieldDef {
+/** Field descriptor used by the importer UI. */
+export interface ImportFieldDef {
   key: string;
   label: string;
   required?: boolean;
 }
 
-export const IMPORT_TASK_FIELDS: TaskFieldDef[] = [
+/** @deprecated alias kept for backwards compat */
+export type TaskFieldDef = ImportFieldDef;
+
+export const IMPORT_TASK_FIELDS: ImportFieldDef[] = [
   { key: 'title',            label: 'Title',          required: true },
   { key: 'description',      label: 'Description' },
   { key: 'status',           label: 'Status' },
@@ -126,6 +129,88 @@ export const IMPORT_TASK_FIELDS: TaskFieldDef[] = [
   { key: 'estimated_hours',  label: 'Estimated hours' },
   { key: 'external_id',      label: 'External ID (for note)' },
 ];
+
+export const IMPORT_PROJECT_FIELDS: ImportFieldDef[] = [
+  { key: 'name',        label: 'Project name',   required: true },
+  { key: 'description', label: 'Description' },
+  { key: 'status',      label: 'Status' },
+  { key: 'priority',    label: 'Priority' },
+  { key: 'start_date',  label: 'Start date' },
+  { key: 'end_date',    label: 'End date' },
+];
+
+export const IMPORT_CONTACT_FIELDS: ImportFieldDef[] = [
+  { key: 'full_name',  label: 'Full name',        required: true },
+  { key: 'first_name', label: 'First name' },
+  { key: 'last_name',  label: 'Last name' },
+  { key: 'email',      label: 'Email' },
+  { key: 'phone',      label: 'Phone' },
+  { key: 'title',      label: 'Job title' },
+  { key: 'company',    label: 'Company name' },
+  { key: 'lifecycle',  label: 'Lifecycle (lead, prospect, customer...)' },
+  { key: 'tags',       label: 'Tags (comma-separated)' },
+  { key: 'source',     label: 'Source' },
+  { key: 'linkedin',   label: 'LinkedIn URL' },
+];
+
+export function guessProjectField(header: string): string | null {
+  const h = header.toLowerCase().trim().replace(/[\s_-]+/g, '');
+  const map: Record<string, string> = {
+    name: 'name', projectname: 'name', project: 'name', title: 'name',
+    description: 'description', summary: 'description', notes: 'description',
+    status: 'status', state: 'status',
+    priority: 'priority', importance: 'priority',
+    startdate: 'start_date', start: 'start_date', from: 'start_date',
+    enddate: 'end_date', end: 'end_date', duedate: 'end_date',
+    deadline: 'end_date', due: 'end_date',
+  };
+  return map[h] ?? null;
+}
+
+export function guessContactField(header: string): string | null {
+  const h = header.toLowerCase().trim().replace(/[\s_-]+/g, '');
+  const map: Record<string, string> = {
+    fullname: 'full_name', name: 'full_name', contactname: 'full_name',
+    firstname: 'first_name', first: 'first_name', givenname: 'first_name',
+    lastname: 'last_name', last: 'last_name', surname: 'last_name', familyname: 'last_name',
+    email: 'email', emailaddress: 'email', mail: 'email',
+    phone: 'phone', phonenumber: 'phone', mobile: 'phone', tel: 'phone', telephone: 'phone',
+    title: 'title', jobtitle: 'title', position: 'title', role: 'title',
+    company: 'company', companyname: 'company', organization: 'company', organisation: 'company',
+    lifecycle: 'lifecycle', stage: 'lifecycle', status: 'lifecycle', type: 'lifecycle',
+    tags: 'tags', labels: 'tags', tag: 'tags',
+    source: 'source', leadsource: 'source', origin: 'source',
+    linkedin: 'linkedin', linkedinurl: 'linkedin', linkedinprofile: 'linkedin',
+  };
+  return map[h] ?? null;
+}
+
+const PROJECT_STATUS_ALIASES: Record<string, string> = {
+  planned: 'planned', planning: 'planned', notstarted: 'planned', 'not started': 'planned',
+  active: 'active', 'in progress': 'active', inprogress: 'active', ongoing: 'active', started: 'active',
+  'on hold': 'on_hold', onhold: 'on_hold', paused: 'on_hold', blocked: 'on_hold',
+  completed: 'completed', done: 'completed', finished: 'completed', closed: 'completed',
+  archived: 'archived', inactive: 'archived',
+};
+
+export function normalizeProjectStatus(raw: string): string | null {
+  const k = raw.toLowerCase().trim();
+  return PROJECT_STATUS_ALIASES[k] ?? null;
+}
+
+const LIFECYCLE_ALIASES: Record<string, string> = {
+  lead: 'lead', new: 'lead', inquiry: 'lead',
+  prospect: 'prospect', qualified: 'prospect', opportunity: 'prospect',
+  customer: 'customer', client: 'customer', active: 'customer', won: 'customer',
+  partner: 'partner',
+  vendor: 'vendor', supplier: 'vendor',
+  churned: 'churned', lost: 'churned', inactive: 'churned', former: 'churned',
+};
+
+export function normalizeLifecycle(raw: string): string | null {
+  const k = raw.toLowerCase().trim();
+  return LIFECYCLE_ALIASES[k] ?? null;
+}
 
 const STATUS_ALIASES: Record<string, string> = {
   backlog: 'backlog',

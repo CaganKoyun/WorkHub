@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Trash2, Copy, Loader2 } from "lucide-react";
 import { SignalRulesPanel } from "@/components/SignalRulesPanel";
 import { PublicDashboardManager } from "@/components/PublicDashboardManager";
+import { ReferralPanel } from "@/components/ReferralPanel";
 
 const ROLES = ["manager","member","viewer","guest"] as const;
 const MODULES = ["work","crm","finance","people","assets","goals","risks","decisions","approvals","analytics","admin","ai"];
@@ -138,6 +139,7 @@ export default function WorkspaceSettings() {
             <TabsTrigger value="permissions">Permissions</TabsTrigger>
             <TabsTrigger value="signals">Signals</TabsTrigger>
             <TabsTrigger value="dashboards">Public Dashboards</TabsTrigger>
+            <TabsTrigger value="referrals">Referrals</TabsTrigger>
           </TabsList>
 
           <TabsContent value="general" className="mt-4">
@@ -266,6 +268,10 @@ export default function WorkspaceSettings() {
             ) : (
               <p className="text-sm text-muted-foreground py-4">Public dashboard yonetimi icin admin yetkisi gerekli.</p>
             )}
+          </TabsContent>
+
+          <TabsContent value="referrals" className="mt-4">
+            <ReferralPanel />
           </TabsContent>
         </Tabs>
       </div>

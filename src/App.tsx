@@ -11,6 +11,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { WorkspaceGate } from "@/components/WorkspaceGate";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { OfflineIndicator, AppUpdateNotification } from "@/components/OfflineIndicator";
 import { ShortcutsProvider } from "@/components/ShortcutsProvider";
 import Onboarding from "./pages/Onboarding";
 import AcceptInvite from "./pages/AcceptInvite";
@@ -93,6 +94,8 @@ const App = () => (
         <Toaster />
         <Sonner />
         <InstallPrompt />
+        <OfflineIndicator />
+        <AppUpdateNotification />
         <BrowserRouter>
           <AuthProvider>
             <WorkspaceProvider>
