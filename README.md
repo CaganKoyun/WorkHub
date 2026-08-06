@@ -1,73 +1,72 @@
-# Welcome to your Lovable project
+# FounderOS
 
-## Project info
+Multi-tenant Company Operating System for startups and SMBs. Tracks projects, revenue, decisions, and company operations in a single workspace — with every record connected through a Company Graph.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Stack
 
-## How can I edit this code?
+- **Frontend:** React 18, Vite 5, TypeScript, Tailwind CSS, shadcn/ui
+- **Backend:** Supabase (Postgres, Auth, Storage, Edge Functions, Realtime)
+- **Access control:** Row-Level Security with workspace scoping on every table
 
-There are several ways of editing your application.
+## Modules
 
-**Use Lovable**
+| Area | What it covers |
+|------|----------------|
+| Work | Projects (Kanban/List/Timeline/Calendar), My Tasks, Bugs |
+| Revenue | CRM pipeline, Finance (cash, burn, runway, FX), Analytics |
+| Strategy | Goals (OKR), Risks, Decisions (DSoR with verdict tracking) |
+| Company | Legal entities, Departments, Employees, Assets |
+| Platform | Integrations (MCP/OAuth), AI Chat, Notifications, Settings |
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Local development
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Prerequisites: Node.js 18+ and npm.
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+git clone <repo-url> && cd WorkHub
+cp .env.example .env          # fill in your Supabase credentials
+npm install
+npm run dev                   # starts on http://localhost:8080
 ```
 
-**Edit a file directly in GitHub**
+## Scripts
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Vite dev server with HMR |
+| `npm run build` | Type-check + production build |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | ESLint |
+| `npm run preview` | Preview production build locally |
 
-**Use GitHub Codespaces**
+## Deploy
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The project includes a `vercel.json` with SPA rewrites and security headers. To deploy:
 
-## What technologies are used for this project?
+1. Connect the repo to Vercel (or any static host).
+2. Set environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_APP_URL`.
+3. Build command: `npm run build`, output directory: `dist`.
 
-This project is built with:
+## Project structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+src/
+  components/     UI components (shadcn/ui based)
+  contexts/       React context providers (Auth, Workspace)
+  hooks/          Custom React hooks
+  integrations/   Supabase client setup
+  lib/            Domain hooks, types, utilities
+  pages/          Route-level page components
+  content/        Static content (changelog, compare data)
+supabase/
+  functions/      Deno edge functions
+  migrations/     Postgres migrations (timestamped)
+docs/
+  PRD.md          Product requirements document
+```
 
-## How can I deploy this project?
+## Contributing
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+1. Create a feature branch from `main`.
+2. Make changes — `npm run build` must pass (includes type-check).
+3. Open a pull request with a clear description of what changed and why.

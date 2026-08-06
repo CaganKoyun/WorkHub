@@ -37,8 +37,17 @@ function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith('sb_publishable_') || value.startsWith('sb_secret_');
 }
 
+// Auth0 → Supabase bridge: AuthProvider registers a getter that returns the
+// current Auth0 access token. Supabase forwards it as Bearer on every request
+// so RLS policies see the Auth0 `sub` via auth.jwt().
+let auth0TokenGetter: (() => Promise<string | null>) | null = null;
+
+export function setSupabaseAuthTokenGetter(getter: (() => Promise<string | null>) | null) {
+  auth0TokenGetter = getter;
+}
+
 function createSupabaseFetch(supabaseKey: string): typeof fetch {
-  return (input, init) => {
+  return async (input, init) => {
     const headers = new Headers(
       typeof Request !== 'undefined' && input instanceof Request ? input.headers : undefined,
     );
@@ -50,6 +59,17 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
     // New Supabase API keys are opaque strings, not bearer JWTs.
     if (isNewSupabaseApiKey(supabaseKey) && headers.get('Authorization') === `Bearer ${supabaseKey}`) {
       headers.delete('Authorization');
+    }
+
+    if (auth0TokenGetter) {
+      try {
+        const token = await auth0TokenGetter();
+        if (token) {
+          headers.set('Authorization', `Bearer ${token}`);
+        }
+      } catch {
+        // Not authenticated yet — send request with apikey only.
+      }
     }
 
     headers.set('apikey', supabaseKey);

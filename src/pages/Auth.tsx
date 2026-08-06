@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, CheckCircle2, Sparkles, Target, BarChart3, Linkedin } from "lucide-react";
 import { SparkLogo } from "@/components/SparkLogo";
 import { useToast } from "@/hooks/use-toast";
-import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Auth() {
@@ -38,7 +37,7 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
-      const { error } = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
       if (error) toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
     } catch (error: any) {
       toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });

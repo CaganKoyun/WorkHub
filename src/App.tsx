@@ -82,6 +82,10 @@ import Product from "./pages/Product";
 import Company from "./pages/Company";
 import Integrations from "./pages/Integrations";
 import PublicDashboard from "./pages/PublicDashboard";
+import CompareNotion from "./pages/compare/CompareNotion";
+import CompareAsana from "./pages/compare/CompareAsana";
+import CompareLinear from "./pages/compare/CompareLinear";
+import CompareMonday from "./pages/compare/CompareMonday";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -102,14 +106,21 @@ const App = () => (
               <LangProvider>
               <ShortcutsProvider>
               <Routes>
+                {/* Public routes */}
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/invite/:token" element={<AcceptInvite />} />
-                <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/" element={<Index />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/compare" element={<Compare />} />
+                <Route path="/compare/notion" element={<CompareNotion />} />
+                <Route path="/compare/asana" element={<CompareAsana />} />
+                <Route path="/compare/linear" element={<CompareLinear />} />
+                <Route path="/compare/monday" element={<CompareMonday />} />
                 <Route path="/security" element={<Security />} />
                 <Route path="/changelog" element={<Changelog />} />
+
+                {/* Protected routes */}
+                <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/dashboard" element={<ProtectedRoute><WorkspaceGate><Dashboard /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/home" element={<ProtectedRoute><WorkspaceGate><FounderHome /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/inbox" element={<ProtectedRoute><WorkspaceGate><FounderInbox /></WorkspaceGate></ProtectedRoute>} />
@@ -178,6 +189,7 @@ const App = () => (
                 <Route path="/workspace/settings" element={<ProtectedRoute><WorkspaceGate><WorkspaceSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/integrations" element={<ProtectedRoute><WorkspaceGate><Integrations /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><WorkspaceGate><Settings /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/settings/notifications" element={<ProtectedRoute><WorkspaceGate><NotificationSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </ShortcutsProvider>
