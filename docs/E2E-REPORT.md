@@ -100,6 +100,41 @@ onları kapsıyor; auth crawl açılınca çalıştırılabilir.
    ekle; her PR'da diff-only public route'lar çalışsın, auth crawl
    nightly.
 
+## 8. Role-flow spec — 2026-08-06 çalıştırma
+
+Seed uygulandı (6 kullanıcı, 2 proje, 10 task — user "geçti" dedi).
+`e2e/role-flows.spec.ts` bu sandbox'ta **çalışamadı**: agent proxy'nin
+network policy'si `vpbijxgebwoshvulmeds.supabase.co` host'unu 403 ile
+reddediyor (hem Chromium hem Node). Yani spec skipped (login timeout),
+bug değil environment limiti.
+
+**Nerede çalıştırılabilir:**
+
+- **Yerelde (senin makinen):** `.env` zaten prod'a bakıyor. Şu komut
+  yeter:
+  ```
+  PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=... npx playwright test role-flows.spec.ts
+  ```
+- **GitHub Actions:** `.github/workflows/e2e-role-flows.yml` eklendi.
+  Manual dispatch veya `role-flows.spec.ts` / seed dosyası değiştikçe
+  otomatik. `VITE_SUPABASE_URL` + `VITE_SUPABASE_PUBLISHABLE_KEY`
+  repo secret'ları set edilmeli. CI runner'ları outbound serbest,
+  Supabase'e ulaşır.
+
+**Beklenen sonuç (5 test):**
+
+| Test                                            | Beklenen |
+| ----------------------------------------------- | -------- |
+| owner: home + issues + create task              | pass     |
+| admin1: opens platform-debt + sees own task     | pass     |
+| member1: sees only assigned tasks + comment     | pass     |
+| viewer: no "New project" button                 | pass     |
+| RLS: unauth REST hit returns empty              | pass     |
+
+Bunlardan biri kırmızı olursa: (a) seed'de o role için row eksik, ya
+da (b) RLS policy o rolü beklenmedik şekilde engelliyor. Runbook için
+§7'ye bak.
+
 ## 7. Runbook
 
 Lokal çalıştırma:
