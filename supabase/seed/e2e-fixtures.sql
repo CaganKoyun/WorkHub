@@ -113,6 +113,13 @@ BEGIN
   SELECT id::uuid, _ws FROM jsonb_to_recordset(_users_json) AS x(id uuid, email text, name text)
   ON CONFLICT (user_id) DO UPDATE SET workspace_id = _ws, updated_at = now();
 
+  -- Impersonate the owner for the rest of the seed so triggers that read
+  -- auth.uid() / current_workspace_id() have something to work with. Set
+  -- both `sub` (legacy) and full `claims` JSON so any auth.uid() impl works.
+  PERFORM set_config('request.jwt.claim.sub', _u_owner::text, true);
+  PERFORM set_config('request.jwt.claims',
+    json_build_object('sub', _u_owner::text, 'email', 'owner@e2e.test')::text, true);
+
   -- ----- projects -----
   INSERT INTO public.projects (id, workspace_id, name, description, status, priority, owner_id, created_by, start_date, end_date, color)
   VALUES
