@@ -1,13 +1,30 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { User, Session } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { supabase, setSupabaseAuthTokenGetter } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
 
+// Minimal shape shared with the rest of the app. Kept compatible with the
+// previous Supabase-based context so existing consumers keep working.
+export interface AuthUser {
+  id: string;
+  email?: string;
+  user_metadata?: {
+    full_name?: string;
+    avatar_url?: string;
+    [key: string]: unknown;
+  };
+}
+
+export interface AuthSession {
+  access_token: string;
+  user: AuthUser;
+}
+
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: AuthUser | null;
+  session: AuthSession | null;
   profile: Profile | null;
   loading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
@@ -18,75 +35,133 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+function toAuthUser(auth0User: ReturnType<typeof useAuth0>["user"]): AuthUser | null {
+  if (!auth0User?.sub) return null;
+  return {
+    id: auth0User.sub,
+    email: auth0User.email,
+    user_metadata: {
+      full_name: auth0User.name,
+      avatar_url: auth0User.picture,
+    },
+  };
+}
 
-  const fetchProfile = async (userId: string) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const {
+    user: auth0User,
+    isAuthenticated,
+    isLoading,
+    getAccessTokenSilently,
+    getIdTokenClaims,
+    loginWithRedirect,
+    logout,
+  } = useAuth0();
+
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
+
+  const user = toAuthUser(auth0User);
+
+  // Prefer the Auth0 access token (JWT when an API audience is configured);
+  // fall back to the id_token, which is always a JWT and works without an
+  // Auth0 API — Supabase third-party auth verifies either as long as the
+  // issuer matches the registered Auth0 domain.
+  const getSupabaseBearer = useCallback(async (): Promise<string | null> => {
+    const hasAudience = Boolean(import.meta.env.VITE_AUTH0_AUDIENCE);
+    if (hasAudience) {
+      try {
+        return await getAccessTokenSilently();
+      } catch {
+        // fall through to id_token
+      }
+    }
+    try {
+      const claims = await getIdTokenClaims();
+      return claims?.__raw ?? null;
+    } catch {
+      return null;
+    }
+  }, [getAccessTokenSilently, getIdTokenClaims]);
+
+  // Wire Supabase requests to Auth0 tokens.
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setSupabaseAuthTokenGetter(null);
+      setSession(null);
+      return;
+    }
+
+    setSupabaseAuthTokenGetter(getSupabaseBearer);
+
+    (async () => {
+      const token = await getSupabaseBearer();
+      const mapped = toAuthUser(auth0User);
+      if (mapped && token) setSession({ access_token: token, user: mapped });
+      else setSession(null);
+    })();
+
+    return () => setSupabaseAuthTokenGetter(null);
+  }, [isAuthenticated, getSupabaseBearer, auth0User]);
+
+  const fetchProfile = useCallback(async (userId: string) => {
     const { data } = await supabase
       .from("profiles")
       .select("*")
       .eq("user_id", userId)
-      .single();
+      .maybeSingle();
     setProfile(data);
-  };
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          setTimeout(() => fetchProfile(session.user.id), 0);
-        } else {
-          setProfile(null);
-        }
-        setLoading(false);
-      }
-    );
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-        emailRedirectTo: window.location.origin,
+  useEffect(() => {
+    if (isAuthenticated && user?.id) {
+      fetchProfile(user.id);
+    } else {
+      setProfile(null);
+    }
+  }, [isAuthenticated, user?.id, fetchProfile]);
+
+  const signUp = async (_email: string, _password: string, fullName: string) => {
+    await loginWithRedirect({
+      authorizationParams: {
+        screen_hint: "signup",
+        ...(fullName ? { "ext-full_name": fullName } : {}),
       },
     });
-    if (error) throw error;
   };
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+  const signIn = async (email: string, _password: string) => {
+    await loginWithRedirect({
+      authorizationParams: {
+        ...(email ? { login_hint: email } : {}),
+      },
+    });
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    setSupabaseAuthTokenGetter(null);
+    setSession(null);
+    setProfile(null);
+    await logout({ logoutParams: { returnTo: window.location.origin } });
   };
 
   const refreshProfile = async () => {
-    if (user) await fetchProfile(user.id);
+    if (user?.id) await fetchProfile(user.id);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signUp, signIn, signOut, refreshProfile }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        profile,
+        loading: isLoading,
+        signUp,
+        signIn,
+        signOut,
+        refreshProfile,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
