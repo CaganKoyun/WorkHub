@@ -82,6 +82,14 @@ export function NotificationBell() {
             </button>
           ))}
         </div>
+        {items.length > 0 && (
+          <button
+            className="block w-full border-t border-border px-3 py-2 text-center text-[11.5px] font-medium text-muted-foreground hover:text-foreground"
+            onClick={() => navigate('/notifications')}
+          >
+            Tümünü gör
+          </button>
+        )}
       </PopoverContent>
     </Popover>
   );

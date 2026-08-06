@@ -64,6 +64,7 @@ import ApiTokens from "./pages/ApiTokens";
 import ClientPortals from "./pages/ClientPortals";
 import PublicPortal from "./pages/PublicPortal";
 import NotificationSettings from "./pages/NotificationSettings";
+import Notifications from "./pages/Notifications";
 import AgentRuns from "./pages/AgentRuns";
 import Leaderboard from "./pages/Leaderboard";
 import Crm from "./pages/Crm";
@@ -148,6 +149,7 @@ const App = () => (
                 <Route path="/api-tokens" element={<ProtectedRoute><WorkspaceGate><ApiTokens /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/portals" element={<ProtectedRoute><WorkspaceGate><ClientPortals /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/portal/:token" element={<PublicPortal />} />
+                <Route path="/notifications" element={<ProtectedRoute><WorkspaceGate><Notifications /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/notification-settings" element={<ProtectedRoute><WorkspaceGate><NotificationSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/agent" element={<ProtectedRoute><WorkspaceGate><AgentRuns /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/leaderboard" element={<ProtectedRoute><WorkspaceGate><Leaderboard /></WorkspaceGate></ProtectedRoute>} />
