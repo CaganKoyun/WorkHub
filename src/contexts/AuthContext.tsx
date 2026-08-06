@@ -1,7 +1,17 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { v5 as uuidv5 } from "uuid";
 import { supabase, setSupabaseAuthTokenGetter } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+
+// Deterministic namespace so a given Auth0 sub always maps to the same UUID
+// on every device. Do not change this value — changing it re-keys every
+// user_id column and breaks existing rows.
+const AUTH0_UUID_NAMESPACE = "b3b8f3a2-1c1e-4a5a-9d8a-8b5f6e2c9a10";
+
+function auth0SubToUuid(sub: string): string {
+  return uuidv5(sub, AUTH0_UUID_NAMESPACE);
+}
 
 type Profile = Tables<"profiles">;
 
@@ -38,7 +48,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 function toAuthUser(auth0User: ReturnType<typeof useAuth0>["user"]): AuthUser | null {
   if (!auth0User?.sub) return null;
   return {
-    id: auth0User.sub,
+    // Map the Auth0 sub (e.g. "google-oauth2|123...") to a stable UUID so it
+    // fits the existing uuid user_id / owner_id / created_by columns.
+    id: auth0SubToUuid(auth0User.sub),
     email: auth0User.email,
     user_metadata: {
       full_name: auth0User.name,
