@@ -44,6 +44,15 @@ import Company from "./pages/Company";
 import Integrations from "./pages/Integrations";
 import NotFound from "./pages/NotFound";
 
+import Pricing from "./pages/Pricing";
+import Security from "./pages/Security";
+import Changelog from "./pages/Changelog";
+import CompareNotion from "./pages/compare/CompareNotion";
+import CompareAsana from "./pages/compare/CompareAsana";
+import CompareLinear from "./pages/compare/CompareLinear";
+import CompareMonday from "./pages/compare/CompareMonday";
+import NotificationSettings from "./pages/settings/Notifications";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -57,10 +66,20 @@ const App = () => (
           <AuthProvider>
             <WorkspaceProvider>
               <Routes>
+                {/* Public routes */}
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/invite/:token" element={<AcceptInvite />} />
-                <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/" element={<Index />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/security" element={<Security />} />
+                <Route path="/changelog" element={<Changelog />} />
+                <Route path="/compare/notion" element={<CompareNotion />} />
+                <Route path="/compare/asana" element={<CompareAsana />} />
+                <Route path="/compare/linear" element={<CompareLinear />} />
+                <Route path="/compare/monday" element={<CompareMonday />} />
+
+                {/* Protected routes */}
+                <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/dashboard" element={<ProtectedRoute><WorkspaceGate><Dashboard /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/home" element={<ProtectedRoute><WorkspaceGate><FounderHome /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/inbox" element={<ProtectedRoute><WorkspaceGate><FounderInbox /></WorkspaceGate></ProtectedRoute>} />
@@ -91,6 +110,7 @@ const App = () => (
                 <Route path="/workspace/settings" element={<ProtectedRoute><WorkspaceGate><WorkspaceSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/integrations" element={<ProtectedRoute><WorkspaceGate><Integrations /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><WorkspaceGate><Settings /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/settings/notifications" element={<ProtectedRoute><WorkspaceGate><NotificationSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </WorkspaceProvider>

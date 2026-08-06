@@ -12,3 +12,12 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /home
+Disallow: /inbox
+Disallow: /settings
+Disallow: /workspace
+Disallow: /onboarding
+Disallow: /ai-chat
+
+Sitemap: https://founderos.app/sitemap.xml

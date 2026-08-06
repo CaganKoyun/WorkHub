@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   ArrowRight, CheckCircle2, LayoutGrid, Users, Target, Sparkles,
-  BarChart3, Workflow, Plus, Search, Circle, CheckSquare,
+  BarChart3, Workflow, Plus, Search, Circle, CheckSquare, Play,
 } from "lucide-react";
 import { StackedLogo } from "@/components/StackedLogo";
 
@@ -43,6 +43,18 @@ const boardColumns = [
   },
 ];
 
+const howItWorks = [
+  { step: "1", title: "Set up your workspace", desc: "Choose a template or start blank. Invite your team when ready — FounderOS works solo or with 50 people." },
+  { step: "2", title: "Connect everything", desc: "Projects, CRM, Finance, Goals, Decisions — all linked through the Company Graph. No more tab switching." },
+  { step: "3", title: "Decide with context", desc: "Every approval, every decision captures the why and the what-happened-after. Your company builds its own playbook." },
+];
+
+const testimonials = [
+  { name: "Selin Aydin", role: "CEO, Kestrel Labs", quote: "We replaced Notion, Asana and a spreadsheet with one tool. The decision log alone paid for itself." },
+  { name: "James Chen", role: "COO, Volta", quote: "Founder Inbox changed how we make decisions. Everything has context, nothing falls through the cracks." },
+  { name: "Maria Santos", role: "Head of Ops, Bright & Co", quote: "The finance module gives me runway and burn in real-time. No more waiting for the monthly close." },
+];
+
 const Landing = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -56,11 +68,22 @@ const Landing = () => {
             <span className="text-[15px] font-semibold tracking-tight">FounderOS</span>
           </Link>
 
-          {/* Var olmayan sayfalara sahte menü yok: tek gerçek ankraj */}
           <div className="hidden items-center gap-1 md:flex">
             <a href="#features" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
               Product
             </a>
+            <Link to="/pricing" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Pricing
+            </Link>
+            <Link to="/compare/notion" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Compare
+            </Link>
+            <Link to="/security" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Security
+            </Link>
+            <Link to="/changelog" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Changelog
+            </Link>
           </div>
 
           <div className="flex items-center gap-2">
@@ -71,7 +94,7 @@ const Landing = () => {
               to="/auth"
               className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-[13.5px] font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
             >
-              Get started
+              Start free — no card
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -83,7 +106,7 @@ const Landing = () => {
         <div className="mx-auto max-w-[1000px] text-center">
           <div className="inline-flex h-7 items-center gap-2 rounded-full border border-border bg-background px-3 text-[11.5px] font-medium text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            The Operating System for founders
+            Join 100+ founders on the waitlist
           </div>
 
           <h1 className="mx-auto mt-6 max-w-[860px] text-[clamp(2.5rem,5.4vw,4.25rem)] font-semibold leading-[1.03] tracking-[-0.035em]">
@@ -100,14 +123,15 @@ const Landing = () => {
               to="/auth"
               className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-[14.5px] font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
             >
-              Get started
+              Start free — no card
               <ArrowRight className="h-4 w-4" />
             </Link>
             <a
-              href="#features"
-              className="inline-flex h-11 items-center rounded-md border border-input bg-background px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary"
+              href="#demo-video"
+              className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-background px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary"
             >
-              See how it works
+              <Play className="h-4 w-4" />
+              Watch demo
             </a>
           </div>
 
@@ -121,8 +145,8 @@ const Landing = () => {
           </div>
         </div>
 
-        {/* Product mock */}
-        <div className="mx-auto mt-14 max-w-[1120px]">
+        {/* Demo video placeholder */}
+        <div id="demo-video" className="mx-auto mt-14 max-w-[1120px]">
           <div className="overflow-hidden rounded-t-xl border border-b-0 border-border bg-background shadow-[0_-2px_40px_-12px_rgba(0,0,0,0.18)]">
             <div className="flex">
               {/* rail */}
@@ -200,15 +224,26 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Logo strip */}
-      <section className="border-b border-border px-6 py-10">
-        <div className="mx-auto max-w-[1000px]">
-          <p className="text-center text-[11.5px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            Built for teams that run lean
-          </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 opacity-60">
-            {["Northwind", "Kestrel Labs", "Acme Health", "Volta", "Bright & Co", "Meridian"].map(n => (
-              <span key={n} className="text-[15px] font-semibold tracking-tight">{n}</span>
+      {/* How it works */}
+      <section className="border-b border-border px-6 py-20">
+        <div className="mx-auto max-w-[1120px]">
+          <div className="text-center">
+            <span className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-primary">
+              How it works
+            </span>
+            <h2 className="mt-3 text-[clamp(1.8rem,3.4vw,2.6rem)] font-semibold leading-tight tracking-[-0.03em]">
+              From signup to your first decision in 3 steps
+            </h2>
+          </div>
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            {howItWorks.map(s => (
+              <div key={s.step} className="text-center">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground">
+                  {s.step}
+                </span>
+                <h3 className="mt-4 text-[15px] font-semibold">{s.title}</h3>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">{s.desc}</p>
+              </div>
             ))}
           </div>
         </div>
@@ -244,7 +279,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Split section */}
+      {/* DSoR split section */}
       <section className="border-y border-border bg-canvas px-6 py-20">
         <div className="mx-auto grid max-w-[1120px] items-center gap-12 lg:grid-cols-2">
           <div>
@@ -290,8 +325,8 @@ const Landing = () => {
             </p>
             <div className="mt-4 grid grid-cols-3 gap-3 border-t border-border pt-4">
               {[
-                { k: "Expected ARR", v: "+€180k" },
-                { k: "Realised", v: "+€146k" },
+                { k: "Expected ARR", v: "+$180k" },
+                { k: "Realised", v: "+$146k" },
                 { k: "Churn delta", v: "+0.8pt" },
               ].map(m => (
                 <div key={m.k}>
@@ -304,8 +339,33 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Testimonials */}
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-[1120px]">
+          <div className="text-center">
+            <span className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-primary">
+              What founders say
+            </span>
+            <h2 className="mt-3 text-[clamp(1.5rem,2.6vw,2rem)] font-semibold tracking-[-0.03em]">
+              Built by founders, for founders
+            </h2>
+          </div>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {testimonials.map(t => (
+              <div key={t.name} className="rounded-xl border border-border bg-background p-6">
+                <p className="text-[14px] leading-relaxed text-muted-foreground">"{t.quote}"</p>
+                <div className="mt-4 border-t border-border pt-4">
+                  <p className="text-[13px] font-semibold">{t.name}</p>
+                  <p className="text-[12px] text-muted-foreground">{t.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Modules */}
-      <section className="px-6 py-16">
+      <section className="border-t border-border px-6 py-16">
         <div className="mx-auto max-w-[900px] text-center">
           <h2 className="text-[clamp(1.5rem,2.6vw,2rem)] font-semibold tracking-[-0.03em]">
             All modules included
@@ -333,7 +393,7 @@ const Landing = () => {
             to="/auth"
             className="mt-7 inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-[14.5px] font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Get started <ArrowRight className="h-4 w-4" />
+            Start free — no card <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </section>
@@ -349,8 +409,11 @@ const Landing = () => {
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
             <a href="#features" className="transition-colors hover:text-foreground">Product</a>
+            <Link to="/pricing" className="transition-colors hover:text-foreground">Pricing</Link>
+            <Link to="/security" className="transition-colors hover:text-foreground">Security</Link>
+            <Link to="/changelog" className="transition-colors hover:text-foreground">Changelog</Link>
           </div>
-          <span className="text-[12.5px] text-muted-foreground">© {new Date().getFullYear()} FounderOS</span>
+          <span className="text-[12.5px] text-muted-foreground">&copy; {new Date().getFullYear()} FounderOS</span>
         </div>
       </footer>
     </div>
