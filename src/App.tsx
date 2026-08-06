@@ -12,6 +12,7 @@ import { WorkspaceGate } from "@/components/WorkspaceGate";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { ShortcutsProvider } from "@/components/ShortcutsProvider";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Onboarding from "./pages/Onboarding";
 import AcceptInvite from "./pages/AcceptInvite";
 import WorkspaceSettings from "./pages/WorkspaceSettings";
@@ -87,6 +88,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <InstallPrompt />
+        <SpeedInsights />
         <BrowserRouter>
           <AuthProvider>
             <WorkspaceProvider>
