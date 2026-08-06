@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { useAuth0, type Auth0ContextInterface } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { supabase, setSupabaseAuthTokenGetter } from "@/integrations/supabase/client";
 import { setAiStreamTokenGetter } from "@/lib/ai-stream";
 import type { Tables } from "@/integrations/supabase/types";
@@ -21,6 +21,8 @@ export interface AuthSession {
   user: AuthUser;
 }
 
+type SocialProvider = "google" | "linkedin" | "microsoft";
+
 interface AuthContextType {
   user: AuthUser | null;
   session: AuthSession | null;
@@ -29,6 +31,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  socialLogin: (provider: SocialProvider) => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -37,27 +40,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const AUTH0_CONFIGURED = Boolean(
   import.meta.env.VITE_AUTH0_DOMAIN && import.meta.env.VITE_AUTH0_CLIENT_ID
 );
-
-function useAuth0Safe(): Auth0ContextInterface {
-  try {
-    if (AUTH0_CONFIGURED) return useAuth0();
-  } catch {
-    // Auth0Provider not in tree
-  }
-  return {
-    user: undefined,
-    isAuthenticated: false,
-    isLoading: false,
-    getAccessTokenSilently: async () => "",
-    getIdTokenClaims: async () => undefined,
-    loginWithRedirect: async () => {},
-    logout: async () => {},
-    getAccessTokenWithPopup: async () => "",
-    loginWithPopup: async () => {},
-    handleRedirectCallback: async () => ({ appState: {} }),
-    error: undefined,
-  } as unknown as Auth0ContextInterface;
-}
 
 function toAuthUser(auth0User: ReturnType<typeof useAuth0>["user"]): AuthUser | null {
   if (!auth0User?.sub) return null;
@@ -100,7 +82,7 @@ function Auth0AuthProvider({ children }: { children: React.ReactNode }) {
     getIdTokenClaims,
     loginWithRedirect,
     logout,
-  } = useAuth0Safe();
+  } = useAuth0();
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [session, setSession] = useState<AuthSession | null>(null);
@@ -182,6 +164,15 @@ function Auth0AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const socialLogin = async (provider: SocialProvider) => {
+    const connectionMap: Record<SocialProvider, string> = {
+      google: "google-oauth2",
+      linkedin: "linkedin",
+      microsoft: "windowslive",
+    };
+    await loginWithRedirect({ authorizationParams: { connection: connectionMap[provider] } });
+  };
+
   const handleSignOut = async () => {
     setSupabaseAuthTokenGetter(null);
     setAiStreamTokenGetter(null);
@@ -196,7 +187,7 @@ function Auth0AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, profile, loading: isLoading, signUp, signIn, signOut: handleSignOut, refreshProfile }}
+      value={{ user, session, profile, loading: isLoading, signUp, signIn, signOut: handleSignOut, socialLogin, refreshProfile }}
     >
       {children}
     </AuthContext.Provider>
@@ -269,13 +260,27 @@ function SupabaseAuthProvider({ children }: { children: React.ReactNode }) {
     setProfile(null);
   };
 
+  const socialLogin = async (provider: SocialProvider) => {
+    const providerMap: Record<SocialProvider, { provider: "google" | "linkedin_oidc" | "azure"; scopes?: string }> = {
+      google: { provider: "google" },
+      linkedin: { provider: "linkedin_oidc" },
+      microsoft: { provider: "azure", scopes: "email openid profile" },
+    };
+    const cfg = providerMap[provider];
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: cfg.provider,
+      options: { redirectTo: window.location.origin, ...(cfg.scopes ? { scopes: cfg.scopes } : {}) },
+    });
+    if (error) throw error;
+  };
+
   const refreshProfile = async () => {
     if (user?.id) await fetchProfile(user.id);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, session, profile, loading, signUp, signIn, signOut, refreshProfile }}
+      value={{ user, session, profile, loading, signUp, signIn, signOut, socialLogin, refreshProfile }}
     >
       {children}
     </AuthContext.Provider>
