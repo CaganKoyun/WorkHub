@@ -139,25 +139,21 @@ BEGIN
     (_proj2, _u_member2, 'member', _ws)
   ON CONFLICT DO NOTHING;
 
-  -- Re-enable USER triggers for tasks: we need assign_task_tracking_id
-  -- to fill WH-##### and set_workspace_id is now safe (workspace_id
-  -- is set explicitly in every row). Rest of the seed also needs the
-  -- normal trigger flow (chat/decisions have their own).
-  SET LOCAL session_replication_role = 'origin';
-
+  -- Populate tracking_id explicitly via the same sequence the app uses,
+  -- so this works regardless of trigger state (replica/origin).
   -- ----- tasks (10) -----
-  INSERT INTO public.tasks (workspace_id, project_id, title, description, status, priority, assignee_id, reporter_id, position, tags)
+  INSERT INTO public.tasks (workspace_id, project_id, tracking_id, title, description, status, priority, assignee_id, reporter_id, position, tags)
   VALUES
-    (_ws, _proj1, 'Ship pricing page rewrite',           'Update copy + add lime CTA block.',          'in_progress', 'high',    _u_member1, _u_owner,  1, ARRAY['landing','copy']),
-    (_ws, _proj1, 'Wire Stripe checkout',                 'Test mode first, live behind flag.',         'todo',        'high',    _u_admin1,  _u_owner,  2, ARRAY['billing']),
-    (_ws, _proj1, 'A/B test hero headline',               'Two variants, GrowthBook flag.',             'backlog',     'medium',  _u_member1, _u_owner,  3, ARRAY['experiment']),
-    (_ws, _proj1, 'SEO audit landing',                    'Lighthouse + meta tags.',                    'review',      'medium',  _u_admin2,  _u_owner,  4, ARRAY['seo','landing']),
-    (_ws, _proj1, 'Draft press release',                  'Coordinate with PR agency.',                 'todo',        'low',     NULL,       _u_owner,  5, ARRAY['pr']),
-    (_ws, _proj2, 'Pin search_path on definer funcs',     'Advisor warnings, 10 funcs.',                'in_progress', 'high',    _u_admin1,  _u_admin1, 1, ARRAY['security','db']),
-    (_ws, _proj2, 'Add task_attachments preview',         'Image inline + PDF viewer.',                 'todo',        'medium',  _u_member2, _u_admin1, 2, ARRAY['storage']),
-    (_ws, _proj2, 'Migrate email_queue to jsonb payload', 'Structured body for template swaps.',        'backlog',     'low',     _u_admin2,  _u_admin1, 3, ARRAY['email']),
-    (_ws, _proj2, 'Cover RLS with test matrix',           'Owner vs member vs viewer for every table.', 'in_progress', 'urgent',  _u_admin1,  _u_admin1, 4, ARRAY['security','test']),
-    (_ws, _proj2, 'Purge orphan attachments',             'Cron edge fn.',                              'done',        'low',     _u_member2, _u_admin1, 5, ARRAY['cleanup'])
+    (_ws, _proj1, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'Ship pricing page rewrite',           'Update copy + add lime CTA block.',          'in_progress', 'high',    _u_member1, _u_owner,  1, ARRAY['landing','copy']),
+    (_ws, _proj1, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'Wire Stripe checkout',                 'Test mode first, live behind flag.',         'todo',        'high',    _u_admin1,  _u_owner,  2, ARRAY['billing']),
+    (_ws, _proj1, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'A/B test hero headline',               'Two variants, GrowthBook flag.',             'backlog',     'medium',  _u_member1, _u_owner,  3, ARRAY['experiment']),
+    (_ws, _proj1, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'SEO audit landing',                    'Lighthouse + meta tags.',                    'review',      'medium',  _u_admin2,  _u_owner,  4, ARRAY['seo','landing']),
+    (_ws, _proj1, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'Draft press release',                  'Coordinate with PR agency.',                 'todo',        'low',     NULL,       _u_owner,  5, ARRAY['pr']),
+    (_ws, _proj2, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'Pin search_path on definer funcs',     'Advisor warnings, 10 funcs.',                'in_progress', 'high',    _u_admin1,  _u_admin1, 1, ARRAY['security','db']),
+    (_ws, _proj2, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'Add task_attachments preview',         'Image inline + PDF viewer.',                 'todo',        'medium',  _u_member2, _u_admin1, 2, ARRAY['storage']),
+    (_ws, _proj2, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'Migrate email_queue to jsonb payload', 'Structured body for template swaps.',        'backlog',     'low',     _u_admin2,  _u_admin1, 3, ARRAY['email']),
+    (_ws, _proj2, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'Cover RLS with test matrix',           'Owner vs member vs viewer for every table.', 'in_progress', 'urgent',  _u_admin1,  _u_admin1, 4, ARRAY['security','test']),
+    (_ws, _proj2, 'WH-' || LPAD(nextval('public.task_tracking_seq')::text, 5, '0'), 'Purge orphan attachments',             'Cron edge fn.',                              'done',        'low',     _u_member2, _u_admin1, 5, ARRAY['cleanup'])
   ON CONFLICT DO NOTHING;
 
   -- ----- one chat channel with two messages -----
