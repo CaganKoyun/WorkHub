@@ -4,7 +4,7 @@ import {
   Plus, Search, LogOut, ChevronDown, ChevronRight, Command,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { StackedLogo } from "./StackedLogo";
+import { SparkLogo } from "./SparkLogo";
 import { clusters, visibleClusters, navItems, type NavCluster, type NavItem } from "./nav-config";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
@@ -197,13 +197,8 @@ export function SidebarContent({
   return (
     <>
       {isMobile && (
-        <div className="flex h-11 items-center gap-2 border-b border-sidebar-border px-3">
-          <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground">
-            <StackedLogo size={13} color="currentColor" />
-          </span>
-          <span className="text-[14px] font-semibold tracking-tight text-sidebar-accent-foreground">
-            Spark WorkHub
-          </span>
+        <div className="flex h-11 items-center border-b border-sidebar-border px-3 text-sidebar-accent-foreground">
+          <SparkLogo size={15} />
         </div>
       )}
 

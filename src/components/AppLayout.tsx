@@ -4,7 +4,7 @@ import { AppSidebar, SidebarContent } from "./AppSidebar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Plus } from "lucide-react";
-import { StackedLogo } from "./StackedLogo";
+import { SparkLogo } from "./SparkLogo";
 import { TopBar } from "./TopBar";
 
 /**
@@ -43,11 +43,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </div>
             </SheetContent>
           </Sheet>
-          <div className="flex items-center gap-1.5">
-            <span className="grid h-5 w-5 place-items-center rounded bg-primary text-primary-foreground">
-              <StackedLogo size={11} color="currentColor" />
-            </span>
-            <span className="text-[14px] font-semibold tracking-tight text-foreground">Spark WorkHub</span>
+          <div className="flex items-center text-foreground">
+            <SparkLogo size={14} />
           </div>
           <Button size="icon" variant="ghost" className="h-8 w-8" asChild>
             <Link to="/tasks?new=1"><Plus className="h-4 w-4" /></Link>

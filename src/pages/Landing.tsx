@@ -3,7 +3,7 @@ import {
   ArrowRight, CheckCircle2, LayoutGrid, Users, Target, Sparkles,
   BarChart3, Workflow, Plus, Search, Circle, CheckSquare,
 } from "lucide-react";
-import { StackedLogo } from "@/components/StackedLogo";
+import { SparkLogo } from "@/components/SparkLogo";
 
 const features = [
   { icon: LayoutGrid, title: "Work management", desc: "Projects, tasks and bugs across List, Board, Timeline and Calendar — connected through the Company Graph." },
@@ -49,11 +49,8 @@ const Landing = () => {
       {/* Nav */}
       <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-[1180px] items-center justify-between px-6">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground">
-              <StackedLogo size={13} color="currentColor" />
-            </span>
-            <span className="text-[15px] font-semibold tracking-tight">Spark WorkHub</span>
+          <Link to="/" className="flex items-center">
+            <SparkLogo size={17} />
           </Link>
 
           {/* Var olmayan sayfalara sahte menü yok: tek gerçek ankraj */}
@@ -345,11 +342,8 @@ const Landing = () => {
       {/* Footer */}
       <footer className="border-t border-border px-6 py-10">
         <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground">
-              <StackedLogo size={13} color="currentColor" />
-            </span>
-            <span className="text-[14px] font-semibold tracking-tight">Spark WorkHub</span>
+          <div className="flex items-center">
+            <SparkLogo size={16} />
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
             <a href="#features" className="transition-colors hover:text-foreground">Product</a>

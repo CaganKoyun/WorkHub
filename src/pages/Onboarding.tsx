@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { Building2, Users, Sparkles, LayoutGrid, ArrowRight, Check, Loader2, X, Plus, Upload, FileText } from "lucide-react";
-import { StackedLogo } from "@/components/StackedLogo";
+import { SparkLogo } from "@/components/SparkLogo";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { parseCsv } from "@/lib/csv";
@@ -232,8 +232,8 @@ export default function Onboarding() {
         {step === 0 ? (
           // Welcome screen — Linear splash style
           <div className="text-center space-y-6">
-            <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
-              <StackedLogo size={30} color="currentColor" />
+            <div className="mx-auto text-foreground">
+              <SparkLogo size={28} />
             </div>
             <div className="space-y-2">
               <h1 className="text-3xl font-semibold tracking-tight">Welcome to Spark WorkHub</h1>

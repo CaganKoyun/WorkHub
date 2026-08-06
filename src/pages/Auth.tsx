@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, CheckCircle2, Sparkles, Target, BarChart3, Linkedin } from "lucide-react";
-import { StackedLogo } from "@/components/StackedLogo";
+import { SparkLogo } from "@/components/SparkLogo";
 import { useToast } from "@/hooks/use-toast";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
@@ -113,11 +113,8 @@ export default function Auth() {
           className="pointer-events-none absolute inset-0 opacity-[0.18]"
           style={{ backgroundImage: "radial-gradient(circle at 15% 15%, hsl(var(--primary)) 0%, transparent 55%)" }}
         />
-        <Link to="/" className="relative flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground">
-            <StackedLogo size={15} color="currentColor" />
-          </span>
-          <span className="text-[15px] font-semibold tracking-tight text-sidebar-accent-foreground">Spark WorkHub</span>
+        <Link to="/" className="relative flex items-center text-sidebar-accent-foreground">
+          <SparkLogo size={18} />
         </Link>
 
         <div className="relative max-w-md space-y-8">
@@ -159,11 +156,8 @@ export default function Auth() {
       {/* Right — form */}
       <div className="flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-[400px] space-y-6">
-          <Link to="/" className="flex lg:hidden items-center gap-2">
-            <span className="h-6 w-6 rounded-md bg-primary text-primary-foreground grid place-items-center">
-              <StackedLogo size={13} color="currentColor" />
-            </span>
-            <span className="text-[14px] font-semibold tracking-tight text-foreground">Spark WorkHub</span>
+          <Link to="/" className="flex lg:hidden items-center text-foreground">
+            <SparkLogo size={16} />
           </Link>
 
           <div>
