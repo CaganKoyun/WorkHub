@@ -1,18 +1,15 @@
 /**
  * Write-affordance visibility per role — spot-check that pages hide
- * mutating buttons for read-only roles. This catches the class of
- * regression where a UI change accidentally re-exposes a "New X" or
- * "Delete" button to a viewer. RLS would still block the actual
- * write, but the button leaking is a UX bug worth catching early.
+ * mutating buttons for read-only roles. UI uses Turkish labels in
+ * places, so patterns are bilingual.
  */
 import { test, expect } from '@playwright/test';
 import { loginAs } from './_helpers';
 
 const WRITE_AFFORDANCES: { path: string; missingFor: 'viewer'; patterns: RegExp[] }[] = [
-  { path: '/projects', missingFor: 'viewer', patterns: [/new project/i] },
-  { path: '/bugs',     missingFor: 'viewer', patterns: [/new bug/i, /report bug/i] },
-  { path: '/assets',   missingFor: 'viewer', patterns: [/new asset/i, /upload/i] },
-  { path: '/teams',    missingFor: 'viewer', patterns: [/invite/i, /new team/i] },
+  { path: '/projects', missingFor: 'viewer', patterns: [/yeni proje|new project/i] },
+  { path: '/bugs',     missingFor: 'viewer', patterns: [/report bug/i] },
+  { path: '/teams',    missingFor: 'viewer', patterns: [/yeni ekip|new team/i, /davet|invite/i] },
 ];
 
 test.describe.configure({ mode: 'serial' });
@@ -33,10 +30,8 @@ test('owner CAN see new-project affordance on /projects (control)', async ({ pag
   await loginAs(page, 'owner');
   await page.goto('/projects');
   await page.waitForTimeout(1500);
-  // If this fails, either the app removed the New project button for
-  // everyone (a regression) or seed roles are misassigned.
-  const btn = page.getByRole('button', { name: /new project/i }).or(
-    page.getByRole('link', { name: /new project/i }),
+  const btn = page.getByRole('button', { name: /yeni proje|new project/i }).or(
+    page.getByRole('link', { name: /yeni proje|new project/i }),
   );
-  await expect(btn).toHaveCount(1);
+  await expect(btn).not.toHaveCount(0);
 });

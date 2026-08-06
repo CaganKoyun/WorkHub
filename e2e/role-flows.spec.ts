@@ -41,8 +41,8 @@ test('viewer: nav renders but no "New project" CTA', async ({ page }) => {
   await loginAs(page, 'viewer');
   await page.goto('/projects');
   await page.waitForTimeout(1500);
-  const btn = page.getByRole('link', { name: /new project/i }).or(
-    page.getByRole('button', { name: /new project/i }),
+  const btn = page.getByRole('link', { name: /yeni proje|new project/i }).or(
+    page.getByRole('button', { name: /yeni proje|new project/i }),
   );
   await expect(btn).toHaveCount(0);
 });
