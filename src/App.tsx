@@ -65,6 +65,10 @@ import ClientPortals from "./pages/ClientPortals";
 import PublicPortal from "./pages/PublicPortal";
 import NotificationSettings from "./pages/NotificationSettings";
 import Notifications from "./pages/Notifications";
+import Pricing from "./pages/Pricing";
+import Compare from "./pages/Compare";
+import Security from "./pages/Security";
+import Changelog from "./pages/Changelog";
 import AgentRuns from "./pages/AgentRuns";
 import Leaderboard from "./pages/Leaderboard";
 import Crm from "./pages/Crm";
@@ -98,6 +102,10 @@ const App = () => (
                 <Route path="/invite/:token" element={<AcceptInvite />} />
                 <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/" element={<Index />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/compare" element={<Compare />} />
+                <Route path="/security" element={<Security />} />
+                <Route path="/changelog" element={<Changelog />} />
                 <Route path="/dashboard" element={<ProtectedRoute><WorkspaceGate><Dashboard /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/home" element={<ProtectedRoute><WorkspaceGate><FounderHome /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/inbox" element={<ProtectedRoute><WorkspaceGate><FounderInbox /></WorkspaceGate></ProtectedRoute>} />

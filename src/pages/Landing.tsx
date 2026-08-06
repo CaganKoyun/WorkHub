@@ -53,11 +53,22 @@ const Landing = () => {
             <SparkLogo size={17} />
           </Link>
 
-          {/* Var olmayan sayfalara sahte menü yok: tek gerçek ankraj */}
           <div className="hidden items-center gap-1 md:flex">
             <a href="#features" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
               Product
             </a>
+            <Link to="/pricing" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Pricing
+            </Link>
+            <Link to="/compare" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Compare
+            </Link>
+            <Link to="/security" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Security
+            </Link>
+            <Link to="/changelog" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Changelog
+            </Link>
           </div>
 
           <div className="flex items-center gap-2">
