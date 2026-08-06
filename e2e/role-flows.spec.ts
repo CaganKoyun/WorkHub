@@ -22,9 +22,16 @@ const USERS = {
 
 async function loginOrSkip(page: Page, email: string) {
   await page.goto('/auth');
-  await page.getByPlaceholder('you@company.com').first().fill(email);
+  // Radix mounts BOTH tab panels — the signup panel also has a
+  // `you@company.com` email input. Filter to the visible one so we
+  // always target the currently-active Sign in tab.
+  await page.locator('input[type="email"]:visible').first().fill(email);
   await page.locator('input[type="password"]:visible').first().fill(PASSWORD);
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  // Same collision: "Sign in" is both a tab-trigger (role=tab) and the
+  // submit button (role=button). exact:true + role=button already
+  // scopes to the button, but be explicit and press Enter as a
+  // failsafe — submitting the form directly avoids any button pick.
+  await page.locator('input[type="password"]:visible').first().press('Enter');
   // Success = URL leaves /auth. Toast on failure lingers on /auth.
   try {
     await page.waitForURL((u) => !u.toString().includes('/auth'), { timeout: 8_000 });
