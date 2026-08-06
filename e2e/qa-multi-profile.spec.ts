@@ -51,9 +51,10 @@ async function signUp(page: Page, actor: Actor) {
   await page.goto('/auth');
   await page.getByRole('tab', { name: 'Sign up' }).click();
   await page.getByPlaceholder('Jane Doe').fill(actor.fullName);
-  // İkinci placeholder=you@company.com signup formundadır.
-  await page.getByPlaceholder('you@company.com').nth(1).fill(actor.email);
-  await page.locator('input[type="password"]').nth(1).fill(actor.password);
+  // Radix Tabs inactive panel'i unmount ediyor → aktif sign-up formunda
+  // her placeholder tek. `.first()` kullan.
+  await page.getByPlaceholder('you@company.com').first().fill(actor.email);
+  await page.locator('input[type="password"]').first().fill(actor.password);
   await page.getByRole('button', { name: /^Sign up$/i }).click();
 
   // Redirect veya "check email" toast — biri gelmeli.

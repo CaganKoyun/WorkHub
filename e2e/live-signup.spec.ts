@@ -27,8 +27,10 @@ test.describe('Live signup (env-gated)', () => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: 'Sign up' }).click();
     await page.getByPlaceholder('Jane Doe').fill(fullName);
-    await page.getByPlaceholder('you@company.com').nth(1).fill(email);
-    await page.locator('input[type="password"]').nth(1).fill(password);
+    // Radix Tabs sign-in panel'i unmount ediyor → sign-up formunda her
+    // placeholder tek. `.first()` kullan.
+    await page.getByPlaceholder('you@company.com').first().fill(email);
+    await page.locator('input[type="password"]').first().fill(password);
     await page.getByRole('button', { name: /^Sign up$/i }).click();
 
     // Either we get bounced out of /auth (confirmation off) or a toast tells
