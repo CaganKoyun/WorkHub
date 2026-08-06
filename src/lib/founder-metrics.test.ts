@@ -127,11 +127,18 @@ describe('buildSnapshotDeltas', () => {
     expect(deltas.find((d) => d.key === 'open_tasks')?.higherIsBetter).toBe(false);
   });
 
-  it('non-numeric string currently yields NaN (regression note)', () => {
-    // Number('abc') is NaN. buildSnapshotDeltas has no isFinite guard.
-    // If a fix lands (e.g. `Number.isFinite(v) ? v : 0`), flip this to `.toBe(0)`.
+  it('non-numeric string coerces to 0 (Number.isFinite guard)', () => {
     const deltas = buildSnapshotDeltas({ cash_position: 'abc' as unknown }, null);
-    expect(Number.isNaN(deltas.find((d) => d.key === 'cash_position')?.then)).toBe(true);
+    expect(deltas.find((d) => d.key === 'cash_position')?.then).toBe(0);
+  });
+
+  it('Infinity / -Infinity also coerces to 0', () => {
+    const deltas = buildSnapshotDeltas(
+      { cash_position: Infinity, open_tasks: -Infinity },
+      null,
+    );
+    expect(deltas.find((d) => d.key === 'cash_position')?.then).toBe(0);
+    expect(deltas.find((d) => d.key === 'open_tasks')?.then).toBe(0);
   });
 
   it('returns one row per SNAPSHOT_FIELDS entry', () => {

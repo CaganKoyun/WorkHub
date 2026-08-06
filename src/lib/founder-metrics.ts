@@ -95,9 +95,13 @@ export function buildSnapshotDeltas(
   now: Record<string, number> | null,
 ): SnapshotDelta[] {
   if (!then) return [];
+  const toNumber = (v: unknown): number => {
+    const n = Number(v ?? 0);
+    return Number.isFinite(n) ? n : 0;
+  };
   return SNAPSHOT_FIELDS.map((f) => ({
     ...f,
-    then: Number(then[f.key] ?? 0),
-    now: Number(now?.[f.key] ?? 0),
+    then: toNumber(then[f.key]),
+    now: toNumber(now?.[f.key]),
   }));
 }

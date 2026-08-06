@@ -12,8 +12,10 @@ test.describe('TSK — tasks / my tasks', () => {
     expect(true).toBe(true);
   });
 
-  test('TSK-02 · Unassigned grubu (regression:PRD-#4)', async ({ page }) => {
-    // TODO: assignee null 3 task → Unassigned başlığı altında render
+  test('TSK-02 · Unassigned grubu — "Sahipsiz işler" başlığı', async ({ page }) => {
+    // MyTasksView L124 (F16 fix) — assignee null 3 task oluştur,
+    // "Sahipsiz işler" section'ında hepsi render olmalı, sayısı doğru.
+    // NOT: PRD-#4 bilinen açığı bu fix ile kapatıldı; test doğrulama görevi.
     expect(true).toBe(true);
   });
 
