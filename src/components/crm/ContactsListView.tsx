@@ -119,8 +119,8 @@ function NewContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
           </div>
           <div><Label>E-posta</Label><Input type="email" value={email} onChange={e => setEmail(e.target.value)} /></div>
           {(dupes ?? []).length > 0 && (
-            <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-2 text-xs">
-              <div className="flex items-center gap-1 text-amber-300 font-medium mb-1">
+            <div className="rounded-md border border-warning/40 bg-warning/10 p-2 text-xs">
+              <div className="flex items-center gap-1 text-warning font-medium mb-1">
                 <AlertTriangle className="h-3 w-3" /> Aynı e-posta ile kayıt var
               </div>
               <ul className="space-y-0.5">

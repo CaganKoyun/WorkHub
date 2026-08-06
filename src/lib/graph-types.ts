@@ -136,6 +136,7 @@ export interface Decision {
   // the loop
   review_at: string | null;
   reviewed_at: string | null;
+  reviewed_by: string | null;
   actual_outcome: string | null;
   verdict: DecisionVerdict | null;
   // the frozen moment

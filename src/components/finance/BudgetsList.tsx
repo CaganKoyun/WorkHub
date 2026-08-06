@@ -26,8 +26,8 @@ export function BudgetsList() {
   return (
     <div className="space-y-4">
       {alerted.length > 0 && (
-        <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
-          <div className="flex items-center gap-2 text-amber-300 font-medium">
+        <div className="rounded-md border border-warning/40 bg-warning/10 p-3 text-sm">
+          <div className="flex items-center gap-2 text-warning font-medium">
             <AlertTriangle className="h-4 w-4" /> {alerted.length} bütçe uyarı eşiğini geçti
           </div>
           <div className="text-xs text-muted-foreground mt-1">
@@ -55,7 +55,7 @@ export function BudgetsList() {
             {(variance ?? []).map(v => {
               const pct = Math.min(v.utilizationPct, 999);
               const barPct = Math.min(v.utilizationPct, 100);
-              const tone = v.utilizationPct >= 100 ? 'bg-destructive' : v.alerted ? 'bg-amber-500' : 'bg-emerald-500';
+              const tone = v.utilizationPct >= 100 ? 'bg-destructive' : v.alerted ? 'bg-warning' : 'bg-success';
               return (
                 <TableRow key={v.budget.id}>
                   <TableCell>
@@ -81,7 +81,7 @@ export function BudgetsList() {
                     <Badge variant={v.variance < 0 ? 'destructive' : 'outline'} className="text-xs">
                       {v.variance >= 0 ? '+' : ''}{formatCurrency(v.variance, 'USD')}
                     </Badge>
-                    {v.alerted && <AlertTriangle className="inline h-3 w-3 ml-1 text-amber-400" />}
+                    {v.alerted && <AlertTriangle className="inline h-3 w-3 ml-1 text-warning" />}
                   </TableCell>
                 </TableRow>
               );

@@ -1,7 +1,8 @@
 import {
   LayoutDashboard, Bug, BarChart3, Package, Users, FolderKanban, CheckSquare,
-  Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles,
+  Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles, Shield, Bookmark, KeyRound, UserRound, Trophy,
   ScrollText, Rocket, Plug, Building2, Compass, Layers, LineChart, Boxes,
+  RefreshCw, FileText, Timer, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones, Activity,
 } from "lucide-react";
 
 export type NavItem = {
@@ -47,10 +48,23 @@ export const clusters: NavCluster[] = [
       {
         label: "Work",
         items: [
+          { icon: Layers, label: "Issues", path: "/issues" },
+          { icon: Bookmark, label: "Görünümler", path: "/views" },
+          { icon: RefreshCw, label: "Cycles", path: "/cycles" },
+          { icon: Rocket, label: "Roadmap", path: "/roadmap" },
           { icon: FolderKanban, label: "Projects", path: "/projects" },
+          { icon: Briefcase, label: "Portföyler", path: "/portfolios" },
           { icon: CheckSquare, label: "My Tasks", path: "/tasks" },
+          { icon: BarChart3, label: "Workload", path: "/workload" },
+          { icon: Activity, label: "Insights", path: "/insights" },
           { icon: Bug, label: "Bugs", path: "/bugs" },
           { icon: Rocket, label: "Product", path: "/product" },
+        ],
+      },
+      {
+        label: "Time",
+        items: [
+          { icon: Timer, label: "Timesheet", path: "/timesheet" },
         ],
       },
     ],
@@ -96,9 +110,14 @@ export const clusters: NavCluster[] = [
       {
         label: "Operations",
         items: [
+          { icon: Users, label: "Teams", path: "/teams" },
+          { icon: Trophy, label: "Skor tablosu", path: "/leaderboard" },
           { icon: Package, label: "Assets", path: "/assets" },
           { icon: Users, label: "Employees", path: "/employees" },
           { icon: Building2, label: "Company", path: "/company" },
+          { icon: UserRound, label: "Portallar", path: "/portals" },
+          { icon: Shield, label: "Audit log", path: "/audit" },
+          { icon: Shield, label: "Admin", path: "/admin" },
         ],
       },
     ],
@@ -113,7 +132,17 @@ export const clusters: NavCluster[] = [
         label: "AI",
         items: [
           { icon: Sparkles, label: "Chief of Staff", path: "/ai-chat" },
+          { icon: Sparkles, label: "Agent runs", path: "/agent" },
+          { icon: Sparkles, label: "Toplantı notları", path: "/meetings" },
+          { icon: MessageSquare, label: "Chat", path: "/chat" },
+          { icon: BookOpen, label: "Docs", path: "/docs" },
+          { icon: Zap, label: "Otomasyonlar", path: "/automations" },
+          { icon: ClipboardList, label: "Formlar", path: "/forms" },
+          { icon: PenSquare, label: "Panolar", path: "/whiteboards" },
+          { icon: Headphones, label: "Service Desk", path: "/desk" },
+          { icon: FileText, label: "Templates", path: "/templates" },
           { icon: Plug, label: "Integrations", path: "/integrations" },
+          { icon: KeyRound, label: "API tokens", path: "/api-tokens" },
         ],
       },
     ],
@@ -132,16 +161,30 @@ export const navItems: NavItem[] = clusters.flatMap(c =>
 // ---------------------------------------------------------------------------
 export const PATH_MODULE: Record<string, string> = {
   "/projects": "work",
+  "/portfolios": "work",
   "/tasks": "work",
+  "/issues": "work",
+  "/cycles": "work",
+  "/workload": "work",
+  "/insights": "work",
+  "/roadmap": "work",
+  "/timesheet": "work",
+  "/views": "work",
   "/bugs": "work",
   "/product": "work",
-  "/analytics": "work",
+  "/analytics": "revenue",
   "/crm": "crm",
   "/finance": "finance",
   "/goals": "goals",
   "/risks": "goals",
   "/assets": "assets",
   "/employees": "people",
+  "/company": "people",
+  "/teams": "people",
+  "/leaderboard": "people",
+  "/audit": "people",
+  "/admin": "people",
+  "/portals": "people",
 };
 
 export function visibleClusters(enabledModules: string[] | null | undefined): NavCluster[] {

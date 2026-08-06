@@ -1,132 +1,117 @@
-import { Link } from "react-router-dom";
-import { Rss, Calendar, ArrowRight } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import { StackedLogo } from "@/components/StackedLogo";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import type { ChangelogEntry } from "@/content/changelog/entries";
+import { LandingNav } from "./Pricing";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles, Bug, Wrench, Zap } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-import entry20260801 from "@/content/changelog/2026-08-01";
-import entry20260728 from "@/content/changelog/2026-07-28";
-import entry20260715 from "@/content/changelog/2026-07-15";
+type EntryKind = "feature" | "fix" | "improvement" | "breaking";
 
-const allEntries: ChangelogEntry[] = [
-  entry20260801,
-  entry20260728,
-  entry20260715,
-].sort((a, b) => b.date.localeCompare(a.date));
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-const Changelog = () => {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Nav */}
-      <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-[1180px] items-center justify-between px-6">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground">
-              <StackedLogo size={13} color="currentColor" />
-            </span>
-            <span className="text-[15px] font-semibold tracking-tight">FounderOS</span>
-          </Link>
-
-          <div className="hidden items-center gap-1 md:flex">
-            <Link to="/changelog" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-foreground transition-colors hover:text-foreground">
-              Changelog
-            </Link>
-            <Link to="/security" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Security
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Link to="/auth" className="hidden rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-block">
-              Log in
-            </Link>
-            <Link
-              to="/auth"
-              className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-[13.5px] font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
-            >
-              Get started
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      {/* Header */}
-      <section className="border-b border-border bg-canvas px-6 py-16">
-        <div className="mx-auto max-w-[800px]">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-[clamp(2rem,4.2vw,3rem)] font-semibold leading-tight tracking-[-0.03em]">
-                Changelog
-              </h1>
-              <p className="mt-3 max-w-[520px] text-[16px] leading-relaxed text-muted-foreground">
-                New features, improvements, and fixes shipped to FounderOS.
-              </p>
-            </div>
-            <a
-              href="/api/rss-changelog"
-              className="mt-2 inline-flex h-9 shrink-0 items-center gap-2 rounded-md border border-input bg-background px-3 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-            >
-              <Rss className="h-3.5 w-3.5" />
-              RSS
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Entries */}
-      <section className="px-6 py-12">
-        <div className="mx-auto max-w-[800px] space-y-8">
-          {allEntries.map((entry) => (
-            <Card key={entry.date}>
-              <CardHeader>
-                <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
-                  <Calendar className="h-3.5 w-3.5" />
-                  <time dateTime={entry.date}>{formatDate(entry.date)}</time>
-                </div>
-                <h2 className="mt-1 text-[20px] font-semibold leading-tight tracking-[-0.02em]">
-                  {entry.title}
-                </h2>
-              </CardHeader>
-              <CardContent>
-                <div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-headings:text-[15px] prose-headings:font-semibold prose-headings:tracking-normal prose-p:text-[14px] prose-p:leading-relaxed prose-li:text-[14px] prose-li:leading-relaxed prose-strong:text-foreground prose-code:rounded prose-code:bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[13px] prose-code:font-mono prose-code:before:content-none prose-code:after:content-none">
-                  <ReactMarkdown>{entry.content}</ReactMarkdown>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-border px-6 py-10">
-        <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground">
-              <StackedLogo size={13} color="currentColor" />
-            </span>
-            <span className="text-[14px] font-semibold tracking-tight">FounderOS</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
-            <Link to="/" className="transition-colors hover:text-foreground">Product</Link>
-            <Link to="/changelog" className="transition-colors hover:text-foreground">Changelog</Link>
-            <Link to="/security" className="transition-colors hover:text-foreground">Security</Link>
-          </div>
-          <span className="text-[12.5px] text-muted-foreground">&copy; {new Date().getFullYear()} FounderOS</span>
-        </div>
-      </footer>
-    </div>
-  );
+const KIND_CONFIG: Record<EntryKind, { label: string; icon: React.ElementType; className: string }> = {
+  feature: { label: "Yeni", icon: Sparkles, className: "bg-success/15 text-success" },
+  fix: { label: "Düzeltme", icon: Bug, className: "bg-destructive/15 text-destructive" },
+  improvement: { label: "İyileştirme", icon: Wrench, className: "bg-info/15 text-info" },
+  breaking: { label: "Kırılma", icon: Zap, className: "bg-warning/15 text-warning" },
 };
 
-export default Changelog;
+interface ChangelogEntry {
+  date: string;
+  version: string;
+  items: { kind: EntryKind; text: string }[];
+}
+
+const entries: ChangelogEntry[] = [
+  {
+    date: "6 Ağustos 2026",
+    version: "v1.2.0",
+    items: [
+      { kind: "feature", text: "Decision System of Record — reviewed_by alanı ve reviewer gösterimi" },
+      { kind: "feature", text: "Bildirim merkezi genişletildi: onay bildirimleri, push entegrasyonu, tam sayfa /notifications" },
+      { kind: "fix", text: "Bildirim kind uyumsuzluğu düzeltildi (dot → underscore)" },
+      { kind: "improvement", text: "Marka güncellemesi: Spark WorkHub, Graphite × Lime tasarım sistemi" },
+    ],
+  },
+  {
+    date: "5 Ağustos 2026",
+    version: "v1.1.0",
+    items: [
+      { kind: "feature", text: "E2E test altyapısı: 25 Playwright spec, rol bazlı akışlar" },
+      { kind: "fix", text: "Sidebar/menü ~30 sayfada kaybolma sorunu düzeltildi (WorkspaceGate → AppLayout)" },
+      { kind: "fix", text: "Viewer rolü write CTA'ları gördüğü UX hataları düzeltildi" },
+      { kind: "improvement", text: "Task tracking sequence izinleri düzeltildi (member/admin task oluşturma)" },
+    ],
+  },
+  {
+    date: "31 Temmuz 2026",
+    version: "v1.0.0",
+    items: [
+      { kind: "feature", text: "Gamification: XP, streak, leaderboard, başarımlar" },
+      { kind: "feature", text: "PWA: offline shell, push notifications, installable" },
+      { kind: "feature", text: "AI Agent: domain-expert çalıştırma motoru" },
+      { kind: "feature", text: "Whiteboards: Excalidraw-lite çizim aracı" },
+      { kind: "feature", text: "Chat: Slack-lite kanallar ve thread'ler" },
+      { kind: "feature", text: "Docs/Wiki: Notion-lite sayfa editörü" },
+    ],
+  },
+  {
+    date: "28 Temmuz 2026",
+    version: "v0.9.0",
+    items: [
+      { kind: "feature", text: "Company Graph: decisions, approvals, goals, risks arası bağlantı" },
+      { kind: "feature", text: "CRM: pipeline, contacts, quotes, contracts" },
+      { kind: "feature", text: "Finance: cash tracking, budget, P&L" },
+      { kind: "feature", text: "Service Desk: ticket yönetimi" },
+      { kind: "feature", text: "Portfolios: program yönetimi" },
+    ],
+  },
+  {
+    date: "1 Temmuz 2026",
+    version: "v0.1.0",
+    items: [
+      { kind: "feature", text: "İlk release: projects, tasks, bugs, issues, kanban, sprints, teams" },
+      { kind: "feature", text: "Command palette (Cmd+K), sub-tasks, dependencies" },
+      { kind: "feature", text: "Custom fields, time tracking, CSV import" },
+    ],
+  },
+];
+
+export default function Changelog() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <LandingNav />
+
+      <div className="mx-auto max-w-3xl px-6 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold tracking-tight">Changelog</h1>
+          <p className="mt-3 text-[15px] text-muted-foreground">
+            Spark WorkHub'daki yenilikler, düzeltmeler ve iyileştirmeler.
+          </p>
+        </div>
+
+        <div className="space-y-10">
+          {entries.map((entry) => (
+            <div key={entry.version} className="relative">
+              <div className="flex items-center gap-3 mb-4">
+                <Badge variant="outline" className="text-[12px] font-mono">
+                  {entry.version}
+                </Badge>
+                <span className="text-[13px] text-muted-foreground">{entry.date}</span>
+              </div>
+              <div className="space-y-2 pl-1">
+                {entry.items.map((item, i) => {
+                  const config = KIND_CONFIG[item.kind];
+                  return (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <Badge className={cn("shrink-0 gap-1 text-[10.5px]", config.className)}>
+                        <config.icon className="h-3 w-3" /> {config.label}
+                      </Badge>
+                      <span className="text-[13px] leading-relaxed">{item.text}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

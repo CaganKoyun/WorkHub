@@ -36,8 +36,8 @@ test("bilinmeyen route 404 gösteriyor", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "404" })).toBeVisible();
 });
 
-test("kaldırılan /company route'u artık yok (PRD §5)", async ({ page }) => {
+test("/company protected route oturumsuz kullanıcıyı /auth'a yönlendirir", async ({ page }) => {
   await page.goto("/company");
-  // Route tanımsız → oturumsuz da olsa 404'e düşmeli (ProtectedRoute'a takılmadan)
-  await expect(page.getByRole("heading", { name: "404" })).toBeVisible();
+  await page.waitForURL("**/auth**", { timeout: 15_000 });
+  await expect(page.getByRole("heading", { name: "Welcome" })).toBeVisible();
 });

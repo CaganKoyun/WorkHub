@@ -104,7 +104,7 @@ export function CustomersListView() {
 
 function Metric({ label, value, tone }: { label: string; value: string; tone?: 'warn' }) {
   return (
-    <div className={`rounded-lg border border-border bg-card p-3 ${tone === 'warn' ? 'border-amber-500/40' : ''}`}>
+    <div className={`rounded-lg border border-border bg-card p-3 ${tone === 'warn' ? 'border-warning/40' : ''}`}>
       <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
       <div className="text-lg font-semibold mt-0.5">{value}</div>
     </div>

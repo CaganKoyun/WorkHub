@@ -78,6 +78,9 @@ export function useCreateTask() {
           due_date: input.due_date ?? null,
           estimated_hours: input.estimated_hours ?? null,
           parent_task_id: input.parent_task_id ?? null,
+          cycle_id: input.cycle_id ?? null,
+          story_points: input.story_points ?? null,
+          recurrence: input.recurrence ?? null,
         })
         .select()
         .single();
@@ -155,6 +158,173 @@ export function useAddTaskComment() {
       return task_id;
     },
     onSuccess: (task_id) => qc.invalidateQueries({ queryKey: ['task-comments', task_id] }),
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Multiple assignees (task_assignees junction)
+// ---------------------------------------------------------------------------
+export function useTaskAssignees(taskId: string | undefined) {
+  return useQuery({
+    queryKey: ['task-assignees', taskId],
+    enabled: !!taskId,
+    queryFn: async (): Promise<{ user_id: string; assigned_at: string }[]> => {
+      const { data, error } = await supabase
+        .from('task_assignees')
+        .select('user_id, assigned_at')
+        .eq('task_id', taskId!)
+        .order('assigned_at', { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as { user_id: string; assigned_at: string }[];
+    },
+  });
+}
+
+export function useAddTaskAssignee() {
+  const qc = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async ({ task_id, user_id, workspace_id }: { task_id: string; user_id: string; workspace_id: string }) => {
+      const { error } = await supabase
+        .from('task_assignees')
+        .insert({ task_id, user_id, workspace_id, assigned_by: user?.id ?? null });
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => qc.invalidateQueries({ queryKey: ['task-assignees', v.task_id] }),
+  });
+}
+
+export function useRemoveTaskAssignee() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ task_id, user_id }: { task_id: string; user_id: string }) => {
+      const { error } = await supabase
+        .from('task_assignees')
+        .delete()
+        .eq('task_id', task_id)
+        .eq('user_id', user_id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => qc.invalidateQueries({ queryKey: ['task-assignees', v.task_id] }),
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Sub-tasks
+// ---------------------------------------------------------------------------
+export function useSubtasks(parentTaskId: string | undefined) {
+  return useQuery({
+    queryKey: ['subtasks', parentTaskId],
+    enabled: !!parentTaskId,
+    queryFn: async (): Promise<Task[]> => {
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('parent_task_id', parentTaskId!)
+        .order('position', { ascending: true })
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Task[];
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Task dependencies (blocked_by / blocks)
+// ---------------------------------------------------------------------------
+export interface TaskDependencyEdge {
+  id: string;
+  blocking_task_id: string;
+  blocked_task_id: string;
+  other: { id: string; title: string; tracking_id: string; status: string; project_id: string } | null;
+}
+
+export function useTaskDependencies(taskId: string | undefined) {
+  return useQuery({
+    queryKey: ['task-dependencies', taskId],
+    enabled: !!taskId,
+    queryFn: async (): Promise<{ blocking: TaskDependencyEdge[]; blockedBy: TaskDependencyEdge[] }> => {
+      // Rows where this task is blocked_by others → "blocked by"
+      // Rows where this task is blocking others → "blocking"
+      const [blockedByRes, blockingRes] = await Promise.all([
+        supabase
+          .from('task_dependencies')
+          .select('id, blocking_task_id, blocked_task_id, blocking:tasks!task_dependencies_blocking_task_id_fkey(id,title,tracking_id,status,project_id)')
+          .eq('blocked_task_id', taskId!),
+        supabase
+          .from('task_dependencies')
+          .select('id, blocking_task_id, blocked_task_id, blocked:tasks!task_dependencies_blocked_task_id_fkey(id,title,tracking_id,status,project_id)')
+          .eq('blocking_task_id', taskId!),
+      ]);
+      if (blockedByRes.error) throw blockedByRes.error;
+      if (blockingRes.error) throw blockingRes.error;
+      return {
+        blockedBy: (blockedByRes.data ?? []).map((r: any) => ({
+          id: r.id,
+          blocking_task_id: r.blocking_task_id,
+          blocked_task_id: r.blocked_task_id,
+          other: Array.isArray(r.blocking) ? r.blocking[0] : r.blocking,
+        })),
+        blocking: (blockingRes.data ?? []).map((r: any) => ({
+          id: r.id,
+          blocking_task_id: r.blocking_task_id,
+          blocked_task_id: r.blocked_task_id,
+          other: Array.isArray(r.blocked) ? r.blocked[0] : r.blocked,
+        })),
+      };
+    },
+  });
+}
+
+export function useAddTaskDependency() {
+  const qc = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async ({
+      workspace_id, blocking_task_id, blocked_task_id,
+    }: { workspace_id: string; blocking_task_id: string; blocked_task_id: string }) => {
+      if (blocking_task_id === blocked_task_id) throw new Error('Bir görev kendini bloklayamaz');
+      const { error } = await supabase
+        .from('task_dependencies')
+        .insert({ workspace_id, blocking_task_id, blocked_task_id, created_by: user?.id ?? null });
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => {
+      qc.invalidateQueries({ queryKey: ['task-dependencies', v.blocked_task_id] });
+      qc.invalidateQueries({ queryKey: ['task-dependencies', v.blocking_task_id] });
+    },
+  });
+}
+
+export function useRemoveTaskDependency() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id }: { id: string; blocked_task_id?: string; blocking_task_id?: string }) => {
+      const { error } = await supabase.from('task_dependencies').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => {
+      if (v.blocked_task_id) qc.invalidateQueries({ queryKey: ['task-dependencies', v.blocked_task_id] });
+      if (v.blocking_task_id) qc.invalidateQueries({ queryKey: ['task-dependencies', v.blocking_task_id] });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Global / workspace-wide issues (across projects)
+// ---------------------------------------------------------------------------
+export function useWorkspaceIssues() {
+  return useQuery({
+    queryKey: ['workspace-issues'],
+    queryFn: async (): Promise<Task[]> => {
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(500);
+      if (error) throw error;
+      return (data ?? []) as Task[];
+    },
   });
 }
 

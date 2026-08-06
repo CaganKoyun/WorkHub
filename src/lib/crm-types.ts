@@ -259,7 +259,7 @@ export const LIFECYCLE_COLORS: Record<CrmLifecycle, string> = {
   lead: 'bg-slate-500/20 text-slate-300',
   prospect: 'bg-blue-500/20 text-blue-300',
   customer: 'bg-emerald-500/20 text-emerald-300',
-  partner: 'bg-violet-500/20 text-violet-300',
+  partner: 'bg-[#BFD9FF]/20 text-[#8FBAFF]',
   vendor: 'bg-amber-500/20 text-amber-300',
   churned: 'bg-destructive/20 text-destructive-foreground',
 };
@@ -301,7 +301,7 @@ export const CONTRACT_STATUS_COLORS: Record<CrmContractStatus, string> = {
   internal_review: 'bg-blue-500/20 text-blue-300',
   counterparty_review: 'bg-sky-500/20 text-sky-300',
   pending_approval: 'bg-amber-500/20 text-amber-300',
-  pending_signature: 'bg-violet-500/20 text-violet-300',
+  pending_signature: 'bg-[#BFD9FF]/20 text-[#8FBAFF]',
   active: 'bg-emerald-500/20 text-emerald-300',
   renewal: 'bg-teal-500/20 text-teal-300',
   expired: 'bg-orange-500/20 text-orange-300',

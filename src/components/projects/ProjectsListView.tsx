@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useProjects } from '@/lib/projects-hooks';
 import { PROJECT_STATUS_COLORS, PROJECT_STATUS_LABELS, PRIORITY_COLORS, PRIORITY_LABELS } from '@/lib/projects-types';
 import type { ProjectStatus, ProjectPriority } from '@/lib/projects-types';
-import { useUserRole, canCreateProject } from '@/lib/user-role';
+import { useWorkspacePermission } from '@/hooks/useWorkspacePermission';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +14,10 @@ import { Plus, Search, Calendar } from 'lucide-react';
 
 export function ProjectsListView() {
   const { data: projects, isLoading } = useProjects();
-  const { data: role } = useUserRole();
+  // Workspace-role check: owner/admin always pass, others via has_workspace_permission RPC.
+  // Prev bug: useUserRole() reads user_roles table (system-level admin/manager) — workspace
+  // owners weren't recognized, so the "New project" affordance never rendered for them.
+  const canCreate = useWorkspacePermission('projects', 'create');
 
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | ProjectStatus>('all');
@@ -38,7 +41,7 @@ export function ProjectsListView() {
           <h1 className="text-xl sm:text-2xl font-bold">Projeler</h1>
           <p className="text-sm text-muted-foreground">Ekip projelerini planla, takip et ve yönet</p>
         </div>
-        {canCreateProject(role) && (
+        {canCreate && (
           <Link to="/projects/new">
             <Button size="sm"><Plus className="mr-1 h-4 w-4" />Yeni proje</Button>
           </Link>
@@ -77,7 +80,7 @@ export function ProjectsListView() {
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <p className="text-muted-foreground">Henüz proje yok</p>
-          {canCreateProject(role) && (
+          {canCreate && (
             <Link to="/projects/new" className="mt-3">
               <Button variant="outline" size="sm">İlk projeni oluştur</Button>
             </Link>

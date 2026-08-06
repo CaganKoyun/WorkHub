@@ -46,12 +46,12 @@ const STATUS_LABELS: Record<DecisionStatus, string> = {
 const STATUS_TONE: Record<DecisionStatus, string> = {
   proposed: "bg-blue-500/20 text-blue-300",
   decided: "bg-emerald-500/20 text-emerald-300",
-  revisit: "bg-amber-500/20 text-amber-300",
+  revisit: "bg-amber-500/20 text-warning",
   revoked: "bg-destructive/20 text-destructive-foreground",
 };
 const VERDICT_TONE: Record<DecisionVerdict, string> = {
   held: "bg-emerald-500/20 text-emerald-300",
-  changed: "bg-amber-500/20 text-amber-300",
+  changed: "bg-amber-500/20 text-warning",
   wrong: "bg-destructive/20 text-destructive-foreground",
 };
 
@@ -85,7 +85,7 @@ function ReviewCard({ d }: { d: Decision }) {
   };
 
   return (
-    <Card className="border-amber-500/40">
+    <Card className="border-warning/40">
       <CardContent className="space-y-3 p-4">
         <div className="flex items-start justify-between gap-2">
           <div>
@@ -211,8 +211,8 @@ function CalibrationCard({ decisions }: { decisions: Decision[] }) {
 
   const verdict = calibrationVerdict(gap, bias);
   const tone = {
-    good: "border-emerald-500/40",
-    medium: "border-amber-500/40",
+    good: "border-success/40",
+    medium: "border-warning/40",
     extreme: "border-destructive/50",
   }[verdict.tier];
 
@@ -371,7 +371,7 @@ export default function Decisions() {
                 </div>
 
                 {form.status === "decided" && (
-                  <div className="space-y-4 rounded-md border border-emerald-500/30 bg-emerald-500/5 p-3">
+                  <div className="space-y-4 rounded-md border border-emerald-500/30 bg-success/5 p-3">
                     <div className="space-y-1.5">
                       <Label>Bahis: 90 gün sonra bu nasıl görünecek? *</Label>
                       <Input value={form.expected_outcome}
@@ -411,7 +411,7 @@ export default function Decisions() {
 
         {reviewQueue && reviewQueue.length > 0 && (
           <div className="space-y-3">
-            <h2 className="flex items-center gap-2 text-sm font-medium text-amber-400">
+            <h2 className="flex items-center gap-2 text-sm font-medium text-warning">
               <RotateCcw className="h-4 w-4" />
               Yeniden Açılış — hesap günü gelen {reviewQueue.length} karar
             </h2>
@@ -477,7 +477,7 @@ export default function Decisions() {
                   {d.decision && <p className="text-sm text-muted-foreground">{d.decision}</p>}
 
                   {reopenReason && (
-                    <p className="rounded-md bg-amber-500/10 p-2 text-xs text-amber-700">
+                    <p className="rounded-md bg-warning/10 p-2 text-xs text-warning">
                       Yeniden açıldı — {reopenReason}
                     </p>
                   )}

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { RelatedObjectsPanel } from "@/components/graph/RelatedObjectsPanel";
 import { useDecision, useUpdateDecision, useCurrentSnapshot } from "@/lib/graph-hooks";
+import { useAllProfiles } from "@/lib/projects-hooks";
 import type { DecisionVerdict } from "@/lib/graph-types";
 import {
   VERDICT_LABELS, REVERSIBILITY_LABELS, isDueForReview,
@@ -18,7 +19,7 @@ import { snapshotEntries, snapshotCapturedAt } from "@/lib/snapshot-utils";
 import { formatCurrency } from "@/lib/finance-types";
 import {
   ArrowLeft, Camera, DoorOpen, DoorClosed, ScrollText, Target,
-  RotateCcw, CheckCircle2, MinusCircle, XCircle, CalendarClock,
+  RotateCcw, CheckCircle2, MinusCircle, XCircle, CalendarClock, UserCheck,
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
@@ -30,8 +31,8 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const VERDICT_TONE: Record<DecisionVerdict, string> = {
-  held: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
-  changed: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
+  held: "bg-emerald-500/15 text-success",
+  changed: "bg-amber-500/15 text-warning dark:text-warning",
   wrong: "bg-destructive/15 text-destructive",
 };
 
@@ -43,9 +44,15 @@ export default function DecisionDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: d, isLoading } = useDecision(id);
   const update = useUpdateDecision();
+  const { data: profiles } = useAllProfiles();
   const [actual, setActual] = useState("");
   // Karar Tekrarı: o gün ↔ bugün. Yalnızca donmuş an varsa sorgulanır.
   const { data: today } = useCurrentSnapshot(!!d?.state_snapshot);
+
+  const profileName = (uid: string | null) => {
+    if (!uid || !profiles) return null;
+    return profiles.find((p) => p.user_id === uid)?.full_name ?? null;
+  };
 
   if (isLoading) {
     return (
@@ -93,11 +100,12 @@ export default function DecisionDetail() {
     }
   };
 
+  const reviewerName = profileName(d.reviewed_by);
   const timeline: { label: string; at: string | null; icon: React.ElementType }[] = [
     { label: "Kaydedildi", at: d.created_at, icon: ScrollText },
     { label: "Karar verildi", at: d.decided_at, icon: CheckCircle2 },
     { label: "Yeniden açılış", at: d.review_at, icon: CalendarClock },
-    { label: "Kapatıldı", at: d.reviewed_at, icon: RotateCcw },
+    { label: reviewerName ? `Kapatan: ${reviewerName}` : "Kapatıldı", at: d.reviewed_at, icon: RotateCcw },
   ];
 
   return (
@@ -212,7 +220,7 @@ export default function DecisionDetail() {
                         <p className={cn(
                           "mt-0.5 text-[11px]",
                           delta === 0 ? "text-muted-foreground"
-                            : deltaBad ? "text-destructive" : "text-emerald-600 dark:text-emerald-400",
+                            : deltaBad ? "text-destructive" : "text-success",
                         )}>
                           bugün: {e.format === "currency" ? formatCurrency(nowVal!, "USD") : nowVal}
                           {delta !== 0 && ` (${delta > 0 ? "+" : ""}${e.format === "currency" ? formatCurrency(delta, "USD") : delta})`}
@@ -227,7 +235,7 @@ export default function DecisionDetail() {
         </Card>
 
         {/* Sonuç / Yeniden Açılış */}
-        <Card className={cn(due && "border-amber-500/40")}>
+        <Card className={cn(due && "border-warning/40")}>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm">
               <RotateCcw className="h-4 w-4 text-primary" /> Sonuç Döngüsü
@@ -240,6 +248,11 @@ export default function DecisionDetail() {
                   <Badge className={VERDICT_TONE[d.verdict]}>{VERDICT_LABELS[d.verdict]}</Badge>
                   {d.reviewed_at && (
                     <span className="text-xs text-muted-foreground">{fmtDate(d.reviewed_at)}</span>
+                  )}
+                  {d.reviewed_by && profileName(d.reviewed_by) && (
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <UserCheck className="h-3 w-3" /> {profileName(d.reviewed_by)}
+                    </span>
                   )}
                 </div>
                 {d.actual_outcome && <p className="whitespace-pre-wrap text-sm">{d.actual_outcome}</p>}

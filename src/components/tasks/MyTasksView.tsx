@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Search, UserRoundPlus, Inbox } from 'lucide-react';
+import { TaskRow } from './TaskRow';
 
 type Bucket = 'recent' | 'overdue' | 'today' | 'this_week' | 'next_week' | 'later' | 'no_date';
 
@@ -123,30 +124,29 @@ export function MyTasksView() {
       {unassignedFiltered.length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-2">
-            <Inbox className="h-3.5 w-3.5 text-amber-500" />
+            <Inbox className="h-3.5 w-3.5 text-warning" />
             <h2 className="text-sm font-semibold">Sahipsiz işler</h2>
             <span className="text-xs text-muted-foreground">{unassignedFiltered.length}</span>
           </div>
-          <div className="rounded-md border border-amber-500/30 divide-y">
+          <div className="rounded-md border border-warning/25 overflow-hidden">
             {unassignedFiltered.map(t => {
               const project = projectMap.get(t.project_id);
               return (
-                <div key={t.id} className="p-3 flex items-center gap-3">
-                  <Badge className={`text-[10px] border ${TASK_STATUS_COLORS[t.status]}`}>{TASK_STATUS_LABELS[t.status]}</Badge>
-                  <Link to={`/projects/${t.project_id}`} className="flex-1 min-w-0 hover:underline">
-                    <p className="text-sm font-medium truncate">{t.title}</p>
-                    {project && <p className="text-xs text-muted-foreground">{project.icon} {project.name}</p>}
-                  </Link>
-                  <Badge className={`text-[10px] ${TASK_PRIORITY_COLORS[t.priority]}`}>{TASK_PRIORITY_LABELS[t.priority]}</Badge>
-                  {t.due_date && <span className="text-xs text-muted-foreground">{t.due_date}</span>}
-                  <Button
-                    size="sm" variant="outline" className="h-7 shrink-0 text-xs"
-                    disabled={updateTask.isPending}
-                    onClick={() => claim(t.id, t.title)}
-                  >
-                    <UserRoundPlus className="mr-1 h-3.5 w-3.5" /> Üstlen
-                  </Button>
-                </div>
+                <TaskRow
+                  key={t.id}
+                  task={t}
+                  projectName={project?.name}
+                  href={`/projects/${t.project_id}`}
+                  rightSlot={
+                    <Button
+                      size="sm" variant="outline" className="h-6 shrink-0 text-[11px] px-2"
+                      disabled={updateTask.isPending}
+                      onClick={(e) => { e.preventDefault(); claim(t.id, t.title); }}
+                    >
+                      <UserRoundPlus className="mr-1 h-3 w-3" /> Üstlen
+                    </Button>
+                  }
+                />
               );
             })}
           </div>
@@ -170,19 +170,16 @@ export function MyTasksView() {
                   <h2 className="text-sm font-semibold">{BUCKET_LABELS[b]}</h2>
                   <span className="text-xs text-muted-foreground">{items.length}</span>
                 </div>
-                <div className="rounded-md border divide-y">
+                <div className="rounded-md border border-border/60 overflow-hidden">
                   {items.map(t => {
                     const project = projectMap.get(t.project_id);
                     return (
-                      <Link key={t.id} to={`/projects/${t.project_id}`} className="p-3 flex items-center gap-3 hover:bg-accent/50">
-                        <Badge className={`text-[10px] border ${TASK_STATUS_COLORS[t.status]}`}>{TASK_STATUS_LABELS[t.status]}</Badge>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{t.title}</p>
-                          {project && <p className="text-xs text-muted-foreground">{project.icon} {project.name}</p>}
-                        </div>
-                        <Badge className={`text-[10px] ${TASK_PRIORITY_COLORS[t.priority]}`}>{TASK_PRIORITY_LABELS[t.priority]}</Badge>
-                        {t.due_date && <span className="text-xs text-muted-foreground">{t.due_date}</span>}
-                      </Link>
+                      <TaskRow
+                        key={t.id}
+                        task={t}
+                        projectName={project?.name}
+                        href={`/projects/${t.project_id}`}
+                      />
                     );
                   })}
                 </div>

@@ -20,8 +20,8 @@ export function OpportunitiesListView() {
   return (
     <div className="space-y-4">
       {(stuck ?? []).length > 0 && (
-        <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
-          <div className="flex items-center gap-2 font-medium text-amber-300 mb-1">
+        <div className="rounded-md border border-warning/40 bg-warning/10 p-3 text-sm">
+          <div className="flex items-center gap-2 font-medium text-warning mb-1">
             <AlertTriangle className="h-4 w-4" /> {stuck!.length} fırsat stage SLA'sını aştı
           </div>
           <div className="text-xs text-muted-foreground">
@@ -54,7 +54,7 @@ export function OpportunitiesListView() {
                 <TableRow key={o.id}>
                   <TableCell className="font-medium">
                     {o.name}
-                    {isStuck && <Clock className="inline h-3 w-3 ml-2 text-amber-400" />}
+                    {isStuck && <Clock className="inline h-3 w-3 ml-2 text-warning" />}
                   </TableCell>
                   <TableCell className="text-sm">{o.company_id ? (compMap.get(o.company_id) ?? '—') : '—'}</TableCell>
                   <TableCell className="text-sm">{s?.name ?? '—'}</TableCell>

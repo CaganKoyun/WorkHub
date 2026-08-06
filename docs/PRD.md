@@ -86,11 +86,6 @@ Klasik proje yönetimi araçlarından farkı: yalnızca işin sonucunu değil, *
 | AI Chat | `/ai-chat` | Şirket verisine erişen asistan; öneriyi "Move to Inbox" ile onaya dönüştürme |
 | Onboarding | `/onboarding` | 4 adımlı workspace kurulum sihirbazı |
 | Auth / Invite / Landing | `/auth`, `/invite/:token`, `/` | Giriş, davet kabulü, pazarlama sayfası |
-| Pricing | `/pricing` | 4 plan (Free/Team/Growth/Scale), feature karşılaştırma, FAQ |
-| Compare | `/compare/:slug` | Notion, Asana, Linear, Monday karşılaştırma sayfaları |
-| Security | `/security` | RLS, şifreleme, yedekleme, GDPR/KVKK, alt işlemciler |
-| Changelog | `/changelog` | Ürün güncellemeleri, tarih sıralı, RSS desteği |
-| Notification Settings | `/settings/notifications` | Bildirim tetikleyici matrisi (trigger × in_app toggle) |
 
 ---
 
@@ -106,7 +101,7 @@ Klasik proje yönetimi araçlarından farkı: yalnızca işin sonucunu değil, *
 - **Governance:** `goals`, `risks`, `decisions`, `approvals`
 - **Company:** `legal_entities`, `departments`, `teams`, `job_titles`, `employees`, `business_functions`, `module_ownership`, `permission_sets`
 - **Assets:** `assets`, `asset_categories`, `asset_assignments`
-- **Graph & Platform:** `object_links`, `integrations_catalog`, `workspace_connections`, `user_mcp_servers`, `mcp_oauth_states`, `notifications`, `notification_preferences`
+- **Graph & Platform:** `object_links`, `integrations_catalog`, `workspace_connections`, `user_mcp_servers`, `mcp_oauth_states`, `notification_preferences`
 
 **Kritik fonksiyonlar:** `create_workspace`, `accept_workspace_invitation`, `seed_default_permissions`, `has_workspace_permission`, `is_workspace_member`, `fin_cash_balance`, `fin_burn_rate`, `fin_lookup_fx`, `crm_opportunity_won_flow`, `has_role`.
 
@@ -128,14 +123,15 @@ Klasik proje yönetimi araçlarından farkı: yalnızca işin sonucunu değil, *
 
 | # | Konu | Etki | Öncelik |
 | --- | --- | --- | --- |
-| ~~1~~ | ~~`decisions` tablosunda `verdict`, `confidence`, `actual_outcome` kolonları eksik~~ | ~~DSoR çekirdeği kırık~~ | ~~P0~~ DONE |
-| ~~2~~ | ~~Signup'ta `profiles` satırı oluşturan trigger bağlı değil~~ | ~~Kimlik/atama UX'i~~ | ~~P0~~ DONE |
-| 3 | TopBar global arama yalnızca görsel placeholder | Keşfedilebilirlik | P1 |
-| 4 | Atanmamış görevler My Tasks'ta görünmüyor (Unassigned grubu yok) | Veri kaybı hissi | P1 |
-| 5 | Bazı listelerde emoji ikonlar "tofu" kutusu olarak render ediliyor → Lucide'a geçilmeli | Görsel kalite | P2 |
-| 6 | Product modülünde feedback → feature dönüşümü ve RICE/ICE skorlaması yok | Ürün karar akışı | P2 |
-| 7 | Analytics modüller arası gerçek metrik yerine kısmi kartlarla sınırlı | Raporlama | P2 |
-| ~~8~~ | ~~Bildirim/e-posta katmanı (onay hatırlatmaları) yok~~ | ~~Onay döngüsü yavaş~~ | ~~P2~~ DONE |
+| 1 | `decisions` tablosunda `verdict`, `confidence`, `actual_outcome` kolonları eksik → `/decisions` 400 dönüyor | DSoR çekirdeği kırık | P0 · Backend |
+| 2 | Signup'ta `profiles` satırı oluşturan trigger bağlı değil → 406 hataları, boş avatarlar | Kimlik/atama UX'i | P0 · Backend |
+| 3 | ~~TopBar global arama yalnızca görsel placeholder~~ **✅ Kapatıldı** (GlobalSearch.tsx 320 satır, TopBar ile bağlı) | — | Kapandı |
+| 4 | ~~Atanmamış görevler My Tasks'ta görünmüyor~~ **✅ Kapatıldı** (MyTasksView L124 "Sahipsiz işler") | — | Kapandı |
+| 5 | Bazı listelerde emoji ikonlar "tofu" kutusu olarak render ediliyor → Lucide'a geçilmeli. Şu an yalnız Leaderboard'da 1 emoji kalmış (achievement badge — kasıtlı) | Görsel kalite | P3 · Kozmetik |
+| 6 | Product modülünde feedback → feature dönüşümü ve RICE/ICE skorlaması yok. **Kısmen çözüldü:** `src/lib/rice.ts` pure RICE/ICE + sıralama util'i eklendi; Product.tsx entegrasyonu (backend kolonu `rice_score`) bekliyor | Ürün karar akışı | P2 · Frontend + Schema |
+| 7 | Analytics modüller arası gerçek metrik yerine kısmi kartlarla sınırlı (yalnızca bugs) | Raporlama | P2 · Frontend |
+| 8 | Bildirim/e-posta katmanı (onay hatırlatmaları) yok | Onay döngüsü yavaş | P2 · Edge Function |
+| 9 | `buildSnapshotDeltas` NaN/Infinity kaçağı — Decision Replay'de bozuk delta | UX + veri bütünlüğü | ✅ Kapatıldı (commit 4ed9e40) |
 
 ---
 

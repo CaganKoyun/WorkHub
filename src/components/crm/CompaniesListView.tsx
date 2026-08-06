@@ -127,8 +127,8 @@ function NewCompanyDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
         <div className="space-y-3">
           <div><Label>Ad *</Label><Input value={name} onChange={e => setName(e.target.value)} /></div>
           {relevantDupes.length > 0 && (
-            <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-2 text-xs">
-              <div className="flex items-center gap-1 text-amber-300 font-medium mb-1">
+            <div className="rounded-md border border-warning/40 bg-warning/10 p-2 text-xs">
+              <div className="flex items-center gap-1 text-warning font-medium mb-1">
                 <AlertTriangle className="h-3 w-3" /> Olası dupe kayıt
               </div>
               <ul className="space-y-0.5">

@@ -62,7 +62,7 @@ export function useCreateProject() {
           priority: input.priority ?? 'medium',
           start_date: input.start_date ?? null,
           end_date: input.end_date ?? null,
-          color: input.color ?? '#6366f1',
+          color: input.color ?? '#C6F432',
           icon: input.icon ?? '📁',
           owner_id: user!.id,
           created_by: user!.id,

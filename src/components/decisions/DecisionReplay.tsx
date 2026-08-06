@@ -73,7 +73,7 @@ export function DecisionReplay({ decision }: { decision: Decision }) {
                   const Icon = diff === 0 ? Minus : good ? TrendingUp : TrendingDown;
                   const tone = diff === 0
                     ? "text-muted-foreground"
-                    : good ? "text-emerald-500" : "text-destructive";
+                    : good ? "text-success" : "text-destructive";
                   return (
                     <li key={d.key} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-2 text-sm">
                       <span className="tabular-nums">{fmt(d.then)}</span>

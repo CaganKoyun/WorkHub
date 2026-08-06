@@ -20,7 +20,7 @@ const STATUS_COLORS: Record<CrmQuoteStatus, string> = {
   accepted: 'bg-emerald-500/20 text-emerald-300',
   declined: 'bg-destructive/20 text-destructive-foreground',
   expired: 'bg-amber-500/20 text-amber-300',
-  revised: 'bg-violet-500/20 text-violet-300',
+  revised: 'bg-[#BFD9FF]/20 text-[#8FBAFF]',
 };
 
 export function QuotesListView() {

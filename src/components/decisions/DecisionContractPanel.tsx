@@ -297,7 +297,7 @@ function OptionsTab({ decisionId }: { decisionId: string }) {
         Değerlendirilen yollar ve neden elendikleri — kararın kendisi kadar değerli olan kısım.
       </p>
       {(items ?? []).map((o) => (
-        <div key={o.id} className={`space-y-1 rounded-md border p-3 ${o.is_chosen ? "border-emerald-500/50 bg-emerald-500/5" : ""}`}>
+        <div key={o.id} className={`space-y-1 rounded-md border p-3 ${o.is_chosen ? "border-success/50 bg-success/5" : ""}`}>
           <div className="flex items-center justify-between gap-2">
             <p className="text-sm font-medium">{o.label}</p>
             <div className="flex items-center gap-1">

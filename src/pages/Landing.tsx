@@ -3,7 +3,7 @@ import {
   ArrowRight, CheckCircle2, LayoutGrid, Users, Target, Sparkles,
   BarChart3, Workflow, Plus, Search, Circle, CheckSquare, Play,
 } from "lucide-react";
-import { StackedLogo } from "@/components/StackedLogo";
+import { SparkLogo } from "@/components/SparkLogo";
 
 const features = [
   { icon: LayoutGrid, title: "Work management", desc: "Projects, tasks and bugs across List, Board, Timeline and Calendar — connected through the Company Graph." },
@@ -61,11 +61,8 @@ const Landing = () => {
       {/* Nav */}
       <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-[1180px] items-center justify-between px-6">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground">
-              <StackedLogo size={13} color="currentColor" />
-            </span>
-            <span className="text-[15px] font-semibold tracking-tight">FounderOS</span>
+          <Link to="/" className="flex items-center">
+            <SparkLogo size={17} />
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">
@@ -75,7 +72,7 @@ const Landing = () => {
             <Link to="/pricing" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
               Pricing
             </Link>
-            <Link to="/compare/notion" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+            <Link to="/compare" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
               Compare
             </Link>
             <Link to="/security" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
@@ -102,8 +99,9 @@ const Landing = () => {
       </nav>
 
       {/* Hero */}
-      <section className="border-b border-border bg-canvas px-6 pb-0 pt-16">
-        <div className="mx-auto max-w-[1000px] text-center">
+      <section className="relative overflow-hidden border-b border-border bg-canvas px-6 pb-0 pt-20">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] glow-primary" aria-hidden />
+        <div className="relative mx-auto max-w-[1000px] text-center">
           <div className="inline-flex h-7 items-center gap-2 rounded-full border border-border bg-background px-3 text-[11.5px] font-medium text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
             Join 100+ founders on the waitlist
@@ -121,14 +119,14 @@ const Landing = () => {
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/auth"
-              className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-[14.5px] font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+              className="btn-lime inline-flex h-11 items-center gap-2 rounded-md px-6 text-[14.5px] font-semibold shadow-lg shadow-[hsl(var(--accent-lime)/0.25)]"
             >
               Start free — no card
               <ArrowRight className="h-4 w-4" />
             </Link>
             <a
-              href="#demo-video"
-              className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-background px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary"
+              href="#features"
+              className="glass-panel inline-flex h-11 items-center rounded-md px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary/70"
             >
               <Play className="h-4 w-4" />
               Watch demo
@@ -145,14 +143,14 @@ const Landing = () => {
           </div>
         </div>
 
-        {/* Demo video placeholder */}
-        <div id="demo-video" className="mx-auto mt-14 max-w-[1120px]">
-          <div className="overflow-hidden rounded-t-xl border border-b-0 border-border bg-background shadow-[0_-2px_40px_-12px_rgba(0,0,0,0.18)]">
+        {/* Product mock */}
+        <div className="relative mx-auto mt-16 max-w-[1120px]">
+          <div className="overflow-hidden rounded-t-xl border border-b-0 border-border bg-background elevation-2">
             <div className="flex">
               {/* rail */}
               <div className="hidden w-[52px] shrink-0 flex-col items-center gap-3 bg-sidebar py-3 sm:flex">
                 <span className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground">
-                  <StackedLogo size={12} color="currentColor" />
+                  <SparkLogo variant="mark" size={12} />
                 </span>
                 {[0, 1, 2, 3, 4].map(i => (
                   <span key={i} className={`h-6 w-6 rounded-md ${i === 1 ? "bg-sidebar-accent" : "bg-sidebar-accent/40"}`} />
@@ -260,18 +258,18 @@ const Landing = () => {
               Every part of the company, in the same system
             </h2>
             <p className="mt-4 text-[15.5px] leading-relaxed text-muted-foreground">
-              Stop stitching five tools together. FounderOS links a project to its customer, budget,
+              Stop stitching five tools together. Spark WorkHub links a project to its customer, budget,
               goal, risk and the decision that started it.
             </p>
           </div>
 
           <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
             {features.map(f => (
-              <div key={f.title} className="bg-background p-6 transition-colors hover:bg-canvas">
-                <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
+              <div key={f.title} className="group relative bg-background p-6 transition-colors hover:bg-canvas">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/15 transition-colors group-hover:bg-primary/15">
                   <f.icon className="h-[18px] w-[18px]" />
                 </span>
-                <h3 className="mt-4 text-[15px] font-semibold">{f.title}</h3>
+                <h3 className="mt-5 text-[15px] font-semibold tracking-tight">{f.title}</h3>
                 <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">{f.desc}</p>
               </div>
             ))}
@@ -291,7 +289,7 @@ const Landing = () => {
             </h2>
             <p className="mt-4 text-[15.5px] leading-relaxed text-muted-foreground">
               Capture the context, the options, the confidence level and the expected result — then
-              let FounderOS show you what actually happened months later.
+              let Spark WorkHub show you what actually happened months later.
             </p>
             <ul className="mt-6 space-y-3">
               {[
@@ -382,30 +380,30 @@ const Landing = () => {
 
       {/* CTA */}
       <section className="px-6 pb-20">
-        <div className="mx-auto max-w-[1120px] rounded-2xl bg-sidebar px-8 py-14 text-center">
-          <h2 className="mx-auto max-w-[620px] text-[clamp(1.7rem,3.2vw,2.4rem)] font-semibold leading-tight tracking-[-0.03em] text-sidebar-accent-foreground">
-            Run the whole company from one place
-          </h2>
-          <p className="mx-auto mt-3 max-w-[520px] text-[15px] text-sidebar-foreground">
-            Set up your workspace in two minutes. Invite your team when you're ready.
-          </p>
-          <Link
-            to="/auth"
-            className="mt-7 inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-[14.5px] font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Start free — no card <ArrowRight className="h-4 w-4" />
-          </Link>
+        <div className="relative mx-auto max-w-[1120px] overflow-hidden rounded-2xl border border-border bg-sidebar px-8 py-14 text-center elevation-2">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-full glow-primary opacity-70" aria-hidden />
+          <div className="relative">
+            <h2 className="mx-auto max-w-[620px] text-[clamp(1.7rem,3.2vw,2.4rem)] font-semibold leading-tight tracking-[-0.03em] text-sidebar-accent-foreground">
+              Run the whole company from one place
+            </h2>
+            <p className="mx-auto mt-3 max-w-[520px] text-[15px] text-sidebar-foreground">
+              Set up your workspace in two minutes. Invite your team when you're ready.
+            </p>
+            <Link
+              to="/auth"
+              className="mt-7 inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-[14.5px] font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Get started <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="border-t border-border px-6 py-10">
         <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground">
-              <StackedLogo size={13} color="currentColor" />
-            </span>
-            <span className="text-[14px] font-semibold tracking-tight">FounderOS</span>
+          <div className="flex items-center">
+            <SparkLogo size={16} />
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
             <a href="#features" className="transition-colors hover:text-foreground">Product</a>
@@ -413,7 +411,7 @@ const Landing = () => {
             <Link to="/security" className="transition-colors hover:text-foreground">Security</Link>
             <Link to="/changelog" className="transition-colors hover:text-foreground">Changelog</Link>
           </div>
-          <span className="text-[12.5px] text-muted-foreground">&copy; {new Date().getFullYear()} FounderOS</span>
+          <span className="text-[12.5px] text-muted-foreground">&copy; {new Date().getFullYear()} Spark WorkHub</span>
         </div>
       </footer>
     </div>

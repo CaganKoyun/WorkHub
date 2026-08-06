@@ -13,7 +13,7 @@ CREATE POLICY "attachments ws select" ON storage.objects
   FOR SELECT TO authenticated
   USING (
     bucket_id = 'attachments'
-    AND public.is_workspace_member(auth.uid(), ((storage.foldername(name))[1])::uuid)
+    AND public.is_workspace_member(((storage.foldername(name))[1])::uuid, auth.uid())
   );
 
 DROP POLICY IF EXISTS "attachments ws insert" ON storage.objects;
@@ -21,7 +21,7 @@ CREATE POLICY "attachments ws insert" ON storage.objects
   FOR INSERT TO authenticated
   WITH CHECK (
     bucket_id = 'attachments'
-    AND public.is_workspace_member(auth.uid(), ((storage.foldername(name))[1])::uuid)
+    AND public.is_workspace_member(((storage.foldername(name))[1])::uuid, auth.uid())
   );
 
 DROP POLICY IF EXISTS "attachments ws delete" ON storage.objects;
@@ -29,5 +29,5 @@ CREATE POLICY "attachments ws delete" ON storage.objects
   FOR DELETE TO authenticated
   USING (
     bucket_id = 'attachments'
-    AND public.is_workspace_member(auth.uid(), ((storage.foldername(name))[1])::uuid)
+    AND public.is_workspace_member(((storage.foldername(name))[1])::uuid, auth.uid())
   );

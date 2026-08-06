@@ -57,7 +57,7 @@ export const CONDITION_LABELS: Record<AssetCondition, string> = {
 export const CONDITION_COLORS: Record<AssetCondition, string> = {
   excellent: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
   good: 'bg-primary/20 text-primary border-primary/30',
-  fair: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  fair: 'bg-amber-500/20 text-warning border-amber-500/30',
   poor: 'bg-destructive/20 text-destructive-foreground border-destructive/30',
   retired: 'bg-muted text-muted-foreground border-border',
 };

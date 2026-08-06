@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
@@ -7,121 +7,150 @@
 
 @layer base {
   /* ---------------------------------------------------------------
-     Asana-style system: white workspace, permanently dark navigation,
-     warm-grey hairlines, coral accent.
+     Graphite × Lime design system (docs/BRAND.md).
+     Dark-only identity. Hierarchy via surface lightness, not borders.
+     One loud color: neon lime #C6F432 — max ~3% of any screen.
+     Surfaces darkest→lightest:
+       shell   #0E0E10  (sidebar, topbar)         → --sidebar-background
+       canvas  #17171A  (main content)            → --background
+       panel   #1C1C1F  (group, table container)  → --muted
+       card    #232327  (card, row, chip)         → --card / --secondary
+       hover   #2A2A2F                            → --accent
+       float   #2E2E33  (modal, dropdown, toast)  → --popover
      --------------------------------------------------------------- */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 220 4% 12%;          /* #1E1F21 */
+    --background: 240 6% 10%;              /* #17171A canvas */
+    --foreground: 240 11% 96%;             /* #F5F5F7 text-1 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 4% 12%;
+    --card: 240 5% 15%;                    /* #232327 card/row */
+    --card-foreground: 240 11% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 4% 12%;
+    --popover: 240 5% 19%;                 /* #2E2E33 floating */
+    --popover-foreground: 240 11% 96%;
 
-    --primary: 0 79% 68%;              /* #F06A6A coral */
-    --primary-foreground: 0 0% 100%;
+    --primary: 74 90% 58%;                 /* #C6F432 neon lime */
+    --primary-foreground: 240 7% 6%;       /* #0E0E10 — dark on lime, never white */
 
-    --secondary: 20 14% 96%;           /* #F9F8F8 */
-    --secondary-foreground: 220 4% 12%;
+    --secondary: 240 5% 15%;               /* #232327 secondary button / chip */
+    --secondary-foreground: 240 11% 92%;
 
-    --muted: 20 14% 96%;
-    --muted-foreground: 210 2% 43%;    /* #6D6E6F */
+    --muted: 240 5% 12%;                   /* #1C1C1F panel */
+    --muted-foreground: 240 5% 67%;        /* #A8A8B0 text-2 */
 
-    --accent: 20 12% 94%;
-    --accent-foreground: 220 4% 12%;
+    --accent: 240 6% 17%;                  /* #2A2A2F hover surface */
+    --accent-foreground: 240 11% 96%;
 
-    --destructive: 3 68% 52%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 5 100% 68%;             /* #FF6B5E */
+    --destructive-foreground: 240 7% 6%;
 
-    --success: 152 48% 40%;
-    --success-foreground: 0 0% 100%;
+    --success: 142 69% 58%;                /* #4ADE80 */
+    --success-foreground: 240 7% 6%;
 
-    --warning: 33 90% 52%;
-    --warning-foreground: 0 0% 100%;
+    --warning: 43 96% 56%;                 /* #FBBF24 */
+    --warning-foreground: 240 7% 6%;
 
-    --info: 213 74% 56%;
-    --info-foreground: 0 0% 100%;
+    --info: 213 90% 65%;
+    --info-foreground: 240 7% 6%;
 
-    --border: 20 11% 92%;              /* #EDEAE9 */
-    --input: 20 11% 88%;
-    --ring: 0 79% 68%;
+    /* Near-invisible hairlines — rgba(255,255,255,0.06) equivalent on dark */
+    --border: 240 5% 16%;
+    --input: 240 7% 11%;                   /* #1A1A1E input bg */
+    --ring: 74 90% 58%;                    /* lime focus ring */
 
-    --radius: 0.5rem;
+    /* lg=12px cards · md=10px buttons/inputs · sm=8px nav items */
+    --radius: 0.75rem;
 
-    /* Workspace canvas behind boards/lists */
-    --canvas: 20 14% 97%;
+    --canvas: 240 6% 10%;
 
-    /* Navigation is charcoal in BOTH themes (Asana behaviour) */
-    --sidebar-background: 220 4% 12%;  /* #1E1F21 */
-    --sidebar-foreground: 220 3% 74%;
-    --sidebar-primary: 0 79% 68%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 225 4% 20%;      /* #303134 */
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 225 4% 22%;
-    --sidebar-ring: 0 79% 68%;
+    /* Shell — darkest layer */
+    --sidebar-background: 240 7% 6%;       /* #0E0E10 */
+    --sidebar-foreground: 240 5% 67%;      /* text-2 */
+    --sidebar-primary: 74 90% 58%;
+    --sidebar-primary-foreground: 240 7% 6%;
+    --sidebar-accent: 240 5% 15%;          /* hover/active #232327 */
+    --sidebar-accent-foreground: 240 11% 96%;
+    --sidebar-border: 240 5% 13%;
+    --sidebar-ring: 74 90% 58%;
 
-    --severity-critical: 3 68% 52%;
-    --severity-high: 20 90% 55%;
-    --severity-medium: 33 90% 52%;
-    --severity-low: 152 48% 40%;
+    /* Task/issue status hues — no purple in this system */
+    --status-backlog: 240 4% 55%;
+    --status-todo: 240 4% 70%;
+    --status-in-progress: 43 96% 56%;
+    --status-review: 213 90% 65%;
+    --status-done: 142 69% 58%;
+    --status-canceled: 0 0% 45%;
+
+    /* Priority scale */
+    --priority-urgent: 5 100% 68%;
+    --priority-high: 20 90% 60%;
+    --priority-medium: 43 96% 56%;
+    --priority-low: 240 5% 60%;
+    --priority-none: 240 4% 40%;
+
+    --severity-critical: 5 100% 68%;
+    --severity-high: 20 90% 58%;
+    --severity-medium: 43 96% 56%;
+    --severity-low: 142 69% 58%;
+
+    /* Accent aliases. Lime IS primary now; the old "violet spotlight"
+       slot is remapped to the calm blue so legacy .text-violet /
+       .bg-violet callsites render blue, never purple. */
+    --accent-lime:   74 90% 58%;
+    --accent-lime-foreground: 240 7% 6%;
+    --accent-violet: 213 90% 65%;
+    --accent-violet-foreground: 240 7% 6%;
   }
 
-  .dark {
-    --background: 220 5% 9%;
-    --foreground: 0 0% 96%;
+  /* Light theme (opt-in). The product identity is dark-only; this keeps
+     the toggle functional without designing a second system. */
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 8%;
 
-    --card: 220 5% 12%;
-    --card-foreground: 0 0% 96%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 8%;
 
-    --popover: 220 5% 13%;
-    --popover-foreground: 0 0% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
 
-    --primary: 0 79% 68%;
+    --primary: 74 75% 40%;                 /* darker lime for light bg */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 4% 16%;
-    --secondary-foreground: 0 0% 94%;
+    --secondary: 240 6% 96%;
+    --secondary-foreground: 240 10% 8%;
 
-    --muted: 220 4% 16%;
-    --muted-foreground: 220 3% 62%;
+    --muted: 240 6% 96%;
+    --muted-foreground: 240 5% 45%;
 
-    --accent: 220 4% 19%;
-    --accent-foreground: 0 0% 96%;
+    --accent: 240 6% 94%;
+    --accent-foreground: 240 10% 8%;
 
-    --destructive: 3 70% 58%;
+    --destructive: 5 85% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 152 48% 48%;
+    --success: 142 60% 38%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 33 92% 58%;
+    --warning: 43 92% 46%;
     --warning-foreground: 0 0% 100%;
 
-    --info: 213 80% 62%;
+    --info: 213 80% 52%;
     --info-foreground: 0 0% 100%;
 
-    --border: 220 4% 20%;
-    --input: 220 4% 22%;
-    --ring: 0 79% 68%;
+    --border: 240 6% 90%;
+    --input: 240 6% 97%;
+    --ring: 74 75% 40%;
 
-    --canvas: 220 5% 11%;
+    --canvas: 240 6% 98%;
 
-    --sidebar-background: 220 5% 7%;
-    --sidebar-foreground: 220 3% 68%;
-    --sidebar-primary: 0 79% 68%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 4% 16%;
+    --sidebar-background: 240 7% 6%;
+    --sidebar-foreground: 240 5% 70%;
+    --sidebar-primary: 74 90% 58%;
+    --sidebar-primary-foreground: 240 7% 6%;
+    --sidebar-accent: 240 5% 15%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 220 4% 18%;
-    --sidebar-ring: 0 79% 68%;
-
-    --severity-critical: 3 74% 62%;
-    --severity-high: 20 95% 60%;
-    --severity-medium: 33 95% 58%;
-    --severity-low: 152 50% 50%;
+    --sidebar-border: 240 5% 13%;
+    --sidebar-ring: 74 90% 58%;
   }
 }
 
@@ -131,24 +160,26 @@
   }
 
   html {
-    background-color: hsl(0 0% 100%);
+    background-color: hsl(240 6% 10%);
+    color-scheme: dark;
   }
 
-  html.dark {
-    background-color: hsl(220 5% 9%);
+  html.light {
+    background-color: hsl(0 0% 100%);
+    color-scheme: light;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    font-size: 14px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 13px;
     letter-spacing: -0.003em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-semibold tracking-tight text-foreground;
     letter-spacing: -0.02em;
   }
 
@@ -156,16 +187,131 @@
     font-variant-numeric: tabular-nums;
     font-family: 'Geist Mono', 'SF Mono', ui-monospace, monospace;
   }
+
+  /* Native scrollbar in dark canvas */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background-color: hsl(var(--muted-foreground) / 0.4); background-clip: padding-box; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  /* Motion is feedback, not theater. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer utilities {
   .hairline { box-shadow: inset 0 0 0 1px hsl(var(--border)); }
   .bg-canvas { background-color: hsl(var(--canvas)); }
+
+  /* Soft elevation for cards / modals on dark canvas. */
+  .elevation-1 {
+    box-shadow:
+      0 1px 0 0 hsl(0 0% 100% / 0.02) inset,
+      0 1px 2px 0 hsl(240 20% 2% / 0.5),
+      0 8px 24px -8px hsl(240 20% 2% / 0.4);
+  }
+  .elevation-2 {
+    box-shadow:
+      0 1px 0 0 hsl(0 0% 100% / 0.03) inset,
+      0 2px 6px -1px hsl(240 20% 2% / 0.6),
+      0 24px 60px -16px hsl(240 20% 2% / 0.55);
+  }
+
+  /* Radial lime glow behind hero / feature accents — kept faint so the
+     3% lime budget holds. */
+  .glow-primary {
+    background-image: radial-gradient(
+      60% 60% at 50% 0%,
+      hsl(var(--primary) / 0.10) 0%,
+      hsl(var(--primary) / 0.03) 40%,
+      transparent 70%
+    );
+  }
+
+  /* Frosted-glass panel — subtle, not heavy. */
+  .glass-panel {
+    background-color: hsl(var(--card) / 0.55);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border: 1px solid hsl(0 0% 100% / 0.08);
+    box-shadow:
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.04),
+      0 8px 24px -12px hsl(240 30% 2% / 0.5);
+  }
+
+  /* Primary lime CTA. Hover brightens + soft glow; press scales down. */
+  .btn-lime {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    transition: background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 100ms ease;
+  }
+  .btn-lime:hover {
+    background-color: hsl(74 100% 65%); /* #D4FF4A */
+    box-shadow: 0 0 16px hsl(74 90% 58% / 0.25);
+  }
+  .btn-lime:active { transform: scale(0.97); }
+
+  /* Accent utilities. "violet" names are legacy aliases → render blue. */
+  .text-lime   { color: hsl(var(--accent-lime)); }
+  .bg-lime     { background-color: hsl(var(--accent-lime)); color: hsl(var(--accent-lime-foreground)); }
+  .text-violet { color: hsl(var(--accent-violet)); }
+  .bg-violet   { background-color: hsl(var(--accent-violet)); color: hsl(var(--accent-violet-foreground)); }
+  .ring-lime   { --tw-ring-color: hsl(var(--accent-lime) / 0.4); }
+  .ring-violet { --tw-ring-color: hsl(var(--accent-violet) / 0.4); }
+
+  /* Pastel meaning-pills (pill + text pairs, WCAG AA). Anlam pill'de
+     yaşar: durum/kategori/öncelik renkli düz metin olmaz. */
+  .pill { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium; }
+  .pill-orange { background: #FFD9B0; color: #7A3E00; }
+  .pill-yellow { background: #F7F0A0; color: #5C5200; }
+  .pill-red    { background: #FFB4A8; color: #7A1200; }
+  .pill-teal   { background: #B8F0E4; color: #00524A; }
+  .pill-green  { background: #C8EFC0; color: #1E5214; }
+  .pill-blue   { background: #BFD9FF; color: #143A7A; }
+  .pill-pink   { background: #F5C6E8; color: #6B1E56; }
+  .pill-subtle { background: hsl(0 0% 100% / 0.07); color: #C9C9D1; }
+
+  /* Subtle dotted / grid canvas backdrop. */
+  .bg-grid-fade {
+    background-image:
+      linear-gradient(to bottom, transparent 0, hsl(var(--background)) 85%),
+      linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 100% 100%, 48px 48px, 48px 48px;
+  }
   .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
   .scrollbar-thin::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 4px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 
-  /* Asana page-header tab strip */
+  /* Linear-style compact issue row */
+  .issue-row {
+    @apply flex h-9 items-center gap-3 border-b border-border/60 px-4 text-[13px] transition-colors hover:bg-card;
+  }
+  .issue-row:last-child { border-bottom-width: 0; }
+
+  /* Chip button (New Issue modal etc.) */
+  .chip {
+    @apply inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 text-[12px] font-medium text-muted-foreground transition-colors hover:border-muted-foreground/40 hover:text-foreground;
+  }
+
+  /* Keyboard shortcut hint */
+  .kbd {
+    @apply inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-secondary/60 px-1 font-mono text-[10.5px] text-muted-foreground;
+  }
+
+  /* Tab strip — active gets 2px lime underline */
   .asana-tab {
     @apply relative inline-flex h-11 items-center whitespace-nowrap px-3 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground;
   }
@@ -174,6 +320,6 @@
   }
   .asana-tab[data-active="true"]::after {
     content: "";
-    @apply absolute inset-x-2 bottom-0 h-[2px] rounded-t bg-foreground;
+    @apply absolute inset-x-2 bottom-0 h-[2px] rounded-t bg-primary;
   }
 }

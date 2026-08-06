@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 
 const EMOJI_OPTIONS = ['📁','🚀','💼','🎯','⚡','🔧','🎨','📊','🧪','🌱'];
-const COLOR_OPTIONS = ['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#ef4444','#8b5cf6','#14b8a6'];
+const COLOR_OPTIONS = ['#C6F432','#5EA8FF','#FBBF24','#4ADE80','#2DD4BF','#FF6B5E','#F5C6E8','#FFD9B0'];
 
 export function ProjectFormView({ mode }: { mode: 'create' | 'edit' }) {
   const { id } = useParams<{ id: string }>();
@@ -26,7 +26,7 @@ export function ProjectFormView({ mode }: { mode: 'create' | 'edit' }) {
   const [priority, setPriority] = useState<ProjectPriority>('medium');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [color, setColor] = useState('#6366f1');
+  const [color, setColor] = useState('#C6F432');
   const [icon, setIcon] = useState('📁');
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function ProjectFormView({ mode }: { mode: 'create' | 'edit' }) {
       setPriority(existing.priority);
       setStartDate(existing.start_date ?? '');
       setEndDate(existing.end_date ?? '');
-      setColor(existing.color ?? '#6366f1');
+      setColor(existing.color ?? '#C6F432');
       setIcon(existing.icon ?? '📁');
     }
   }, [existing]);
