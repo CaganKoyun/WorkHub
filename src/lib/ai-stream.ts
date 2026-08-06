@@ -2,10 +2,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`;
 
-/**
- * Tek atımlık ajan çağrısı — SSE akışını okuyup parça parça geri verir.
- * AiChat sayfasındaki akışın yeniden kullanılabilir, minimal hali.
- */
+let _getAuthToken: (() => Promise<string | null>) | null = null;
+
+export function setAiStreamTokenGetter(getter: (() => Promise<string | null>) | null) {
+  _getAuthToken = getter;
+}
+
 export async function askAgent({
   message,
   domain,
@@ -15,8 +17,17 @@ export async function askAgent({
   domain: string;
   onDelta: (text: string) => void;
 }): Promise<string> {
-  const { data: sessionData } = await supabase.auth.getSession();
-  const token = sessionData.session?.access_token;
+  let token: string | null = null;
+
+  if (_getAuthToken) {
+    token = await _getAuthToken();
+  }
+
+  if (!token) {
+    const { data: sessionData } = await supabase.auth.getSession();
+    token = sessionData.session?.access_token ?? null;
+  }
+
   if (!token) throw new Error("Oturum bulunamadı");
 
   const resp = await fetch(CHAT_URL, {

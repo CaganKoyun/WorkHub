@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { supabase, setSupabaseAuthTokenGetter } from "@/integrations/supabase/client";
+import { setAiStreamTokenGetter } from "@/lib/ai-stream";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
@@ -93,6 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     setSupabaseAuthTokenGetter(getSupabaseBearer);
+    setAiStreamTokenGetter(getSupabaseBearer);
 
     (async () => {
       const token = await getSupabaseBearer();
@@ -101,7 +103,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       else setSession(null);
     })();
 
-    return () => setSupabaseAuthTokenGetter(null);
+    return () => {
+      setSupabaseAuthTokenGetter(null);
+      setAiStreamTokenGetter(null);
+    };
   }, [isAuthenticated, getSupabaseBearer, auth0User]);
 
   const fetchProfile = useCallback(async (userId: string) => {

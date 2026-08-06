@@ -8,10 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, CheckCircle2, Sparkles, Target, BarChart3, Linkedin } from "lucide-react";
 import { SparkLogo } from "@/components/SparkLogo";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Auth() {
   const { user, loading, signIn, signUp } = useAuth();
+  const { loginWithRedirect } = useAuth0();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -37,8 +38,7 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
-      if (error) toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
+      await loginWithRedirect({ authorizationParams: { connection: "google-oauth2" } });
     } catch (error: any) {
       toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
     } finally {
@@ -46,33 +46,27 @@ export default function Auth() {
     }
   };
 
-  // Both providers must be enabled in Supabase Dashboard → Authentication →
-  // Providers, with Client ID / Secret + the callback URL
-  // https://<PROJECT>.supabase.co/auth/v1/callback registered on the
-  // provider's side. See docs/SSO.md.
-  const oauth = async (
-    provider: "linkedin_oidc" | "azure",
-    setLoading: (v: boolean) => void,
-    label: string,
-  ) => {
-    setLoading(true);
+  const handleLinkedInSignIn = async () => {
+    setIsLinkedInLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: window.location.origin,
-          scopes: provider === "azure" ? "email openid profile" : undefined,
-        },
-      });
-      if (error) toast({ title: `${label} sign-in failed`, description: error.message, variant: "destructive" });
+      await loginWithRedirect({ authorizationParams: { connection: "linkedin" } });
     } catch (error: any) {
-      toast({ title: `${label} sign-in failed`, description: error.message, variant: "destructive" });
+      toast({ title: "LinkedIn sign-in failed", description: error.message, variant: "destructive" });
     } finally {
-      setLoading(false);
+      setIsLinkedInLoading(false);
     }
   };
-  const handleLinkedInSignIn  = () => oauth("linkedin_oidc", setIsLinkedInLoading, "LinkedIn");
-  const handleMicrosoftSignIn = () => oauth("azure",         setIsMicrosoftLoading, "Microsoft");
+
+  const handleMicrosoftSignIn = async () => {
+    setIsMicrosoftLoading(true);
+    try {
+      await loginWithRedirect({ authorizationParams: { connection: "windowslive" } });
+    } catch (error: any) {
+      toast({ title: "Microsoft sign-in failed", description: error.message, variant: "destructive" });
+    } finally {
+      setIsMicrosoftLoading(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

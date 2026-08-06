@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { Auth0Provider } from "@auth0/auth0-react";
 import "./index.css";
 import { registerServiceWorker } from "./lib/pwa";
 
@@ -43,25 +44,32 @@ const keyKeys = [
 
 const url = pickEnv(...urlKeys);
 const key = pickEnv(...keyKeys);
+
+const auth0Domain = pickEnv("VITE_AUTH0_DOMAIN");
+const auth0ClientId = pickEnv("VITE_AUTH0_CLIENT_ID");
+const auth0Audience = pickEnv("VITE_AUTH0_AUDIENCE");
+
 const root = document.getElementById("root")!;
 
-if (!url || !key) {
+if (!url || !key || !auth0Domain || !auth0ClientId) {
   const seenKeys = Object.keys(import.meta.env)
-    .filter((k) => /supabase|workhub|next_public/i.test(k))
+    .filter((k) => /supabase|workhub|next_public|auth0/i.test(k))
     .sort();
   root.innerHTML = `
     <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0F0F13;color:#F4F5F8;font:14px/1.5 Inter,system-ui,sans-serif;padding:24px">
       <div style="max-width:600px">
         <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid #C6F432;border-radius:999px;background:rgba(198,244,50,.12);color:#C6F432;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Startup blocked</div>
-        <h1 style="margin:16px 0 8px;font-size:22px;font-weight:600;letter-spacing:-.02em">Missing Supabase environment</h1>
+        <h1 style="margin:16px 0 8px;font-size:22px;font-weight:600;letter-spacing:-.02em">Missing environment variables</h1>
         <p style="margin:0 0 12px;color:#8A8F98">
-          Spark WorkHub couldn't resolve a Supabase URL/key at build time.
+          Spark WorkHub couldn't resolve required environment variables at build time.
         </p>
         <div style="margin:0 0 16px;padding:10px 12px;border:1px solid #262933;border-radius:6px;background:#151820;font-family:'Geist Mono',ui-monospace,monospace;font-size:11.5px;line-height:1.7">
-          URL   → ${url ? "<span style=\"color:#22c55e\">OK</span>" : "<span style=\"color:#ef4444\">missing</span>"}<br/>
-          KEY   → ${key ? "<span style=\"color:#22c55e\">OK</span>" : "<span style=\"color:#ef4444\">missing</span>"}
+          SUPABASE_URL    → ${url ? "<span style=\"color:#22c55e\">OK</span>" : "<span style=\"color:#ef4444\">missing</span>"}<br/>
+          SUPABASE_KEY    → ${key ? "<span style=\"color:#22c55e\">OK</span>" : "<span style=\"color:#ef4444\">missing</span>"}<br/>
+          AUTH0_DOMAIN    → ${auth0Domain ? "<span style=\"color:#22c55e\">OK</span>" : "<span style=\"color:#ef4444\">missing</span>"}<br/>
+          AUTH0_CLIENT_ID → ${auth0ClientId ? "<span style=\"color:#22c55e\">OK</span>" : "<span style=\"color:#ef4444\">missing</span>"}
         </div>
-        <p style="margin:0 0 8px;color:#8A8F98;font-size:12.5px">Env keys the build actually saw (Supabase/Vercel-shaped):</p>
+        <p style="margin:0 0 8px;color:#8A8F98;font-size:12.5px">Env keys the build actually saw:</p>
         <ul style="margin:0 0 16px;padding:0;list-style:none;font-family:'Geist Mono',ui-monospace,monospace;font-size:11.5px">
           ${
             seenKeys.length === 0
@@ -70,17 +78,25 @@ if (!url || !key) {
           }
         </ul>
         <p style="margin:0;color:#8A8F98;font-size:12.5px">
-          Add a URL + publishable/anon key on Vercel (Project → Settings →
-          Environment Variables) using any of the accepted names, then
-          redeploy the latest commit.
+          Add the missing keys in your hosting provider's environment variables,
+          then redeploy.
         </p>
       </div>
     </div>
   `;
 } else {
-  // Lazy import so nothing that touches the Supabase client runs on the
-  // missing-env code path.
   void import("./App").then(({ default: App }) => {
-    createRoot(root).render(<App />);
+    createRoot(root).render(
+      <Auth0Provider
+        domain={auth0Domain}
+        clientId={auth0ClientId}
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+          ...(auth0Audience ? { audience: auth0Audience } : {}),
+        }}
+      >
+        <App />
+      </Auth0Provider>
+    );
   });
 }

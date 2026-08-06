@@ -78,12 +78,18 @@ function ProfileTab() {
   };
 
   const handleChangePassword = async () => {
-    if (!newPassword || newPassword.length < 6) { toast({ title: "Error", description: "Password must be at least 6 characters.", variant: "destructive" }); return; }
-    setChangingPassword(true);
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-    setChangingPassword(false);
-    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-    else { toast({ title: "Password updated" }); setNewPassword(""); }
+    toast({
+      title: "Password management",
+      description: "Password changes are managed through your Auth0 account. You will be redirected.",
+    });
+    const domain = import.meta.env.VITE_AUTH0_DOMAIN;
+    const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
+    if (domain && clientId) {
+      window.open(
+        `https://${domain}/u/reset-password?client_id=${clientId}`,
+        "_blank",
+      );
+    }
   };
 
   return (
