@@ -9,10 +9,22 @@ import { Loader2, CheckCircle2, Sparkles, Target, BarChart3, Linkedin } from "lu
 import { SparkLogo } from "@/components/SparkLogo";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth0 } from "@auth0/auth0-react";
+import { supabase } from "@/integrations/supabase/client";
+
+const AUTH0_CONFIGURED = Boolean(
+  import.meta.env.VITE_AUTH0_DOMAIN && import.meta.env.VITE_AUTH0_CLIENT_ID
+);
+
+function useAuth0Safe() {
+  try {
+    if (AUTH0_CONFIGURED) return useAuth0();
+  } catch { /* no provider */ }
+  return { loginWithRedirect: async () => {} } as ReturnType<typeof useAuth0>;
+}
 
 export default function Auth() {
   const { user, loading, signIn, signUp } = useAuth();
-  const { loginWithRedirect } = useAuth0();
+  const { loginWithRedirect } = useAuth0Safe();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -38,7 +50,12 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
-      await loginWithRedirect({ authorizationParams: { connection: "google-oauth2" } });
+      if (AUTH0_CONFIGURED) {
+        await loginWithRedirect({ authorizationParams: { connection: "google-oauth2" } });
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
+        if (error) toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
+      }
     } catch (error: any) {
       toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
     } finally {
@@ -49,7 +66,12 @@ export default function Auth() {
   const handleLinkedInSignIn = async () => {
     setIsLinkedInLoading(true);
     try {
-      await loginWithRedirect({ authorizationParams: { connection: "linkedin" } });
+      if (AUTH0_CONFIGURED) {
+        await loginWithRedirect({ authorizationParams: { connection: "linkedin" } });
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({ provider: "linkedin_oidc", options: { redirectTo: window.location.origin } });
+        if (error) toast({ title: "LinkedIn sign-in failed", description: error.message, variant: "destructive" });
+      }
     } catch (error: any) {
       toast({ title: "LinkedIn sign-in failed", description: error.message, variant: "destructive" });
     } finally {
@@ -60,7 +82,12 @@ export default function Auth() {
   const handleMicrosoftSignIn = async () => {
     setIsMicrosoftLoading(true);
     try {
-      await loginWithRedirect({ authorizationParams: { connection: "windowslive" } });
+      if (AUTH0_CONFIGURED) {
+        await loginWithRedirect({ authorizationParams: { connection: "windowslive" } });
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({ provider: "azure", options: { redirectTo: window.location.origin, scopes: "email openid profile" } });
+        if (error) toast({ title: "Microsoft sign-in failed", description: error.message, variant: "destructive" });
+      }
     } catch (error: any) {
       toast({ title: "Microsoft sign-in failed", description: error.message, variant: "destructive" });
     } finally {
