@@ -113,12 +113,11 @@ BEGIN
   SELECT id::uuid, _ws FROM jsonb_to_recordset(_users_json) AS x(id uuid, email text, name text)
   ON CONFLICT (user_id) DO UPDATE SET workspace_id = _ws, updated_at = now();
 
-  -- Impersonate the owner for the rest of the seed so triggers that read
-  -- auth.uid() / current_workspace_id() have something to work with. Set
-  -- both `sub` (legacy) and full `claims` JSON so any auth.uid() impl works.
-  PERFORM set_config('request.jwt.claim.sub', _u_owner::text, true);
-  PERFORM set_config('request.jwt.claims',
-    json_build_object('sub', _u_owner::text, 'email', 'owner@e2e.test')::text, true);
+  -- Disable USER triggers for the rest of the seed. This bypasses the
+  -- set_workspace_id() trigger — which fails without an auth context —
+  -- and the add_owner_as_member() trigger (we're inserting project_members
+  -- ourselves anyway). Constraint triggers keep firing. Restored at end.
+  SET LOCAL session_replication_role = 'replica';
 
   -- ----- projects -----
   INSERT INTO public.projects (id, workspace_id, name, description, status, priority, owner_id, created_by, start_date, end_date, color)
@@ -129,14 +128,15 @@ BEGIN
     name = EXCLUDED.name, description = EXCLUDED.description,
     status = EXCLUDED.status, priority = EXCLUDED.priority;
 
-  INSERT INTO public.project_members (project_id, user_id, role)
+  -- workspace_id required since we bypassed the set_workspace_id trigger.
+  INSERT INTO public.project_members (project_id, user_id, role, workspace_id)
   VALUES
-    (_proj1, _u_owner, 'owner'),
-    (_proj1, _u_admin1, 'member'),
-    (_proj1, _u_member1, 'member'),
-    (_proj2, _u_admin1, 'owner'),
-    (_proj2, _u_admin2, 'member'),
-    (_proj2, _u_member2, 'member')
+    (_proj1, _u_owner,   'owner',  _ws),
+    (_proj1, _u_admin1,  'member', _ws),
+    (_proj1, _u_member1, 'member', _ws),
+    (_proj2, _u_admin1,  'owner',  _ws),
+    (_proj2, _u_admin2,  'member', _ws),
+    (_proj2, _u_member2, 'member', _ws)
   ON CONFLICT DO NOTHING;
 
   -- ----- tasks (10) -----
