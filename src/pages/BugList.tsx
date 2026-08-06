@@ -11,6 +11,7 @@ import { Plus, Search, Loader2 } from "lucide-react";
 import type { Tables, Enums } from "@/integrations/supabase/types";
 import { Constants } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
+import { useWorkspacePermission } from "@/hooks/useWorkspacePermission";
 
 type BugRow = Tables<"bugs">;
 
@@ -21,6 +22,7 @@ export default function BugList() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [severityFilter, setSeverityFilter] = useState<string>("all");
+  const canCreate = useWorkspacePermission("bugs", "create");
 
   useEffect(() => {
     const fetchBugs = async () => {
@@ -60,11 +62,13 @@ export default function BugList() {
         {/* Header */}
         <div className="flex items-center justify-between px-4 md:px-6 h-11 border-b border-border shrink-0">
           <h1 className="text-[13px] font-medium">All Bugs</h1>
-          <Button asChild size="sm" className="h-7 text-[12px] gap-1.5">
-            <Link to="/bugs/new">
-              <Plus className="h-3.5 w-3.5" /> Report Bug
-            </Link>
-          </Button>
+          {canCreate && (
+            <Button asChild size="sm" className="h-7 text-[12px] gap-1.5">
+              <Link to="/bugs/new">
+                <Plus className="h-3.5 w-3.5" /> Report Bug
+              </Link>
+            </Button>
+          )}
         </div>
 
         {/* Filters bar */}

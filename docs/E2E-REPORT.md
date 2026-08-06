@@ -100,6 +100,31 @@ onları kapsıyor; auth crawl açılınca çalıştırılabilir.
    ekle; her PR'da diff-only public route'lar çalışsın, auth crawl
    nightly.
 
+## 9. Full suite run — 2026-08-06 (expanded)
+
+**25 passed / 3 failed / 17 skipped (legacy TODO specs).** Two fixes
+push edildi.
+
+**Gerçek bulgular:**
+
+| # | Kaynak | Bulgu | Fix |
+|---|--------|-------|-----|
+| 1 | `write-affordances.spec.ts` | Viewer `/bugs`'ta "Report Bug" butonunu görüyor — UX bug | `BugList.tsx` → `useWorkspacePermission("bugs","create")` ile gate edildi |
+| 2 | `rls-matrix.spec.ts` | Member1 task insert → 400 | Ürün bug'ı değil, test eksikliği: `tasks_insert` policy `reporter_id = auth.uid()` şart koşuyor. Spec düzeltildi. |
+| 3 | `live-signup.spec.ts` | Eski spec, Radix double-mount selector | Legacy, ayrı iş — bu turda dokunulmadı |
+
+**Yeşil kalanlar (25):**
+- role-flows × 5
+- rls-matrix × 3 (anon leak-guard, per-role read, viewer no-write)
+- authed-crawl × 4 (46 rota × 4 rol → hiçbir 5xx, hiçbir pageerror)
+- write-affordances × 2 (viewer/projects, owner control)
+- ux-flows × 6, smoke × 5
+
+**Anlamı:**
+- 46 authed rota 4 farklı rol için error-free render ediyor
+- RLS anon leak yok, cross-role write koruması çalışıyor
+- Bugs sayfası viewer için düzeltildi (fix bu commit'te)
+
 ## 8. Role-flow spec — 2026-08-06 sonuç
 
 **4/4 rol-testi PASSED**, RLS API testi passed (dotenv fix'ten sonra).

@@ -16,7 +16,7 @@
  *     grant), and the row is cleaned up after.
  */
 import { test, expect } from '@playwright/test';
-import { tokenFor, requireSupabaseEnv, WORKSPACE_ID, PROJECT_GROWTH } from './_helpers';
+import { tokenFor, requireSupabaseEnv, WORKSPACE_ID, PROJECT_GROWTH, USER_IDS } from './_helpers';
 
 const SENSITIVE_TABLES = [
   'tasks', 'projects', 'project_members', 'workspaces',
@@ -71,6 +71,7 @@ test('viewer cannot insert a task', async ({ request }) => {
       project_id: PROJECT_GROWTH,
       title: 'e2e viewer should not create this',
       status: 'todo',
+      reporter_id: USER_IDS.viewer,
     },
   });
   // RLS-blocked write returns 4xx or 403; must NOT be 2xx.
@@ -93,9 +94,11 @@ test('member1 can insert + delete their own task', async ({ request }) => {
       project_id: PROJECT_GROWTH,
       title: marker,
       status: 'todo',
+      // tasks_insert policy requires reporter_id = auth.uid()
+      reporter_id: USER_IDS.member1,
     },
   });
-  expect(ins.status(), `member1 insert status`).toBeLessThan(300);
+  expect(ins.status(), `member1 insert status: ${ins.status()} ${await ins.text().catch(()=>':body:')}`).toBeLessThan(300);
   const [row] = await ins.json();
   expect(row?.id, 'inserted id').toBeTruthy();
 
