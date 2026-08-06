@@ -38,6 +38,37 @@ export default function Import() {
   const [running, setRunning] = useState(false);
   const [summary, setSummary] = useState<ImportSummary | null>(null);
 
+  /**
+   * Force-map columns for a Linear CSV export. Matches Linear's exact header
+   * strings first (case-insensitive), then falls back to guessTaskField for
+   * anything unmatched — so a stray extra column doesn't get lost.
+   */
+  const applyLinearPreset = () => {
+    if (!csv) return;
+    const LINEAR: Record<string, string> = {
+      title: 'title',
+      description: 'description',
+      'issue title': 'title',
+      'issue description': 'description',
+      status: 'status',
+      priority: 'priority',
+      assignee: 'assignee',
+      labels: 'tags',
+      'due date': 'due_date',
+      estimate: 'story_points',
+      identifier: 'external_id',
+      id: 'external_id',
+    };
+    const next: ColMap = {};
+    for (const field of IMPORT_TASK_FIELDS) next[field.key] = NONE;
+    for (const header of csv.headers) {
+      const key = LINEAR[header.trim().toLowerCase()] ?? guessTaskField(header);
+      if (key && next[key] === NONE) next[key] = header;
+    }
+    setColMap(next);
+    toast.success('Linear kolonları eşleştirildi');
+  };
+
   const handleFile = async (file: File) => {
     setSummary(null);
     setFileName(file.name);
@@ -208,8 +239,19 @@ export default function Import() {
       {/* Step 3 — column map */}
       {csv && (
         <div className="rounded-md border border-border/60 bg-card p-4">
-          <div className="mb-2 text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
-            3. Kolon eşleştirme
+          <div className="mb-2 flex items-center justify-between">
+            <div className="text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+              3. Kolon eşleştirme
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 text-[12px]"
+              onClick={() => applyLinearPreset()}
+              title="Linear'ın CSV export başlıklarını otomatik eşleştir"
+            >
+              Linear preset
+            </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {IMPORT_TASK_FIELDS.map(f => (

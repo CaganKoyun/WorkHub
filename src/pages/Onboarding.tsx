@@ -8,10 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
-import { Building2, Users, Sparkles, LayoutGrid, ArrowRight, Check, Loader2, X, Plus } from "lucide-react";
+import { Building2, Users, Sparkles, LayoutGrid, ArrowRight, Check, Loader2, X, Plus, Upload, FileText } from "lucide-react";
 import { StackedLogo } from "@/components/StackedLogo";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { parseCsv } from "@/lib/csv";
 
 const MODULES = [
   { key: "work", label: "Work Management", desc: "Projects, tasks, bugs" },
@@ -53,6 +54,45 @@ export default function Onboarding() {
 
   // Step 3
   const [invites, setInvites] = useState<{ email: string; role: string }[]>([{ email: "", role: "member" }]);
+  const [csvFileName, setCsvFileName] = useState<string>("");
+
+  const normalizeInviteRole = (raw: string): string => {
+    const t = raw.trim().toLowerCase();
+    if (!t) return "member";
+    if (t.startsWith("owner")) return "owner";
+    if (t.startsWith("admin")) return "admin";
+    if (t.startsWith("manager") || t.startsWith("lead")) return "manager";
+    if (t.startsWith("viewer") || t.startsWith("guest") || t === "read") return "viewer";
+    return "member";
+  };
+
+  const handleTeamCsv = async (file: File) => {
+    setCsvFileName(file.name);
+    try {
+      const text = await file.text();
+      const parsed = parseCsv(text);
+      const emailCol = parsed.headers.findIndex(h => /email|e-?mail|address/i.test(h));
+      if (emailCol === -1) {
+        toast.error("CSV'de 'email' başlığı bulunamadı");
+        return;
+      }
+      const roleCol = parsed.headers.findIndex(h => /role|rol|permission|access/i.test(h));
+      const rows = parsed.rows
+        .map(r => ({
+          email: (r[emailCol] ?? "").trim().toLowerCase(),
+          role: roleCol >= 0 ? normalizeInviteRole(r[roleCol] ?? "") : "member",
+        }))
+        .filter(r => r.email.includes("@"));
+      if (rows.length === 0) {
+        toast.error("Geçerli email bulunamadı");
+        return;
+      }
+      setInvites(rows);
+      toast.success(`${rows.length} kişi yüklendi`);
+    } catch (e: any) {
+      toast.error(e.message ?? "CSV okunamadı");
+    }
+  };
 
   // Step 4
   const [seed, setSeed] = useState(true);
@@ -279,8 +319,35 @@ export default function Onboarding() {
 
           {step === 3 && (
             <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">Invite teammates by email. They'll get a link to join.</p>
-              <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Tek tek gir ya da tüm ekibi CSV ile yükle (email + role sütunları). Herkes davet linkiyle mail alacak.</p>
+
+              <label
+                htmlFor="team-csv"
+                className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-dashed border-border/70 bg-secondary/20 px-3 py-2.5 text-[12.5px] transition-colors hover:border-primary/50"
+              >
+                <span className="inline-flex items-center gap-2 text-muted-foreground">
+                  {csvFileName ? <FileText className="h-3.5 w-3.5 text-primary" /> : <Upload className="h-3.5 w-3.5" />}
+                  {csvFileName || "CSV yükle (email, role başlıklı)"}
+                </span>
+                {csvFileName && (
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10.5px] font-medium text-primary">
+                    {invites.length} kişi
+                  </span>
+                )}
+              </label>
+              <input
+                id="team-csv"
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                onChange={e => {
+                  const f = e.target.files?.[0];
+                  if (f) void handleTeamCsv(f);
+                  e.target.value = "";
+                }}
+              />
+
+              <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin pr-1">
                 {invites.map((inv, i) => (
                   <div key={i} className="flex gap-2">
                     <Input placeholder="teammate@company.com" value={inv.email}
