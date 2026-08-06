@@ -99,14 +99,14 @@ const Landing = () => {
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/auth"
-              className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-[14.5px] font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+              className="btn-lime inline-flex h-11 items-center gap-2 rounded-md px-6 text-[14.5px] font-semibold shadow-lg shadow-[hsl(var(--accent-lime)/0.25)]"
             >
               Get started
               <ArrowRight className="h-4 w-4" />
             </Link>
             <a
               href="#features"
-              className="inline-flex h-11 items-center rounded-md border border-input bg-background px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary"
+              className="glass-panel inline-flex h-11 items-center rounded-md px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary/70"
             >
               See how it works
             </a>

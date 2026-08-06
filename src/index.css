@@ -82,6 +82,14 @@
     --severity-high: 20 90% 58%;
     --severity-medium: 38 92% 58%;
     --severity-low: 152 55% 48%;
+
+    /* Bright accents on top of the dark canvas — "action" (lime) and
+       "spotlight" (violet). Kept separate from --primary so the existing
+       indigo primary remains the identity color; lime is the CTA color. */
+    --accent-lime:   78 100% 63%;
+    --accent-lime-foreground: 240 20% 6%;
+    --accent-violet: 262 90% 66%;
+    --accent-violet-foreground: 0 0% 100%;
   }
 
   /* Light theme (opt-in via `light` class or html:not(.dark)) */
@@ -209,6 +217,37 @@
       transparent 70%
     );
   }
+
+  /* Frosted-glass panel — subtle, not heavy. Use on overlays, hero
+     cards, upgrade panels. Kept intentionally light so text stays legible
+     without an extra background wash. */
+  .glass-panel {
+    background-color: hsl(var(--card) / 0.55);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border: 1px solid hsl(0 0% 100% / 0.08);
+    box-shadow:
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.04),
+      0 8px 24px -12px hsl(240 30% 2% / 0.5);
+  }
+
+  /* Lime "action" pill — reserved for the single most important CTA on
+     a page so it stays scarce and never competes with itself. */
+  .btn-lime {
+    background-color: hsl(var(--accent-lime));
+    color: hsl(var(--accent-lime-foreground));
+    transition: background-color 150ms ease, transform 150ms ease;
+  }
+  .btn-lime:hover { background-color: hsl(var(--accent-lime) / 0.9); }
+  .btn-lime:active { transform: translateY(1px); }
+
+  /* Small monochrome utilities for the new accents. */
+  .text-lime   { color: hsl(var(--accent-lime)); }
+  .bg-lime     { background-color: hsl(var(--accent-lime)); color: hsl(var(--accent-lime-foreground)); }
+  .text-violet { color: hsl(var(--accent-violet)); }
+  .bg-violet   { background-color: hsl(var(--accent-violet)); color: hsl(var(--accent-violet-foreground)); }
+  .ring-lime   { --tw-ring-color: hsl(var(--accent-lime) / 0.4); }
+  .ring-violet { --tw-ring-color: hsl(var(--accent-violet) / 0.4); }
 
   /* Subtle dotted / grid canvas backdrop. */
   .bg-grid-fade {
