@@ -9,10 +9,14 @@ import {
 import { TaskStatusIcon, TaskPriorityIcon } from './TaskStatusIcon';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { MessageSquare, Paperclip, ListTree } from 'lucide-react';
+import { tagStyle } from '@/lib/tag-color';
+import { ProjectDot } from '@/components/ProjectDot';
+import { useTaskCounts, type TaskCounts } from '@/lib/task-counts-hook';
 
 interface Props {
   tasks: Task[];
-  projectMap: Map<string, { name: string }>;
+  projectMap: Map<string, { name: string; color?: string | null }>;
   className?: string;
 }
 
@@ -35,6 +39,9 @@ export function KanbanBoard({ tasks, projectMap, className }: Props) {
     }
     return m;
   }, [tasks]);
+
+  const taskIds = useMemo(() => tasks.map(t => t.id), [tasks]);
+  const { data: counts } = useTaskCounts(taskIds);
 
   const onDrop = async (targetStatus: TaskStatus, e: React.DragEvent) => {
     e.preventDefault();
@@ -75,7 +82,14 @@ export function KanbanBoard({ tasks, projectMap, className }: Props) {
             <div className="flex-1 min-h-[100px] p-2 space-y-1.5 overflow-y-auto max-h-[calc(100vh-260px)]">
               {items.length === 0 ? (
                 <div className="text-[11px] text-muted-foreground/70 text-center py-4">boş</div>
-              ) : items.map(t => <KanbanCard key={t.id} task={t} project={projectMap.get(t.project_id)} />)}
+              ) : items.map(t => (
+                <KanbanCard
+                  key={t.id}
+                  task={t}
+                  project={projectMap.get(t.project_id)}
+                  counts={counts?.[t.id]}
+                />
+              ))}
             </div>
           </div>
         );
@@ -84,8 +98,15 @@ export function KanbanBoard({ tasks, projectMap, className }: Props) {
   );
 }
 
-function KanbanCard({ task, project }: { task: Task; project?: { name: string } }) {
+function KanbanCard({
+  task, project, counts,
+}: {
+  task: Task;
+  project?: { name: string; color?: string | null };
+  counts?: TaskCounts;
+}) {
   const [dragging, setDragging] = useState(false);
+  const hasMeta = counts && (counts.subtasks || counts.comments || counts.attachments);
   return (
     <Link
       to={`/projects/${task.project_id}`}
@@ -102,6 +123,26 @@ function KanbanCard({ task, project }: { task: Task; project?: { name: string } 
         dragging && 'opacity-50',
       )}
     >
+      {task.tags && task.tags.length > 0 && (
+        <div className="mb-1.5 flex flex-wrap gap-1">
+          {task.tags.slice(0, 3).map(tag => {
+            const s = tagStyle(tag);
+            return (
+              <span
+                key={tag}
+                className="inline-flex h-4 items-center rounded-full px-1.5 text-[9.5px] font-medium ring-1"
+                style={{ backgroundColor: s.bg, color: s.fg, boxShadow: `inset 0 0 0 1px ${s.ring}` }}
+              >
+                {tag}
+              </span>
+            );
+          })}
+          {task.tags.length > 3 && (
+            <span className="text-[10px] text-muted-foreground">+{task.tags.length - 3}</span>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center gap-1.5 text-[10.5px] text-muted-foreground">
         <TaskPriorityIcon priority={task.priority} />
         <span className="font-mono">{task.tracking_id ?? '—'}</span>
@@ -109,17 +150,34 @@ function KanbanCard({ task, project }: { task: Task; project?: { name: string } 
           <span className="ml-auto font-mono rounded border border-border bg-secondary/40 px-1 text-muted-foreground/80">{task.story_points}sp</span>
         )}
       </div>
-      <div className="mt-1 text-[13px] font-medium truncate">{task.title}</div>
+
+      <div className="mt-1 text-[13px] font-medium leading-snug">
+        <span className="line-clamp-2">{task.title}</span>
+      </div>
+
       {project && (
-        <div className="mt-0.5 text-[11px] text-muted-foreground truncate">{project.name}</div>
+        <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <ProjectDot color={project.color} name={project.name} size={7} />
+          <span className="truncate">{project.name}</span>
+        </div>
       )}
-      {task.tags && task.tags.length > 0 && (
-        <div className="mt-1 flex flex-wrap gap-1">
-          {task.tags.slice(0, 3).map(tag => (
-            <span key={tag} className="chip text-[9.5px]">{tag}</span>
-          ))}
-          {task.tags.length > 3 && (
-            <span className="text-[10px] text-muted-foreground">+{task.tags.length - 3}</span>
+
+      {hasMeta && (
+        <div className="mt-1.5 flex items-center gap-2 border-t border-border/40 pt-1.5 text-[10.5px] text-muted-foreground/80">
+          {counts!.subtasks > 0 && (
+            <span className="inline-flex items-center gap-0.5">
+              <ListTree className="h-3 w-3" /> {counts!.subtasks}
+            </span>
+          )}
+          {counts!.comments > 0 && (
+            <span className="inline-flex items-center gap-0.5">
+              <MessageSquare className="h-3 w-3" /> {counts!.comments}
+            </span>
+          )}
+          {counts!.attachments > 0 && (
+            <span className="inline-flex items-center gap-0.5">
+              <Paperclip className="h-3 w-3" /> {counts!.attachments}
+            </span>
           )}
         </div>
       )}
