@@ -53,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isAuthenticated,
     isLoading,
     getAccessTokenSilently,
+    getIdTokenClaims,
     loginWithRedirect,
     logout,
   } = useAuth0();
@@ -62,7 +63,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const user = toAuthUser(auth0User);
 
-  // Wire Supabase requests to Auth0 access tokens.
+  // Prefer the Auth0 access token (JWT when an API audience is configured);
+  // fall back to the id_token, which is always a JWT and works without an
+  // Auth0 API — Supabase third-party auth verifies either as long as the
+  // issuer matches the registered Auth0 domain.
+  const getSupabaseBearer = useCallback(async (): Promise<string | null> => {
+    const hasAudience = Boolean(import.meta.env.VITE_AUTH0_AUDIENCE);
+    if (hasAudience) {
+      try {
+        return await getAccessTokenSilently();
+      } catch {
+        // fall through to id_token
+      }
+    }
+    try {
+      const claims = await getIdTokenClaims();
+      return claims?.__raw ?? null;
+    } catch {
+      return null;
+    }
+  }, [getAccessTokenSilently, getIdTokenClaims]);
+
+  // Wire Supabase requests to Auth0 tokens.
   useEffect(() => {
     if (!isAuthenticated) {
       setSupabaseAuthTokenGetter(null);
@@ -70,26 +92,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    setSupabaseAuthTokenGetter(async () => {
-      try {
-        return await getAccessTokenSilently();
-      } catch {
-        return null;
-      }
-    });
+    setSupabaseAuthTokenGetter(getSupabaseBearer);
 
     (async () => {
-      try {
-        const token = await getAccessTokenSilently();
-        const mapped = toAuthUser(auth0User);
-        if (mapped) setSession({ access_token: token, user: mapped });
-      } catch {
-        setSession(null);
-      }
+      const token = await getSupabaseBearer();
+      const mapped = toAuthUser(auth0User);
+      if (mapped && token) setSession({ access_token: token, user: mapped });
+      else setSession(null);
     })();
 
     return () => setSupabaseAuthTokenGetter(null);
-  }, [isAuthenticated, getAccessTokenSilently, auth0User]);
+  }, [isAuthenticated, getSupabaseBearer, auth0User]);
 
   const fetchProfile = useCallback(async (userId: string) => {
     const { data } = await supabase
