@@ -33,10 +33,11 @@ async function loginOrSkip(page: Page, email: string) {
   // failsafe — submitting the form directly avoids any button pick.
   await page.locator('input[type="password"]:visible').first().press('Enter');
   // Success = URL leaves /auth. Toast on failure lingers on /auth.
+  // 20s tolerates cold-start Vite dev + Supabase auth roundtrip.
   try {
-    await page.waitForURL((u) => !u.toString().includes('/auth'), { timeout: 8_000 });
+    await page.waitForURL((u) => !u.toString().includes('/auth'), { timeout: 20_000 });
   } catch {
-    test.skip(true, `login failed for ${email} — fixture users not seeded?`);
+    test.skip(true, `login failed for ${email} — fixture users not seeded, or app took >20s to redirect?`);
   }
 }
 
