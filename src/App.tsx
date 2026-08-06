@@ -80,6 +80,7 @@ import DecisionDetail from "./pages/DecisionDetail";
 import Product from "./pages/Product";
 import Company from "./pages/Company";
 import Integrations from "./pages/Integrations";
+import PublicDashboard from "./pages/PublicDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -157,6 +158,7 @@ const App = () => (
                 <Route path="/api-tokens" element={<ProtectedRoute><WorkspaceGate><ApiTokens /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/portals" element={<ProtectedRoute><WorkspaceGate><ClientPortals /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/portal/:token" element={<PublicPortal />} />
+                <Route path="/pub/:token" element={<PublicDashboard />} />
                 <Route path="/notifications" element={<ProtectedRoute><WorkspaceGate><Notifications /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/notification-settings" element={<ProtectedRoute><WorkspaceGate><NotificationSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/agent" element={<ProtectedRoute><WorkspaceGate><AgentRuns /></WorkspaceGate></ProtectedRoute>} />

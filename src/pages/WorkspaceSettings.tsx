@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Trash2, Copy, Loader2 } from "lucide-react";
 import { SignalRulesPanel } from "@/components/SignalRulesPanel";
+import { PublicDashboardManager } from "@/components/PublicDashboardManager";
 
 const ROLES = ["manager","member","viewer","guest"] as const;
 const MODULES = ["work","crm","finance","people","assets","goals","risks","decisions","approvals","analytics","admin","ai"];
@@ -136,6 +137,7 @@ export default function WorkspaceSettings() {
             <TabsTrigger value="invitations">Invitations</TabsTrigger>
             <TabsTrigger value="permissions">Permissions</TabsTrigger>
             <TabsTrigger value="signals">Signals</TabsTrigger>
+            <TabsTrigger value="dashboards">Public Dashboards</TabsTrigger>
           </TabsList>
 
           <TabsContent value="general" className="mt-4">
@@ -256,6 +258,14 @@ export default function WorkspaceSettings() {
 
           <TabsContent value="signals" className="mt-4">
             <SignalRulesPanel canManage={canAdmin} />
+          </TabsContent>
+
+          <TabsContent value="dashboards" className="mt-4">
+            {canAdmin ? (
+              <PublicDashboardManager />
+            ) : (
+              <p className="text-sm text-muted-foreground py-4">Public dashboard yonetimi icin admin yetkisi gerekli.</p>
+            )}
           </TabsContent>
         </Tabs>
       </div>
