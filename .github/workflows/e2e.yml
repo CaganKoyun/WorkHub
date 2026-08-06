@@ -54,14 +54,18 @@ jobs:
         run: npx playwright install-deps chromium
 
       - name: Report live-env status
+        id: env-check
         run: |
           if [ -n "$VITE_SUPABASE_URL" ] && [ -n "$VITE_SUPABASE_PUBLISHABLE_KEY" ]; then
-            echo "::notice::Live Supabase env algılandı — env-gated spec'ler koşulacak."
+            echo "has_env=true" >> $GITHUB_OUTPUT
+            echo "::notice::Live Supabase env algılandı — Playwright suite koşulacak."
           else
-            echo "::warning::VITE_SUPABASE_URL veya VITE_SUPABASE_PUBLISHABLE_KEY yok — live spec'ler skip. Repo Secrets'a ekleyin."
+            echo "has_env=false" >> $GITHUB_OUTPUT
+            echo "::warning::VITE_SUPABASE_URL veya VITE_SUPABASE_PUBLISHABLE_KEY repo secret'ı yok. Playwright suite'i SKIP (uygulama Supabase env'siz render olmuyor). Ekle: Settings → Secrets and variables → Actions."
           fi
 
       - name: Run Playwright
+        if: steps.env-check.outputs.has_env == 'true'
         run: npx playwright test --reporter=list,html
 
       - name: Upload Playwright HTML report
