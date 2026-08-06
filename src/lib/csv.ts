@@ -136,6 +136,8 @@ const STATUS_ALIASES: Record<string, string> = {
   qa: 'review', testing: 'review',
   done: 'done', complete: 'done', completed: 'done', closed: 'done',
   resolved: 'done', finished: 'done', shipped: 'done',
+  canceled: 'canceled', cancelled: 'canceled', dropped: 'canceled',
+  triaged: 'todo', duplicate: 'canceled',
 };
 
 const PRIORITY_ALIASES: Record<string, string> = {
@@ -143,6 +145,7 @@ const PRIORITY_ALIASES: Record<string, string> = {
   high: 'high', p1: 'high', important: 'high',
   medium: 'medium', normal: 'medium', p2: 'medium', med: 'medium',
   low: 'low', p3: 'low', p4: 'low', minor: 'low',
+  'no priority': 'medium', none: 'medium', unset: 'medium',
 };
 
 export function normalizeStatus(raw: string): string | null {

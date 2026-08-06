@@ -77,14 +77,29 @@ export default function Onboarding() {
         return;
       }
       const roleCol = parsed.headers.findIndex(h => /role|rol|permission|access/i.test(h));
+      // Optional "Active" / "Status" column — only import active rows if present.
+      const activeCol = parsed.headers.findIndex(h => /^(active|status|state|enabled)$/i.test(h));
+      // Bot / integration accounts we don't want to invite (Linear webhook user, etc.).
+      const isBotEmail = (e: string) =>
+        /@linear\.linear\.app$/i.test(e) ||
+        /^(no-?reply|noreply|integration|bot|system)@/i.test(e);
+
       const rows = parsed.rows
-        .map(r => ({
-          email: (r[emailCol] ?? "").trim().toLowerCase(),
-          role: roleCol >= 0 ? normalizeInviteRole(r[roleCol] ?? "") : "member",
-        }))
-        .filter(r => r.email.includes("@"));
+        .map(r => {
+          const email = (r[emailCol] ?? "").trim().toLowerCase();
+          const active = activeCol >= 0 ? (r[activeCol] ?? "").trim().toLowerCase() : "";
+          return {
+            email,
+            role: roleCol >= 0 ? normalizeInviteRole(r[roleCol] ?? "") : "member",
+            active,
+          };
+        })
+        .filter(r => r.email.includes("@") && !isBotEmail(r.email))
+        .filter(r => !r.active || /^(active|enabled|true|1|yes)$/i.test(r.active))
+        .map(({ email, role }) => ({ email, role }));
+
       if (rows.length === 0) {
-        toast.error("Geçerli email bulunamadı");
+        toast.error("Geçerli / aktif email bulunamadı");
         return;
       }
       setInvites(rows);
