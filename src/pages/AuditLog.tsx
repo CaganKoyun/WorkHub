@@ -15,7 +15,7 @@ const ACTION_TONE: Record<string, string> = {
   created: 'ok', updated: 'muted', deleted: 'bad', enabled: 'ok', disabled: 'muted', status_changed: 'muted',
 };
 const TONE_CLASS: Record<string, string> = {
-  ok: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+  ok: 'text-success bg-emerald-500/10 border-emerald-500/30',
   muted: 'text-muted-foreground bg-secondary/40 border-border',
   bad: 'text-destructive bg-destructive/10 border-destructive/30',
 };
@@ -96,7 +96,7 @@ function LogRow({ row }: { row: AuditRow }) {
               {row.after && (
                 <div>
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Sonra</div>
-                  <pre className="rounded bg-emerald-500/5 border border-emerald-500/20 p-2 text-[11px] whitespace-pre-wrap font-mono overflow-x-auto">{JSON.stringify(row.after, null, 2)}</pre>
+                  <pre className="rounded bg-success/5 border border-emerald-500/20 p-2 text-[11px] whitespace-pre-wrap font-mono overflow-x-auto">{JSON.stringify(row.after, null, 2)}</pre>
                 </div>
               )}
             </div>

@@ -52,7 +52,7 @@ if (!url || !key) {
   root.innerHTML = `
     <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0F0F13;color:#F4F5F8;font:14px/1.5 Inter,system-ui,sans-serif;padding:24px">
       <div style="max-width:600px">
-        <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid #5E6AD2;border-radius:999px;background:rgba(94,106,210,.12);color:#8B95E8;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Startup blocked</div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid #C6F432;border-radius:999px;background:rgba(198,244,50,.12);color:#C6F432;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Startup blocked</div>
         <h1 style="margin:16px 0 8px;font-size:22px;font-weight:600;letter-spacing:-.02em">Missing Supabase environment</h1>
         <p style="margin:0 0 12px;color:#8A8F98">
           Spark WorkHub couldn't resolve a Supabase URL/key at build time.

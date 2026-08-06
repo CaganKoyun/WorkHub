@@ -27,8 +27,8 @@ const EXAMPLES = [
 
 function statusIcon(s: AgentRun['status']) {
   switch (s) {
-    case 'succeeded': return { Icon: CheckCircle2, tone: 'text-emerald-400' };
-    case 'partial':   return { Icon: AlertTriangle, tone: 'text-amber-400' };
+    case 'succeeded': return { Icon: CheckCircle2, tone: 'text-success' };
+    case 'partial':   return { Icon: AlertTriangle, tone: 'text-warning' };
     case 'failed':    return { Icon: XCircle, tone: 'text-destructive' };
     case 'running':   return { Icon: Play, tone: 'text-primary animate-pulse' };
     case 'canceled':  return { Icon: XCircle, tone: 'text-muted-foreground' };
@@ -184,11 +184,11 @@ function RunRow({ run }: { run: AgentRun }) {
             return (
               <div key={i} className="flex items-start gap-2 text-[12px]">
                 <span className={cn('h-3 w-3 rounded-full shrink-0 mt-1',
-                  r?.ok ? 'bg-emerald-400' : r?.error ? 'bg-destructive' : 'bg-muted-foreground/40')} />
+                  r?.ok ? 'bg-success' : r?.error ? 'bg-destructive' : 'bg-muted-foreground/40')} />
                 <div className="min-w-0 flex-1">
                   <div className="text-foreground">{s.description}</div>
                   {r && (
-                    <div className={cn('text-[11px] mt-0.5', r.ok ? 'text-emerald-400/90' : 'text-destructive/90')}>
+                    <div className={cn('text-[11px] mt-0.5', r.ok ? 'text-success/90' : 'text-destructive/90')}>
                       {r.detail ?? r.error ?? ''}
                     </div>
                   )}

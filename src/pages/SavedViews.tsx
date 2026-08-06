@@ -216,9 +216,9 @@ function ViewRow({ view, isFav, isMine }: { view: SavedView; isFav: boolean; isM
       <button
         onClick={() => tog.mutate({ viewId: view.id, isFav })}
         title={isFav ? 'Favoriden çıkar' : 'Favoriye ekle'}
-        className="text-muted-foreground hover:text-amber-400"
+        className="text-muted-foreground hover:text-warning"
       >
-        <Star className={cn('h-3.5 w-3.5', isFav && 'fill-amber-400 text-amber-400')} />
+        <Star className={cn('h-3.5 w-3.5', isFav && 'fill-warning text-warning')} />
       </button>
       <Link to={viewToUrl(view)} className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
@@ -286,7 +286,7 @@ export default function SavedViews() {
           {favorites.length > 0 && (
             <section>
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> Favoriler ({favorites.length})
+                <Star className="h-3 w-3 fill-warning text-warning" /> Favoriler ({favorites.length})
               </div>
               <div className="rounded-md border border-border/60 bg-secondary/10 overflow-hidden">
                 {favorites.map(v => (

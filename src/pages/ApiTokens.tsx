@@ -49,14 +49,14 @@ function RevealDialog({ token, onClose }: { token: string; onClose: () => void }
     <Dialog open={true} onOpenChange={o => !o && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader><DialogTitle className="flex items-center gap-2"><KeyRound className="h-4 w-4" /> Yeni API token oluşturuldu</DialogTitle></DialogHeader>
-        <div className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-[12.5px] flex gap-2">
-          <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-400 mt-0.5" />
+        <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-[12.5px] flex gap-2">
+          <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-warning mt-0.5" />
           <div>Token yalnızca <strong>şimdi</strong> gösterilecek. Kaydet — sayfayı kapatınca bir daha erişemezsin.</div>
         </div>
         <div className="rounded-md border border-border/60 bg-background px-3 py-2 mt-2 font-mono text-[12px] break-all">{token}</div>
         <div className="flex justify-between items-center mt-3">
           <Button size="sm" variant="ghost" onClick={copy} className="h-8 gap-1.5">
-            {copied ? <><Check className="h-3.5 w-3.5 text-emerald-400" /> Kopyalandı</> : <><Copy className="h-3.5 w-3.5" /> Kopyala</>}
+            {copied ? <><Check className="h-3.5 w-3.5 text-success" /> Kopyalandı</> : <><Copy className="h-3.5 w-3.5" /> Kopyala</>}
           </Button>
           <Button size="sm" onClick={onClose}>Kaydettim, kapat</Button>
         </div>
@@ -182,7 +182,7 @@ function TokenRow({ t }: { t: ApiToken }) {
           <span className="text-[13px] font-medium truncate">{t.name}</span>
           {t.scopes.map(s => <span key={s} className="text-[10px] uppercase tracking-wider rounded border border-border bg-secondary/40 px-1.5 py-0.5 text-muted-foreground">{SCOPE_LABELS[s]}</span>)}
           {revoked && <span className="text-[10px] uppercase tracking-wider rounded border border-destructive/40 bg-destructive/10 px-1.5 py-0.5 text-destructive">Revoked</span>}
-          {expired && !revoked && <span className="text-[10px] uppercase tracking-wider rounded border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 text-amber-400">Expired</span>}
+          {expired && !revoked && <span className="text-[10px] uppercase tracking-wider rounded border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-warning">Expired</span>}
         </div>
         <div className="text-[11.5px] text-muted-foreground flex items-center gap-3 mt-0.5">
           <span className="font-mono text-muted-foreground/80">{t.token_prefix}…</span>

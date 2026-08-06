@@ -33,15 +33,15 @@ function slaBadge(t: { sla_due_at: string | null; status: TicketStatus; resolved
 }
 
 const TONE_CLASS: Record<'ok' | 'warn' | 'over' | 'muted', string> = {
-  ok: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
-  warn: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
+  ok: 'text-success bg-emerald-500/10 border-emerald-500/30',
+  warn: 'text-warning bg-warning/10 border-amber-500/30',
   over: 'text-destructive bg-destructive/10 border-destructive/30',
   muted: 'text-muted-foreground bg-muted border-border',
 };
 
 const PRIORITY_TONE: Record<TicketPriority, string> = {
   urgent: 'text-destructive bg-destructive/10',
-  high: 'text-amber-400 bg-amber-500/10',
+  high: 'text-warning bg-warning/10',
   medium: 'text-muted-foreground bg-secondary/40',
   low: 'text-muted-foreground bg-secondary/20',
 };
@@ -170,7 +170,7 @@ function TicketDetail({ ticketId }: { ticketId: string }) {
           <span className="inline-flex items-center gap-1"><User className="h-3 w-3" /> {ticket.requester_name || ticket.requester_email || 'anonim'}</span>
           {ticket.requester_email && <span>{ticket.requester_email}</span>}
           <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {new Date(ticket.created_at).toLocaleString('tr-TR')}</span>
-          {ticket.first_response_at && <span className="inline-flex items-center gap-1 text-emerald-400"><CheckCircle2 className="h-3 w-3" /> ilk yanıt {new Date(ticket.first_response_at).toLocaleString('tr-TR')}</span>}
+          {ticket.first_response_at && <span className="inline-flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> ilk yanıt {new Date(ticket.first_response_at).toLocaleString('tr-TR')}</span>}
           {!ticket.first_response_at && sla.tone === 'over' && (
             <span className="inline-flex items-center gap-1 text-destructive"><AlertTriangle className="h-3 w-3" /> SLA aşıldı</span>
           )}
@@ -212,7 +212,7 @@ function TicketDetail({ ticketId }: { ticketId: string }) {
             <div key={r.id} className={cn(
               'rounded-md border p-3',
               r.is_internal
-                ? 'border-amber-500/30 bg-amber-500/5'
+                ? 'border-amber-500/30 bg-warning/5'
                 : isMe
                   ? 'border-primary/30 bg-primary/5'
                   : 'border-border/60 bg-background/50',
@@ -220,7 +220,7 @@ function TicketDetail({ ticketId }: { ticketId: string }) {
               <div className="flex items-center gap-2 mb-1 text-[11px]">
                 <span className="font-medium">{author?.full_name ?? 'Talep sahibi'}</span>
                 <span className="text-muted-foreground">{new Date(r.created_at).toLocaleString('tr-TR')}</span>
-                {r.is_internal && <span className="inline-flex items-center gap-1 text-amber-400"><Lock className="h-3 w-3" /> iç not</span>}
+                {r.is_internal && <span className="inline-flex items-center gap-1 text-warning"><Lock className="h-3 w-3" /> iç not</span>}
               </div>
               <p className="whitespace-pre-wrap text-[13px] leading-relaxed">{r.body}</p>
             </div>
@@ -236,7 +236,7 @@ function TicketDetail({ ticketId }: { ticketId: string }) {
           rows={3}
           className={cn(
             'w-full rounded-md border px-3 py-2 text-[13px] focus:outline-none',
-            isInternal ? 'border-amber-500/40 bg-amber-500/5' : 'border-border/60 bg-background',
+            isInternal ? 'border-warning/40 bg-warning/5' : 'border-border/60 bg-background',
           )}
         />
         <div className="mt-2 flex items-center justify-between">

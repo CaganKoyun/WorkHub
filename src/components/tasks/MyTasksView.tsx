@@ -124,11 +124,11 @@ export function MyTasksView() {
       {unassignedFiltered.length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-2">
-            <Inbox className="h-3.5 w-3.5 text-amber-500" />
+            <Inbox className="h-3.5 w-3.5 text-warning" />
             <h2 className="text-sm font-semibold">Sahipsiz işler</h2>
             <span className="text-xs text-muted-foreground">{unassignedFiltered.length}</span>
           </div>
-          <div className="rounded-md border border-amber-500/25 overflow-hidden">
+          <div className="rounded-md border border-warning/25 overflow-hidden">
             {unassignedFiltered.map(t => {
               const project = projectMap.get(t.project_id);
               return (

@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 const SEVERITY_TONE: Record<CaptureCandidate["severity"], string> = {
   high: "bg-destructive/15 text-destructive",
-  medium: "bg-amber-500/20 text-amber-700",
+  medium: "bg-amber-500/20 text-warning",
   low: "bg-muted text-muted-foreground",
 };
 

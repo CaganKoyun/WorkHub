@@ -297,7 +297,7 @@ function NoteDetail({ id }: { id: string }) {
               <span className={cn('flex-1 text-[13px]', a.done && 'line-through text-muted-foreground')}>{a.text}</span>
               {a.assignee_email && <span className="text-[10.5px] text-primary/80 rounded border border-primary/40 px-1.5 py-0.5">{a.assignee_email}</span>}
               {a.task_id ? (
-                <a href={`/tasks`} className="inline-flex items-center gap-1 text-[11px] text-emerald-400"><CheckCircle2 className="h-3 w-3" /> task oluştu <ExternalLink className="h-3 w-3" /></a>
+                <a href={`/tasks`} className="inline-flex items-center gap-1 text-[11px] text-success"><CheckCircle2 className="h-3 w-3" /> task oluştu <ExternalLink className="h-3 w-3" /></a>
               ) : (
                 <Button size="sm" variant="ghost" className="h-6 gap-1 px-1.5 text-[11.5px]" onClick={() => toTask(a)}>
                   <ArrowRight className="h-3 w-3" /> Task’a çevir

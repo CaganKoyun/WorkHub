@@ -60,9 +60,9 @@ export function CashFlowView() {
               <TableRow key={b.key}>
                 <TableCell className="font-medium">{b.label}</TableCell>
                 <TableCell className="text-sm">{formatCurrency(b.opening, 'USD')}</TableCell>
-                <TableCell className="text-sm text-emerald-400">{formatCurrency(b.income, 'USD')}</TableCell>
+                <TableCell className="text-sm text-success">{formatCurrency(b.income, 'USD')}</TableCell>
                 <TableCell className="text-sm text-destructive">-{formatCurrency(b.expense, 'USD')}</TableCell>
-                <TableCell className={`text-sm font-medium ${b.net >= 0 ? 'text-emerald-400' : 'text-destructive'}`}>
+                <TableCell className={`text-sm font-medium ${b.net >= 0 ? 'text-success' : 'text-destructive'}`}>
                   {b.net >= 0 ? '+' : ''}{formatCurrency(b.net, 'USD')}
                 </TableCell>
                 <TableCell className="text-sm font-semibold">{formatCurrency(b.closing, 'USD')}</TableCell>

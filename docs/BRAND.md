@@ -28,33 +28,54 @@ dosyaya göre değişecek.
 
 ---
 
-## 2. Renk paleti
+## 2. Renk paleti — **Graphite × Lime** (ONAYLANDI, 2026-08-06)
 
-### 2.1 Primary (marka)
-TODO(brand): mevcut lime `#C6F84F` ve violet `#5E6AD2` değişiyor.
-Onay bekleyen alternatifler / yeni hex kodları:
+Kaynak: Graphite × Lime design system dokümanı. Yedi kural:
+1. Hiyerarşi border'la değil yüzey açıklığıyla.
+2. Tek sesli renk: neon lime — ekranın ~%3'ünü geçmez.
+3. Anlam pastel pill'lerde yaşar, renkli düz metinde değil.
+4. Üç gri metin tonu; vurgu boyut/ağırlıkla.
+5. Yumuşak radius: kart 12-14, buton/input 10, modal 16, pill full.
+6. 4px grid, yoğun ama disiplinli.
+7. Hareket geri bildirimdir (150-250ms ease-out), gösteri değil.
 
-- Primary:      `#______`  (marka rengi, CTA + accent)
-- Primary-hover:`#______`
-- On-primary:   `#______`  (primary üstünde okunacak text)
+### 2.1 Yüzeyler (koyudan açığa — elevation = lightness)
 
-### 2.2 Semantik (durum renkleri)
+| Katman | Hex       | CSS var                |
+| ------ | --------- | ---------------------- |
+| shell  | `#0E0E10` | `--sidebar-background` |
+| canvas | `#17171A` | `--background`         |
+| panel  | `#1C1C1F` | `--muted`              |
+| card   | `#232327` | `--card` `--secondary` |
+| hover  | `#2A2A2F` | `--accent`             |
+| float  | `#2E2E33` | `--popover`            |
+| input  | `#1A1A1E` | `--input`              |
 
-| Slot        | Şu an       | Yeni (TODO) | Kullanım                    |
-| ----------- | ----------- | ----------- | --------------------------- |
-| success     | #22C55E     | `#______`   | Done, healthy, positive     |
-| warning     | #F59E0B     | `#______`   | Blocked, at-risk, medium    |
-| destructive | #EF4444     | `#______`   | Delete, error, hard warn    |
-| info        | #3B82F6     | `#______`   | Neutral badge, tooltip      |
+### 2.2 Vurgu + metin
 
-### 2.3 Yüzeyler (dark-first + light)
+- Primary: **`#C6F432`** (neon lime) · hover `#D4FF4A` · üstünde
+  daima koyu `#0E0E10`, asla beyaz
+- Text: `#F5F5F7` (primary) / `#A8A8B0` (secondary) / `#6E6E76` (meta)
+- Border: `rgba(255,255,255,0.06)` eşdeğeri
 
-Şu anki değerler `src/index.css`'te CSS değişkeni. Yeni palette
-netleşince tek yerden update.
+### 2.3 Semantik
 
-- background / foreground
-- card / border / muted / muted-foreground
-- sidebar-background / sidebar-foreground
+| Slot        | Hex       |
+| ----------- | --------- |
+| success     | `#4ADE80` |
+| warning     | `#FBBF24` |
+| destructive | `#FF6B5E` |
+| info        | mavi `213 90% 65%` |
+
+### 2.4 Pastel pill çiftleri (anlam rozetleri — `.pill .pill-*`)
+
+orange `#FFD9B0/#7A3E00` · yellow `#F7F0A0/#5C5200` · red
+`#FFB4A8/#7A1200` · teal `#B8F0E4/#00524A` · green `#C8EFC0/#1E5214`
+· blue `#BFD9FF/#143A7A` · pink `#F5C6E8/#6B1E56` · subtle
+`white/7% + #C9C9D1`
+
+**Mor/violet/indigo bu sistemde YOK.** Eski `--accent-violet` alias'ı
+maviye remap edildi (legacy class'lar derlenmeye devam etsin diye).
 
 ---
 

@@ -152,7 +152,7 @@ export default function FounderInbox() {
                               <span className="italic">Not: {a.decision_note}</span>
                             )}
                             {a.status === "snoozed" && a.snooze_until && (
-                              <span className="flex items-center gap-1 text-amber-500">
+                              <span className="flex items-center gap-1 text-warning">
                                 <AlarmClock className="h-3 w-3" />
                                 {format(new Date(a.snooze_until), "d MMM HH:mm", { locale: tr })}'e kadar ertelendi
                               </span>

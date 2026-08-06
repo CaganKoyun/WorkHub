@@ -83,7 +83,7 @@ export function useCreatePortfolio() {
           workspace_id: currentWorkspace.id,
           name: input.name,
           description: input.description ?? null,
-          color: input.color ?? '#5E6AD2',
+          color: input.color ?? '#C6F432',
           owner_id: user?.id ?? null,
           created_by: user?.id ?? null,
         })

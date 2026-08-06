@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
@@ -7,92 +7,102 @@
 
 @layer base {
   /* ---------------------------------------------------------------
-     Linear-inspired design system.
-     Dark-first (default). Magic Blue #5E6AD2 as brand primary.
+     Graphite × Lime design system (docs/BRAND.md).
+     Dark-only identity. Hierarchy via surface lightness, not borders.
+     One loud color: neon lime #C6F432 — max ~3% of any screen.
+     Surfaces darkest→lightest:
+       shell   #0E0E10  (sidebar, topbar)         → --sidebar-background
+       canvas  #17171A  (main content)            → --background
+       panel   #1C1C1F  (group, table container)  → --muted
+       card    #232327  (card, row, chip)         → --card / --secondary
+       hover   #2A2A2F                            → --accent
+       float   #2E2E33  (modal, dropdown, toast)  → --popover
      --------------------------------------------------------------- */
   :root {
-    /* Dark canvas — deeper near-black with cool tint for depth. */
-    --background: 240 12% 5%;              /* #0B0B0F */
-    --foreground: 220 14% 97%;             /* #F5F6F9 */
+    --background: 240 6% 10%;              /* #17171A canvas */
+    --foreground: 240 11% 96%;             /* #F5F5F7 text-1 */
 
-    --card: 240 11% 7%;                    /* subtle panel */
-    --card-foreground: 220 14% 97%;
+    --card: 240 5% 15%;                    /* #232327 card/row */
+    --card-foreground: 240 11% 96%;
 
-    --popover: 240 11% 9%;
-    --popover-foreground: 220 14% 97%;
+    --popover: 240 5% 19%;                 /* #2E2E33 floating */
+    --popover-foreground: 240 11% 96%;
 
-    --primary: 234 63% 66%;                /* indigo-violet accent */
-    --primary-foreground: 0 0% 100%;
+    --primary: 74 90% 58%;                 /* #C6F432 neon lime */
+    --primary-foreground: 240 7% 6%;       /* #0E0E10 — dark on lime, never white */
 
-    --secondary: 240 7% 13%;               /* chip / subtle button */
-    --secondary-foreground: 220 12% 92%;
+    --secondary: 240 5% 15%;               /* #232327 secondary button / chip */
+    --secondary-foreground: 240 11% 92%;
 
-    --muted: 240 7% 11%;
-    --muted-foreground: 220 9% 63%;
+    --muted: 240 5% 12%;                   /* #1C1C1F panel */
+    --muted-foreground: 240 5% 67%;        /* #A8A8B0 text-2 */
 
-    --accent: 240 7% 15%;
-    --accent-foreground: 220 12% 96%;
+    --accent: 240 6% 17%;                  /* #2A2A2F hover surface */
+    --accent-foreground: 240 11% 96%;
 
-    --destructive: 0 72% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 5 100% 68%;             /* #FF6B5E */
+    --destructive-foreground: 240 7% 6%;
 
-    --success: 152 55% 48%;
-    --success-foreground: 0 0% 100%;
+    --success: 142 69% 58%;                /* #4ADE80 */
+    --success-foreground: 240 7% 6%;
 
-    --warning: 38 92% 58%;
-    --warning-foreground: 240 10% 8%;
+    --warning: 43 96% 56%;                 /* #FBBF24 */
+    --warning-foreground: 240 7% 6%;
 
     --info: 213 90% 65%;
-    --info-foreground: 0 0% 100%;
+    --info-foreground: 240 7% 6%;
 
-    --border: 240 6% 15%;
-    --input: 240 6% 17%;
-    --ring: 234 63% 66%;
+    /* Near-invisible hairlines — rgba(255,255,255,0.06) equivalent on dark */
+    --border: 240 5% 16%;
+    --input: 240 7% 11%;                   /* #1A1A1E input bg */
+    --ring: 74 90% 58%;                    /* lime focus ring */
 
-    --radius: 0.5rem;
+    /* lg=12px cards · md=10px buttons/inputs · sm=8px nav items */
+    --radius: 0.75rem;
 
-    --canvas: 240 12% 5%;
+    --canvas: 240 6% 10%;
 
-    /* Sidebar — pushed a hair darker than canvas for depth. */
-    --sidebar-background: 240 14% 3.5%;
-    --sidebar-foreground: 220 9% 69%;
-    --sidebar-primary: 234 63% 66%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 9% 11%;
-    --sidebar-accent-foreground: 220 14% 97%;
-    --sidebar-border: 240 6% 13%;
-    --sidebar-ring: 234 63% 66%;
+    /* Shell — darkest layer */
+    --sidebar-background: 240 7% 6%;       /* #0E0E10 */
+    --sidebar-foreground: 240 5% 67%;      /* text-2 */
+    --sidebar-primary: 74 90% 58%;
+    --sidebar-primary-foreground: 240 7% 6%;
+    --sidebar-accent: 240 5% 15%;          /* hover/active #232327 */
+    --sidebar-accent-foreground: 240 11% 96%;
+    --sidebar-border: 240 5% 13%;
+    --sidebar-ring: 74 90% 58%;
 
-    /* Task/issue status hues */
-    --status-backlog: 220 8% 55%;
-    --status-todo: 220 8% 70%;
-    --status-in-progress: 38 92% 58%;
-    --status-review: 262 70% 66%;
-    --status-done: 234 63% 66%;
+    /* Task/issue status hues — no purple in this system */
+    --status-backlog: 240 4% 55%;
+    --status-todo: 240 4% 70%;
+    --status-in-progress: 43 96% 56%;
+    --status-review: 213 90% 65%;
+    --status-done: 142 69% 58%;
     --status-canceled: 0 0% 45%;
 
     /* Priority scale */
-    --priority-urgent: 0 72% 60%;
+    --priority-urgent: 5 100% 68%;
     --priority-high: 20 90% 60%;
-    --priority-medium: 38 90% 58%;
-    --priority-low: 220 10% 60%;
-    --priority-none: 220 6% 40%;
+    --priority-medium: 43 96% 56%;
+    --priority-low: 240 5% 60%;
+    --priority-none: 240 4% 40%;
 
-    --severity-critical: 0 72% 60%;
+    --severity-critical: 5 100% 68%;
     --severity-high: 20 90% 58%;
-    --severity-medium: 38 92% 58%;
-    --severity-low: 152 55% 48%;
+    --severity-medium: 43 96% 56%;
+    --severity-low: 142 69% 58%;
 
-    /* Bright accents on top of the dark canvas — "action" (lime) and
-       "spotlight" (violet). Kept separate from --primary so the existing
-       indigo primary remains the identity color; lime is the CTA color. */
-    --accent-lime:   78 100% 63%;
-    --accent-lime-foreground: 240 20% 6%;
-    --accent-violet: 262 90% 66%;
-    --accent-violet-foreground: 0 0% 100%;
+    /* Accent aliases. Lime IS primary now; the old "violet spotlight"
+       slot is remapped to the calm blue so legacy .text-violet /
+       .bg-violet callsites render blue, never purple. */
+    --accent-lime:   74 90% 58%;
+    --accent-lime-foreground: 240 7% 6%;
+    --accent-violet: 213 90% 65%;
+    --accent-violet-foreground: 240 7% 6%;
   }
 
-  /* Light theme (opt-in via `light` class or html:not(.dark)) */
+  /* Light theme (opt-in). The product identity is dark-only; this keeps
+     the toggle functional without designing a second system. */
   .light {
     --background: 0 0% 100%;
     --foreground: 240 10% 8%;
@@ -103,44 +113,44 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 8%;
 
-    --primary: 235 62% 60%;
+    --primary: 74 75% 40%;                 /* darker lime for light bg */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 240 6% 96%;
     --secondary-foreground: 240 10% 8%;
 
     --muted: 240 6% 96%;
-    --muted-foreground: 220 6% 45%;
+    --muted-foreground: 240 5% 45%;
 
     --accent: 240 6% 94%;
     --accent-foreground: 240 10% 8%;
 
-    --destructive: 0 72% 52%;
+    --destructive: 5 85% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 152 55% 40%;
+    --success: 142 60% 38%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
+    --warning: 43 92% 46%;
     --warning-foreground: 0 0% 100%;
 
     --info: 213 80% 52%;
     --info-foreground: 0 0% 100%;
 
     --border: 240 6% 90%;
-    --input: 240 6% 88%;
-    --ring: 235 62% 60%;
+    --input: 240 6% 97%;
+    --ring: 74 75% 40%;
 
     --canvas: 240 6% 98%;
 
-    --sidebar-background: 240 10% 4%;
-    --sidebar-foreground: 220 8% 72%;
-    --sidebar-primary: 235 62% 65%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 8% 12%;
+    --sidebar-background: 240 7% 6%;
+    --sidebar-foreground: 240 5% 70%;
+    --sidebar-primary: 74 90% 58%;
+    --sidebar-primary-foreground: 240 7% 6%;
+    --sidebar-accent: 240 5% 15%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 6% 12%;
-    --sidebar-ring: 235 62% 65%;
+    --sidebar-border: 240 5% 13%;
+    --sidebar-ring: 74 90% 58%;
   }
 }
 
@@ -150,7 +160,7 @@
   }
 
   html {
-    background-color: hsl(240 12% 5%);
+    background-color: hsl(240 6% 10%);
     color-scheme: dark;
   }
 
@@ -188,6 +198,15 @@
   }
   ::-webkit-scrollbar-thumb:hover { background-color: hsl(var(--muted-foreground) / 0.4); background-clip: padding-box; }
   ::-webkit-scrollbar-track { background: transparent; }
+
+  /* Motion is feedback, not theater. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer utilities {
@@ -208,19 +227,18 @@
       0 24px 60px -16px hsl(240 20% 2% / 0.55);
   }
 
-  /* Radial primary glow behind hero / feature accents. */
+  /* Radial lime glow behind hero / feature accents — kept faint so the
+     3% lime budget holds. */
   .glow-primary {
     background-image: radial-gradient(
       60% 60% at 50% 0%,
-      hsl(var(--primary) / 0.22) 0%,
-      hsl(var(--primary) / 0.06) 40%,
+      hsl(var(--primary) / 0.10) 0%,
+      hsl(var(--primary) / 0.03) 40%,
       transparent 70%
     );
   }
 
-  /* Frosted-glass panel — subtle, not heavy. Use on overlays, hero
-     cards, upgrade panels. Kept intentionally light so text stays legible
-     without an extra background wash. */
+  /* Frosted-glass panel — subtle, not heavy. */
   .glass-panel {
     background-color: hsl(var(--card) / 0.55);
     backdrop-filter: saturate(140%) blur(14px);
@@ -231,23 +249,39 @@
       0 8px 24px -12px hsl(240 30% 2% / 0.5);
   }
 
-  /* Lime "action" pill — reserved for the single most important CTA on
-     a page so it stays scarce and never competes with itself. */
+  /* Primary lime CTA. Hover brightens + soft glow; press scales down. */
   .btn-lime {
-    background-color: hsl(var(--accent-lime));
-    color: hsl(var(--accent-lime-foreground));
-    transition: background-color 150ms ease, transform 150ms ease;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    transition: background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 100ms ease;
   }
-  .btn-lime:hover { background-color: hsl(var(--accent-lime) / 0.9); }
-  .btn-lime:active { transform: translateY(1px); }
+  .btn-lime:hover {
+    background-color: hsl(74 100% 65%); /* #D4FF4A */
+    box-shadow: 0 0 16px hsl(74 90% 58% / 0.25);
+  }
+  .btn-lime:active { transform: scale(0.97); }
 
-  /* Small monochrome utilities for the new accents. */
+  /* Accent utilities. "violet" names are legacy aliases → render blue. */
   .text-lime   { color: hsl(var(--accent-lime)); }
   .bg-lime     { background-color: hsl(var(--accent-lime)); color: hsl(var(--accent-lime-foreground)); }
   .text-violet { color: hsl(var(--accent-violet)); }
   .bg-violet   { background-color: hsl(var(--accent-violet)); color: hsl(var(--accent-violet-foreground)); }
   .ring-lime   { --tw-ring-color: hsl(var(--accent-lime) / 0.4); }
   .ring-violet { --tw-ring-color: hsl(var(--accent-violet) / 0.4); }
+
+  /* Pastel meaning-pills (pill + text pairs, WCAG AA). Anlam pill'de
+     yaşar: durum/kategori/öncelik renkli düz metin olmaz. */
+  .pill { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium; }
+  .pill-orange { background: #FFD9B0; color: #7A3E00; }
+  .pill-yellow { background: #F7F0A0; color: #5C5200; }
+  .pill-red    { background: #FFB4A8; color: #7A1200; }
+  .pill-teal   { background: #B8F0E4; color: #00524A; }
+  .pill-green  { background: #C8EFC0; color: #1E5214; }
+  .pill-blue   { background: #BFD9FF; color: #143A7A; }
+  .pill-pink   { background: #F5C6E8; color: #6B1E56; }
+  .pill-subtle { background: hsl(0 0% 100% / 0.07); color: #C9C9D1; }
 
   /* Subtle dotted / grid canvas backdrop. */
   .bg-grid-fade {
@@ -263,11 +297,11 @@
 
   /* Linear-style compact issue row */
   .issue-row {
-    @apply flex h-9 items-center gap-3 border-b border-border/60 px-4 text-[13px] transition-colors hover:bg-sidebar-accent/40;
+    @apply flex h-9 items-center gap-3 border-b border-border/60 px-4 text-[13px] transition-colors hover:bg-card;
   }
   .issue-row:last-child { border-bottom-width: 0; }
 
-  /* Linear-style chip button (used in New Issue modal etc.) */
+  /* Chip button (New Issue modal etc.) */
   .chip {
     @apply inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 text-[12px] font-medium text-muted-foreground transition-colors hover:border-muted-foreground/40 hover:text-foreground;
   }
@@ -277,7 +311,7 @@
     @apply inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-secondary/60 px-1 font-mono text-[10.5px] text-muted-foreground;
   }
 
-  /* Legacy Asana tab kept for now (Project tabs use it) */
+  /* Tab strip — active gets 2px lime underline */
   .asana-tab {
     @apply relative inline-flex h-11 items-center whitespace-nowrap px-3 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground;
   }

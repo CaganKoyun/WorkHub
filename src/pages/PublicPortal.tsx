@@ -21,8 +21,8 @@ const STATUS_TONE: Record<string, string> = {
   backlog: 'text-muted-foreground bg-secondary/40',
   todo: 'text-muted-foreground bg-secondary/40',
   in_progress: 'text-blue-300 bg-blue-500/15',
-  review: 'text-purple-300 bg-purple-500/15',
-  done: 'text-emerald-400 bg-emerald-500/15',
+  review: 'text-[#8FBAFF] bg-[#BFD9FF]/15',
+  done: 'text-success bg-emerald-500/15',
 };
 const PRIO_LABEL: Record<string, string> = {
   low: 'Düşük', medium: 'Orta', high: 'Yüksek', urgent: 'Acil',

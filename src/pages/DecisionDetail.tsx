@@ -30,8 +30,8 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const VERDICT_TONE: Record<DecisionVerdict, string> = {
-  held: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
-  changed: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
+  held: "bg-emerald-500/15 text-success",
+  changed: "bg-amber-500/15 text-warning dark:text-warning",
   wrong: "bg-destructive/15 text-destructive",
 };
 
@@ -212,7 +212,7 @@ export default function DecisionDetail() {
                         <p className={cn(
                           "mt-0.5 text-[11px]",
                           delta === 0 ? "text-muted-foreground"
-                            : deltaBad ? "text-destructive" : "text-emerald-600 dark:text-emerald-400",
+                            : deltaBad ? "text-destructive" : "text-success",
                         )}>
                           bugün: {e.format === "currency" ? formatCurrency(nowVal!, "USD") : nowVal}
                           {delta !== 0 && ` (${delta > 0 ? "+" : ""}${e.format === "currency" ? formatCurrency(delta, "USD") : delta})`}
@@ -227,7 +227,7 @@ export default function DecisionDetail() {
         </Card>
 
         {/* Sonuç / Yeniden Açılış */}
-        <Card className={cn(due && "border-amber-500/40")}>
+        <Card className={cn(due && "border-warning/40")}>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm">
               <RotateCcw className="h-4 w-4 text-primary" /> Sonuç Döngüsü

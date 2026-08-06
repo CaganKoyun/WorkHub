@@ -46,7 +46,7 @@ function LeaderRow({ row, rank, isMe }: { row: LeaderboardRow; rank: number; isM
       <div className="w-6 text-center text-[13px] font-mono text-muted-foreground tabular-nums">
         {medal ?? rank}
       </div>
-      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-purple-500 grid place-items-center text-[11px] font-semibold text-white shrink-0">
+      <div className="h-8 w-8 rounded-full bg-card grid place-items-center text-[11px] font-semibold text-foreground shrink-0">
         {(row.full_name ?? '?').split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase()}
       </div>
       <div className="min-w-0 flex-1">
@@ -104,7 +104,7 @@ export default function Leaderboard() {
           </div>
           <div className="rounded-md border border-border/60 bg-secondary/20 p-3">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1"><Flame className="h-3 w-3" /> Streak</div>
-            <div className={cn('mt-1 text-[22px] font-mono tabular-nums', (streak ?? 0) >= 3 && 'text-amber-400')}>
+            <div className={cn('mt-1 text-[22px] font-mono tabular-nums', (streak ?? 0) >= 3 && 'text-warning')}>
               {streak ?? 0}g
             </div>
           </div>

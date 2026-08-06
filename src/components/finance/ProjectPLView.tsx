@@ -28,11 +28,11 @@ export function ProjectPLView() {
             )}
             {(rows ?? []).map(p => {
               const util = p.budgetUtilizationPct;
-              const tone = util == null ? '' : util >= 100 ? 'bg-destructive' : util >= 90 ? 'bg-amber-500' : 'bg-emerald-500';
+              const tone = util == null ? '' : util >= 100 ? 'bg-destructive' : util >= 90 ? 'bg-warning' : 'bg-success';
               return (
                 <TableRow key={p.projectId}>
                   <TableCell className="font-medium">{p.projectName}</TableCell>
-                  <TableCell className="text-sm text-emerald-400">{formatCurrency(p.income, 'USD')}</TableCell>
+                  <TableCell className="text-sm text-success">{formatCurrency(p.income, 'USD')}</TableCell>
                   <TableCell className="text-sm text-destructive">{formatCurrency(p.expense, 'USD')}</TableCell>
                   <TableCell>
                     <Badge variant={p.net >= 0 ? 'outline' : 'destructive'} className="text-sm">

@@ -126,7 +126,7 @@ const Landing = () => {
               {/* rail */}
               <div className="hidden w-[52px] shrink-0 flex-col items-center gap-3 bg-sidebar py-3 sm:flex">
                 <span className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground">
-                  <StackedLogo size={12} color="currentColor" />
+                  <SparkLogo variant="mark" size={12} />
                 </span>
                 {[0, 1, 2, 3, 4].map(i => (
                   <span key={i} className={`h-6 w-6 rounded-md ${i === 1 ? "bg-sidebar-accent" : "bg-sidebar-accent/40"}`} />

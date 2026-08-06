@@ -41,7 +41,7 @@ export function FounderMirrorCard() {
                 <Badge
                   variant="outline"
                   className={improved
-                    ? "gap-1 border-emerald-500/40 text-emerald-600 dark:text-emerald-400"
+                    ? "gap-1 border-success/40 text-success"
                     : "gap-1 border-destructive/40 text-destructive"}
                 >
                   {improved ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}

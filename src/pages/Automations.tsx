@@ -250,14 +250,14 @@ function RunsPreview({ automationId }: { automationId: string }) {
     <div className="divide-y divide-border/40">
       {runs.slice(0, 5).map(r => (
         <div key={r.id} className="flex items-center gap-2 px-3 py-1.5 text-[11.5px]">
-          {r.outcome === 'ok'      ? <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+          {r.outcome === 'ok'      ? <CheckCircle2 className="h-3 w-3 text-success" />
             : r.outcome === 'error' ? <AlertTriangle className="h-3 w-3 text-destructive" />
             : <CircleSlash className="h-3 w-3 text-muted-foreground" />}
           <span className="text-muted-foreground w-32 shrink-0">
             {new Date(r.created_at).toLocaleString('tr-TR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
           </span>
           <span className={cn(
-            r.outcome === 'ok' ? 'text-emerald-400' : r.outcome === 'error' ? 'text-destructive' : 'text-muted-foreground',
+            r.outcome === 'ok' ? 'text-success' : r.outcome === 'error' ? 'text-destructive' : 'text-muted-foreground',
           )}>{r.outcome}</span>
           {r.detail && <span className="truncate text-muted-foreground">— {r.detail}</span>}
         </div>

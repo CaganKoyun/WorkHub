@@ -63,8 +63,8 @@ export function RollupPanel({ ctx, className }: Props) {
   if (tiles.length === 0) return null;
 
   const toneClass: Record<'ok' | 'warn' | 'bad' | 'muted', string> = {
-    ok: 'text-emerald-400',
-    warn: 'text-amber-400',
+    ok: 'text-success',
+    warn: 'text-warning',
     bad: 'text-destructive',
     muted: 'text-foreground',
   };

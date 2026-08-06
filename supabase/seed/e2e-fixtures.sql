@@ -122,8 +122,8 @@ BEGIN
   -- ----- projects -----
   INSERT INTO public.projects (id, workspace_id, name, description, status, priority, owner_id, created_by, start_date, end_date, color)
   VALUES
-    (_proj1, _ws, 'Growth Q3', 'Q3 growth workstream — landing + pricing.', 'active', 'high',   _u_owner,  _u_owner, current_date - 14, current_date + 60, '#5E6AD2'),
-    (_proj2, _ws, 'Platform Debt', 'RLS audit + migration reliability + storage cleanup.', 'active', 'medium', _u_admin1, _u_admin1, current_date - 7,  current_date + 30, '#C6F84F')
+    (_proj1, _ws, 'Growth Q3', 'Q3 growth workstream — landing + pricing.', 'active', 'high',   _u_owner,  _u_owner, current_date - 14, current_date + 60, '#C6F432'),
+    (_proj2, _ws, 'Platform Debt', 'RLS audit + migration reliability + storage cleanup.', 'active', 'medium', _u_admin1, _u_admin1, current_date - 7,  current_date + 30, '#5EA8FF')
   ON CONFLICT (id) DO UPDATE SET
     name = EXCLUDED.name, description = EXCLUDED.description,
     status = EXCLUDED.status, priority = EXCLUDED.priority;

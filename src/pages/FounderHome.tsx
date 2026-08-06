@@ -36,9 +36,9 @@ interface MetricCardProps {
 function MetricCard({ title, value, subtitle, icon: Icon, tone = "default", to, provenance }: MetricCardProps) {
   const toneClass = {
     default: "border-border",
-    warning: "border-amber-500/40",
+    warning: "border-warning/40",
     danger: "border-destructive/50",
-    success: "border-emerald-500/40",
+    success: "border-success/40",
   }[tone];
 
   const body = (
@@ -218,7 +218,7 @@ export default function FounderHome() {
         <section>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-amber-400" />
+              <AlertTriangle className="h-4 w-4 text-warning" />
               <h2 className="text-sm font-semibold uppercase tracking-wide">Attention Required</h2>
             </div>
             <Button variant="ghost" size="sm" asChild>

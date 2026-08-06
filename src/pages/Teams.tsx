@@ -151,7 +151,7 @@ function MemberRow({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span className="text-[13px] font-medium truncate">{profile?.name ?? 'Kullanıcı'}</span>
-          {member.role === 'owner' && <Crown className="h-3 w-3 text-amber-500" />}
+          {member.role === 'owner' && <Crown className="h-3 w-3 text-warning" />}
         </div>
         {member.job_title && <div className="text-[11px] text-muted-foreground truncate">{member.job_title}</div>}
       </div>

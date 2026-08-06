@@ -18,7 +18,7 @@ import {
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const SWATCH = ['#5E6AD2', '#22c55e', '#f59e0b', '#ef4444', '#0ea5e9', '#a855f7'];
+const SWATCH = ['#C6F432', '#4ADE80', '#FBBF24', '#FF6B5E', '#5EA8FF', '#2DD4BF'];
 
 // ---- Create / edit dialog -----------------------------------------------
 

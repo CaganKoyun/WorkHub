@@ -43,7 +43,7 @@ export default function PublicSupport() {
   if (tracking) {
     return (
       <div className="mx-auto max-w-lg pt-24 text-center px-6">
-        <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400" />
+        <CheckCircle2 className="mx-auto h-10 w-10 text-success" />
         <h1 className="mt-3 text-[18px] font-semibold">Talebiniz alındı</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">
           Takip numaranız: <span className="font-mono">{tracking}</span>. Ekip en kısa

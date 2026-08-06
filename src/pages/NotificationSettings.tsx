@@ -119,13 +119,13 @@ export default function NotificationSettings() {
       <div className="rounded-md border border-border/60 bg-secondary/10 p-3 space-y-1.5 text-[12px]">
         <div className="flex items-center gap-2">
           {support.browser
-            ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+            ? <CheckCircle2 className="h-3.5 w-3.5 text-success" />
             : <AlertTriangle className="h-3.5 w-3.5 text-destructive" />}
-          <span>Tarayıcı desteği: <strong className={support.browser ? 'text-emerald-400' : 'text-destructive'}>{support.browser ? 'OK' : 'YOK'}</strong></span>
+          <span>Tarayıcı desteği: <strong className={support.browser ? 'text-success' : 'text-destructive'}>{support.browser ? 'OK' : 'YOK'}</strong></span>
         </div>
         <div className="flex items-center gap-2">
           {support.permission === 'granted'
-            ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+            ? <CheckCircle2 className="h-3.5 w-3.5 text-success" />
             : support.permission === 'denied'
               ? <AlertTriangle className="h-3.5 w-3.5 text-destructive" />
               : <Bell className="h-3.5 w-3.5 text-muted-foreground" />}
@@ -133,8 +133,8 @@ export default function NotificationSettings() {
           {support.permission === 'denied' && <span className="text-muted-foreground">— tarayıcı ayarlarından aç</span>}
         </div>
         <div className="flex items-center gap-2">
-          <KeyRound className={cn('h-3.5 w-3.5', support.vapidConfigured ? 'text-emerald-400' : 'text-amber-400')} />
-          <span>VAPID public key: <strong className={support.vapidConfigured ? 'text-emerald-400' : 'text-amber-400'}>{support.vapidConfigured ? 'OK' : 'yok — env ekle'}</strong></span>
+          <KeyRound className={cn('h-3.5 w-3.5', support.vapidConfigured ? 'text-success' : 'text-warning')} />
+          <span>VAPID public key: <strong className={support.vapidConfigured ? 'text-success' : 'text-warning'}>{support.vapidConfigured ? 'OK' : 'yok — env ekle'}</strong></span>
         </div>
       </div>
 

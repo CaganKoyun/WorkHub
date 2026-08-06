@@ -71,7 +71,7 @@ export default function PublicForm() {
   if (submitted) {
     return (
       <div className="mx-auto max-w-lg pt-32 text-center px-6">
-        <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400" />
+        <CheckCircle2 className="mx-auto h-10 w-10 text-success" />
         <h1 className="mt-3 text-[18px] font-semibold">Gönderildi</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">{form.submit_message}</p>
       </div>

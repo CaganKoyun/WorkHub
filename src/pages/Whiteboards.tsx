@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 
 type Tool = 'select' | ShapeKind;
 
-const COLORS = ['#e5e7eb', '#93c5fd', '#86efac', '#fde68a', '#fca5a5', '#c4b5fd'];
+const COLORS = ['#e5e7eb', '#93c5fd', '#86efac', '#fde68a', '#fca5a5', '#F5C6E8'];
 
 // ---- List page ------------------------------------------------------------
 
@@ -116,7 +116,7 @@ function svgPoint(svg: SVGSVGElement, e: React.PointerEvent) {
 function renderShape(s: Shape, isSelected: boolean, onPointerDown: (e: React.PointerEvent) => void) {
   const stroke = s.stroke ?? '#94a3b8';
   const strokeWidth = isSelected ? 2.5 : 1.5;
-  const strokeColor = isSelected ? '#5E6AD2' : stroke;
+  const strokeColor = isSelected ? '#C6F432' : stroke;
   const fill = s.color ?? 'transparent';
   const common = {
     onPointerDown,
@@ -369,7 +369,7 @@ function BoardEditor({ board }: { board: Whiteboard }) {
         <span className={cn(
           'ml-auto text-[11px] transition-opacity',
           saving ? 'text-muted-foreground opacity-100'
-            : dirty ? 'text-amber-500 opacity-100'
+            : dirty ? 'text-warning opacity-100'
             : 'opacity-0',
         )}>
           {saving ? 'Kaydediliyor…' : dirty ? 'Kaydedilmedi' : ''}

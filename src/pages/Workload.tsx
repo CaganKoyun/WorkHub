@@ -38,7 +38,7 @@ function Row({ b }: { b: Bucket }) {
           <AvatarFallback className={cn(
             "text-[10px] font-semibold",
             b.key === UNASSIGNED
-              ? "bg-amber-500/20 text-amber-500"
+              ? "bg-amber-500/20 text-warning"
               : "bg-sidebar-accent text-sidebar-accent-foreground"
           )}>
             {initials}

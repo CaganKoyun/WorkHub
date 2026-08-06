@@ -142,7 +142,7 @@ function DocEditor({ doc }: { doc: Doc }) {
         <span className={cn(
           'text-[11px] transition-opacity',
           saving ? 'text-muted-foreground opacity-100'
-            : dirty ? 'text-amber-500 opacity-100'
+            : dirty ? 'text-warning opacity-100'
             : 'opacity-0',
         )}>
           {saving ? 'Kaydediliyor…' : dirty ? 'Kaydedilmedi' : ''}

@@ -68,7 +68,7 @@ export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
   backlog: 'bg-muted text-muted-foreground border-border',
   todo: 'bg-muted text-muted-foreground border-border',
   in_progress: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  review: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  review: 'bg-amber-500/20 text-warning border-amber-500/30',
   done: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
 };
 
@@ -84,6 +84,6 @@ export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
 export const TASK_PRIORITY_COLORS: Record<TaskPriority, string> = {
   low: 'bg-muted text-muted-foreground',
   medium: 'bg-blue-500/20 text-blue-300',
-  high: 'bg-amber-500/20 text-amber-300',
+  high: 'bg-amber-500/20 text-warning',
   urgent: 'bg-destructive/20 text-destructive-foreground',
 };
