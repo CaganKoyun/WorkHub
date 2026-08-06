@@ -1,4 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+// Load .env into process.env so specs that hit Supabase directly
+// (e.g. the RLS unauth check) see VITE_SUPABASE_URL / _PUBLISHABLE_KEY
+// the same way the app does through import.meta.env.
+try {
+  for (const line of readFileSync(".env", "utf8").split("\n")) {
+    const m = line.match(/^\s*(VITE_[A-Z0-9_]+)\s*=\s*"?([^"]*)"?\s*$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
+  }
+} catch { /* .env absent — fine, only the RLS test needs it */ }
 
 // E2E smoke katmanı: uygulama kabuğunun gerçekten açıldığını doğrular
 // (routing, auth yönlendirmesi, ölü import/başlatma hataları). Supabase'e

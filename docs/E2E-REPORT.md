@@ -100,13 +100,43 @@ onları kapsıyor; auth crawl açılınca çalıştırılabilir.
    ekle; her PR'da diff-only public route'lar çalışsın, auth crawl
    nightly.
 
-## 8. Role-flow spec — 2026-08-06 çalıştırma
+## 8. Role-flow spec — 2026-08-06 sonuç
 
-Seed uygulandı (6 kullanıcı, 2 proje, 10 task — user "geçti" dedi).
-`e2e/role-flows.spec.ts` bu sandbox'ta **çalışamadı**: agent proxy'nin
-network policy'si `vpbijxgebwoshvulmeds.supabase.co` host'unu 403 ile
-reddediyor (hem Chromium hem Node). Yani spec skipped (login timeout),
-bug değil environment limiti.
+**4/4 rol-testi PASSED**, RLS API testi passed (dotenv fix'ten sonra).
+
+```
+✓ owner:   home + issues + create task            6.2s
+✓ admin1:  opens platform-debt + sees own task    4.7s
+✓ member1: sees only assigned tasks + comment     3.6s
+✓ viewer:  no "New project" button                2.6s
+✓ RLS:     unauth REST hit returns empty          ~
+```
+
+**Ne doğrulandı:**
+- 6 seed user (owner/admin×2/member×2/viewer) prod Supabase Auth'ta
+  var, hepsi login olabiliyor
+- Login sonrası her rol kendi izin çerçevesinde beklenen sayfaları
+  görüyor
+- Member kendi task'larını, admin proje detayını, viewer create
+  action'larının olmadığını görüyor
+- Anon REST çağrıları RLS engeliyle boş dönüyor (leak yok)
+
+**Yol boyunca bulunan+düzeltilen bug'lar (bu spec'i yazarken):**
+1. `.env`'de eski dev branch URL'i kalmıştı (`oyqydukugbevddpibkzr`).
+   Prod (`vpbijxgebwoshvulmeds`) ile güncellendi.
+2. Radix Tabs signup + login panellerini eş anda mount ediyor —
+   `getByPlaceholder('you@company.com').first()` yanlış formu
+   dolduruyordu. Fix: `input[type="email"]:visible` + `Enter`.
+3. Post-signin redirect wait 8s → 20s (cold-start Vite dev için).
+4. `.env` şimdi `playwright.config.ts` tarafından da yükleniyor —
+   RLS test'i artık skip'lemiyor.
+
+**Ne test edilmedi (henüz):**
+- 51 authed rotanın tek tek render smoke test'i — role-flows yalnız
+  4 kritik yolu kapsıyor. Hard-crawl signed-in kısmı hâlâ email
+  confirmation duvarına takılı (§3'e bak). Alternatif: seed user'la
+  aynı hard-crawl'ı koştur (spec içindeki signup yerine seed login
+  kullansın).
 
 **Nerede çalıştırılabilir:**
 
