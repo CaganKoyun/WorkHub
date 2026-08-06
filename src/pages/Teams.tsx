@@ -10,6 +10,7 @@ import {
   type WorkspaceRole, type WorkspaceMember,
 } from '@/lib/teams-types';
 import { useAllProfiles } from '@/lib/projects-hooks';
+import { useWorkspacePermission } from '@/hooks/useWorkspacePermission';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -218,6 +219,7 @@ export default function Teams() {
   const revoke = useRevokeInvitation();
   const [teamOpen, setTeamOpen] = useState(false);
   const [inviteOpen, setInviteOpen] = useState(false);
+  const canManage = useWorkspacePermission("admin", "manage");
 
   const profileMap = useMemo(
     () => new Map((profiles ?? []).map(p => [p.user_id, { name: p.full_name, avatar: p.avatar_url }])),
@@ -244,14 +246,16 @@ export default function Teams() {
             Ekipleri organize et, üye rollerini yönet, yeni kullanıcıları davet et.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="outline" onClick={() => setInviteOpen(true)} className="h-8 gap-1.5">
-            <Mail className="h-3.5 w-3.5" /> Davet
-          </Button>
-          <Button size="sm" onClick={() => setTeamOpen(true)} className="h-8 gap-1.5">
-            <Plus className="h-3.5 w-3.5" /> Yeni ekip
-          </Button>
-        </div>
+        {canManage && (
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" onClick={() => setInviteOpen(true)} className="h-8 gap-1.5">
+              <Mail className="h-3.5 w-3.5" /> Davet
+            </Button>
+            <Button size="sm" onClick={() => setTeamOpen(true)} className="h-8 gap-1.5">
+              <Plus className="h-3.5 w-3.5" /> Yeni ekip
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Teams grid */}

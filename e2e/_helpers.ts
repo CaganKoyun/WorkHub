@@ -26,8 +26,8 @@ export const USER_IDS = {
 } as const;
 
 export const WORKSPACE_ID = '11111111-1111-1111-1111-111111111111';
-export const PROJECT_GROWTH = 'eeeeeeee-1111-1111-1111-111111111111';
-export const PROJECT_DEBT   = 'eeeeeeee-2222-2222-2222-222222222222';
+export const PROJECT_GROWTH = 'eeeeeeee-1111-eeee-1111-eeeeeeeeeeee';
+export const PROJECT_DEBT   = 'eeeeeeee-2222-eeee-2222-eeeeeeeeeeee';
 
 export type Role = keyof typeof USERS;
 
