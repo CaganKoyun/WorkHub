@@ -139,6 +139,12 @@ BEGIN
     (_proj2, _u_member2, 'member', _ws)
   ON CONFLICT DO NOTHING;
 
+  -- Re-enable USER triggers for tasks: we need assign_task_tracking_id
+  -- to fill WH-##### and set_workspace_id is now safe (workspace_id
+  -- is set explicitly in every row). Rest of the seed also needs the
+  -- normal trigger flow (chat/decisions have their own).
+  SET LOCAL session_replication_role = 'origin';
+
   -- ----- tasks (10) -----
   INSERT INTO public.tasks (workspace_id, project_id, title, description, status, priority, assignee_id, reporter_id, position, tags)
   VALUES
