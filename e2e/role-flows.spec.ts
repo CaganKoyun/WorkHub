@@ -21,23 +21,32 @@ const USERS = {
 } as const;
 
 async function loginOrSkip(page: Page, email: string) {
+  const netErrs: string[] = [];
+  const consoleErrs: string[] = [];
+  page.on('console', (m) => { if (m.type() === 'error') consoleErrs.push(m.text().slice(0, 200)); });
+  page.on('response', (r) => {
+    if (r.status() >= 400 && (r.url().includes('supabase') || r.url().includes('/auth'))) {
+      netErrs.push(`${r.status()} ${r.request().method()} ${r.url().slice(0, 120)}`);
+    }
+  });
+
   await page.goto('/auth');
-  // Radix mounts BOTH tab panels — the signup panel also has a
-  // `you@company.com` email input. Filter to the visible one so we
-  // always target the currently-active Sign in tab.
   await page.locator('input[type="email"]:visible').first().fill(email);
   await page.locator('input[type="password"]:visible').first().fill(PASSWORD);
-  // Same collision: "Sign in" is both a tab-trigger (role=tab) and the
-  // submit button (role=button). exact:true + role=button already
-  // scopes to the button, but be explicit and press Enter as a
-  // failsafe — submitting the form directly avoids any button pick.
   await page.locator('input[type="password"]:visible').first().press('Enter');
-  // Success = URL leaves /auth. Toast on failure lingers on /auth.
-  // 20s tolerates cold-start Vite dev + Supabase auth roundtrip.
+
   try {
     await page.waitForURL((u) => !u.toString().includes('/auth'), { timeout: 20_000 });
   } catch {
-    test.skip(true, `login failed for ${email} — fixture users not seeded, or app took >20s to redirect?`);
+    const url = page.url();
+    const body = (await page.textContent('body').catch(() => ''))?.slice(0, 300) ?? '';
+    // Hard-fail so the message surfaces — was skipping silently before.
+    throw new Error(
+      `login stuck on ${url} for ${email}\n` +
+      `netErrs: ${netErrs.join(' | ') || '(none)'}\n` +
+      `consoleErrs: ${consoleErrs.slice(0, 5).join(' | ') || '(none)'}\n` +
+      `body: ${body}`
+    );
   }
 }
 
