@@ -55,7 +55,7 @@ async function signUp(page: Page, actor: Actor) {
   // her placeholder tek. `.first()` kullan.
   await page.getByPlaceholder('you@company.com').first().fill(actor.email);
   await page.locator('input[type="password"]').first().fill(actor.password);
-  await page.getByRole('button', { name: /^Sign up$/i }).click();
+  await page.getByRole('button', { name: /Create workspace|^Sign up$/i }).click();
 
   // Redirect veya "check email" toast — biri gelmeli.
   const redirected = page

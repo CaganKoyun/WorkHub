@@ -31,7 +31,7 @@ test.describe('Live signup (env-gated)', () => {
     // placeholder tek. `.first()` kullan.
     await page.getByPlaceholder('you@company.com').first().fill(email);
     await page.locator('input[type="password"]').first().fill(password);
-    await page.getByRole('button', { name: /^Sign up$/i }).click();
+    await page.getByRole('button', { name: /Create workspace|^Sign up$/i }).click();
 
     // Either we get bounced out of /auth (confirmation off) or a toast tells
     // us to check the mailbox (confirmation on). Both mean "signup accepted".
