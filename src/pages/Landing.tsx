@@ -53,7 +53,7 @@ const Landing = () => {
             <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground">
               <StackedLogo size={13} color="currentColor" />
             </span>
-            <span className="text-[15px] font-semibold tracking-tight">FounderOS</span>
+            <span className="text-[15px] font-semibold tracking-tight">Spark WorkHub</span>
           </Link>
 
           {/* Var olmayan sayfalara sahte menü yok: tek gerçek ankraj */}
@@ -226,7 +226,7 @@ const Landing = () => {
               Every part of the company, in the same system
             </h2>
             <p className="mt-4 text-[15.5px] leading-relaxed text-muted-foreground">
-              Stop stitching five tools together. FounderOS links a project to its customer, budget,
+              Stop stitching five tools together. Spark WorkHub links a project to its customer, budget,
               goal, risk and the decision that started it.
             </p>
           </div>
@@ -257,7 +257,7 @@ const Landing = () => {
             </h2>
             <p className="mt-4 text-[15.5px] leading-relaxed text-muted-foreground">
               Capture the context, the options, the confidence level and the expected result — then
-              let FounderOS show you what actually happened months later.
+              let Spark WorkHub show you what actually happened months later.
             </p>
             <ul className="mt-6 space-y-3">
               {[
@@ -349,12 +349,12 @@ const Landing = () => {
             <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground">
               <StackedLogo size={13} color="currentColor" />
             </span>
-            <span className="text-[14px] font-semibold tracking-tight">FounderOS</span>
+            <span className="text-[14px] font-semibold tracking-tight">Spark WorkHub</span>
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
             <a href="#features" className="transition-colors hover:text-foreground">Product</a>
           </div>
-          <span className="text-[12.5px] text-muted-foreground">© {new Date().getFullYear()} FounderOS</span>
+          <span className="text-[12.5px] text-muted-foreground">© {new Date().getFullYear()} Spark WorkHub</span>
         </div>
       </footer>
     </div>

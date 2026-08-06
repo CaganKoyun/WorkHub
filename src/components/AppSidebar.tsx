@@ -202,7 +202,7 @@ export function SidebarContent({
             <StackedLogo size={13} color="currentColor" />
           </span>
           <span className="text-[14px] font-semibold tracking-tight text-sidebar-accent-foreground">
-            WorkHub
+            Spark WorkHub
           </span>
         </div>
       )}

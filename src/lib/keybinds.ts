@@ -1,5 +1,5 @@
 /**
- * Global keyboard shortcuts for WorkHub.
+ * Global keyboard shortcuts for Spark WorkHub.
  *
  * Simple registry + a single window keydown listener installer. Handles:
  *  - modifier combos (⌘/Ctrl + K)

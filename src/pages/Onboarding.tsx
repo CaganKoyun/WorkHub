@@ -236,7 +236,7 @@ export default function Onboarding() {
               <StackedLogo size={30} color="currentColor" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-3xl font-semibold tracking-tight">Welcome to WorkHub</h1>
+              <h1 className="text-3xl font-semibold tracking-tight">Welcome to Spark WorkHub</h1>
               <p className="text-[13.5px] text-muted-foreground">
                 Bir işletim sistemi: task, karar, müşteri ve nakit tek yerde.
                 5 dakika içinde workspace'in hazır.

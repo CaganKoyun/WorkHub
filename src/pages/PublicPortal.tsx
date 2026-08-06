@@ -171,7 +171,7 @@ export default function PublicPortal() {
           ))}
         </div>
         <div className="mt-auto px-4 py-3 border-t border-border/60 text-[10px] text-muted-foreground">
-          WorkHub · client portal
+          Spark WorkHub · client portal
         </div>
       </aside>
 

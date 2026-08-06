@@ -219,7 +219,7 @@ export default function AgentRuns() {
           <Bot className="h-5 w-5 text-muted-foreground" /> Agent runs
         </h1>
         <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-          Doğal dilde direktif yaz — WorkHub bunu adım listesine çevirir.
+          Doğal dilde direktif yaz — Spark WorkHub bunu adım listesine çevirir.
           Sen "Uygula"ya basınca çalıştırır ve sonucu loglar. Şimdilik heuristik
           parser; LLM planner ileride aynı kontrata yerleşir.
         </p>

@@ -311,7 +311,7 @@ export function GlobalSearch({ open, onOpenChange }: {
               <span><kbd className="kbd">↵</kbd> select</span>
               <span><kbd className="kbd">esc</kbd> close</span>
             </div>
-            <span>WorkHub</span>
+            <span>Spark WorkHub</span>
           </div>
         </Command>
       </DialogContent>

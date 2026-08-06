@@ -55,7 +55,7 @@ if (!url || !key) {
         <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid #5E6AD2;border-radius:999px;background:rgba(94,106,210,.12);color:#8B95E8;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Startup blocked</div>
         <h1 style="margin:16px 0 8px;font-size:22px;font-weight:600;letter-spacing:-.02em">Missing Supabase environment</h1>
         <p style="margin:0 0 12px;color:#8A8F98">
-          WorkHub couldn't resolve a Supabase URL/key at build time.
+          Spark WorkHub couldn't resolve a Supabase URL/key at build time.
         </p>
         <div style="margin:0 0 16px;padding:10px 12px;border:1px solid #262933;border-radius:6px;background:#151820;font-family:'Geist Mono',ui-monospace,monospace;font-size:11.5px;line-height:1.7">
           URL   → ${url ? "<span style=\"color:#22c55e\">OK</span>" : "<span style=\"color:#ef4444\">missing</span>"}<br/>

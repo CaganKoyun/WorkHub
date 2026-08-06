@@ -99,7 +99,7 @@ export async function executeStep(step: PlanStep, ctx: ExecCtx): Promise<AgentRu
         if (!uid) return { step_index: -1, ok: false, error: `"${name}" workspace üyesi olarak bulunamadı` };
         const { error } = await supabase.rpc('enqueue_push', {
           _user_id: uid,
-          _title: step.params.title ?? 'WorkHub bildirimi',
+          _title: step.params.title ?? 'Spark WorkHub bildirimi',
           _body: step.params.body ?? undefined,
         });
         if (error) throw error;

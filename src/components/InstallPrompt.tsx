@@ -44,7 +44,7 @@ export function InstallPrompt() {
           <Smartphone className="h-4 w-4 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-[13px] font-medium">WorkHub'ı yükle</div>
+          <div className="text-[13px] font-medium">Spark WorkHub'ı yükle</div>
           <p className="mt-0.5 text-[11.5px] text-muted-foreground">
             Uygulama olarak ekle: masaüstünde ayrı pencere, telefonda anasayfa ikonu, offline shell.
           </p>

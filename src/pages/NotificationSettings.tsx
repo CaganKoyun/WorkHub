@@ -94,7 +94,7 @@ export default function NotificationSettings() {
     try {
       await enqueue.mutateAsync({
         user_id: user.id,
-        title: 'WorkHub test bildirimi',
+        title: 'Spark WorkHub test bildirimi',
         body: 'Enqueue çalışıyor. Cihazına ulaşması için send-push Edge Function ve VAPID_PRIVATE_KEY gerekli.',
         url: '/inbox',
       });

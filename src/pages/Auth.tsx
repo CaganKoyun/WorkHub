@@ -117,7 +117,7 @@ export default function Auth() {
           <span className="grid h-7 w-7 place-items-center rounded-md bg-primary text-primary-foreground">
             <StackedLogo size={15} color="currentColor" />
           </span>
-          <span className="text-[15px] font-semibold tracking-tight text-sidebar-accent-foreground">FounderOS</span>
+          <span className="text-[15px] font-semibold tracking-tight text-sidebar-accent-foreground">Spark WorkHub</span>
         </Link>
 
         <div className="relative max-w-md space-y-8">
@@ -163,7 +163,7 @@ export default function Auth() {
             <span className="h-6 w-6 rounded-md bg-primary text-primary-foreground grid place-items-center">
               <StackedLogo size={13} color="currentColor" />
             </span>
-            <span className="text-[14px] font-semibold tracking-tight text-foreground">FounderOS</span>
+            <span className="text-[14px] font-semibold tracking-tight text-foreground">Spark WorkHub</span>
           </Link>
 
           <div>

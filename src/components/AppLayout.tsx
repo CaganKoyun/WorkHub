@@ -47,7 +47,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="grid h-5 w-5 place-items-center rounded bg-primary text-primary-foreground">
               <StackedLogo size={11} color="currentColor" />
             </span>
-            <span className="text-[14px] font-semibold tracking-tight text-foreground">WorkHub</span>
+            <span className="text-[14px] font-semibold tracking-tight text-foreground">Spark WorkHub</span>
           </div>
           <Button size="icon" variant="ghost" className="h-8 w-8" asChild>
             <Link to="/tasks?new=1"><Plus className="h-4 w-4" /></Link>

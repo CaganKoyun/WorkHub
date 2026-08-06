@@ -1,5 +1,5 @@
 /**
- * WorkHub agent — direktifi araç çağrılarına dönüştüren heuristik parser.
+ * Spark WorkHub agent — direktifi araç çağrılarına dönüştüren heuristik parser.
  * LLM-backed planner bu dosyayı bir gün değiştirir; kontrat aynı kalır:
  *   parseDirective(text) → Plan (list of steps)
  * Every step names a `tool` from the AGENT_TOOLS registry and its params.
@@ -177,7 +177,7 @@ export function parseDirective(raw: string): { plan: PlanStep[] } {
       params: {
         user_name: assignee,
         title: `${staleDays} gündür güncellenmemiş task'lar`,
-        body: `WorkHub'a girip ilerlemeleri güncelle.`,
+        body: `Spark WorkHub'a girip ilerlemeleri güncelle.`,
       },
       description: `${assignee} kullanıcısına push at (${staleDays}g stale reminder)`,
     });

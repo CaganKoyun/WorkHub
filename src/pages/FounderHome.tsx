@@ -79,8 +79,8 @@ function PulseCashCard() {
   });
   const provenance =
     state.kind === "value"
-      ? `FounderOS Finance · ${freshnessLabel(dataUpdatedAt, Date.now())}`
-      : "FounderOS Finance";
+      ? `Spark WorkHub Finance · ${freshnessLabel(dataUpdatedAt, Date.now())}`
+      : "Spark WorkHub Finance";
 
   if (state.kind === "no_access") {
     return (
@@ -148,21 +148,21 @@ export default function FounderHome() {
               <MetricCard
                 title="Aktif Projeler" value={pulse.activeProjects}
                 subtitle={`${pulse.totalProjects} toplam`} icon={FolderKanban} to="/projects"
-                provenance={prov("FounderOS Projects")}
+                provenance={prov("Spark WorkHub Projects")}
               />
               <MetricCard
                 title="Açık Görevler" value={pulse.openTasks}
                 subtitle={pulse.overdueTasks > 0 ? `${pulse.overdueTasks} gecikmiş` : "gecikme yok"}
                 tone={pulse.overdueTasks > 0 ? "warning" : "default"}
                 icon={CheckSquare} to="/tasks"
-                provenance={prov("FounderOS Work")}
+                provenance={prov("Spark WorkHub Work")}
               />
               <MetricCard
                 title="Kritik Buglar" value={pulse.criticalBugs}
                 subtitle={`${pulse.openBugs} açık toplam`}
                 tone={pulse.criticalBugs > 0 ? "danger" : "default"}
                 icon={Bug} to="/bugs"
-                provenance={prov("FounderOS Bugs")}
+                provenance={prov("Spark WorkHub Bugs")}
               />
               <MetricCard
                 title="Bekleyen Onaylar" value={pulse.pendingApprovals}
@@ -174,20 +174,20 @@ export default function FounderHome() {
               <PulseCashCard />
               <MetricCard
                 title="Çalışanlar" value={pulse.totalEmployees} icon={Users} to="/employees"
-                provenance={prov("FounderOS People")}
+                provenance={prov("Spark WorkHub People")}
               />
               <MetricCard
                 title="Aktif Hedefler" value={pulse.activeGoals}
                 subtitle={`${pulse.onTrackGoals} yolunda`}
                 tone="success" icon={Target} to="/goals"
-                provenance={prov("FounderOS Goals")}
+                provenance={prov("Spark WorkHub Goals")}
               />
               <MetricCard
                 title="Açık Riskler" value={pulse.openRisks}
                 subtitle={pulse.criticalRisks > 0 ? `${pulse.criticalRisks} kritik` : "kritik yok"}
                 tone={pulse.criticalRisks > 0 ? "danger" : "default"}
                 icon={ShieldAlert} to="/risks"
-                provenance={prov("FounderOS Risks")}
+                provenance={prov("Spark WorkHub Risks")}
               />
               <MetricCard
                 title="Company Health" value={healthScore(pulse) + "%"}

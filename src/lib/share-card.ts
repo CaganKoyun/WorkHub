@@ -107,7 +107,7 @@ export function renderShareCard(content: ShareCardContent): HTMLCanvasElement {
 
   ctx.font = font(26, "600");
   ctx.fillStyle = "rgba(230,232,235,0.75)";
-  ctx.fillText("FounderOS · kararın kayıt sistemi", 80, 552);
+  ctx.fillText("Spark WorkHub · kararın kayıt sistemi", 80, 552);
 
   return canvas;
 }
