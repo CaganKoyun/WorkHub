@@ -5,7 +5,8 @@ name: E2E role flows
 #   VITE_SUPABASE_URL             (e.g. https://<ref>.supabase.co)
 #   VITE_SUPABASE_PUBLISHABLE_KEY (sb_publishable_...)
 # and the seed at supabase/seed/e2e-fixtures.sql already applied against
-# that DB. If secrets are missing the job is a no-op (skipped step).
+# that DB. If secrets are missing every downstream step is skipped —
+# the job stays green so it doesn't block PRs before secrets are wired.
 
 on:
   workflow_dispatch:
@@ -23,23 +24,30 @@ jobs:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Skip if secrets not configured
-        if: ${{ env.VITE_SUPABASE_URL == '' || env.VITE_SUPABASE_PUBLISHABLE_KEY == '' }}
+      - id: gate
         run: |
-          echo "Supabase secrets not set on this repo — skipping."
-          echo "Set VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_KEY in repo Settings → Secrets."
-          exit 0
-      - uses: actions/setup-node@v4
+          if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_PUBLISHABLE_KEY" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Supabase secrets not set — skipping role-flow run. Add VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_KEY under Settings → Secrets → Actions."
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.gate.outputs.run == 'true'
+        uses: actions/checkout@v4
+      - if: steps.gate.outputs.run == 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - name: Run role-flow spec
+      - if: steps.gate.outputs.run == 'true'
+        run: npm ci
+      - if: steps.gate.outputs.run == 'true'
+        run: npx playwright install --with-deps chromium
+      - if: steps.gate.outputs.run == 'true'
+        name: Run role-flow spec
         run: npx playwright test role-flows.spec.ts --reporter=list
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - if: always() && steps.gate.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: |
