@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { AppLayout } from "./AppLayout";
 import { DomainAgentPanel } from "./DomainAgentPanel";
 import type { DomainKey } from "@/lib/domain-agents";
+// AppLayout is provided by WorkspaceGate at the route level — no
+// wrapper needed here or we would double-nest the sidebar/topbar.
 
 interface Props {
   domain: DomainKey;
@@ -30,8 +31,7 @@ export function DomainWorkspace({
   maxWidth = "max-w-[1600px]",
 }: Props) {
   return (
-    <AppLayout>
-      <div className="flex min-h-full flex-col">
+    <div className="flex min-h-full flex-col">
         <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
           <div className={`${maxWidth} mx-auto w-full px-4 lg:px-6`}>
             <div className="flex flex-wrap items-center justify-between gap-3 py-3">
@@ -67,7 +67,6 @@ export function DomainWorkspace({
             )}
           </div>
         </div>
-      </div>
-    </AppLayout>
+    </div>
   );
 }

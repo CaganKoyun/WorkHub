@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChevronRight, Sparkles, Square } from "lucide-react";
+import { ChevronRight, ChevronLeft, Sparkles, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./NotificationBell";
@@ -58,6 +58,19 @@ export function TopBar() {
 
   return (
     <header className="sticky top-0 z-30 hidden h-11 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-md md:flex">
+      {/* Back — history-based so it works on any nested page. Skipped on
+          top-level home to avoid a no-op. */}
+      {location.pathname !== "/" && location.pathname !== "/home" && location.pathname !== "/dashboard" && (
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
+          onClick={() => (window.history.length > 1 ? navigate(-1) : navigate("/home"))}
+          aria-label="Geri"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+      )}
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex min-w-0 flex-1 items-center text-[13px] text-muted-foreground">
         <span className="truncate">{cluster.title}</span>

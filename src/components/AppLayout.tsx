@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AppSidebar, SidebarContent } from "./AppSidebar";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,22 @@ import { Menu, Plus } from "lucide-react";
 import { StackedLogo } from "./StackedLogo";
 import { TopBar } from "./TopBar";
 
+/**
+ * Idempotency guard — WorkspaceGate wraps every protected route in
+ * AppLayout, but many page components historically wrapped themselves
+ * in AppLayout too. Nesting would render two sidebars + two topbars.
+ * Context lets a nested <AppLayout> become a passthrough.
+ */
+const AppLayoutContext = createContext(false);
+
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const alreadyWrapped = useContext(AppLayoutContext);
+
+  if (alreadyWrapped) return <>{children}</>;
 
   return (
+    <AppLayoutContext.Provider value={true}>
     <div className="flex min-h-screen bg-background">
       <AppSidebar />
 
@@ -45,5 +57,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </div>
+    </AppLayoutContext.Provider>
   );
 }
