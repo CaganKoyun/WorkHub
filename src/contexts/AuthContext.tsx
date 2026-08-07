@@ -1,96 +1,291 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { User, Session } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { supabase, setSupabaseAuthTokenGetter } from "@/integrations/supabase/client";
+import { setAiStreamTokenGetter } from "@/lib/ai-stream";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
 
+export interface AuthUser {
+  id: string;
+  email?: string;
+  user_metadata?: {
+    full_name?: string;
+    avatar_url?: string;
+    [key: string]: unknown;
+  };
+}
+
+export interface AuthSession {
+  access_token: string;
+  user: AuthUser;
+}
+
+type SocialProvider = "google" | "linkedin" | "microsoft";
+
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: AuthUser | null;
+  session: AuthSession | null;
   profile: Profile | null;
   loading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  socialLogin: (provider: SocialProvider) => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+const AUTH0_CONFIGURED = Boolean(
+  import.meta.env.VITE_AUTH0_DOMAIN && import.meta.env.VITE_AUTH0_CLIENT_ID
+);
 
-  const fetchProfile = async (userId: string) => {
+function toAuthUser(auth0User: ReturnType<typeof useAuth0>["user"]): AuthUser | null {
+  if (!auth0User?.sub) return null;
+  return {
+    id: auth0User.sub,
+    email: auth0User.email,
+    user_metadata: {
+      full_name: auth0User.name,
+      avatar_url: auth0User.picture,
+    },
+  };
+}
+
+function toSupabaseAuthUser(sbUser: { id: string; email?: string; user_metadata?: Record<string, unknown> }): AuthUser {
+  return {
+    id: sbUser.id,
+    email: sbUser.email,
+    user_metadata: {
+      full_name: sbUser.user_metadata?.full_name as string | undefined,
+      avatar_url: sbUser.user_metadata?.avatar_url as string | undefined,
+    },
+  };
+}
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  if (AUTH0_CONFIGURED) {
+    return <Auth0AuthProvider>{children}</Auth0AuthProvider>;
+  }
+  return <SupabaseAuthProvider>{children}</SupabaseAuthProvider>;
+};
+
+// ─── Auth0-based provider (production) ──────────────────────────────────────
+
+function Auth0AuthProvider({ children }: { children: React.ReactNode }) {
+  const {
+    user: auth0User,
+    isAuthenticated,
+    isLoading,
+    getAccessTokenSilently,
+    getIdTokenClaims,
+    loginWithRedirect,
+    logout,
+  } = useAuth0();
+
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
+
+  const user = toAuthUser(auth0User);
+
+  const getSupabaseBearer = useCallback(async (): Promise<string | null> => {
+    const hasAudience = Boolean(import.meta.env.VITE_AUTH0_AUDIENCE);
+    if (hasAudience) {
+      try {
+        return await getAccessTokenSilently();
+      } catch {
+        // fall through to id_token
+      }
+    }
+    try {
+      const claims = await getIdTokenClaims();
+      return claims?.__raw ?? null;
+    } catch {
+      return null;
+    }
+  }, [getAccessTokenSilently, getIdTokenClaims]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setSupabaseAuthTokenGetter(null);
+      setAiStreamTokenGetter(null);
+      setSession(null);
+      return;
+    }
+
+    setSupabaseAuthTokenGetter(getSupabaseBearer);
+    setAiStreamTokenGetter(getSupabaseBearer);
+
+    (async () => {
+      const token = await getSupabaseBearer();
+      const mapped = toAuthUser(auth0User);
+      if (mapped && token) setSession({ access_token: token, user: mapped });
+      else setSession(null);
+    })();
+
+    return () => {
+      setSupabaseAuthTokenGetter(null);
+      setAiStreamTokenGetter(null);
+    };
+  }, [isAuthenticated, getSupabaseBearer, auth0User]);
+
+  const fetchProfile = useCallback(async (userId: string) => {
     const { data } = await supabase
       .from("profiles")
       .select("*")
       .eq("user_id", userId)
-      .single();
+      .maybeSingle();
     setProfile(data);
-  };
+  }, []);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          setTimeout(() => fetchProfile(session.user.id), 0);
-        } else {
-          setProfile(null);
-        }
-        setLoading(false);
-      }
-    );
+    if (isAuthenticated && user?.id) {
+      fetchProfile(user.id);
+    } else {
+      setProfile(null);
+    }
+  }, [isAuthenticated, user?.id, fetchProfile]);
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
+  const signUp = async (_email: string, _password: string, fullName: string) => {
+    await loginWithRedirect({
+      authorizationParams: {
+        screen_hint: "signup",
+        ...(fullName ? { "ext-full_name": fullName } : {}),
+      },
+    });
+  };
+
+  const signIn = async (email: string, _password: string) => {
+    await loginWithRedirect({
+      authorizationParams: {
+        ...(email ? { login_hint: email } : {}),
+      },
+    });
+  };
+
+  const socialLogin = async (provider: SocialProvider) => {
+    const connectionMap: Record<SocialProvider, string> = {
+      google: "google-oauth2",
+      linkedin: "linkedin",
+      microsoft: "windowslive",
+    };
+    await loginWithRedirect({ authorizationParams: { connection: connectionMap[provider] } });
+  };
+
+  const handleSignOut = async () => {
+    setSupabaseAuthTokenGetter(null);
+    setAiStreamTokenGetter(null);
+    setSession(null);
+    setProfile(null);
+    await logout({ logoutParams: { returnTo: window.location.origin } });
+  };
+
+  const refreshProfile = async () => {
+    if (user?.id) await fetchProfile(user.id);
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{ user, session, profile, loading: isLoading, signUp, signIn, signOut: handleSignOut, socialLogin, refreshProfile }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+// ─── Supabase-native provider (e2e / fallback when Auth0 is not configured) ─
+
+function SupabaseAuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchProfile = useCallback(async (userId: string) => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
+    setProfile(data);
+  }, []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (s?.user) {
+        const u = toSupabaseAuthUser(s.user);
+        setUser(u);
+        setSession({ access_token: s.access_token, user: u });
+        fetchProfile(s.user.id);
+      }
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      if (s?.user) {
+        const u = toSupabaseAuthUser(s.user);
+        setUser(u);
+        setSession({ access_token: s.access_token, user: u });
+        fetchProfile(s.user.id);
+      } else {
+        setUser(null);
+        setSession(null);
+        setProfile(null);
       }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
-
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-        emailRedirectTo: window.location.origin,
-      },
-    });
-    if (error) throw error;
-  };
+  }, [fetchProfile]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
   };
 
+  const signUp = async (email: string, password: string, fullName: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
+    });
+    if (error) throw error;
+  };
+
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    await supabase.auth.signOut();
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+  };
+
+  const socialLogin = async (provider: SocialProvider) => {
+    const providerMap: Record<SocialProvider, { provider: "google" | "linkedin_oidc" | "azure"; scopes?: string }> = {
+      google: { provider: "google" },
+      linkedin: { provider: "linkedin_oidc" },
+      microsoft: { provider: "azure", scopes: "email openid profile" },
+    };
+    const cfg = providerMap[provider];
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: cfg.provider,
+      options: { redirectTo: window.location.origin, ...(cfg.scopes ? { scopes: cfg.scopes } : {}) },
+    });
     if (error) throw error;
   };
 
   const refreshProfile = async () => {
-    if (user) await fetchProfile(user.id);
+    if (user?.id) await fetchProfile(user.id);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signUp, signIn, signOut, refreshProfile }}>
+    <AuthContext.Provider
+      value={{ user, session, profile, loading, signUp, signIn, signOut, socialLogin, refreshProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

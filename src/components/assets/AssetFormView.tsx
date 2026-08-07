@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { useCreateAsset, useUpdateAsset, useCategories } from '@/lib/assets-hooks';
 import type { AssetCondition } from '@/lib/assets-types';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,7 @@ interface AssetFormProps {
 
 export function AssetFormView({ asset }: AssetFormProps = {}) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const createAsset = useCreateAsset();
   const updateAsset = useUpdateAsset();
   const { data: categories } = useCategories();
@@ -65,7 +67,7 @@ export function AssetFormView({ asset }: AssetFormProps = {}) {
         toast.success('Asset updated');
         navigate(`/assets/${asset.id}`);
       } else {
-        await createAsset.mutateAsync(values);
+        await createAsset.mutateAsync({ ...values, userId: user?.id });
         toast.success('Asset created');
         navigate('/assets');
       }

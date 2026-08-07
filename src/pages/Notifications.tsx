@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications, useMarkNotificationsRead } from '@/lib/notification-hooks';
-import { NOTIF_KINDS } from '@/lib/notif-prefs-hooks';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -21,9 +20,14 @@ const KIND_ICONS: Record<string, React.ElementType> = {
   review_reminder: RotateCcw,
 };
 
-const KIND_LABELS: Record<string, string> = Object.fromEntries(
-  NOTIF_KINDS.filter(k => k.key !== '*').map(k => [k.key, k.label]),
-);
+const KIND_LABELS: Record<string, string> = {
+  task_assigned: 'Sana task atandığında',
+  task_comment: 'Task\'ında yorum olduğunda',
+  chat_mention: 'Chat\'te seni @mention ettiklerinde',
+  decision_review: 'Karar review vadesi geldiğinde',
+  approval_requested: 'Onayına düşen bir istek olduğunda',
+  review_reminder: 'Review hatırlatması',
+};
 
 export default function Notifications() {
   const navigate = useNavigate();

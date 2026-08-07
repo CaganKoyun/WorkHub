@@ -123,11 +123,11 @@ type CreateAssetInput = {
 export function useCreateAsset() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (values: CreateAssetInput) => {
-      const { data: userData } = await supabase.auth.getUser();
+    mutationFn: async (values: CreateAssetInput & { userId?: string }) => {
+      const { userId, ...rest } = values;
       const { data, error } = await supabase
         .from('assets')
-        .insert({ ...values, created_by: userData.user?.id ?? null })
+        .insert({ ...rest, created_by: userId ?? null })
         .select()
         .single();
       if (error) throw error;
@@ -171,9 +171,8 @@ export function useArchiveAsset() {
 export function useBulkCreateAssets() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (rows: CreateAssetInput[]) => {
-      const { data: userData } = await supabase.auth.getUser();
-      const withUser = rows.map(r => ({ ...r, created_by: userData.user?.id ?? null }));
+    mutationFn: async ({ rows, userId }: { rows: CreateAssetInput[]; userId?: string }) => {
+      const withUser = rows.map(r => ({ ...r, created_by: userId ?? null }));
       const { data, error } = await supabase.from('assets').insert(withUser).select();
       if (error) throw error;
       return data;

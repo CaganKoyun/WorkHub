@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { useAssets, useCategories, useEmployees, useAssignAsset, useBulkCreateAssets } from '@/lib/assets-hooks';
 import { calculateDepreciation, CONDITION_LABELS, CONDITION_COLORS } from '@/lib/assets-types';
 import type { AssetCondition } from '@/lib/assets-types';
@@ -22,6 +23,7 @@ type SortDir = 'asc' | 'desc';
 const PAGE_SIZE = 50;
 
 export function AssetsListView() {
+  const { user } = useAuth();
   const { data: assets, isLoading } = useAssets();
   const { data: categories } = useCategories();
   const { data: employees } = useEmployees();
@@ -88,7 +90,7 @@ export function AssetsListView() {
       });
     if (mapped.length === 0) { toast.error('No valid rows. Required: name, purchase_date, purchase_cost'); return; }
     try {
-      await bulkCreate.mutateAsync(mapped);
+      await bulkCreate.mutateAsync({ rows: mapped, userId: user?.id });
       toast.success(`${mapped.length} asset(s) imported`);
       setImportDialogOpen(false); setImportRows([]);
     } catch { toast.error('Failed to import assets'); }

@@ -5,6 +5,7 @@ on:
     paths:
       - "src/**"
       - "e2e/**"
+      - "supabase/migrations/**"
       - "package.json"
       - "package-lock.json"
       - "playwright.config.ts"
@@ -63,6 +64,12 @@ jobs:
             echo "has_env=false" >> $GITHUB_OUTPUT
             echo "::warning::VITE_SUPABASE_URL veya VITE_SUPABASE_PUBLISHABLE_KEY repo secret'ı yok. Playwright suite'i SKIP (uygulama Supabase env'siz render olmuyor). Ekle: Settings → Secrets and variables → Actions."
           fi
+
+      - name: Apply pending Supabase migrations
+        if: steps.env-check.outputs.has_env == 'true' && env.SUPABASE_ACCESS_TOKEN != ''
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: npx supabase db push --project-ref "$VITE_SUPABASE_PROJECT_ID"
 
       - name: Run Playwright
         if: steps.env-check.outputs.has_env == 'true'

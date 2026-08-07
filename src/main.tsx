@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { Auth0Provider } from "@auth0/auth0-react";
 import "./index.css";
 import { registerServiceWorker } from "./lib/pwa";
 
@@ -43,11 +44,16 @@ const keyKeys = [
 
 const url = pickEnv(...urlKeys);
 const key = pickEnv(...keyKeys);
+
+const auth0Domain = pickEnv("VITE_AUTH0_DOMAIN");
+const auth0ClientId = pickEnv("VITE_AUTH0_CLIENT_ID");
+const auth0Audience = pickEnv("VITE_AUTH0_AUDIENCE");
+
 const root = document.getElementById("root")!;
 
 if (!url || !key) {
   const seenKeys = Object.keys(import.meta.env)
-    .filter((k) => /supabase|workhub|next_public/i.test(k))
+    .filter((k) => /supabase|workhub|next_public|auth0/i.test(k))
     .sort();
   root.innerHTML = `
     <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0F0F13;color:#F4F5F8;font:14px/1.5 Inter,system-ui,sans-serif;padding:24px">
@@ -78,9 +84,24 @@ if (!url || !key) {
     </div>
   `;
 } else {
-  // Lazy import so nothing that touches the Supabase client runs on the
-  // missing-env code path.
   void import("./App").then(({ default: App }) => {
-    createRoot(root).render(<App />);
+    const app = <App />;
+
+    if (auth0Domain && auth0ClientId) {
+      createRoot(root).render(
+        <Auth0Provider
+          domain={auth0Domain}
+          clientId={auth0ClientId}
+          authorizationParams={{
+            redirect_uri: window.location.origin,
+            ...(auth0Audience ? { audience: auth0Audience } : {}),
+          }}
+        >
+          {app}
+        </Auth0Provider>
+      );
+    } else {
+      createRoot(root).render(app);
+    }
   });
 }

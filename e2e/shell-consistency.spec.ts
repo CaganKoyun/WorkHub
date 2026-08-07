@@ -25,11 +25,16 @@ const ROUTES_TO_CHECK = [
 ];
 
 async function hasShell(page: Page): Promise<boolean> {
-  // Sidebar is rendered by AppSidebar. TopBar has a Breadcrumb nav.
-  // Either signal is sufficient; both is ideal.
+  // Sidebar is rendered by AppSidebar as <aside>. TopBar has a Breadcrumb nav.
+  // Wait up to 8s for either to appear (workspace context may still be loading).
+  try {
+    await page.locator('aside').first().waitFor({ state: 'attached', timeout: 8_000 });
+    return true;
+  } catch {
+    // aside not found; try breadcrumb nav
+  }
   const nav = await page.getByRole('navigation', { name: /breadcrumb/i }).count();
-  const sidebar = await page.locator('aside, [data-app-sidebar]').count();
-  return nav > 0 || sidebar > 0;
+  return nav > 0;
 }
 
 test('every protected route renders sidebar + topbar', async ({ page }) => {
@@ -38,7 +43,6 @@ test('every protected route renders sidebar + topbar', async ({ page }) => {
   const orphaned: string[] = [];
   for (const path of ROUTES_TO_CHECK) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(500);
     if (!(await hasShell(page))) orphaned.push(path);
   }
   expect(orphaned, `these routes render without app shell: ${orphaned.join(', ')}`).toEqual([]);
