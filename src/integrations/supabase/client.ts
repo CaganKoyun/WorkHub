@@ -30,10 +30,32 @@ export const SUPABASE_PUBLISHABLE_KEY = pickEnv(
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
+let _authTokenGetter: (() => Promise<string | null>) | null = null;
+
+export function setSupabaseAuthTokenGetter(
+  getter: (() => Promise<string | null>) | null,
+) {
+  _authTokenGetter = getter;
+}
+
 export const supabase = createClient<Database>(SUPABASE_URL!, SUPABASE_PUBLISHABLE_KEY!, {
   auth: {
     storage: typeof window !== 'undefined' ? localStorage : undefined,
     persistSession: true,
     autoRefreshToken: true,
-  }
+  },
+  global: {
+    headers: {},
+    fetch: async (input, init) => {
+      if (_authTokenGetter) {
+        const token = await _authTokenGetter();
+        if (token) {
+          const headers = new Headers(init?.headers);
+          headers.set('Authorization', `Bearer ${token}`);
+          return fetch(input, { ...init, headers });
+        }
+      }
+      return fetch(input, init);
+    },
+  },
 });
