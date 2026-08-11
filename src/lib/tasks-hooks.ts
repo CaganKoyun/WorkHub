@@ -311,6 +311,26 @@ export function useRemoveTaskDependency() {
 }
 
 // ---------------------------------------------------------------------------
+// Tasks by cycle
+// ---------------------------------------------------------------------------
+export function useCycleTasks(cycleId: string | undefined) {
+  return useQuery({
+    queryKey: ['cycle-tasks', cycleId],
+    enabled: !!cycleId,
+    queryFn: async (): Promise<Task[]> => {
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('cycle_id', cycleId!)
+        .order('status', { ascending: true })
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Task[];
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Global / workspace-wide issues (across projects)
 // ---------------------------------------------------------------------------
 export function useWorkspaceIssues() {
