@@ -35,10 +35,10 @@ import { toast } from "sonner";
 
 const STATUS_TONE: Record<GoalStatus, string> = {
   draft: "bg-muted text-muted-foreground",
-  on_track: "bg-emerald-500/20 text-emerald-300",
-  at_risk: "bg-amber-500/20 text-amber-300",
-  off_track: "bg-destructive/20 text-destructive-foreground",
-  achieved: "bg-emerald-500/30 text-emerald-200",
+  on_track: "bg-success/20 text-success",
+  at_risk: "bg-warning/20 text-warning",
+  off_track: "bg-destructive/20 text-destructive",
+  achieved: "bg-success/30 text-success",
   missed: "bg-destructive/30 text-destructive-foreground",
   archived: "bg-muted text-muted-foreground",
 };

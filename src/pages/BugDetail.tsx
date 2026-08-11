@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusBadge } from "@/components/StatusBadge";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { ArrowLeft, Loader2, Send } from "lucide-react";
 import type { Tables, Enums } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
@@ -21,8 +21,6 @@ export default function BugDetail() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
-
   const [bug, setBug] = useState<BugRow | null>(null);
   const [comments, setComments] = useState<CommentRow[]>([]);
   const [profiles, setProfiles] = useState<Record<string, string>>({});
@@ -66,13 +64,13 @@ export default function BugDetail() {
     if (!bug || !user) return;
     const { error } = await supabase.from("bugs").update({ status: newStatus }).eq("id", bug.id);
     if (error) {
-      toast({ title: "Failed to update status", description: error.message, variant: "destructive" });
+      toast.error("Durum guncellenemedi: " + error.message);
     } else {
       await supabase.from("activity_log").insert({
         bug_id: bug.id, user_id: user.id, action: "status_change",
         old_value: bug.status, new_value: newStatus,
       });
-      toast({ title: `Status updated to ${newStatus.replace("_", " ")}` });
+      toast.success(`Durum guncellendi: ${newStatus.replace("_", " ")}`);
     }
   };
 
@@ -82,7 +80,7 @@ export default function BugDetail() {
     const { error } = await supabase.from("comments").insert({
       bug_id: bug.id, user_id: user.id, content: newComment.trim(),
     });
-    if (error) toast({ title: "Failed to add comment", description: error.message, variant: "destructive" });
+    if (error) toast.error("Yorum eklenemedi: " + error.message);
     else setNewComment("");
     setSubmittingComment(false);
   };

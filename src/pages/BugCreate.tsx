@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Constants } from "@/integrations/supabase/types";
 import type { Enums } from "@/integrations/supabase/types";
@@ -16,7 +16,6 @@ import type { Enums } from "@/integrations/supabase/types";
 export default function BugCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
 
   const [form, setForm] = useState({
@@ -36,7 +35,7 @@ export default function BugCreate() {
       severity: form.severity, environment: form.environment.trim(),
     };
     if (!trimmed.title || !trimmed.description) {
-      toast({ title: "Missing fields", description: "Title and description are required.", variant: "destructive" });
+      toast.error("Baslik ve aciklama zorunludur");
       return;
     }
     setSubmitting(true);
@@ -44,10 +43,10 @@ export default function BugCreate() {
       const { data, error } = await supabase
         .from("bugs").insert({ ...trimmed, reporter_id: user.id }).select("tracking_id").single();
       if (error) throw error;
-      toast({ title: "Bug reported!", description: `Tracking ID: ${data.tracking_id}` });
+      toast.success(`Hata bildirildi! Takip ID: ${data.tracking_id}`);
       navigate("/");
     } catch (error: any) {
-      toast({ title: "Failed to create bug", description: error.message, variant: "destructive" });
+      toast.error("Hata olusturulamadi: " + error.message);
     } finally {
       setSubmitting(false);
     }
@@ -63,15 +62,15 @@ export default function BugCreate() {
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="h-7 w-7">
             <ArrowLeft className="h-3.5 w-3.5" />
           </Button>
-          <h1 className="text-[13px] font-medium">Report a Bug</h1>
+          <h1 className="text-[13px] font-medium">Hata Bildir</h1>
         </div>
 
         <div className="flex-1 overflow-auto">
           <form onSubmit={handleSubmit} className="max-w-2xl">
             <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
-              <Label className="text-[12px] text-muted-foreground">Title *</Label>
+              <Label className="text-[12px] text-muted-foreground">Baslik *</Label>
               <Input
-                placeholder="Brief summary of the bug"
+                placeholder="Hatanin kisa ozeti"
                 value={form.title}
                 onChange={(e) => update("title", e.target.value)}
                 required maxLength={200}
@@ -80,9 +79,9 @@ export default function BugCreate() {
             </div>
 
             <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
-              <Label className="text-[12px] text-muted-foreground">Description *</Label>
+              <Label className="text-[12px] text-muted-foreground">Aciklama *</Label>
               <Textarea
-                placeholder="Detailed description of the issue"
+                placeholder="Sorunun detayli aciklamasi"
                 value={form.description}
                 onChange={(e) => update("description", e.target.value)}
                 required rows={4} maxLength={5000}
@@ -91,7 +90,7 @@ export default function BugCreate() {
             </div>
 
             <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
-              <Label className="text-[12px] text-muted-foreground">Steps to Reproduce</Label>
+              <Label className="text-[12px] text-muted-foreground">Tekrar Adimlari</Label>
               <Textarea
                 placeholder="1. Go to...&#10;2. Click on...&#10;3. Observe..."
                 value={form.steps_to_reproduce}
@@ -103,9 +102,9 @@ export default function BugCreate() {
 
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="px-4 md:px-6 py-4 border-b border-border md:border-r space-y-1">
-                <Label className="text-[12px] text-muted-foreground">Expected Behavior</Label>
+                <Label className="text-[12px] text-muted-foreground">Beklenen Davranis</Label>
                 <Textarea
-                  placeholder="What should happen?"
+                  placeholder="Ne olmasi gerekiyordu?"
                   value={form.expected_behavior}
                   onChange={(e) => update("expected_behavior", e.target.value)}
                   rows={2} maxLength={2000}
@@ -113,9 +112,9 @@ export default function BugCreate() {
                 />
               </div>
               <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
-                <Label className="text-[12px] text-muted-foreground">Actual Behavior</Label>
+                <Label className="text-[12px] text-muted-foreground">Gerceklesen Davranis</Label>
                 <Textarea
-                  placeholder="What happened instead?"
+                  placeholder="Bunun yerine ne oldu?"
                   value={form.actual_behavior}
                   onChange={(e) => update("actual_behavior", e.target.value)}
                   rows={2} maxLength={2000}
@@ -126,7 +125,7 @@ export default function BugCreate() {
 
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="px-4 md:px-6 py-4 border-b border-border md:border-r space-y-1">
-                <Label className="text-[12px] text-muted-foreground">Severity *</Label>
+                <Label className="text-[12px] text-muted-foreground">Ciddiyet *</Label>
                 <Select value={form.severity} onValueChange={(v) => update("severity", v)}>
                   <SelectTrigger className="h-8 text-[13px] border-none shadow-none px-0">
                     <SelectValue />
@@ -139,9 +138,9 @@ export default function BugCreate() {
                 </Select>
               </div>
               <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
-                <Label className="text-[12px] text-muted-foreground">Environment</Label>
+                <Label className="text-[12px] text-muted-foreground">Ortam</Label>
                 <Input
-                  placeholder="e.g. Chrome 120, macOS 14"
+                  placeholder="orn. Chrome 120, macOS 14"
                   value={form.environment}
                   onChange={(e) => update("environment", e.target.value)}
                   maxLength={200}
@@ -152,11 +151,11 @@ export default function BugCreate() {
 
             <div className="px-4 md:px-6 py-4 flex gap-2">
               <Button type="button" variant="ghost" onClick={() => navigate(-1)} size="sm" className="h-8 text-[13px]">
-                Cancel
+                Iptal
               </Button>
               <Button type="submit" disabled={submitting} size="sm" className="h-8 text-[13px]">
                 {submitting && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
-                Submit Bug Report
+                Hata Bildir
               </Button>
             </div>
           </form>

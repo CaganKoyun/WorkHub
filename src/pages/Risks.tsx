@@ -73,10 +73,10 @@ function RiskMatrix({ risks }: { risks: Risk[] }) {
 
   const cellColor = (li: number, im: number) => {
     const score = (li + 1) * (im + 1);
-    if (score <= 4) return "bg-emerald-500/30 text-emerald-200";
-    if (score <= 9) return "bg-yellow-500/30 text-yellow-200";
-    if (score <= 15) return "bg-amber-500/30 text-amber-200";
-    return "bg-red-500/30 text-red-200";
+    if (score <= 4) return "bg-success/30 text-success";
+    if (score <= 9) return "bg-warning/30 text-warning";
+    if (score <= 15) return "bg-[hsl(var(--warning))]/30 text-warning";
+    return "bg-destructive/30 text-destructive";
   };
 
   return (
