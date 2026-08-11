@@ -9,7 +9,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Legend,
 } from 'recharts';
-import { Activity, Flame, Target, Users } from 'lucide-react';
+import { Activity, AlertTriangle, Flame, Target, Users } from 'lucide-react';
 
 interface TaskLite {
   id: string;
@@ -75,7 +75,7 @@ function Tile({ title, icon: Icon, children }: {
 
 export default function Insights() {
   const { currentWorkspace } = useWorkspace();
-  const { data: tasks, isLoading } = useInsights(currentWorkspace?.id);
+  const { data: tasks, isLoading, isError } = useInsights(currentWorkspace?.id);
   const { data: cycle } = useActiveCycle();
   const { data: profiles } = useAllProfiles();
 
@@ -149,12 +149,24 @@ export default function Insights() {
       .slice(0, 8);
   }, [tasks, profiles]);
 
-  if (isLoading || !tasks) {
+  if (isLoading || (!isError && !tasks)) {
     return (
       <div className="p-6">
         <Skeleton className="h-8 w-40" />
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-64" />)}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <div className="text-center space-y-3">
+          <AlertTriangle className="mx-auto h-10 w-10 text-muted-foreground/40" />
+          <p className="text-sm font-medium">Could not load insights</p>
+          <p className="text-xs text-muted-foreground">Please try refreshing the page.</p>
         </div>
       </div>
     );

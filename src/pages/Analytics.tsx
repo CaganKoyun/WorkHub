@@ -1,12 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { DomainWorkspace } from "@/components/DomainWorkspace";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/EmptyState";
 import { supabase } from "@/integrations/supabase/client";
 import { format, subDays, parseISO, startOfDay } from "date-fns";
 import type { Tables } from "@/integrations/supabase/types";
 import { useNeonCharts } from "@/hooks/use-neon-charts";
 import { NeonPatternDefs, neonPatternId } from "@/components/NeonPatternDefs";
+import { AlertTriangle, Bug } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   PieChart, Pie, Cell,
@@ -35,16 +38,15 @@ const SEVERITY_LABELS: Record<string, string> = {
 };
 
 export default function Analytics() {
-  const [bugs, setBugs] = useState<BugRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: bugs = [], isLoading: loading, isError } = useQuery<BugRow[]>({
+    queryKey: ["analytics-bugs"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("bugs").select("*");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
   const { getFill } = useNeonCharts();
-
-  useEffect(() => {
-    supabase.from("bugs").select("*").then(({ data }) => {
-      setBugs(data ?? []);
-      setLoading(false);
-    });
-  }, []);
 
   const stats = useMemo(() => {
     const total = bugs.length;
@@ -111,6 +113,35 @@ export default function Analytics() {
               {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20" />)}
             </div>
           </div>
+        </div>
+      </DomainWorkspace>
+    );
+  }
+
+  if (isError) {
+    return (
+      <DomainWorkspace domain="analytics" title="Analytics" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
+        <div className="p-6">
+          <EmptyState
+            icon={AlertTriangle}
+            title="Could not load analytics"
+            description="There was a problem fetching bug data. Please try refreshing the page."
+            action={{ label: "Refresh", onClick: () => window.location.reload() }}
+          />
+        </div>
+      </DomainWorkspace>
+    );
+  }
+
+  if (bugs.length === 0) {
+    return (
+      <DomainWorkspace domain="analytics" title="Analytics" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
+        <div className="p-6">
+          <EmptyState
+            icon={Bug}
+            title="No bug data yet"
+            description="Analytics will populate once bugs are reported. Start by logging your first bug."
+          />
         </div>
       </DomainWorkspace>
     );

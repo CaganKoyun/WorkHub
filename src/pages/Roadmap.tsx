@@ -5,7 +5,7 @@ import { useCycles } from '@/lib/cycles-hooks';
 import type { Project } from '@/lib/projects-types';
 import { PROJECT_STATUS_LABELS } from '@/lib/projects-types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CalendarClock, Layers, Rocket } from 'lucide-react';
+import { AlertTriangle, CalendarClock, Layers, Rocket } from 'lucide-react';
 import {
   computeRange, positionItems, monthTicks, todayMarker, toDate,
 } from '@/lib/roadmap';
@@ -20,7 +20,7 @@ const STATUS_BAR: Record<Project['status'], string> = {
 };
 
 export default function Roadmap() {
-  const { data: projects, isLoading } = useProjects();
+  const { data: projects, isLoading, isError } = useProjects();
   const { data: cycles } = useCycles();
 
   const active = useMemo(
@@ -55,12 +55,24 @@ export default function Roadmap() {
     ).map((p, i) => ({ ...p, cycle: cycles[i] }));
   }, [cycles, range]);
 
-  if (isLoading || !projects) {
+  if (isLoading || (!isError && !projects)) {
     return (
       <div className="p-6">
         <Skeleton className="h-8 w-40" />
         <div className="mt-6 space-y-3">
           {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-10" />)}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <div className="text-center space-y-3">
+          <AlertTriangle className="mx-auto h-10 w-10 text-muted-foreground/40" />
+          <p className="text-sm font-medium">Could not load roadmap</p>
+          <p className="text-xs text-muted-foreground">Please try refreshing the page.</p>
         </div>
       </div>
     );

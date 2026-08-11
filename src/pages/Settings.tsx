@@ -146,8 +146,9 @@ function CompanyTab() {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("company_settings").select("*").eq("user_id", user.id).maybeSingle().then(({ data }) => {
-      if (data) { setForm({ company_name: data.company_name || "", company_website: data.company_website || "", industry: data.industry || "", company_size: data.company_size || "", address: data.address || "", phone: data.phone || "" }); setExistingId(data.id); }
+    supabase.from("company_settings").select("*").eq("user_id", user.id).maybeSingle().then(({ data, error }) => {
+      if (error) { toast({ title: "Error loading company settings", description: error.message, variant: "destructive" }); }
+      else if (data) { setForm({ company_name: data.company_name || "", company_website: data.company_website || "", industry: data.industry || "", company_size: data.company_size || "", address: data.address || "", phone: data.phone || "" }); setExistingId(data.id); }
       setLoading(false);
     });
   }, [user]);
@@ -205,6 +206,8 @@ function TeamTab() {
       supabase.rpc("get_team_members"),
       supabase.from("invitations").select("*").eq("status", "pending"),
     ]);
+    if (teamRes.error) toast({ title: "Error loading team", description: teamRes.error.message, variant: "destructive" });
+    if (invitationsRes.error) toast({ title: "Error loading invitations", description: invitationsRes.error.message, variant: "destructive" });
     setMembers(teamRes.data || []);
     setInvitations(invitationsRes.data || []);
     setLoading(false);
@@ -303,8 +306,9 @@ function EmailTab() {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("notification_preferences").select("*").eq("user_id", user.id).maybeSingle().then(({ data }) => {
-      if (data) { setPrefs({ email_on_new_bug: data.email_on_new_bug, email_on_assignment: data.email_on_assignment, email_on_status_change: data.email_on_status_change, email_on_comment: data.email_on_comment, email_on_sla_breach: data.email_on_sla_breach, daily_digest: data.daily_digest, review_reminder: data.review_reminder ?? true }); setExistingId(data.id); }
+    supabase.from("notification_preferences").select("*").eq("user_id", user.id).maybeSingle().then(({ data, error }) => {
+      if (error) { toast({ title: "Error loading preferences", description: error.message, variant: "destructive" }); }
+      else if (data) { setPrefs({ email_on_new_bug: data.email_on_new_bug, email_on_assignment: data.email_on_assignment, email_on_status_change: data.email_on_status_change, email_on_comment: data.email_on_comment, email_on_sla_breach: data.email_on_sla_breach, daily_digest: data.daily_digest, review_reminder: data.review_reminder ?? true }); setExistingId(data.id); }
       setLoading(false);
     });
   }, [user]);

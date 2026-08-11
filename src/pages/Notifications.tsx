@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AppLayout } from '@/components/AppLayout';
 import { useNotifications, useMarkNotificationsRead } from '@/lib/notification-hooks';
 import { NOTIF_KINDS } from '@/lib/notif-prefs-hooks';
 import { Button } from '@/components/ui/button';
@@ -56,6 +57,7 @@ export default function Notifications() {
   };
 
   return (
+    <AppLayout>
     <div className="mx-auto max-w-3xl space-y-4 p-6">
       <div className="flex items-baseline justify-between">
         <div>
@@ -167,5 +169,6 @@ export default function Notifications() {
         </div>
       )}
     </div>
+    </AppLayout>
   );
 }

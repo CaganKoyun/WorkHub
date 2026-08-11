@@ -6,7 +6,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-  Trophy, Flame, Zap, Crown, TrendingUp, Medal, Sparkles,
+  Trophy, Flame, Zap, Crown, TrendingUp, Medal, Sparkles, AlertTriangle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -67,7 +67,7 @@ function LeaderRow({ row, rank, isMe }: { row: LeaderboardRow; rank: number; isM
 
 export default function Leaderboard() {
   const { user } = useAuth();
-  const { data: board, isLoading: bLoading } = useLeaderboard(50);
+  const { data: board, isLoading: bLoading, isError } = useLeaderboard(50);
   const { data: streak } = useMyStreak();
   const { data: events } = useMyXpFeed(50);
 
@@ -156,6 +156,11 @@ export default function Leaderboard() {
         </div>
         {bLoading ? (
           <div className="space-y-1.5">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12" />)}</div>
+        ) : isError ? (
+          <div className="rounded-md border border-dashed border-border/60 py-14 text-center">
+            <AlertTriangle className="mx-auto h-8 w-8 text-muted-foreground/40" />
+            <p className="mt-2 text-[13px] text-muted-foreground">Skor tablosu yüklenemedi. Sayfayı yenilemeyi deneyin.</p>
+          </div>
         ) : (board ?? []).length === 0 ? (
           <div className="rounded-md border border-dashed border-border/60 py-14 text-center">
             <Sparkles className="mx-auto h-8 w-8 text-muted-foreground/40" />

@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search, Loader2 } from "lucide-react";
+import { AlertTriangle, Plus, Search, Loader2 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import type { Tables, Enums } from "@/integrations/supabase/types";
 import { Constants } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
@@ -19,6 +20,7 @@ export default function BugList() {
   const navigate = useNavigate();
   const [bugs, setBugs] = useState<BugRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [severityFilter, setSeverityFilter] = useState<string>("all");
@@ -26,8 +28,10 @@ export default function BugList() {
 
   useEffect(() => {
     const fetchBugs = async () => {
-      const { data } = await supabase.from("bugs").select("*").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("bugs").select("*").order("created_at", { ascending: false });
+      if (error) { setFetchError(true); setLoading(false); return; }
       setBugs(data || []);
+      setFetchError(false);
       setLoading(false);
     };
     fetchBugs();
@@ -51,6 +55,21 @@ export default function BugList() {
       <DomainWorkspace domain="bugs" title="Bugs" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
         <div className="flex items-center justify-center h-full">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        </div>
+      </DomainWorkspace>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <DomainWorkspace domain="bugs" title="Bugs" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
+        <div className="p-6">
+          <EmptyState
+            icon={AlertTriangle}
+            title="Could not load bugs"
+            description="There was a problem fetching bug data. Please try refreshing the page."
+            action={{ label: "Refresh", onClick: () => window.location.reload() }}
+          />
         </div>
       </DomainWorkspace>
     );
