@@ -55,22 +55,22 @@ const PRIORITY_COLOR: Record<string, string> = {
   none: 'hsl(var(--priority-none))',
 };
 const GOAL_STATUS_COLOR: Record<string, string> = {
-  on_track: '#22c55e',
-  at_risk: '#f59e0b',
-  off_track: '#ef4444',
-  draft: '#94a3b8',
-  achieved: '#06b6d4',
-  missed: '#dc2626',
+  on_track: 'hsl(var(--success))',
+  at_risk: 'hsl(var(--warning))',
+  off_track: 'hsl(var(--destructive))',
+  draft: 'hsl(var(--muted-foreground))',
+  achieved: 'hsl(var(--info))',
+  missed: 'hsl(var(--destructive))',
 };
 const HEATMAP_COLORS = {
-  good: 'bg-emerald-500/80',
-  ok: 'bg-amber-400/80',
-  bad: 'bg-red-500/80',
+  good: 'bg-success/80',
+  ok: 'bg-warning/80',
+  bad: 'bg-destructive/80',
   neutral: 'bg-muted',
 };
 const CHART_COLORS = [
   'hsl(var(--primary))',
-  '#22c55e', '#f59e0b', '#ef4444', '#06b6d4',
+  'hsl(var(--success))', 'hsl(var(--warning))', 'hsl(var(--destructive))', 'hsl(var(--info))',
   '#8b5cf6', '#ec4899', '#14b8a6',
 ];
 
@@ -590,8 +590,8 @@ export default function Insights() {
                 <XAxis dataKey="week" tick={AXIS_TICK} tickLine={false} axisLine={false} />
                 <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} width={28} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Line type="monotone" dataKey="opened" stroke="#ef4444" strokeWidth={2} dot={false} name="Acilan" />
-                <Line type="monotone" dataKey="closed" stroke="#22c55e" strokeWidth={2} dot={false} name="Kapanan" />
+                <Line type="monotone" dataKey="opened" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} name="Acilan" />
+                <Line type="monotone" dataKey="closed" stroke="hsl(var(--success))" strokeWidth={2} dot={false} name="Kapanan" />
                 <Legend iconType="line" wrapperStyle={{ fontSize: 11 }} />
               </LineChart>
             </ResponsiveContainer>
@@ -654,7 +654,7 @@ export default function Insights() {
                 <YAxis type="category" dataKey="name" tick={AXIS_TICK} tickLine={false} axisLine={false} width={110} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
                 <Legend iconType="square" wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="done" fill="#22c55e" radius={[0, 2, 2, 0]} stackId="dept" name="Tamamlanan" />
+                <Bar dataKey="done" fill="hsl(var(--success))" radius={[0, 2, 2, 0]} stackId="dept" name="Tamamlanan" />
                 <Bar dataKey="open" fill="hsl(var(--primary))" radius={[0, 2, 2, 0]} stackId="dept" name="Acik" />
               </BarChart>
             </ResponsiveContainer>

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
@@ -12,11 +11,12 @@ import { toast } from "sonner";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Constants } from "@/integrations/supabase/types";
 import type { Enums } from "@/integrations/supabase/types";
+import { useCreateBug } from "@/lib/bugs-hooks";
 
 export default function BugCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [submitting, setSubmitting] = useState(false);
+  const createBug = useCreateBug();
 
   const [form, setForm] = useState({
     title: "", description: "", steps_to_reproduce: "",
@@ -38,17 +38,12 @@ export default function BugCreate() {
       toast.error("Baslik ve aciklama zorunludur");
       return;
     }
-    setSubmitting(true);
     try {
-      const { data, error } = await supabase
-        .from("bugs").insert({ ...trimmed, reporter_id: user.id }).select("tracking_id").single();
-      if (error) throw error;
+      const data = await createBug.mutateAsync(trimmed);
       toast.success(`Hata bildirildi! Takip ID: ${data.tracking_id}`);
       navigate("/");
     } catch (error: any) {
       toast.error("Hata olusturulamadi: " + error.message);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -153,8 +148,8 @@ export default function BugCreate() {
               <Button type="button" variant="ghost" onClick={() => navigate(-1)} size="sm" className="h-8 text-[13px]">
                 Iptal
               </Button>
-              <Button type="submit" disabled={submitting} size="sm" className="h-8 text-[13px]">
-                {submitting && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
+              <Button type="submit" disabled={createBug.isPending} size="sm" className="h-8 text-[13px]">
+                {createBug.isPending && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
                 Hata Bildir
               </Button>
             </div>

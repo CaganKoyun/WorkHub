@@ -15,7 +15,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Plus, AlertTriangle } from 'lucide-react';
 
 export function BudgetsList() {
@@ -110,7 +110,7 @@ function NewBudgetDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
   const create = useCreateFinBudget();
 
   async function submit() {
-    if (!name.trim() || !amount) { toast({ title: 'İsim ve tutar gerekli', variant: 'destructive' }); return; }
+    if (!name.trim() || !amount) { toast.error("Isim ve tutar gerekli"); return; }
     try {
       await create.mutateAsync({
         name: name.trim(), period,
@@ -121,10 +121,10 @@ function NewBudgetDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
         department: department || null,
         alert_threshold_pct: Number(threshold) || 90,
       });
-      toast({ title: 'Bütçe oluşturuldu' });
+      toast.success("Butce olusturuldu");
       onOpenChange(false); setName(''); setAmount(''); setCategoryId(''); setProjectId(''); setDepartment('');
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 

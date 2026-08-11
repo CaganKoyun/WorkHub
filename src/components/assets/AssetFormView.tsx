@@ -62,15 +62,15 @@ export function AssetFormView({ asset }: AssetFormProps = {}) {
     try {
       if (isEdit && asset) {
         await updateAsset.mutateAsync({ id: asset.id, ...values });
-        toast.success('Asset updated');
+        toast.success('Varlik guncellendi');
         navigate(`/assets/${asset.id}`);
       } else {
         await createAsset.mutateAsync(values);
-        toast.success('Asset created');
+        toast.success('Varlik olusturuldu');
         navigate('/assets');
       }
     } catch {
-      toast.error(isEdit ? 'Failed to update asset' : 'Failed to create asset');
+      toast.error(isEdit ? 'Varlik guncellenemedi' : 'Varlik olusturulamadi');
     }
   };
 
@@ -78,19 +78,19 @@ export function AssetFormView({ asset }: AssetFormProps = {}) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-xl sm:text-2xl font-bold">{isEdit ? 'Edit asset' : 'Add asset'}</h1>
+      <h1 className="text-xl sm:text-2xl font-bold">{isEdit ? 'Varlik Duzenle' : 'Varlik Ekle'}</h1>
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="name">Name *</Label>
+                <Label htmlFor="name">Ad *</Label>
                 <Input id="name" value={name} onChange={e => setName(e.target.value)} required placeholder='MacBook Pro 14"' />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="category">Kategori</Label>
                 <Select value={categoryId} onValueChange={handleCategoryChange}>
-                  <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Kategori sec" /></SelectTrigger>
                   <SelectContent>
                     {(categories ?? []).map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
                   </SelectContent>
@@ -100,18 +100,18 @@ export function AssetFormView({ asset }: AssetFormProps = {}) {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="serial">Serial / ID number</Label>
+                <Label htmlFor="serial">Seri / Kimlik Numarasi</Label>
                 <Input id="serial" value={serialNumber} onChange={e => setSerialNumber(e.target.value)} placeholder="SN-12345" className="font-mono" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="condition">Condition *</Label>
+                <Label htmlFor="condition">Durum *</Label>
                 <Select value={condition} onValueChange={v => setCondition(v as AssetCondition)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="excellent">Excellent</SelectItem>
-                    <SelectItem value="good">Good</SelectItem>
-                    <SelectItem value="fair">Fair</SelectItem>
-                    <SelectItem value="poor">Poor</SelectItem>
+                    <SelectItem value="excellent">Mukemmel</SelectItem>
+                    <SelectItem value="good">Iyi</SelectItem>
+                    <SelectItem value="fair">Orta</SelectItem>
+                    <SelectItem value="poor">Kotu</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -119,38 +119,38 @@ export function AssetFormView({ asset }: AssetFormProps = {}) {
 
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="purchaseDate">Purchase date *</Label>
+                <Label htmlFor="purchaseDate">Satin Alma Tarihi *</Label>
                 <Input id="purchaseDate" type="date" value={purchaseDate} onChange={e => setPurchaseDate(e.target.value)} required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="cost">Purchase cost ($) *</Label>
+                <Label htmlFor="cost">Satin Alma Maliyeti *</Label>
                 <Input id="cost" type="number" step="0.01" min="0" value={purchaseCost} onChange={e => setPurchaseCost(e.target.value)} required placeholder="0.00" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="usefulLife">Useful life (years)</Label>
+                <Label htmlFor="usefulLife">Faydali Omur (yil)</Label>
                 <Input id="usefulLife" type="number" min="1" value={usefulLife} onChange={e => setUsefulLife(e.target.value)} />
               </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <Input id="location" value={location} onChange={e => setLocation(e.target.value)} placeholder="Office 2A, Building B" />
+                <Label htmlFor="location">Konum</Label>
+                <Input id="location" value={location} onChange={e => setLocation(e.target.value)} placeholder="Ofis 2A, B Bina" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="residual">Residual value (%)</Label>
+                <Label htmlFor="residual">Hurda Degeri (%)</Label>
                 <Input id="residual" type="number" min="0" max="100" step="1" value={residualPercent} onChange={e => setResidualPercent(e.target.value)} placeholder="0" />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea id="notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional notes..." rows={3} />
+              <Label htmlFor="notes">Notlar</Label>
+              <Textarea id="notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Opsiyonel notlar..." rows={3} />
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <Button type="submit" disabled={isPending}>{isPending ? 'Saving...' : isEdit ? 'Update asset' : 'Save asset'}</Button>
-              <Button type="button" variant="outline" onClick={() => isEdit && asset ? navigate(`/assets/${asset.id}`) : navigate('/assets')}>Cancel</Button>
+              <Button type="submit" disabled={isPending}>{isPending ? 'Kaydediliyor...' : isEdit ? 'Guncelle' : 'Kaydet'}</Button>
+              <Button type="button" variant="outline" onClick={() => isEdit && asset ? navigate(`/assets/${asset.id}`) : navigate('/assets')}>Iptal</Button>
             </div>
           </form>
         </CardContent>

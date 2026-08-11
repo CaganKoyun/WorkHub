@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { DomainWorkspace } from "@/components/DomainWorkspace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,38 +8,18 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, Plus, Search, Loader2 } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
-import type { Tables, Enums } from "@/integrations/supabase/types";
 import { Constants } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
 import { useWorkspacePermission } from "@/hooks/useWorkspacePermission";
-
-type BugRow = Tables<"bugs">;
+import { useBugs } from "@/lib/bugs-hooks";
 
 export default function BugList() {
   const navigate = useNavigate();
-  const [bugs, setBugs] = useState<BugRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState(false);
+  const { data: bugs = [], isLoading, isError } = useBugs();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [severityFilter, setSeverityFilter] = useState<string>("all");
   const canCreate = useWorkspacePermission("bugs", "create");
-
-  useEffect(() => {
-    const fetchBugs = async () => {
-      const { data, error } = await supabase.from("bugs").select("*").order("created_at", { ascending: false });
-      if (error) { setFetchError(true); setLoading(false); return; }
-      setBugs(data || []);
-      setFetchError(false);
-      setLoading(false);
-    };
-    fetchBugs();
-    const channel = supabase
-      .channel("buglist-realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "bugs" }, () => fetchBugs())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, []);
 
   const filtered = bugs.filter(b => {
     const matchesSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -50,7 +29,7 @@ export default function BugList() {
     return matchesSearch && matchesStatus && matchesSeverity;
   });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <DomainWorkspace domain="bugs" title="Bugs" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
         <div className="flex items-center justify-center h-full">
@@ -60,7 +39,7 @@ export default function BugList() {
     );
   }
 
-  if (fetchError) {
+  if (isError) {
     return (
       <DomainWorkspace domain="bugs" title="Bugs" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
         <div className="p-6">

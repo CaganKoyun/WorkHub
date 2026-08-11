@@ -5,7 +5,7 @@ import type { CrmCustomerHealth } from '@/lib/crm-types';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 // Health score inputs (product usage, tickets, payments, last contact, NPS, renewal, incidents, AM assessment)
 // v1: manual health selection + derived score display. Extend as usage telemetry lands.
@@ -18,9 +18,9 @@ export function CustomersListView() {
   async function setHealth(id: string, health: CrmCustomerHealth) {
     try {
       await update.mutateAsync({ id, health });
-      toast({ title: 'Sağlık güncellendi' });
+      toast.success("Saglik guncellendi");
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 
