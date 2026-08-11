@@ -4,6 +4,7 @@ import {
   useProjectTemplates, useCreateProjectTemplate, useDeleteProjectTemplate,
   type TaskTemplate, type ProjectTemplate,
 } from '@/lib/templates-hooks';
+import { DomainWorkspace } from '@/components/DomainWorkspace';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -221,14 +222,12 @@ export default function Templates() {
   const [projectOpen, setProjectOpen] = useState(false);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
-      <div>
-        <h1 className="text-[20px] font-semibold tracking-tight">Templates</h1>
-        <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-          Sık kullandığınız görev ve proje şablonlarını kaydedin, tek tıkla yeni bir kopya oluşturun.
-        </p>
-      </div>
-
+    <DomainWorkspace
+      domain="company"
+      title="Şablonlar"
+      subtitle="Sık kullandığınız görev ve proje şablonlarını kaydedin, tek tıkla yeni bir kopya oluşturun."
+      showAgent={false}
+    >
       <Tabs defaultValue="tasks">
         <TabsList>
           <TabsTrigger value="tasks">Task templates ({taskTpls?.length ?? 0})</TabsTrigger>
@@ -298,6 +297,6 @@ export default function Templates() {
 
       <TaskTemplateDialog open={taskOpen} onOpenChange={setTaskOpen} />
       <ProjectTemplateDialog open={projectOpen} onOpenChange={setProjectOpen} />
-    </div>
+    </DomainWorkspace>
   );
 }

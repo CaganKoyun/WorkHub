@@ -19,10 +19,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/EmptyState';
 import { Plus, Users as UsersIcon, Mail, X, UserMinus, Crown } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { DomainWorkspace } from "@/components/DomainWorkspace";
 
 function TeamCreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   const create = useCreateTeam();
@@ -237,27 +239,23 @@ export default function Teams() {
   const pendingInvites = (invitations ?? []).filter(i => i.status === 'pending');
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 p-6">
-      {/* Header */}
-      <div className="flex items-baseline justify-between">
-        <div>
-          <h1 className="text-[20px] font-semibold tracking-tight">Ekipler & Üyeler</h1>
-          <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-            Ekipleri organize et, üye rollerini yönet, yeni kullanıcıları davet et.
-          </p>
-        </div>
-        {canManage && (
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" onClick={() => setInviteOpen(true)} className="h-8 gap-1.5">
-              <Mail className="h-3.5 w-3.5" /> Davet
-            </Button>
-            <Button size="sm" onClick={() => setTeamOpen(true)} className="h-8 gap-1.5">
-              <Plus className="h-3.5 w-3.5" /> Yeni ekip
-            </Button>
-          </div>
-        )}
-      </div>
-
+    <DomainWorkspace
+      domain="company"
+      title="Takımlar"
+      subtitle="Ekipleri organize et, üye rollerini yönet, yeni kullanıcıları davet et."
+      showAgent={false}
+      maxWidth="max-w-5xl"
+      headerActions={canManage ? (
+        <>
+          <Button size="sm" variant="outline" onClick={() => setInviteOpen(true)} className="h-8 gap-1.5">
+            <Mail className="h-3.5 w-3.5" /> Davet
+          </Button>
+          <Button size="sm" onClick={() => setTeamOpen(true)} className="h-8 gap-1.5">
+            <Plus className="h-3.5 w-3.5" /> Yeni ekip
+          </Button>
+        </>
+      ) : undefined}
+    >
       {/* Teams grid */}
       <section>
         <h2 className="mb-2 flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -268,9 +266,12 @@ export default function Teams() {
             {[1, 2, 3].map(i => <Skeleton key={i} className="h-24" />)}
           </div>
         ) : (teams?.length ?? 0) === 0 ? (
-          <div className="rounded-md border border-border/60 py-10 text-center text-[13px] text-muted-foreground">
-            Henüz ekip yok. "Yeni ekip" ile başla.
-          </div>
+          <EmptyState
+            icon={UsersIcon}
+            title="Henuz ekip yok"
+            description="Ekipleri organize etmek icin ilk ekibinizi olusturun."
+            action={{ label: "Yeni ekip", onClick: () => setTeamOpen(true) }}
+          />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {(teams ?? []).map(t => (
@@ -346,6 +347,6 @@ export default function Teams() {
 
       <TeamCreateDialog open={teamOpen} onOpenChange={setTeamOpen} />
       <InviteDialog open={inviteOpen} onOpenChange={setInviteOpen} />
-    </div>
+    </DomainWorkspace>
   );
 }

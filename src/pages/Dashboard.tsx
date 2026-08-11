@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
+import { StatCard } from "@/components/StatCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,35 +21,6 @@ import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import type { Task, TaskStatus } from "@/lib/tasks-types";
-
-function StatCard({
-  title, value, subtitle, icon: Icon, to, tone = "default",
-}: {
-  title: string; value: number | string; subtitle?: string;
-  icon: React.ElementType; to?: string; tone?: "default" | "warning" | "danger" | "success";
-}) {
-  const toneClass = {
-    default: "", warning: "border-warning/30", danger: "border-destructive/40", success: "border-success/30",
-  }[tone];
-
-  const body = (
-    <Card className={cn("hover:border-primary/50 transition-colors", toneClass)}>
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{title}</p>
-            <p className="text-2xl font-semibold mt-1">{value}</p>
-            {subtitle && <p className="text-[11px] text-muted-foreground mt-0.5">{subtitle}</p>}
-          </div>
-          <div className="h-8 w-8 rounded-lg bg-muted/60 flex items-center justify-center">
-            <Icon className="h-4 w-4 text-muted-foreground" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-  return to ? <Link to={to}>{body}</Link> : body;
-}
 
 function TasksByStatus({ tasks }: { tasks: Task[] }) {
   const statusGroups: { key: TaskStatus; label: string; color: string }[] = [

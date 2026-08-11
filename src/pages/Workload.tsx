@@ -6,9 +6,11 @@ import type { Task } from '@/lib/tasks-types';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/EmptyState';
 import { TaskStatusIcon } from '@/components/tasks/TaskStatusIcon';
 import { AlertCircle, CheckCircle2, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { DomainWorkspace } from "@/components/DomainWorkspace";
 
 interface Bucket {
   key: string;
@@ -167,21 +169,20 @@ export default function Workload() {
   }, [buckets]);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
-      <div>
-        <div className="flex items-baseline justify-between">
-          <h1 className="text-[20px] font-semibold tracking-tight">Workload</h1>
-          <div className="text-[11.5px] text-muted-foreground tabular-nums">
-            {totals.total} görev · {totals.done} bitmiş
-            {totals.overdue > 0 && <> · <span className="text-destructive">{totals.overdue} geciken</span></>}
-            {totals.points > 0 && <> · {totals.points} pts</>}
-          </div>
+    <DomainWorkspace
+      domain="tasks"
+      title="İş Yükü"
+      subtitle="Kimin üzerine ne kadar iş düştüğünü gör; kapasite dengesizliğini erken yakala."
+      showAgent={false}
+      maxWidth="max-w-4xl"
+      headerActions={
+        <div className="text-[11.5px] text-muted-foreground tabular-nums">
+          {totals.total} görev · {totals.done} bitmiş
+          {totals.overdue > 0 && <> · <span className="text-destructive">{totals.overdue} geciken</span></>}
+          {totals.points > 0 && <> · {totals.points} pts</>}
         </div>
-        <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-          Kimin üzerine ne kadar iş düştüğünü gör; kapasite dengesizliğini erken yakala.
-        </p>
-      </div>
-
+      }
+    >
       <div className="flex flex-wrap items-center gap-2">
         <Select value={cycleFilter} onValueChange={setCycleFilter}>
           <SelectTrigger className="w-40 h-8 text-[12px]"><SelectValue /></SelectTrigger>
@@ -206,15 +207,16 @@ export default function Workload() {
       {isLoading ? (
         <div className="space-y-2">{[1,2,3,4].map(i => <Skeleton key={i} className="h-16" />)}</div>
       ) : buckets.length === 0 ? (
-        <div className="rounded-md border border-border/60 py-16 text-center">
-          <Users className="mx-auto h-8 w-8 text-muted-foreground/40 mb-3" />
-          <p className="text-[13px] text-muted-foreground">Bu filtreye uyan iş yok.</p>
-        </div>
+        <EmptyState
+          icon={Users}
+          title="Veri bulunamadi"
+          description="Bu filtreye uyan is yok."
+        />
       ) : (
         <div className="space-y-2">
           {buckets.map(b => <Row key={b.key} b={b} />)}
         </div>
       )}
-    </div>
+    </DomainWorkspace>
   );
 }

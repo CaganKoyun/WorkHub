@@ -9,6 +9,8 @@ import {
   type Task,
   type TaskStatus,
 } from '@/lib/tasks-types';
+import { StatCard } from '@/components/StatCard';
+import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -437,18 +439,19 @@ function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard label="Ilerleme" value={`${pct}%`} sub={`${done}/${total} gorev`} />
-        <StatCard label="Kalan gun" value={cycle.status === 'completed' ? '-' : String(daysLeft)} sub={`${elapsedDays}/${totalDays} gecti`} />
+        <StatCard title="Ilerleme" value={`${pct}%`} subtitle={`${done}/${total} gorev`} icon={Target} />
+        <StatCard title="Kalan gun" value={cycle.status === 'completed' ? '-' : String(daysLeft)} subtitle={`${elapsedDays}/${totalDays} gecti`} icon={Calendar} />
         <StatCard
-          label="Hiz"
+          title="Hiz"
           value={velocity > 0 ? `${velocity}` : '-'}
-          sub="gorev/gun"
-          icon={<TrendingUp className="h-3.5 w-3.5 text-muted-foreground/50" />}
+          subtitle="gorev/gun"
+          icon={TrendingUp}
         />
         <StatCard
-          label="Devam eden"
+          title="Devam eden"
           value={String(inProgressCount)}
-          sub={`${statusDistribution.in_progress} is + ${statusDistribution.review} inceleme`}
+          subtitle={`${statusDistribution.in_progress} is + ${statusDistribution.review} inceleme`}
+          icon={Play}
         />
       </div>
 
@@ -528,23 +531,6 @@ function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
 
       {/* Edit dialog */}
       <EditCycleDialog cycle={cycle} open={editOpen} onOpenChange={setEditOpen} />
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Stat Card                                                         */
-/* ------------------------------------------------------------------ */
-
-function StatCard({ label, value, sub, icon }: { label: string; value: string; sub: string; icon?: React.ReactNode }) {
-  return (
-    <div className="rounded-lg border border-border/40 bg-card px-4 py-3">
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-[11px] text-muted-foreground">{label}</span>
-        {icon}
-      </div>
-      <div className="text-[20px] font-semibold tabular-nums text-foreground">{value}</div>
-      <div className="text-[10.5px] text-muted-foreground/70">{sub}</div>
     </div>
   );
 }
@@ -752,13 +738,12 @@ export default function Cycles() {
       {isLoading ? (
         <div className="space-y-2">{[1, 2].map(i => <Skeleton key={i} className="h-32" />)}</div>
       ) : (cycles?.length ?? 0) === 0 ? (
-        <div className="rounded-md border border-border/60 py-16 text-center">
-          <Clock className="mx-auto h-8 w-8 text-muted-foreground/40 mb-3" />
-          <p className="text-[13px] text-muted-foreground">Henuz cycle yok. Ilk cycle'i olustur, ekip odagini baslat.</p>
-          <Button size="sm" className="mt-4 h-8" onClick={() => setCreateOpen(true)}>
-            <Plus className="h-3.5 w-3.5 mr-1" /> Ilk cycle'i olustur
-          </Button>
-        </div>
+        <EmptyState
+          icon={Clock}
+          title="Henuz cycle yok"
+          description="Ilk cycle'i olustur, ekip odagini baslat."
+          action={{ label: "Ilk cycle'i olustur", onClick: () => setCreateOpen(true) }}
+        />
       ) : selectedCycle ? (
         <CycleDetail
           cycle={selectedCycle}

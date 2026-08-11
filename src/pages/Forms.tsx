@@ -6,6 +6,7 @@ import {
   type FormDef, type FormField, type FormFieldKind, type FormTargetKind,
 } from '@/lib/forms-hooks';
 import { useProjects } from '@/lib/projects-hooks';
+import { DomainWorkspace } from '@/components/DomainWorkspace';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -302,23 +303,17 @@ export default function Forms() {
   );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-[20px] font-semibold tracking-tight flex items-center gap-2">
-            <ClipboardList className="h-5 w-5 text-muted-foreground" /> Formlar
-          </h1>
-          <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-            Public link ile dış paydaşlardan (destek, iş başvurusu, feedback) veri
-            topla. İstersen her cevap otomatik olarak seçtiğin projede bir task açar.
-            Toplam {totalSubmissions} cevap alındı.
-          </p>
-        </div>
+    <DomainWorkspace
+      domain="company"
+      title="Formlar"
+      subtitle={`Public link ile dış paydaşlardan veri topla. Toplam ${totalSubmissions} cevap alındı.`}
+      showAgent={false}
+      headerActions={
         <Button size="sm" className="h-8 gap-1.5" onClick={() => setCreateOpen(true)}>
           <Plus className="h-3.5 w-3.5" /> Yeni form
         </Button>
-      </div>
-
+      }
+    >
       {isLoading ? (
         <div className="space-y-2">
           {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-14" />)}
@@ -337,6 +332,6 @@ export default function Forms() {
       )}
 
       {createOpen && <EditDialog open={createOpen} onOpenChange={setCreateOpen} initial={null} />}
-    </div>
+    </DomainWorkspace>
   );
 }

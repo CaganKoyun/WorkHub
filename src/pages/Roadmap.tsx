@@ -5,7 +5,9 @@ import { useCycles } from '@/lib/cycles-hooks';
 import type { Project } from '@/lib/projects-types';
 import { PROJECT_STATUS_LABELS } from '@/lib/projects-types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertTriangle, CalendarClock, Layers, Rocket } from 'lucide-react';
+import { EmptyState } from '@/components/EmptyState';
+import { AlertTriangle, CalendarClock, FolderKanban, Layers, Rocket } from 'lucide-react';
+import { DomainWorkspace } from "@/components/DomainWorkspace";
 import {
   computeRange, positionItems, monthTicks, todayMarker, toDate,
 } from '@/lib/roadmap';
@@ -79,25 +81,24 @@ export default function Roadmap() {
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex items-end justify-between">
-        <div>
-          <h1 className="flex items-center gap-2 text-[22px] font-semibold tracking-tight">
-            <Rocket className="h-5 w-5 text-primary" /> Roadmap
-          </h1>
-          <p className="mt-1 text-[13px] text-muted-foreground">
-            Projeler zaman ekseninde. Gri bantlar aktif/planlı cycle'lar.
-          </p>
-        </div>
+    <DomainWorkspace
+      domain="projects"
+      title="Yol Haritası"
+      subtitle="Projeler zaman ekseninde. Gri bantlar aktif/planlı cycle'lar."
+      showAgent={false}
+      headerActions={
         <span className="rounded-full border border-border bg-secondary px-2.5 py-1 font-mono text-[11px] tabular-nums text-muted-foreground">
           {active.length} proje
         </span>
-      </div>
-
+      }
+    >
       {active.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border py-16 text-center text-[13px] text-muted-foreground">
-          Henüz proje yok. <Link to="/projects/new" className="text-primary hover:underline">Yeni proje</Link>.
-        </div>
+        <EmptyState
+          icon={FolderKanban}
+          title="Henuz proje yok"
+          description="Roadmap'i doldurmak icin ilk projenizi olusturun."
+          action={{ label: "Yeni proje", onClick: () => window.location.assign("/projects/new") }}
+        />
       ) : (
         <div className="overflow-x-auto scrollbar-thin rounded-xl border border-border bg-card elevation-1">
           <div className="min-w-[720px]">
@@ -182,6 +183,6 @@ export default function Roadmap() {
           </div>
         </div>
       )}
-    </div>
+    </DomainWorkspace>
   );
 }

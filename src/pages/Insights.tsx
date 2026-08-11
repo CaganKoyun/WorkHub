@@ -14,6 +14,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Legend,
 } from 'recharts';
+import { StatCard } from '@/components/StatCard';
 import {
   Activity, AlertTriangle, Flame, Target, Users, Download,
   CheckCircle2, Clock, FolderOpen, Bug, TrendingUp, BarChart3,
@@ -153,22 +154,7 @@ function Tile({ title, icon: Icon, children, className = '' }: {
   );
 }
 
-function StatCard({ label, value, sub, icon: Icon }: {
-  label: string; value: string | number; sub?: string; icon: React.ElementType;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-4 elevation-1">
-      <div className="flex items-center gap-2 text-muted-foreground">
-        <Icon className="h-4 w-4" />
-        <span className="text-[11px] font-semibold uppercase tracking-[0.06em]">{label}</span>
-      </div>
-      <div className="mt-2 text-2xl font-bold tracking-tight">{value}</div>
-      {sub && <div className="mt-0.5 text-[11px] text-muted-foreground">{sub}</div>}
-    </div>
-  );
-}
-
-function EmptyState({ text }: { text: string }) {
+function InlineEmpty({ text }: { text: string }) {
   return <p className="py-10 text-center text-[13px] text-muted-foreground">{text}</p>;
 }
 
@@ -497,27 +483,27 @@ export default function Insights() {
       {/* ── stat cards ── */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Tamamlanan Task"
+          title="Tamamlanan Task"
           value={completedTasks.length}
-          sub={`Toplam ${tasks.length} task`}
+          subtitle={`Toplam ${tasks.length} task`}
           icon={CheckCircle2}
         />
         <StatCard
-          label="Ort. Tamamlanma"
+          title="Ort. Tamamlanma"
           value={avgCompletionDays ? `${avgCompletionDays} gun` : '-'}
-          sub="Olusturmadan tamamlanmaya"
+          subtitle="Olusturmadan tamamlanmaya"
           icon={Clock}
         />
         <StatCard
-          label="Aktif Projeler"
+          title="Aktif Projeler"
           value={pulse?.activeProjects ?? '-'}
-          sub={`Toplam ${pulse?.totalProjects ?? '-'} proje`}
+          subtitle={`Toplam ${pulse?.totalProjects ?? '-'} proje`}
           icon={FolderOpen}
         />
         <StatCard
-          label="Acik Buglar"
+          title="Acik Buglar"
           value={pulse?.openBugs ?? '-'}
-          sub={`${pulse?.criticalBugs ?? 0} kritik`}
+          subtitle={`${pulse?.criticalBugs ?? 0} kritik`}
           icon={Bug}
         />
       </div>
@@ -527,7 +513,7 @@ export default function Insights() {
         {/* 1. Weekly throughput */}
         <Tile title={`Haftalik throughput (${throughput.length} hafta)`} icon={Activity}>
           {throughput.length === 0 ? (
-            <EmptyState text="Yeterli veri yok." />
+            <InlineEmpty text="Yeterli veri yok." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={throughput}>
@@ -544,7 +530,7 @@ export default function Insights() {
         {/* 2. Priority mix */}
         <Tile title="Acik is -- oncelik dagilimi" icon={Flame}>
           {priorityMix.length === 0 ? (
-            <EmptyState text="Acik is yok." />
+            <InlineEmpty text="Acik is yok." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -561,7 +547,7 @@ export default function Insights() {
         {/* 3. Burndown */}
         <Tile title={cycle ? `Aktif cycle burndown -- ${cycle.name}` : 'Aktif cycle burndown'} icon={Target}>
           {burndown.length === 0 ? (
-            <EmptyState text={cycle ? 'Bu cycle icin task yok.' : 'Aktif cycle bulunmuyor.'} />
+            <InlineEmpty text={cycle ? 'Bu cycle icin task yok.' : 'Aktif cycle bulunmuyor.'} />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={burndown}>
@@ -579,7 +565,7 @@ export default function Insights() {
         {/* 4. Workload by assignee */}
         <Tile title="Yuk -- atanan basina acik is" icon={Users}>
           {workload.length === 0 ? (
-            <EmptyState text="Acik is yok." />
+            <InlineEmpty text="Acik is yok." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={workload} layout="vertical" margin={{ left: 8 }}>
@@ -596,7 +582,7 @@ export default function Insights() {
         {/* 5. Bug trend */}
         <Tile title="Bug trendi -- acilan vs kapanan" icon={Bug}>
           {bugTrend.length === 0 ? (
-            <EmptyState text="Bug verisi yok." />
+            <InlineEmpty text="Bug verisi yok." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={bugTrend}>
@@ -615,7 +601,7 @@ export default function Insights() {
         {/* 6. Goal progress */}
         <Tile title="Hedef ilerleme durumu" icon={Target}>
           {goalProgress.length === 0 ? (
-            <EmptyState text="Aktif hedef yok." />
+            <InlineEmpty text="Aktif hedef yok." />
           ) : (
             <div className="space-y-3 max-h-[280px] overflow-y-auto pr-1">
               {goalProgress.map((g) => (
@@ -639,7 +625,7 @@ export default function Insights() {
         {/* 7. Team velocity */}
         <Tile title="Takim hizi -- haftalik tamamlanan" icon={TrendingUp} className="lg:col-span-2">
           {teamVelocity.data.length === 0 || teamVelocity.assignees.length === 0 ? (
-            <EmptyState text="Yeterli veri yok." />
+            <InlineEmpty text="Yeterli veri yok." />
           ) : (
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={teamVelocity.data}>
@@ -659,7 +645,7 @@ export default function Insights() {
         {/* 8. Department workload comparison */}
         <Tile title="Atanan bazinda is karsilastirmasi" icon={BarChart3}>
           {departmentComparison.length === 0 ? (
-            <EmptyState text="Veri yok." />
+            <InlineEmpty text="Veri yok." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={departmentComparison} layout="vertical" margin={{ left: 8 }}>
@@ -678,7 +664,7 @@ export default function Insights() {
         {/* 9. Project health heatmap */}
         <Tile title="Proje sagligi haritasi" icon={Activity}>
           {projectHealth.length === 0 ? (
-            <EmptyState text="Aktif proje yok." />
+            <InlineEmpty text="Aktif proje yok." />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-[12px]">

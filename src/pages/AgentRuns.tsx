@@ -7,6 +7,7 @@ import { parseDirective, type PlanStep, AGENT_TOOLS } from '@/lib/agent-parse';
 import { executeStep } from '@/lib/agent-exec';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceMembers } from '@/lib/chat-hooks';
+import { DomainWorkspace } from '@/components/DomainWorkspace';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -213,18 +214,12 @@ export default function AgentRuns() {
   const { data: runs, isLoading } = useAgentRuns();
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6">
-      <div>
-        <h1 className="text-[20px] font-semibold tracking-tight flex items-center gap-2">
-          <Bot className="h-5 w-5 text-muted-foreground" /> Agent runs
-        </h1>
-        <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-          Doğal dilde direktif yaz — Spark WorkHub bunu adım listesine çevirir.
-          Sen "Uygula"ya basınca çalıştırır ve sonucu loglar. Şimdilik heuristik
-          parser; LLM planner ileride aynı kontrata yerleşir.
-        </p>
-      </div>
-
+    <DomainWorkspace
+      domain="home"
+      title="Ajan Çalışmaları"
+      subtitle="Doğal dilde direktif yaz — Spark WorkHub bunu adım listesine çevirir."
+      showAgent={false}
+    >
       <Composer />
 
       <section>
@@ -243,6 +238,6 @@ export default function AgentRuns() {
           </div>
         )}
       </section>
-    </div>
+    </DomainWorkspace>
   );
 }
