@@ -233,6 +233,21 @@ export function useAssignAsset() {
   });
 }
 
+export function useAllCurrentAssignments() {
+  return useQuery({
+    queryKey: ['assignments', 'all-current'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('asset_assignments')
+        .select('*, employees(*)')
+        .is('returned_date', null)
+        .order('assigned_date', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function useUnassignAsset() {
   const qc = useQueryClient();
   return useMutation({
