@@ -130,8 +130,7 @@ function ClusterGroup({
   financeAllowed: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
-  const items = cluster.sections.flatMap(s => s.items)
-    .filter(i => i.path !== "/finance" || financeAllowed);
+  const hasSections = cluster.sections.length > 1;
 
   return (
     <div className="mt-3 first:mt-1">
@@ -150,15 +149,41 @@ function ClusterGroup({
         <span className="flex-1 text-left">{cluster.title}</span>
       </button>
       {open && (
-        <div className="mt-0.5 space-y-px pl-2">
-          {items.map(item => (
-            <NavRow
-              key={item.path}
-              item={item}
-              onNavigate={onNavigate}
-              badge={item.badgeKey === "inbox" && inboxCount > 0 ? inboxCount : undefined}
-            />
-          ))}
+        <div className="mt-0.5 pl-2">
+          {hasSections ? cluster.sections.map(section => {
+            const sectionItems = section.items.filter(i => i.path !== "/finance" || financeAllowed);
+            if (sectionItems.length === 0) return null;
+            return (
+              <div key={section.label} className="mt-2 first:mt-0">
+                <div className="px-2 py-1 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-sidebar-foreground/35">
+                  {section.label}
+                </div>
+                <div className="space-y-px">
+                  {sectionItems.map(item => (
+                    <NavRow
+                      key={item.path}
+                      item={item}
+                      onNavigate={onNavigate}
+                      badge={item.badgeKey === "inbox" && inboxCount > 0 ? inboxCount : undefined}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          }) : (
+            <div className="space-y-px">
+              {cluster.sections.flatMap(s => s.items)
+                .filter(i => i.path !== "/finance" || financeAllowed)
+                .map(item => (
+                  <NavRow
+                    key={item.path}
+                    item={item}
+                    onNavigate={onNavigate}
+                    badge={item.badgeKey === "inbox" && inboxCount > 0 ? inboxCount : undefined}
+                  />
+                ))}
+            </div>
+          )}
         </div>
       )}
     </div>

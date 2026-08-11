@@ -129,19 +129,30 @@ export const clusters: NavCluster[] = [
     title: "Yapay Zeka",
     sections: [
       {
-        label: "AI",
+        label: "Operations",
         items: [
-          { icon: Sparkles, label: "Chief of Staff", path: "/ai-chat" },
-          { icon: Sparkles, label: "Agent runs", path: "/agent" },
-          { icon: Sparkles, label: "Toplantı notları", path: "/meetings" },
+          { icon: MessageSquare, label: "Conversations", path: "/ai-chat" },
+          { icon: Sparkles, label: "Agents", path: "/agent" },
+          { icon: BookOpen, label: "Knowledge", path: "/docs" },
+          { icon: Zap, label: "Workflows", path: "/automations" },
+          { icon: Sparkles, label: "Skills", path: "/templates" },
+        ],
+      },
+      {
+        label: "Monitor",
+        items: [
+          { icon: Plug, label: "Connections", path: "/integrations" },
+          { icon: Activity, label: "Analytics", path: "/insights" },
+          { icon: ClipboardList, label: "Events", path: "/meetings" },
+        ],
+      },
+      {
+        label: "More",
+        items: [
           { icon: MessageSquare, label: "Chat", path: "/chat" },
-          { icon: BookOpen, label: "Docs", path: "/docs" },
-          { icon: Zap, label: "Otomasyonlar", path: "/automations" },
           { icon: ClipboardList, label: "Formlar", path: "/forms" },
           { icon: PenSquare, label: "Panolar", path: "/whiteboards" },
           { icon: Headphones, label: "Service Desk", path: "/desk" },
-          { icon: FileText, label: "Templates", path: "/templates" },
-          { icon: Plug, label: "Integrations", path: "/integrations" },
           { icon: KeyRound, label: "API tokens", path: "/api-tokens" },
         ],
       },
