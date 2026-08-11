@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import type { AssetCondition } from './assets-types';
+import type { AssetCondition, AssetAssignment, Employee } from './assets-types';
 export { calculateDepreciation } from './assets-types';
 export type { Asset, AssetCategory, Employee, AssetAssignment, AssetCondition } from './assets-types';
 

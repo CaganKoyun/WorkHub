@@ -357,7 +357,7 @@ function CycleDetail({ cycle, tasks }: { cycle: Cycle; tasks: Task[] }) {
   const done = tasks.filter(t => t.status === 'done').length;
   const inProgress = tasks.filter(t => t.status === 'in_progress').length;
   const review = tasks.filter(t => t.status === 'review').length;
-  const blocked = tasks.filter(t => t.status === 'blocked').length;
+  const blocked = tasks.filter(t => (t.status as string) === 'blocked').length;
   const totalPoints = tasks.reduce((s, t) => s + (t.story_points ?? 0), 0);
   const donePoints = tasks.filter(t => t.status === 'done').reduce((s, t) => s + (t.story_points ?? 0), 0);
 

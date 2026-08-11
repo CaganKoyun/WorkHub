@@ -262,8 +262,8 @@ function OrgChartTab() {
               {deptTeams.map(t => (
                 <Badge key={t.id} variant="outline" className="text-[10px] bg-muted/50">
                   <Users className="h-2.5 w-2.5 mr-0.5" />{t.name}
-                  {t.member_count != null && (
-                    <span className="ml-1 text-muted-foreground">({t.member_count})</span>
+                  {(t as any).member_count != null && (
+                    <span className="ml-1 text-muted-foreground">({(t as any).member_count})</span>
                   )}
                 </Badge>
               ))}
@@ -507,9 +507,9 @@ function TeamsTab() {
                     {!dep && (
                       <Badge variant="secondary" className="text-[10px] text-muted-foreground">Bagimsiz</Badge>
                     )}
-                    {t.member_count != null && (
+                    {(t as any).member_count != null && (
                       <Badge className="text-[10px]">
-                        <UserCheck className="h-2.5 w-2.5 mr-0.5" />{t.member_count} uye
+                        <UserCheck className="h-2.5 w-2.5 mr-0.5" />{(t as any).member_count} uye
                       </Badge>
                     )}
                   </div>
