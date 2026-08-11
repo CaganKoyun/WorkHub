@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Bell, CheckCheck, ListTodo, MessageSquare, AtSign,
-  RotateCcw, ShieldCheck, Filter, Inbox,
+  RotateCcw, ShieldCheck, Filter, Inbox, AlertTriangle,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -28,7 +28,7 @@ const KIND_LABELS: Record<string, string> = Object.fromEntries(
 
 export default function Notifications() {
   const navigate = useNavigate();
-  const { data: notifications, isLoading } = useNotifications(100);
+  const { data: notifications, isLoading, isError } = useNotifications(100);
   const markRead = useMarkNotificationsRead();
   const [filter, setFilter] = useState<string | null>(null);
 
@@ -55,6 +55,17 @@ export default function Notifications() {
     if (!n.read_at) markRead.mutate([n.id]);
     if (n.link) navigate(n.link);
   };
+
+  if (isError) {
+    return (
+      <AppLayout>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <AlertTriangle className="h-10 w-10 text-destructive/60" />
+          <p className="mt-3 text-[13px] text-muted-foreground">Bildirimler yuklenirken hata olustu.</p>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>

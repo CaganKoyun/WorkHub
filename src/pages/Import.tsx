@@ -5,6 +5,7 @@ import { useCreateTask } from '@/lib/tasks-hooks';
 import { useCreateCrmContact } from '@/lib/crm-hooks';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { AppLayout } from '@/components/AppLayout';
 import { supabase } from '@/integrations/supabase/client';
 import {
   parseCsv,
@@ -263,6 +264,7 @@ export default function Import() {
   const needsProject = entityType === 'tasks';
 
   return (
+    <AppLayout>
     <div className="mx-auto max-w-3xl space-y-6 p-6">
       <div>
         <h1 className="text-[20px] font-semibold tracking-tight">Import Wizard</h1>
@@ -482,5 +484,6 @@ export default function Import() {
         </div>
       )}
     </div>
+    </AppLayout>
   );
 }

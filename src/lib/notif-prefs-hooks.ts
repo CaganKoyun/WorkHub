@@ -18,6 +18,7 @@ export const NOTIF_KINDS: { key: string; label: string }[] = [
   { key: 'chat_mention',         label: 'Chat\'te seni @mention ettiklerinde' },
   { key: 'decision_review',      label: 'Karar review vadesi geldiğinde' },
   { key: 'approval_requested',   label: 'Onayına düşen bir istek olduğunda' },
+  { key: 'review_reminder',      label: 'Karar review hatırlatması geldiğinde' },
 ];
 
 export function useNotifPrefs() {
