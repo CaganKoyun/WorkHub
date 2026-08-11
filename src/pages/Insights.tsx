@@ -71,7 +71,7 @@ const HEATMAP_COLORS = {
 const CHART_COLORS = [
   'hsl(var(--primary))',
   'hsl(var(--success))', 'hsl(var(--warning))', 'hsl(var(--destructive))', 'hsl(var(--info))',
-  '#8b5cf6', '#ec4899', '#14b8a6',
+  'hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))',
 ];
 
 const TOOLTIP_STYLE = {
@@ -335,7 +335,7 @@ export default function Insights() {
         title: g.title.length > 30 ? g.title.slice(0, 28) + '...' : g.title,
         progress: g.progress ?? 0,
         status: g.status,
-        color: GOAL_STATUS_COLOR[g.status] ?? '#94a3b8',
+        color: GOAL_STATUS_COLOR[g.status] ?? 'hsl(var(--muted-foreground))',
       }));
   }, [goals]);
 

@@ -346,7 +346,7 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
       )}
 
       <Dialog open={memberDialogOpen} onOpenChange={setMemberDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>Üye ekle</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div className="space-y-2">

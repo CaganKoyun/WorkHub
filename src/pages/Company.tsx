@@ -360,7 +360,7 @@ function DepartmentsTab() {
         <SearchBar value={search} onChange={setSearch} placeholder="Departman ara..." />
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Departman</Button></DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Departman Duzenle" : "Yeni Departman"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Finans" /></div>
@@ -491,7 +491,7 @@ function TeamsTab() {
         <SearchBar value={search} onChange={setSearch} placeholder="Takim ara..." />
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Takim</Button></DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Takim Duzenle" : "Yeni Takim"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Growth" /></div>
@@ -600,7 +600,7 @@ function TitlesTab() {
         <SearchBar value={search} onChange={setSearch} placeholder="Unvan ara..." />
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Unvan</Button></DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Unvan Duzenle" : "Yeni Unvan"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Finance Manager" /></div>
@@ -724,7 +724,7 @@ function EntitiesTab() {
         <SearchBar value={search} onChange={setSearch} placeholder="Tuzel kisilik ara..." />
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Tuzel Kisilik</Button></DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Tuzel Kisilik Duzenle" : "Yeni Tuzel Kisilik"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
@@ -875,7 +875,7 @@ function PermissionSetsTab() {
         <SearchBar value={search} onChange={setSearch} placeholder="Yetki paketi ara..." />
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Paket</Button></DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Yetki Paketi Duzenle" : "Yeni Yetki Paketi"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="External Accountant" /></div>

@@ -104,7 +104,7 @@ export function ProjectFilesTab({
                 <DialogTrigger asChild>
                   <Button size="sm" variant="outline">Bağlantı ekle</Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-w-md">
                   <DialogHeader><DialogTitle>{s.label} bağlantısı</DialogTitle></DialogHeader>
                   <div className="space-y-3">
                     <Input placeholder="Dosya adı" value={extName} onChange={e => setExtName(e.target.value)} />

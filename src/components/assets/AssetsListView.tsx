@@ -398,7 +398,7 @@ export function AssetsListView() {
       )}
 
       <Dialog open={bulkDialogOpen} onOpenChange={setBulkDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>{selected.size} varlik ata</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -420,7 +420,7 @@ export function AssetsListView() {
       </Dialog>
 
       <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>Varlik Ice Aktar</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">

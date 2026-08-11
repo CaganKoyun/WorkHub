@@ -264,7 +264,7 @@ export function EmployeesListView() {
             <DialogTrigger asChild>
               <Button size="sm"><Plus className="mr-1 h-4 w-4" />Yeni Calisan</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-md">
               <DialogHeader><DialogTitle>Yeni Calisan Ekle</DialogTitle></DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4">
                 <div className="space-y-2"><Label>Isim *</Label><Input value={name} onChange={e => setName(e.target.value)} required placeholder="Ahmet Yilmaz" /></div>
@@ -480,7 +480,7 @@ export function EmployeesListView() {
 
       {/* Edit dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>Calisani Duzenle</DialogTitle></DialogHeader>
           <form onSubmit={handleUpdate} className="space-y-4">
             <div className="space-y-2"><Label>Isim *</Label><Input value={editName} onChange={e => setEditName(e.target.value)} required /></div>
@@ -493,7 +493,7 @@ export function EmployeesListView() {
 
       {/* Import dialog */}
       <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>Calisanlari Ice Aktar</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">

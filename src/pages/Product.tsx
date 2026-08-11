@@ -189,7 +189,7 @@ function ProductsTab() {
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Urun</Button></DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Urun Duzenle" : "Yeni Urun"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Isim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
@@ -546,7 +546,7 @@ function FeedbackTab() {
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Feedback</Button></DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Feedback Duzenle" : "Yeni Feedback"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Baslik</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
@@ -668,7 +668,7 @@ function ReleasesTab() {
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Release</Button></DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Release Duzenle" : "Yeni Release"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
@@ -778,7 +778,7 @@ function IncidentsTab() {
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Incident</Button></DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Incident Duzenle" : "Yeni Incident"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Baslik</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>

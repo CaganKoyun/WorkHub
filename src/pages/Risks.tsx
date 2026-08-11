@@ -323,7 +323,7 @@ export default function Risks() {
           </div>
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" />Yeni Risk</Button></DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-md">
               <DialogHeader><DialogTitle>Yeni Risk</DialogTitle></DialogHeader>
               <RiskForm form={form} setForm={setForm} />
               <DialogFooter>
@@ -444,7 +444,7 @@ export default function Risks() {
 
       {/* Edit Dialog */}
       <Dialog open={editOpen} onOpenChange={o => { setEditOpen(o); if (!o) setEditingRisk(null); }}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>Riski Düzenle</DialogTitle></DialogHeader>
           <RiskForm form={form} setForm={setForm} />
           <DialogFooter>

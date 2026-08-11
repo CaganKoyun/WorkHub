@@ -339,8 +339,8 @@ export default function Goals() {
             <DialogHeader><DialogTitle>Yeni Hedef</DialogTitle></DialogHeader>
             <GoalForm form={form} setForm={setForm} goals={goals} />
             <DialogFooter>
-              <Button variant="outline" onClick={() => setCreateOpen(false)}>Iptal</Button>
               <Button onClick={submitCreate} disabled={create.isPending}>Olustur</Button>
+              <Button variant="outline" onClick={() => setCreateOpen(false)}>Iptal</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -563,8 +563,8 @@ export default function Goals() {
           <DialogHeader><DialogTitle>Hedefi Duzenle</DialogTitle></DialogHeader>
           <GoalForm form={form} setForm={setForm} goals={goals} editingId={editingGoal?.id} />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditOpen(false)}>Iptal</Button>
             <Button onClick={submitEdit} disabled={update.isPending}>Kaydet</Button>
+            <Button variant="outline" onClick={() => setEditOpen(false)}>Iptal</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
