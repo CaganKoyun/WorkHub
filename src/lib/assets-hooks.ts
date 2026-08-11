@@ -218,6 +218,20 @@ export function useCurrentAssignment(assetId: string) {
   });
 }
 
+export function useAllActiveAssignments() {
+  return useQuery({
+    queryKey: ['assignments', 'all-active'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('asset_assignments')
+        .select('*, employees(*)')
+        .is('returned_date', null);
+      if (error) throw error;
+      return data as (AssetAssignment & { employees: Employee | null })[];
+    },
+  });
+}
+
 export function useAssignAsset() {
   const qc = useQueryClient();
   return useMutation({

@@ -17,27 +17,211 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Bookmark, Plus, Star, Users, User, Trash2, Filter, ArrowRight, ChevronRight,
+  LayoutGrid, Table2, Calendar, Clock, BarChart3, Layers,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const PRIORITIES: TaskPriority[] = ['low', 'medium', 'high', 'urgent'];
 
+// ---- Template definitions ---------------------------------------------------
+
+interface ViewTemplate {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ElementType;
+  target: ViewTarget;
+  filters: ViewFilters;
+  preview: React.ReactNode;
+}
+
+function KanbanPreview() {
+  return (
+    <div className="flex gap-1 h-full items-end p-1.5">
+      {[3, 2, 4, 1].map((count, col) => (
+        <div key={col} className="flex-1 flex flex-col gap-0.5 justify-end">
+          <div className="h-1 w-full rounded-sm bg-muted-foreground/20" />
+          {Array.from({ length: count }).map((_, i) => (
+            <div key={i} className="h-2.5 w-full rounded-sm bg-primary/20 border border-primary/15" />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TablePreview() {
+  return (
+    <div className="flex flex-col gap-0.5 p-1.5 h-full justify-center">
+      <div className="flex gap-1">
+        <div className="h-1.5 flex-[2] rounded-sm bg-muted-foreground/30" />
+        <div className="h-1.5 flex-1 rounded-sm bg-muted-foreground/30" />
+        <div className="h-1.5 flex-1 rounded-sm bg-muted-foreground/30" />
+      </div>
+      {[1, 2, 3, 4].map(i => (
+        <div key={i} className="flex gap-1">
+          <div className="h-1.5 flex-[2] rounded-sm bg-primary/15" />
+          <div className="h-1.5 flex-1 rounded-sm bg-primary/10" />
+          <div className="h-1.5 flex-1 rounded-sm bg-primary/10" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CalendarPreview() {
+  return (
+    <div className="p-1.5 h-full flex flex-col gap-0.5 justify-center">
+      <div className="flex gap-0.5">
+        {[1, 2, 3, 4, 5].map(i => (
+          <div key={i} className="h-1 flex-1 rounded-sm bg-muted-foreground/20" />
+        ))}
+      </div>
+      {[1, 2, 3].map(row => (
+        <div key={row} className="flex gap-0.5">
+          {[1, 2, 3, 4, 5].map(col => (
+            <div key={col} className={cn(
+              'h-3 flex-1 rounded-sm border',
+              (row === 1 && col === 3) || (row === 2 && col === 1)
+                ? 'bg-primary/20 border-primary/25'
+                : 'bg-muted/30 border-border/30',
+            )} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TimelinePreview() {
+  return (
+    <div className="p-1.5 h-full flex flex-col gap-1 justify-center">
+      {[{ w: '70%', x: '5%' }, { w: '45%', x: '30%' }, { w: '60%', x: '15%' }, { w: '35%', x: '50%' }].map((bar, i) => (
+        <div key={i} className="relative h-2 w-full">
+          <div
+            className="absolute h-full rounded-sm bg-primary/25 border border-primary/20"
+            style={{ width: bar.w, left: bar.x }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DashboardPreview() {
+  return (
+    <div className="p-1.5 h-full grid grid-cols-2 grid-rows-2 gap-0.5">
+      <div className="rounded-sm bg-primary/15 border border-primary/10 flex items-center justify-center">
+        <div className="h-1.5 w-3/4 rounded-sm bg-primary/25" />
+      </div>
+      <div className="rounded-sm bg-muted/30 border border-border/30 flex items-end p-0.5 gap-px">
+        {[60, 80, 45, 90, 70].map((h, i) => (
+          <div key={i} className="flex-1 bg-primary/20 rounded-t-sm" style={{ height: `${h}%` }} />
+        ))}
+      </div>
+      <div className="rounded-sm bg-muted/30 border border-border/30 flex items-center justify-center">
+        <div className="h-4 w-4 rounded-full border-2 border-primary/30 border-t-primary/60" />
+      </div>
+      <div className="rounded-sm bg-primary/10 border border-primary/10 flex flex-col gap-0.5 p-0.5 justify-center">
+        <div className="h-1 w-full rounded-sm bg-primary/20" />
+        <div className="h-1 w-3/4 rounded-sm bg-primary/15" />
+        <div className="h-1 w-1/2 rounded-sm bg-primary/10" />
+      </div>
+    </div>
+  );
+}
+
+function GroupedPreview() {
+  return (
+    <div className="p-1.5 h-full flex flex-col gap-1 justify-center">
+      {[2, 3].map((count, g) => (
+        <div key={g} className="space-y-0.5">
+          <div className="h-1 w-1/3 rounded-sm bg-muted-foreground/25" />
+          {Array.from({ length: count }).map((_, i) => (
+            <div key={i} className="h-2 w-full rounded-sm bg-primary/15 border border-primary/10 ml-1" />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const TEMPLATES: ViewTemplate[] = [
+  {
+    id: 'kanban',
+    title: 'Kanban Board',
+    description: 'Duruma göre sütunlar halinde görevleri görüntüler',
+    icon: LayoutGrid,
+    target: 'issues',
+    filters: { status: ['open', 'in_progress', 'in_review'] as TaskStatus[] },
+    preview: <KanbanPreview />,
+  },
+  {
+    id: 'table',
+    title: 'Tablo Görünümü',
+    description: 'Tüm görevleri satırlar halinde listeler',
+    icon: Table2,
+    target: 'issues',
+    filters: {},
+    preview: <TablePreview />,
+  },
+  {
+    id: 'calendar',
+    title: 'Takvim',
+    description: 'Son tarihlere göre takvim görünümü',
+    icon: Calendar,
+    target: 'issues',
+    filters: { status: ['open', 'in_progress'] as TaskStatus[] },
+    preview: <CalendarPreview />,
+  },
+  {
+    id: 'timeline',
+    title: 'Zaman Çizelgesi',
+    description: 'Başlangıç ve bitiş tarihlerine göre zaman şeridi',
+    icon: Clock,
+    target: 'issues',
+    filters: { status: ['open', 'in_progress', 'in_review'] as TaskStatus[] },
+    preview: <TimelinePreview />,
+  },
+  {
+    id: 'dashboard',
+    title: 'Özet Panosu',
+    description: 'İstatistik ve grafik özetleriyle genel bakış',
+    icon: BarChart3,
+    target: 'issues',
+    filters: {},
+    preview: <DashboardPreview />,
+  },
+  {
+    id: 'grouped',
+    title: 'Grup Görünümü',
+    description: 'Proje veya öncelik bazında gruplu listeleme',
+    icon: Layers,
+    target: 'issues',
+    filters: { priority: ['high', 'urgent'] as TaskPriority[] },
+    preview: <GroupedPreview />,
+  },
+];
+
 // ---- Create/edit dialog -------------------------------------------------
 
-function EditDialog({ open, onOpenChange, initial }: {
-  open: boolean; onOpenChange: (o: boolean) => void; initial?: SavedView | null;
+function EditDialog({ open, onOpenChange, initial, prefill }: {
+  open: boolean;
+  onOpenChange: (o: boolean) => void;
+  initial?: SavedView | null;
+  prefill?: { name?: string; target?: ViewTarget; filters?: ViewFilters; description?: string } | null;
 }) {
   const create = useCreateSavedView();
   const update = useUpdateSavedView();
   const { data: projects } = useProjects();
   const { data: members } = useWorkspaceMembers();
 
-  const [name, setName] = useState(initial?.name ?? '');
-  const [target, setTarget] = useState<ViewTarget>(initial?.target ?? 'issues');
-  const [description, setDescription] = useState(initial?.description ?? '');
+  const [name, setName] = useState(initial?.name ?? prefill?.name ?? '');
+  const [target, setTarget] = useState<ViewTarget>(initial?.target ?? prefill?.target ?? 'issues');
+  const [description, setDescription] = useState(initial?.description ?? prefill?.description ?? '');
   const [shared, setShared] = useState(initial?.is_shared ?? false);
-  const [filters, setFilters] = useState<ViewFilters>(initial?.filters ?? {});
+  const [filters, setFilters] = useState<ViewFilters>(initial?.filters ?? prefill?.filters ?? {});
 
   const toggleArr = <T extends string>(arr: T[] | undefined, val: T): T[] => {
     const s = new Set(arr ?? []);
@@ -48,7 +232,6 @@ function EditDialog({ open, onOpenChange, initial }: {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) { toast.error('Ad zorunlu'); return; }
-    // Strip empty arrays.
     const cleanFilters: ViewFilters = {};
     (['status', 'priority', 'assignee_ids', 'project_ids', 'tags'] as const).forEach(k => {
       const v = filters[k];
@@ -182,7 +365,7 @@ function EditDialog({ open, onOpenChange, initial }: {
           </label>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>İptal</Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Iptal</Button>
             <Button type="submit" disabled={create.isPending || update.isPending}>{initial ? 'Kaydet' : 'Oluştur'}</Button>
           </div>
         </form>
@@ -191,9 +374,41 @@ function EditDialog({ open, onOpenChange, initial }: {
   );
 }
 
-// ---- Row ------------------------------------------------------------------
+// ---- Template card ----------------------------------------------------------
 
-function ViewRow({ view, isFav, isMine }: { view: SavedView; isFav: boolean; isMine: boolean }) {
+function TemplateCard({ template, onSelect }: { template: ViewTemplate; onSelect: (t: ViewTemplate) => void }) {
+  const Icon = template.icon;
+  return (
+    <button
+      onClick={() => onSelect(template)}
+      className={cn(
+        'group relative flex flex-col rounded-lg border border-border/60 bg-card',
+        'hover:border-primary/40 hover:shadow-md hover:shadow-primary/5',
+        'transition-all duration-200 text-left overflow-hidden',
+      )}
+    >
+      <div className="h-20 w-full bg-muted/30 border-b border-border/40 group-hover:bg-primary/[0.03] transition-colors">
+        {template.preview}
+      </div>
+      <div className="p-3 flex-1 flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <Icon className="h-3.5 w-3.5 text-primary/70" />
+          <span className="text-[13px] font-medium">{template.title}</span>
+        </div>
+        <p className="text-[11px] text-muted-foreground leading-relaxed">{template.description}</p>
+      </div>
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-1 text-[10px] text-primary bg-primary/10 rounded px-1.5 py-0.5 font-medium">
+          <Plus className="h-2.5 w-2.5" /> Kullan
+        </div>
+      </div>
+    </button>
+  );
+}
+
+// ---- View card (replaces ViewRow) -------------------------------------------
+
+function ViewCard({ view, isFav, isMine }: { view: SavedView; isFav: boolean; isMine: boolean }) {
   const del = useDeleteSavedView();
   const tog = useToggleFavorite();
   const [editOpen, setEditOpen] = useState(false);
@@ -212,36 +427,92 @@ function ViewRow({ view, isFav, isMine }: { view: SavedView; isFav: boolean; isM
   };
 
   return (
-    <div className="group flex items-center gap-3 px-3 py-2 border-b border-border/40 last:border-b-0 hover:bg-sidebar-accent/25">
-      <button
-        onClick={() => tog.mutate({ viewId: view.id, isFav })}
-        title={isFav ? 'Favoriden çıkar' : 'Favoriye ekle'}
-        className="text-muted-foreground hover:text-warning"
-      >
-        <Star className={cn('h-3.5 w-3.5', isFav && 'fill-warning text-warning')} />
-      </button>
-      <Link to={viewToUrl(view)} className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-[13px] font-medium truncate">{view.name}</span>
-          <span className="chip">{TARGET_LABELS[view.target]}</span>
-          {view.is_shared
-            ? <Users className="h-3 w-3 text-muted-foreground" />
-            : <User className="h-3 w-3 text-muted-foreground" />}
+    <div className="group relative rounded-lg border border-border/60 bg-card hover:border-primary/30 hover:shadow-sm transition-all duration-150">
+      <div className="flex items-start gap-3 p-3.5">
+        <button
+          onClick={() => tog.mutate({ viewId: view.id, isFav })}
+          title={isFav ? 'Favoriden çıkar' : 'Favoriye ekle'}
+          className="mt-0.5 text-muted-foreground hover:text-warning shrink-0"
+        >
+          <Star className={cn('h-4 w-4', isFav && 'fill-warning text-warning')} />
+        </button>
+        <Link to={viewToUrl(view)} className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[13.5px] font-medium">{view.name}</span>
+            <span className="inline-flex items-center text-[10.5px] px-1.5 py-0.5 rounded bg-secondary/60 text-muted-foreground font-medium">
+              {TARGET_LABELS[view.target]}
+            </span>
+            {view.is_shared
+              ? <Users className="h-3 w-3 text-muted-foreground/60" />
+              : <User className="h-3 w-3 text-muted-foreground/60" />}
+          </div>
+          {view.description && (
+            <p className="text-[12px] text-muted-foreground mt-0.5 truncate">{view.description}</p>
+          )}
+          {filterChips.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1.5">
+              {filterChips.map((chip, i) => (
+                <span key={i} className="text-[10.5px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground/80">
+                  {chip}
+                </span>
+              ))}
+            </div>
+          )}
+        </Link>
+        <div className="flex items-center gap-1 shrink-0">
+          <Link
+            to={viewToUrl(view)}
+            className="inline-flex items-center gap-1 text-[11.5px] text-muted-foreground hover:text-foreground px-2 py-1 rounded hover:bg-secondary/50 transition-colors"
+          >
+            Aç <ArrowRight className="h-3 w-3" />
+          </Link>
+          {isMine && (
+            <>
+              <Button
+                size="sm" variant="ghost"
+                className="h-7 text-[11.5px] opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => setEditOpen(true)}
+              >
+                Düzenle
+              </Button>
+              <Button
+                size="icon" variant="ghost"
+                className="h-7 w-7 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={doDelete}
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            </>
+          )}
         </div>
-        {view.description && <div className="text-[11.5px] text-muted-foreground truncate">{view.description}</div>}
-        {filterChips.length > 0 && (
-          <div className="text-[11px] text-muted-foreground/80 truncate mt-0.5">{filterChips.join(' · ')}</div>
-        )}
-      </Link>
-      <Link to={viewToUrl(view)} className="inline-flex items-center gap-1 text-[11.5px] text-muted-foreground hover:text-foreground">Aç <ArrowRight className="h-3 w-3" /></Link>
-      {isMine && (
-        <>
-          <Button size="sm" variant="ghost" className="h-7 text-[11.5px] opacity-0 group-hover:opacity-100" onClick={() => setEditOpen(true)}>Düzenle</Button>
-          <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive opacity-0 group-hover:opacity-100" onClick={doDelete}><Trash2 className="h-3 w-3" /></Button>
-        </>
-      )}
+      </div>
       {editOpen && <EditDialog open={editOpen} onOpenChange={setEditOpen} initial={view} />}
     </div>
+  );
+}
+
+// ---- Section wrapper --------------------------------------------------------
+
+function Section({ icon: Icon, label, count, accent, children }: {
+  icon: React.ElementType;
+  label: string;
+  count: number;
+  accent?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="space-y-2.5">
+      <div className="flex items-center gap-2">
+        <Icon className={cn('h-3.5 w-3.5', accent ? 'fill-warning text-warning' : 'text-muted-foreground')} />
+        <h2 className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {label}
+        </h2>
+        <span className="text-[11px] text-muted-foreground/60">({count})</span>
+      </div>
+      <div className="grid gap-2">
+        {children}
+      </div>
+    </section>
   );
 }
 
@@ -252,79 +523,116 @@ export default function SavedViews() {
   const { data: favIds } = useFavoriteViewIds();
   const { user } = useAuth();
   const [createOpen, setCreateOpen] = useState(false);
+  const [templatePrefill, setTemplatePrefill] = useState<ViewTemplate | null>(null);
 
   const mine = useMemo(() => (views ?? []).filter(v => v.owner_id === user?.id), [views, user]);
   const shared = useMemo(() => (views ?? []).filter(v => v.owner_id !== user?.id && v.is_shared), [views, user]);
   const favorites = useMemo(() => (views ?? []).filter(v => favIds?.has(v.id)), [views, favIds]);
 
+  const handleTemplateSelect = (template: ViewTemplate) => {
+    setTemplatePrefill(template);
+    setCreateOpen(true);
+  };
+
+  const handleDialogClose = (open: boolean) => {
+    setCreateOpen(open);
+    if (!open) setTemplatePrefill(null);
+  };
+
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
+    <div className="mx-auto max-w-5xl space-y-8 p-6 pb-16">
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[20px] font-semibold tracking-tight flex items-center gap-2">
-            <Bookmark className="h-5 w-5 text-muted-foreground" /> Kaydedilmiş görünümler
+          <h1 className="text-[22px] font-semibold tracking-tight flex items-center gap-2.5">
+            <Bookmark className="h-5.5 w-5.5 text-primary/70" /> Kaydedilmiş görünümler
           </h1>
-          <p className="mt-0.5 text-[12.5px] text-muted-foreground">
+          <p className="mt-1 text-[13px] text-muted-foreground max-w-lg leading-relaxed">
             Sık kullandığın filtre + sıralama kombinasyonlarını kaydet, favoriye ekle,
-            workspace ile paylaş. Görünüme tıkla → ilgili sayfa filtreli açılır.
+            workspace ile paylaş. Görünüme tıkla &rarr; ilgili sayfa filtreli açılır.
           </p>
         </div>
-        <Button size="sm" className="h-8 gap-1.5" onClick={() => setCreateOpen(true)}>
-          <Plus className="h-3.5 w-3.5" /> Yeni görünüm
+        <Button className="h-9 gap-1.5 shadow-sm" onClick={() => setCreateOpen(true)}>
+          <Plus className="h-4 w-4" /> Yeni görünüm
         </Button>
       </div>
 
+      {/* Templates section */}
+      <section className="space-y-3">
+        <div className="flex items-center gap-2">
+          <LayoutGrid className="h-3.5 w-3.5 text-primary/70" />
+          <h2 className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Şablonlar
+          </h2>
+        </div>
+        <p className="text-[12px] text-muted-foreground -mt-1">
+          Hazır şablonlardan birini seç, filtrelerini ihtiyacına göre düzenle.
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {TEMPLATES.map(t => (
+            <TemplateCard key={t.id} template={t} onSelect={handleTemplateSelect} />
+          ))}
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="border-t border-border/50" />
+
+      {/* Saved views */}
       {isLoading ? (
-        <div className="space-y-1.5">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12" />)}</div>
+        <div className="space-y-2">
+          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-lg" />)}
+        </div>
       ) : (views ?? []).length === 0 ? (
-        <div className="rounded-md border border-dashed border-border/60 py-14 text-center">
-          <Bookmark className="mx-auto h-8 w-8 text-muted-foreground/40" />
-          <p className="mt-2 text-[13px] text-muted-foreground">Henüz kayıtlı görünüm yok.</p>
+        <div className="rounded-lg border border-dashed border-border/60 py-16 text-center">
+          <Bookmark className="mx-auto h-10 w-10 text-muted-foreground/30" />
+          <p className="mt-3 text-[13.5px] text-muted-foreground">Henüz kayıtlı görünüm yok.</p>
+          <p className="mt-1 text-[12px] text-muted-foreground/60">
+            Yukarıdaki şablonlardan birini kullanarak veya sıfırdan yeni bir görünüm oluştur.
+          </p>
         </div>
       ) : (
-        <>
+        <div className="space-y-6">
           {favorites.length > 0 && (
-            <section>
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                <Star className="h-3 w-3 fill-warning text-warning" /> Favoriler ({favorites.length})
-              </div>
-              <div className="rounded-md border border-border/60 bg-secondary/10 overflow-hidden">
-                {favorites.map(v => (
-                  <ViewRow key={v.id} view={v} isFav={true} isMine={v.owner_id === user?.id} />
-                ))}
-              </div>
-            </section>
+            <Section icon={Star} label="Favoriler" count={favorites.length} accent>
+              {favorites.map(v => (
+                <ViewCard key={v.id} view={v} isFav={true} isMine={v.owner_id === user?.id} />
+              ))}
+            </Section>
           )}
 
           {mine.length > 0 && (
-            <section>
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                <ChevronRight className="h-3 w-3" /> Benim görünümlerim ({mine.length})
-              </div>
-              <div className="rounded-md border border-border/60 bg-secondary/10 overflow-hidden">
-                {mine.map(v => (
-                  <ViewRow key={v.id} view={v} isFav={!!favIds?.has(v.id)} isMine={true} />
-                ))}
-              </div>
-            </section>
+            <Section icon={ChevronRight} label="Benim görünümlerim" count={mine.length}>
+              {mine.map(v => (
+                <ViewCard key={v.id} view={v} isFav={!!favIds?.has(v.id)} isMine={true} />
+              ))}
+            </Section>
           )}
 
           {shared.length > 0 && (
-            <section>
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                <Users className="h-3 w-3" /> Ekip paylaşımları ({shared.length})
-              </div>
-              <div className="rounded-md border border-border/60 bg-secondary/10 overflow-hidden">
-                {shared.map(v => (
-                  <ViewRow key={v.id} view={v} isFav={!!favIds?.has(v.id)} isMine={false} />
-                ))}
-              </div>
-            </section>
+            <Section icon={Users} label="Ekip paylaşımları" count={shared.length}>
+              {shared.map(v => (
+                <ViewCard key={v.id} view={v} isFav={!!favIds?.has(v.id)} isMine={false} />
+              ))}
+            </Section>
           )}
-        </>
+        </div>
       )}
 
-      {createOpen && <EditDialog open={createOpen} onOpenChange={setCreateOpen} initial={null} />}
+      {/* Create/edit dialog */}
+      {createOpen && (
+        <EditDialog
+          open={createOpen}
+          onOpenChange={handleDialogClose}
+          initial={null}
+          prefill={templatePrefill ? {
+            name: templatePrefill.title,
+            target: templatePrefill.target,
+            filters: templatePrefill.filters,
+            description: templatePrefill.description,
+          } : null}
+        />
+      )}
     </div>
   );
 }
