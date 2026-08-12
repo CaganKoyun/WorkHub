@@ -57,6 +57,28 @@ const SPARK_HQ_CSS = `
 .shq .cam-reset{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:2px 8px;font-size:11px;color:var(--dim);transition:all .15s;opacity:0;pointer-events:none}
 .shq .cam-reset.show{opacity:1;pointer-events:auto}
 .shq .cam-reset:hover{background:var(--hover);color:var(--ink)}
+.shq .sort-bar{display:flex;align-items:center;gap:4px;margin-top:8px;justify-content:center}
+.shq .sort-bar .sort-label{font-size:10px;color:var(--dim);letter-spacing:.05em;text-transform:uppercase;margin-right:4px}
+.shq .sort-bar button{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:3px 10px;font-size:10.5px;color:var(--dim);transition:all .15s;white-space:nowrap}
+.shq .sort-bar button.on{background:var(--lime-soft);color:var(--lime);border-color:rgba(198,244,50,.2)}
+.shq .sort-bar button:hover:not(.on){background:var(--hover);color:var(--muted)}
+.shq .add-floor-btn{cursor:pointer}
+.shq .add-floor-btn text{transition:fill .2s}
+.shq .add-floor-btn:hover text{fill:var(--lime)!important}
+.shq .add-floor-btn:hover polygon{fill:#2A2A2F!important}
+.shq #shqAddFloor{position:absolute;z-index:23;display:none;width:min(340px,88vw);
+  background:var(--panel);border:1px solid var(--border-hi);border-radius:var(--radius);
+  box-shadow:var(--elev2);overflow:hidden;padding:20px 24px;
+  left:50%;top:50%;transform:translate(-50%,-50%)}
+.shq #shqAddFloor.show{display:block}
+.shq .af-title{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:16px}
+.shq .af-field{margin-bottom:12px}
+.shq .af-field label{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:4px}
+.shq .af-field input,.shq .af-field select{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);
+  color:var(--ink);font:inherit;font-size:13px;padding:8px 12px;outline:none;transition:border-color .15s}
+.shq .af-field input:focus,.shq .af-field select:focus{border-color:var(--lime)}
+.shq .af-field input::placeholder{color:var(--dim)}
+.shq .af-actions{display:flex;gap:8px;margin-top:16px}
 .shq .bfloor{cursor:pointer}
 .shq .bfloor .face-top{transition:fill .2s}
 .shq .bfloor:hover .face-top{fill:#2A2A2F !important}
@@ -504,6 +526,15 @@ function initSparkHQ(root: HTMLElement) {
       working:[] as string[],waiting:[] as [string,string][],goals:[] as [string,number][],recent:[] as string[]};
   }
 
+  let floorSort: "default"|"perf"|"size"|"alpha" = "default";
+  function sortedFloors(): Floor[] {
+    const arr=[...FLOORS];
+    if(floorSort==="perf") arr.sort((a,b)=>SEV[fSt(b)]-SEV[fSt(a)]||b.rooms.reduce((s,r)=>s+r.members.length,0)-a.rooms.reduce((s,r)=>s+r.members.length,0));
+    else if(floorSort==="size") arr.sort((a,b)=>b.rooms.reduce((s,r)=>s+r.members.length,0)-a.rooms.reduce((s,r)=>s+r.members.length,0));
+    else if(floorSort==="alpha") arr.sort((a,b)=>a.name.localeCompare(b.name,"tr"));
+    return arr;
+  }
+
   const state={view:"hq",floor:null as string|null,room:null as string|null,person:null as string|null,mode:"office",time:3,role:"owner" as string,empathy:null as string|null};
   const $=(s: string)=>root.querySelector(s) as HTMLElement|null;
   const F=()=>FLOORS.find(f=>f.id===state.floor)!;
@@ -562,8 +593,9 @@ function initSparkHQ(root: HTMLElement) {
   }
 
   function renderHQ(){
-    const W=170,D=105,H=44,s=1.15,n=FLOORS.length;
-    const riskRooms=FLOORS.flatMap(f=>f.rooms).filter(r=>rSt(r)==="risk").length;
+    const sf=sortedFloors();
+    const W=170,D=105,H=44,s=1.15,n=sf.length;
+    const riskRooms=sf.flatMap(f=>f.rooms).filter(r=>rSt(r)==="risk").length;
     const kpis=$("#hqKpis");
     if(kpis)kpis.innerHTML=`
       <span class="ps-item risk"><span class="ps-dot" style="background:var(--risk)"></span><b>${riskRooms+4}</b> riskte iş</span>
@@ -575,7 +607,7 @@ function initSparkHQ(root: HTMLElement) {
 
     const g=30;
     const corners: [number,number][]=[];
-    for(const bx of[-g,W+g])for(const by of[-g,D+g])for(const bz of[0,n*H+20])
+    for(const bx of[-g,W+g])for(const by of[-g,D+g])for(const bz of[0,n*H+40])
       corners.push(P(bx,by,bz,cx,cy,s));
     const vPad=24;
     const vx0=Math.min(...corners.map(c=>c[0]))-vPad;
@@ -590,7 +622,7 @@ function initSparkHQ(root: HTMLElement) {
     svg+=`<polygon points="${pts([P(-g,-g,0,cx,cy,s),P(W+g,-g,0,cx,cy,s),P(W+g,D+g,0,cx,cy,s),P(-g,D+g,0,cx,cy,s)])}" fill="#111114"/>`;
 
     for(let i=0;i<n;i++){
-      const f=FLOORS[n-1-i],zb=i*H,zt=zb+H;
+      const f=sf[n-1-i],zb=i*H,zt=zb+H;
       const st2=fSt(f),sc=ST[st2].c;
 
       const sideA=showFront
@@ -632,7 +664,13 @@ function initSparkHQ(root: HTMLElement) {
     <polygon points="${antSideB}" fill="#1A1A1E" stroke="rgba(255,255,255,.04)"/>
     <polygon points="${antTop}" fill="#1E1E22" stroke="rgba(255,255,255,.05)"/>
     <circle cx="${antLight[0]}" cy="${antLight[1]}" r="3" fill="var(--lime)" opacity=".6"/>
-    <circle cx="${antLight[0]}" cy="${antLight[1]}" r="8" fill="var(--lime)" opacity=".08"/>
+    <circle cx="${antLight[0]}" cy="${antLight[1]}" r="8" fill="var(--lime)" opacity=".08"/>`;
+    const addZ=n*H+22;
+    const addCenter=P(W/2,D/2,addZ,cx,cy,s);
+    svg+=`<g class="add-floor-btn" data-act="add-floor" style="cursor:pointer">
+      <circle cx="${addCenter[0]}" cy="${addCenter[1]}" r="14" fill="var(--card)" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 3"/>
+      <text x="${addCenter[0]}" y="${addCenter[1]+5}" text-anchor="middle" font-size="16" font-weight="700" fill="var(--dim)">+</text>
+    </g>
     </svg>`;
     const bld=$("#hqBuilding");
     if(bld)bld.innerHTML=svg;
@@ -650,10 +688,66 @@ function initSparkHQ(root: HTMLElement) {
       el.addEventListener("mouseenter",e=>showTooltipFloor(e as MouseEvent,fid));
       el.addEventListener("mouseleave",hideTooltip);
     });
+    root.querySelector("[data-act=add-floor]")?.addEventListener("click",(e)=>{
+      e.stopPropagation();
+      if(wasCamDrag)return;
+      openAddFloor();
+    });
     const isDefault=Math.abs(cam.rot-Math.PI/4)<0.02&&Math.abs(cam.tilt-0.616)<0.02;
     const resetBtn=$("#camReset");
     if(resetBtn)resetBtn.classList.toggle("show",!isDefault);
+    renderSortBar();
   }
+
+  function renderSortBar(){
+    const bar=$("#sortBar");if(!bar)return;
+    const opts: [string,string][]=[["default","Varsayılan"],["perf","Performans"],["size","Kişi"],["alpha","A-Z"]];
+    bar.innerHTML=`<span class="sort-label">Sırala</span>`+opts.map(([k,l])=>`<button class="${floorSort===k?"on":""}" data-sort="${k}">${l}</button>`).join("");
+    bar.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+      floorSort=(b as HTMLElement).dataset.sort as typeof floorSort;
+      renderHQ();
+    }));
+  }
+
+  function openAddFloor(){
+    const d=$("#shqAddFloor");if(!d)return;
+    d.innerHTML=`<div class="af-title">Yeni Departman Ekle</div>
+      <div class="af-field"><label>Departman Adı</label><input id="afName" placeholder="Örn: İK, Hukuk, Ar-Ge…" /></div>
+      <div class="af-field"><label>Alt Başlık</label><input id="afSub" placeholder="Örn: 3 açık pozisyon" /></div>
+      <div class="af-field"><label>Başlangıç Durumu</label>
+        <select id="afStatus">
+          <option value="ok">Yolunda</option>
+          <option value="warn">Dikkat</option>
+          <option value="risk">Riskte</option>
+        </select>
+      </div>
+      <div class="af-actions">
+        <button class="btn-lime" data-act="create">Kat Ekle</button>
+        <button class="btn-ghost" data-act="cancel">İptal</button>
+      </div>`;
+    d.classList.add("show");
+    d.querySelector("[data-act=cancel]")?.addEventListener("click",closeAddFloor);
+    d.querySelector("[data-act=create]")?.addEventListener("click",()=>{
+      const nameEl=d.querySelector("#afName") as HTMLInputElement;
+      const subEl=d.querySelector("#afSub") as HTMLInputElement;
+      const stEl=d.querySelector("#afStatus") as HTMLSelectElement;
+      const name=nameEl?.value.trim();
+      if(!name){nameEl?.focus();return}
+      const id=name.toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,12)||"dept"+FLOORS.length;
+      const sub=subEl?.value.trim()||"Yeni departman";
+      const st=stEl?.value||"ok";
+      const newFloor: Floor={id,name,sub,rooms:[
+        room("genel-"+id,"Genel",[0,0,100,50],st,{mission:name+" hedefleri",pct:0,note:"Henüz başlanmadı",
+          wrong:[],mile:["Kurulum","bu hafta"],members:[],tasks:[]})
+      ]};
+      FLOORS.push(newFloor);
+      closeAddFloor();
+      renderHQ();
+      fakeAct(`"${name}" katı eklendi — ${FLOORS.length}. kat`);
+    });
+    setTimeout(()=>(d.querySelector("#afName") as HTMLInputElement)?.focus(),50);
+  }
+  function closeAddFloor(){$("#shqAddFloor")?.classList.remove("show")}
 
   function renderPlan(){
     const f=F();
@@ -1396,6 +1490,7 @@ export default function SparkHQ() {
               <span className="cam-hint" id="camHint">Sürükle: döndür</span>
               <button className="cam-reset" id="camReset">↺</button>
             </div>
+            <div className="sort-bar" id="sortBar"></div>
           </div>
           <div className="view" id="floorView">
             <div className="floor-header" style={{width:"100%",padding:"0 24px"}}>
@@ -1407,6 +1502,7 @@ export default function SparkHQ() {
           <div id="shqTooltip"></div>
           <div id="shqPopup"></div>
           <div id="shqDoor"></div>
+          <div id="shqAddFloor"></div>
           <div id="shqEntrance"></div>
           <div className="empathy-bar" id="shqEmpathy"></div>
           <aside id="shqSheet">
