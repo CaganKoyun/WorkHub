@@ -402,7 +402,7 @@ function initSparkHQ(root: HTMLElement) {
     const from=[...curVB],t0=performance.now(),dur=360;
     const step=(now: number)=>{let k=Math.min(1,(now-t0)/dur);k=1-Math.pow(1-k,3);
       setVB(from.map((v,i)=>v+(target[i]-v)*k));
-      if(k<1)vbAnim=requestAnimationFrame(step);else done&&done()};
+      if(k<1){vbAnim=requestAnimationFrame(step)}else if(done){done()}};
     vbAnim=requestAnimationFrame(step);
   }
   function roomBBox(r: Room){
@@ -410,7 +410,7 @@ function initSparkHQ(root: HTMLElement) {
     const cs=[P(x,y,0,cx,cy,s),P(x+w,y,0,cx,cy,s),P(x+w,y+h,0,cx,cy,s),P(x,y+h,0,cx,cy,s)];
     const xs=cs.map(p=>p[0]),ys=cs.map(p=>p[1]);
     const bx=Math.min(...xs)-16,by=Math.min(...ys)-30;
-    let bw=Math.max(...xs)-bx+16,bh=Math.max(...ys)-by+18;
+    let bw=Math.max(...xs)-bx+16;const bh=Math.max(...ys)-by+18;
     bw+=bw*.9;return[bx,by,bw,bh];
   }
   function deskLayout(r: Room){
@@ -887,7 +887,7 @@ function initSparkHQ(root: HTMLElement) {
   }
 
   const keyHandler=(e: KeyboardEvent)=>{
-    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("#shqAskPanel")?.classList.contains("open")?closeAsk():openAsk();return}
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();if($("#shqAskPanel")?.classList.contains("open")){closeAsk()}else{openAsk()}return}
     if(e.key==="Escape"){
       if($("#shqAskPanel")?.classList.contains("open")){closeAsk();return}
       if($("#shqPopup")?.classList.contains("show")){closePopup();return}
