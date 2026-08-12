@@ -4,13 +4,14 @@ import {
 } from '@/lib/audit-log-hooks';
 import { useWorkspaceMembers } from '@/lib/chat-hooks';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { AppLayout } from '@/components/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Shield, Plus, Pencil, Trash2, Circle, ChevronDown, ChevronRight,
-  Download, Loader2, Clock,
+  Download, Loader2, Clock, AlertTriangle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -137,8 +138,19 @@ export default function AuditLog() {
     limit: 50,
     offset,
   };
-  const { data, isLoading, isFetching } = useAuditLog(filters);
+  const { data, isLoading, isError, isFetching } = useAuditLog(filters);
   const rows = data ?? [];
+
+  if (isError) {
+    return (
+      <AppLayout>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <AlertTriangle className="h-10 w-10 text-destructive/60" />
+          <p className="mt-3 text-[13px] text-muted-foreground">Audit log yuklenirken hata olustu.</p>
+        </div>
+      </AppLayout>
+    );
+  }
 
   const handleExport = async () => {
     if (!currentWorkspace) return;
@@ -178,6 +190,7 @@ export default function AuditLog() {
   const hasActiveFilters = entity !== 'all' || actor !== 'all' || action !== 'all' || fromDate || toDate;
 
   return (
+    <AppLayout>
     <div className="mx-auto max-w-4xl space-y-4 p-6">
       <div className="flex items-start justify-between">
         <div>
@@ -284,5 +297,6 @@ export default function AuditLog() {
         </div>
       </div>
     </div>
+    </AppLayout>
   );
 }

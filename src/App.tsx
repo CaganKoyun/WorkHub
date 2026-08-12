@@ -189,7 +189,7 @@ const App = () => (
                 <Route path="/workspace/settings" element={<ProtectedRoute><WorkspaceGate><WorkspaceSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/integrations" element={<ProtectedRoute><WorkspaceGate><Integrations /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><WorkspaceGate><Settings /></WorkspaceGate></ProtectedRoute>} />
-                <Route path="/settings/notifications" element={<ProtectedRoute><WorkspaceGate><NotificationSettings /></WorkspaceGate></ProtectedRoute>} />
+
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </ShortcutsProvider>

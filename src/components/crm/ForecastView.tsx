@@ -42,11 +42,11 @@ export function ForecastView() {
                 <YAxis fontSize={11} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(v: number) => formatMoney(v, 'USD')} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="closed_won" stackId="a" fill="#10b981" name="Closed Won" />
-                <Bar dataKey="commit" stackId="a" fill="#f59e0b" name="Commit" />
-                <Bar dataKey="best_case" stackId="a" fill="#38bdf8" name="Best Case" />
-                <Bar dataKey="pipeline" stackId="a" fill="#94a3b8" name="Pipeline" />
-                <Bar dataKey="closed_lost" stackId="a" fill="#ef4444" name="Closed Lost" />
+                <Bar dataKey="closed_won" stackId="a" fill="hsl(var(--success))" name="Closed Won" />
+                <Bar dataKey="commit" stackId="a" fill="hsl(var(--warning))" name="Commit" />
+                <Bar dataKey="best_case" stackId="a" fill="hsl(var(--info))" name="Best Case" />
+                <Bar dataKey="pipeline" stackId="a" fill="hsl(var(--muted-foreground))" name="Pipeline" />
+                <Bar dataKey="closed_lost" stackId="a" fill="hsl(var(--destructive))" name="Closed Lost" />
               </BarChart>
             </ResponsiveContainer>
           )}

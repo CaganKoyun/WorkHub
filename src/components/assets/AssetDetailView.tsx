@@ -161,7 +161,7 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
             ) : (
               <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
                 <DialogTrigger asChild><Button size="sm"><UserPlus className="mr-1 h-4 w-4" />Assign</Button></DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-w-md">
                   <DialogHeader><DialogTitle>Assign asset</DialogTitle></DialogHeader>
                   <div className="space-y-4">
                     <div className="space-y-2">

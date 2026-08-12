@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Plug, Loader2 } from "lucide-react";
 import { useConnectMutation } from "@/lib/integrations-hooks";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useOAuthPopup } from "@/lib/use-oauth-popup";
 
 export function CustomMcpDialog({ isAdmin, trigger }: { isAdmin: boolean; trigger?: React.ReactNode }) {
@@ -20,12 +20,11 @@ export function CustomMcpDialog({ isAdmin, trigger }: { isAdmin: boolean; trigge
   const [scope, setScope] = useState<"workspace" | "personal">("personal");
   const [bearer, setBearer] = useState("");
   const connect = useConnectMutation();
-  const { toast } = useToast();
   const oauth = useOAuthPopup();
 
   const submit = async () => {
     if (!name.trim() || !url.trim()) {
-      toast({ title: "Missing fields", description: "Name and URL required.", variant: "destructive" });
+      toast.error("Missing fields: Name and URL required.");
       return;
     }
     try {
@@ -40,15 +39,15 @@ export function CustomMcpDialog({ isAdmin, trigger }: { isAdmin: boolean; trigge
       setOpen(false);
       setName(""); setUrl(""); setBearer("");
       if (res?.probe?.ok) {
-        toast({ title: "Custom MCP connected", description: `${res.probe.tools?.length ?? 0} tools discovered.` });
+        toast.success(`Custom MCP connected -- ${res.probe.tools?.length ?? 0} tools discovered.`);
       } else if (res?.probe?.authUrl) {
         oauth.open(res.probe.authUrl);
-        toast({ title: "Sign in required", description: "Complete OAuth in the popup — the list will refresh automatically." });
+        toast("Sign in required -- Complete OAuth in the popup -- the list will refresh automatically.");
       } else {
-        toast({ title: "Probe failed", description: res?.probe?.error || "Server unreachable", variant: "destructive" });
+        toast.error("Probe failed: " + (res?.probe?.error || "Server unreachable"));
       }
     } catch (e: any) {
-      toast({ title: "Connect failed", description: e.message, variant: "destructive" });
+      toast.error("Connect failed: " + e.message);
     }
   };
 

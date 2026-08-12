@@ -269,6 +269,34 @@ export function useCreateGoal() {
   });
 }
 
+export function useUpdateGoal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...patch }: Partial<Goal> & { id: string }) => {
+      const { data, error } = await (supabase as any)
+        .from('goals')
+        .update(patch)
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as Goal;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['goals'] }),
+  });
+}
+
+export function useDeleteGoal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await (supabase as any).from('goals').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['goals'] }),
+  });
+}
+
 export function useRisks() {
   return useQuery({
     queryKey: ['risks'],
@@ -291,6 +319,33 @@ export function useCreateRisk() {
         .select().single();
       if (error) throw error;
       return data as Risk;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['risks'] }),
+  });
+}
+
+export function useUpdateRisk() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...input }: Partial<Risk> & { id: string }) => {
+      const { data, error } = await supabase
+        .from('risks')
+        .update(input)
+        .eq('id', id)
+        .select().single();
+      if (error) throw error;
+      return data as Risk;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['risks'] }),
+  });
+}
+
+export function useDeleteRisk() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('risks').delete().eq('id', id);
+      if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['risks'] }),
   });

@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Plus, FileSignature, AlertTriangle } from 'lucide-react';
 
 export function ContractsListView() {
@@ -33,9 +33,9 @@ export function ContractsListView() {
   async function setStatus(id: string, status: CrmContractStatus) {
     try {
       await update.mutateAsync({ id, status });
-      toast({ title: 'Sözleşme güncellendi' });
+      toast.success("Sozlesme guncellendi");
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 
@@ -117,7 +117,7 @@ function NewContractDialog({ open, onOpenChange }: { open: boolean; onOpenChange
   const [fileUrl, setFileUrl] = useState('');
 
   async function submit() {
-    if (!title.trim()) { toast({ title: 'Başlık gerekli', variant: 'destructive' }); return; }
+    if (!title.trim()) { toast.error("Baslik gerekli"); return; }
     try {
       await create.mutateAsync({
         title: title.trim(),
@@ -131,11 +131,11 @@ function NewContractDialog({ open, onOpenChange }: { open: boolean; onOpenChange
         risky_clauses: risky || null,
         file_url: fileUrl || null,
       });
-      toast({ title: 'Sözleşme oluşturuldu' });
+      toast.success("Sozlesme olusturuldu");
       onOpenChange(false);
       setTitle(''); setCompanyId(''); setValue(''); setStart(''); setEnd(''); setRenewal(''); setRisky(''); setFileUrl('');
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 

@@ -7,12 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, CheckCircle2, Sparkles, Target, BarChart3, Linkedin } from "lucide-react";
 import { SparkLogo } from "@/components/SparkLogo";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Auth() {
   const { user, loading, signIn, signUp } = useAuth();
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false);
@@ -38,9 +37,9 @@ export default function Auth() {
     setIsGoogleLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
-      if (error) toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
+      if (error) toast.error("Google sign-in failed: " + error.message);
     } catch (error: any) {
-      toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
+      toast.error("Google sign-in failed: " + error.message);
     } finally {
       setIsGoogleLoading(false);
     }
@@ -64,9 +63,9 @@ export default function Auth() {
           scopes: provider === "azure" ? "email openid profile" : undefined,
         },
       });
-      if (error) toast({ title: `${label} sign-in failed`, description: error.message, variant: "destructive" });
+      if (error) toast.error(`${label} sign-in failed: ${error.message}`);
     } catch (error: any) {
-      toast({ title: `${label} sign-in failed`, description: error.message, variant: "destructive" });
+      toast.error(`${label} sign-in failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -79,9 +78,9 @@ export default function Auth() {
     setIsSubmitting(true);
     try {
       await signIn(loginEmail, loginPassword);
-      toast({ title: "Welcome back!" });
+      toast.success("Welcome back!");
     } catch (error: any) {
-      toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      toast.error("Login failed: " + error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -90,15 +89,15 @@ export default function Auth() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (signupPassword.length < 6) {
-      toast({ title: "Password too short", description: "Minimum 6 characters", variant: "destructive" });
+      toast.error("Password too short: Minimum 6 characters");
       return;
     }
     setIsSubmitting(true);
     try {
       await signUp(signupEmail, signupPassword, signupName);
-      toast({ title: "Account created!", description: "Check your email to confirm your account." });
+      toast.success("Account created! -- Check your email to confirm your account.");
     } catch (error: any) {
-      toast({ title: "Signup failed", description: error.message, variant: "destructive" });
+      toast.error("Signup failed: " + error.message);
     } finally {
       setIsSubmitting(false);
     }

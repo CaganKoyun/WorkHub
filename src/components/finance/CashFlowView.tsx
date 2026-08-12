@@ -36,9 +36,9 @@ export function CashFlowView() {
                 <YAxis fontSize={11} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(v: number) => formatCurrency(v, 'USD')} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="income" fill="#10b981" name="Gelir" />
-                <Bar dataKey="expense" fill="#ef4444" name="Gider" />
-                <Line type="monotone" dataKey="closing" stroke="#38bdf8" strokeWidth={2} name="Kapanış Nakit" dot />
+                <Bar dataKey="income" fill="hsl(var(--success))" name="Gelir" />
+                <Bar dataKey="expense" fill="hsl(var(--destructive))" name="Gider" />
+                <Line type="monotone" dataKey="closing" stroke="hsl(var(--info))" strokeWidth={2} name="Kapanış Nakit" dot />
               </ComposedChart>
             </ResponsiveContainer>
           )}

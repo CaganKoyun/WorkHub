@@ -3,6 +3,7 @@ import {
   useAllCustomFieldDefs, useCreateCustomFieldDef, useDeleteCustomFieldDef,
   KIND_LABELS, type CustomFieldKind, type EntityType, type CustomFieldDef,
 } from '@/lib/custom-fields-hooks';
+import { DomainWorkspace } from '@/components/DomainWorkspace';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -166,18 +167,12 @@ export default function CustomFields() {
   });
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6">
-      <div>
-        <h1 className="text-[20px] font-semibold tracking-tight flex items-center gap-2">
-          <Settings2 className="h-5 w-5 text-muted-foreground" />
-          Custom fields
-        </h1>
-        <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-          Her entity için (task, proje, bug, fırsat, müşteri) kendi alanlarını
-          tanımla. Her tip için ayrı sekme, ekle-sil, çeşitli veri tipleri.
-        </p>
-      </div>
-
+    <DomainWorkspace
+      domain="company"
+      title="Özel Alanlar"
+      subtitle="Her entity için kendi alanlarını tanımla. Her tip için ayrı sekme, ekle-sil, çeşitli veri tipleri."
+      showAgent={false}
+    >
       <Tabs value={tab} onValueChange={v => setTab(v as EntityType)}>
         <TabsList>
           {(Object.keys(ENTITY_LABELS) as EntityType[]).map(t => (
@@ -209,6 +204,6 @@ export default function CustomFields() {
       </Tabs>
 
       <CreateDefDialog open={createOpen} onOpenChange={setCreateOpen} entityType={tab} />
-    </div>
+    </DomainWorkspace>
   );
 }

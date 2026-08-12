@@ -5,6 +5,7 @@ import {
   useBilling, useAdminSummary, useUpdatePlan, PLAN_META, type PlanTier,
 } from '@/lib/admin-hooks';
 import { formatBytes } from '@/lib/attachments-utils';
+import { DomainWorkspace } from '@/components/DomainWorkspace';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Shield, Users, HardDrive, Zap, Mail, Check, AlertTriangle, ArrowRight } from 'lucide-react';
@@ -61,23 +62,19 @@ export default function Admin() {
   if (!currentWorkspace) return null;
 
   return (
-    <div className="mx-auto max-w-4xl p-6">
-      <div className="mb-6 flex items-end justify-between">
-        <div>
-          <h1 className="flex items-center gap-2 text-[22px] font-semibold tracking-tight">
-            <Shield className="h-5 w-5 text-primary" /> Admin
-          </h1>
-          <p className="mt-1 text-[13px] text-muted-foreground">
-            Çalışma alanı sağlığı, üyeler ve plan. Yalnızca owner/admin değiştirebilir.
-          </p>
-        </div>
-        {!isAdmin && (
+    <DomainWorkspace
+      domain="company"
+      title="Yönetim Paneli"
+      subtitle="Çalışma alanı sağlığı, üyeler ve plan. Yalnızca owner/admin değiştirebilir."
+      showAgent={false}
+      headerActions={
+        !isAdmin ? (
           <span className="inline-flex items-center gap-1 rounded-full border border-warning/40 bg-warning/10 px-2.5 py-1 text-[11px] text-warning">
             <AlertTriangle className="h-3 w-3" /> Salt okunur — admin değilsin
           </span>
-        )}
-      </div>
-
+        ) : undefined
+      }
+    >
       {/* Stats */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {sLoading || !summary ? (
@@ -209,6 +206,6 @@ export default function Admin() {
           Bildirim ayarları <ArrowRight className="h-3 w-3" />
         </Link>
       </div>
-    </div>
+    </DomainWorkspace>
   );
 }

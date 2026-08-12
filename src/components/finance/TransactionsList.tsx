@@ -19,7 +19,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Plus, ArrowUpRight, ArrowDownRight, Wallet } from 'lucide-react';
 
 export function TransactionsList() {
@@ -117,13 +117,13 @@ function AccountsButton({ openDialog, setOpenDialog }: { openDialog: boolean; se
   const [opening, setOpening] = useState('0');
 
   async function submit() {
-    if (!name.trim()) { toast({ title: 'İsim gerekli', variant: 'destructive' }); return; }
+    if (!name.trim()) { toast.error("Isim gerekli"); return; }
     try {
       await create.mutateAsync({ name: name.trim(), type, currency, opening_balance: Number(opening) || 0 });
-      toast({ title: 'Hesap eklendi' });
+      toast.success("Hesap eklendi");
       setOpenDialog(false); setName(''); setOpening('0');
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 
@@ -194,7 +194,7 @@ function NewTransactionDialog({ open, onOpenChange }: { open: boolean; onOpenCha
 
   async function submit() {
     if (!description.trim() || !amount) {
-      toast({ title: 'Açıklama ve tutar gerekli', variant: 'destructive' }); return;
+      toast.error("Aciklama ve tutar gerekli"); return;
     }
     try {
       await create.mutateAsync({
@@ -210,11 +210,11 @@ function NewTransactionDialog({ open, onOpenChange }: { open: boolean; onOpenCha
         invoice_number: invoiceNumber || null,
         notes: notes || null,
       });
-      toast({ title: 'Kaydedildi' });
+      toast.success("Kaydedildi");
       onOpenChange(false);
       setDescription(''); setAmount(''); setVendor(''); setInvoiceNumber(''); setNotes('');
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 

@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Plus, GripVertical, Building2 } from 'lucide-react';
 import { CURRENCIES } from '@/lib/crm-types';
 
@@ -134,10 +134,10 @@ export function PipelineBoard() {
         probability: stage.probability,
         forecast_category: stage.forecast_category,
       });
-      if (stage.is_won) toast({ title: 'Kazanıldı!', description: 'Müşteri kaydı ve ilk fatura onayı Inbox\'a düştü.' });
-      else if (stage.is_lost) toast({ title: 'Kaybedildi', description: 'Fırsat kapatıldı.' });
+      if (stage.is_won) toast.success("Kazanildi!");
+      else if (stage.is_lost) toast.success("Kaybedildi");
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message ?? 'Taşınamadı', variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Tasinamadi");
     }
   }
 
@@ -207,7 +207,7 @@ function NewOpportunityDialog({ open, onOpenChange, pipelineId, stages }: {
 
   async function submit() {
     if (!pipelineId || !stageId || !name.trim()) {
-      toast({ title: 'Eksik alan', description: 'İsim, pipeline ve stage gerekli', variant: 'destructive' });
+      toast.error("Isim, pipeline ve stage gerekli");
       return;
     }
     const stage = stages.find(s => s.id === stageId);
@@ -224,11 +224,11 @@ function NewOpportunityDialog({ open, onOpenChange, pipelineId, stages }: {
         expected_close_date: expectedClose || null,
         description: description || null,
       });
-      toast({ title: 'Fırsat oluşturuldu' });
+      toast.success("Firsat olusturuldu");
       onOpenChange(false);
       setName(''); setCompanyId(''); setAmount('0'); setDescription(''); setExpectedClose('');
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 

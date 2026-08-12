@@ -3,6 +3,7 @@ import {
   Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles, Shield, Bookmark, KeyRound, UserRound, Trophy,
   ScrollText, Rocket, Plug, Building2, Compass, Layers, LineChart, Boxes,
   RefreshCw, FileText, Timer, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones, Activity,
+  Settings, Bot, Mic,
 } from "lucide-react";
 
 export type NavItem = {
@@ -26,15 +27,15 @@ export const clusters: NavCluster[] = [
   {
     id: "overview",
     icon: Compass,
-    caption: "Home",
+    caption: "Ana Sayfa",
     title: "Genel Bakış",
     sections: [
       {
-        label: "Overview",
+        label: "Genel",
         items: [
-          { icon: Home, label: "Founder Home", path: "/home" },
-          { icon: Inbox, label: "Inbox", path: "/inbox", badgeKey: "inbox" },
-          { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+          { icon: Home, label: "Ana Sayfa", path: "/home" },
+          { icon: Inbox, label: "Gelen Kutusu", path: "/inbox", badgeKey: "inbox" },
+          { icon: LayoutDashboard, label: "Kontrol Paneli", path: "/dashboard" },
         ],
       },
     ],
@@ -42,29 +43,29 @@ export const clusters: NavCluster[] = [
   {
     id: "work",
     icon: Layers,
-    caption: "Work",
+    caption: "Çalışma",
     title: "Çalışma",
     sections: [
       {
-        label: "Work",
+        label: "Çalışma",
         items: [
-          { icon: Layers, label: "Issues", path: "/issues" },
+          { icon: Layers, label: "Görevler", path: "/issues" },
           { icon: Bookmark, label: "Görünümler", path: "/views" },
-          { icon: RefreshCw, label: "Cycles", path: "/cycles" },
-          { icon: Rocket, label: "Roadmap", path: "/roadmap" },
-          { icon: FolderKanban, label: "Projects", path: "/projects" },
+          { icon: RefreshCw, label: "Sprintler", path: "/cycles" },
+          { icon: Rocket, label: "Yol Haritası", path: "/roadmap" },
+          { icon: FolderKanban, label: "Projeler", path: "/projects" },
           { icon: Briefcase, label: "Portföyler", path: "/portfolios" },
-          { icon: CheckSquare, label: "My Tasks", path: "/tasks" },
-          { icon: BarChart3, label: "Workload", path: "/workload" },
-          { icon: Activity, label: "Insights", path: "/insights" },
-          { icon: Bug, label: "Bugs", path: "/bugs" },
-          { icon: Rocket, label: "Product", path: "/product" },
+          { icon: CheckSquare, label: "Görevlerim", path: "/tasks" },
+          { icon: BarChart3, label: "İş Yükü", path: "/workload" },
+          { icon: Activity, label: "İçgörüler", path: "/insights" },
+          { icon: Bug, label: "Hatalar", path: "/bugs" },
+          { icon: Package, label: "Ürün", path: "/product" },
         ],
       },
       {
-        label: "Time",
+        label: "Zaman",
         items: [
-          { icon: Timer, label: "Timesheet", path: "/timesheet" },
+          { icon: Timer, label: "Zaman Çizelgesi", path: "/timesheet" },
         ],
       },
     ],
@@ -72,15 +73,15 @@ export const clusters: NavCluster[] = [
   {
     id: "revenue",
     icon: LineChart,
-    caption: "Revenue",
+    caption: "Gelir",
     title: "Gelir",
     sections: [
       {
-        label: "Revenue",
+        label: "Gelir",
         items: [
           { icon: Briefcase, label: "CRM", path: "/crm" },
-          { icon: DollarSign, label: "Finance", path: "/finance" },
-          { icon: BarChart3, label: "Analytics", path: "/analytics" },
+          { icon: DollarSign, label: "Finans", path: "/finance" },
+          { icon: BarChart3, label: "Analitik", path: "/analytics" },
         ],
       },
     ],
@@ -88,15 +89,15 @@ export const clusters: NavCluster[] = [
   {
     id: "strategy",
     icon: Target,
-    caption: "Strategy",
+    caption: "Strateji",
     title: "Strateji",
     sections: [
       {
-        label: "Strategy",
+        label: "Strateji",
         items: [
-          { icon: Target, label: "Goals", path: "/goals" },
-          { icon: ShieldAlert, label: "Risks", path: "/risks" },
-          { icon: ScrollText, label: "Decisions", path: "/decisions" },
+          { icon: Target, label: "Hedefler", path: "/goals" },
+          { icon: ShieldAlert, label: "Riskler", path: "/risks" },
+          { icon: ScrollText, label: "Kararlar", path: "/decisions" },
         ],
       },
     ],
@@ -104,20 +105,45 @@ export const clusters: NavCluster[] = [
   {
     id: "operations",
     icon: Boxes,
-    caption: "Ops",
+    caption: "Operasyon",
     title: "Operasyon",
     sections: [
       {
-        label: "Operations",
+        label: "Operasyon",
         items: [
-          { icon: Users, label: "Teams", path: "/teams" },
-          { icon: Trophy, label: "Skor tablosu", path: "/leaderboard" },
-          { icon: Package, label: "Assets", path: "/assets" },
-          { icon: Users, label: "Employees", path: "/employees" },
-          { icon: Building2, label: "Company", path: "/company" },
+          { icon: Users, label: "Takımlar", path: "/teams" },
+          { icon: Trophy, label: "Skor Tablosu", path: "/leaderboard" },
+          { icon: Package, label: "Varlıklar", path: "/assets" },
+          { icon: UserRound, label: "Çalışanlar", path: "/employees" },
+          { icon: Building2, label: "Şirket", path: "/company" },
           { icon: UserRound, label: "Portallar", path: "/portals" },
-          { icon: Shield, label: "Audit log", path: "/audit" },
-          { icon: Shield, label: "Admin", path: "/admin" },
+          { icon: Shield, label: "Denetim Kaydı", path: "/audit" },
+          { icon: Settings, label: "Yönetim", path: "/admin" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "tools",
+    icon: BookOpen,
+    caption: "Araçlar",
+    title: "Araçlar",
+    sections: [
+      {
+        label: "İletişim",
+        items: [
+          { icon: MessageSquare, label: "Mesajlar", path: "/chat" },
+          { icon: Mic, label: "Toplantı Notları", path: "/meetings" },
+          { icon: Headphones, label: "Destek Masası", path: "/desk" },
+        ],
+      },
+      {
+        label: "İçerik",
+        items: [
+          { icon: BookOpen, label: "Belgeler", path: "/docs" },
+          { icon: PenSquare, label: "Panolar", path: "/whiteboards" },
+          { icon: ClipboardList, label: "Formlar", path: "/forms" },
+          { icon: FileText, label: "Şablonlar", path: "/templates" },
         ],
       },
     ],
@@ -125,24 +151,30 @@ export const clusters: NavCluster[] = [
   {
     id: "ai",
     icon: Sparkles,
-    caption: "AI",
+    caption: "Yapay Zeka",
     title: "Yapay Zeka",
     sections: [
       {
-        label: "AI",
+        label: "Yapay Zeka",
         items: [
-          { icon: Sparkles, label: "Chief of Staff", path: "/ai-chat" },
-          { icon: Sparkles, label: "Agent runs", path: "/agent" },
-          { icon: Sparkles, label: "Toplantı notları", path: "/meetings" },
-          { icon: MessageSquare, label: "Chat", path: "/chat" },
-          { icon: BookOpen, label: "Docs", path: "/docs" },
+          { icon: Sparkles, label: "Yapay Zeka Asistanı", path: "/ai-chat" },
+          { icon: Bot, label: "Ajan Çalışmaları", path: "/agent" },
           { icon: Zap, label: "Otomasyonlar", path: "/automations" },
-          { icon: ClipboardList, label: "Formlar", path: "/forms" },
-          { icon: PenSquare, label: "Panolar", path: "/whiteboards" },
-          { icon: Headphones, label: "Service Desk", path: "/desk" },
-          { icon: FileText, label: "Templates", path: "/templates" },
-          { icon: Plug, label: "Integrations", path: "/integrations" },
-          { icon: KeyRound, label: "API tokens", path: "/api-tokens" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "settings",
+    icon: Settings,
+    caption: "Ayarlar",
+    title: "Ayarlar",
+    sections: [
+      {
+        label: "Ayarlar",
+        items: [
+          { icon: Plug, label: "Entegrasyonlar", path: "/integrations" },
+          { icon: KeyRound, label: "API Anahtarları", path: "/api-tokens" },
         ],
       },
     ],

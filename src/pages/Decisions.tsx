@@ -17,15 +17,16 @@ import {
 } from "@/components/ui/select";
 import {
   useDecisions, useCreateDecision, useUpdateDecision, useReviewQueue,
-  useSimilarDecisions,
+  useSimilarDecisions, useObjectLinks, useCreateObjectLink,
 } from "@/lib/graph-hooks";
 import { summarizePrecedents } from "@/lib/precedent-utils";
 import type { Decision, DecisionStatus, DecisionVerdict } from "@/lib/graph-types";
+import { LINKABLE_LABELS, type LinkableType } from "@/lib/graph-types";
 import {
   decisionFormSchema, validateWager, VERDICT_LABELS, REVERSIBILITY_LABELS,
   calibrationGap, calibrationBias, calibrationVerdict,
 } from "@/lib/decision-utils";
-import { Plus, ScrollText, Camera, RotateCcw, DoorOpen, DoorClosed, Gauge, Share2, Download } from "lucide-react";
+import { Plus, ScrollText, Camera, RotateCcw, DoorOpen, DoorClosed, Gauge, Share2, Download, Search, Link2, User, TrendingUp } from "lucide-react";
 import { buildCalibrationCard, downloadShareCard, shareCardFilename } from "@/lib/share-card";
 import { DecisionReplay } from "@/components/decisions/DecisionReplay";
 import { PreMortemDialog } from "@/components/decisions/PreMortemDialog";
@@ -64,12 +65,38 @@ interface FormState {
   expected_outcome: string;
   confidence: number;
   reversibility: "one_way" | "two_way" | "";
+  revenue_impact: string;
+  owner_name: string;
+  linked_objects: { type: LinkableType; id: string; label: string }[];
 }
 
 const EMPTY_FORM: FormState = {
   title: "", context: "", decision: "", rationale: "",
   status: "proposed", expected_outcome: "", confidence: 70, reversibility: "",
+  revenue_impact: "", owner_name: "", linked_objects: [],
 };
+
+/** Karara bagli nesneleri gosteren mini panel. */
+function RelatedObjectsBadges({ decisionId }: { decisionId: string }) {
+  const { data: links } = useObjectLinks("decision", decisionId);
+  if (!links || links.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap gap-1.5 pt-1">
+      {links.map((link) => {
+        const otherType = link.from_type === "decision" ? link.to_type : link.from_type;
+        return (
+          <Badge key={link.id} variant="outline" className="gap-1 text-[10px]">
+            <Link2 className="h-2.5 w-2.5" />
+            {LINKABLE_LABELS[otherType] ?? otherType}
+          </Badge>
+        );
+      })}
+    </div>
+  );
+}
+
+const LINK_TARGET_TYPES: LinkableType[] = ["project", "goal", "risk", "task", "employee"];
 
 function ReviewCard({ d }: { d: Decision }) {
   const update = useUpdateDecision();
@@ -253,8 +280,13 @@ export default function Decisions() {
   const { data: decisions, isLoading } = useDecisions();
   const { data: reviewQueue } = useReviewQueue();
   const create = useCreateDecision();
+  const createLink = useCreateObjectLink();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [filterText, setFilterText] = useState("");
+  const [filterStatus, setFilterStatus] = useState<DecisionStatus | "all">("all");
+  const [linkType, setLinkType] = useState<LinkableType>("project");
+  const [linkId, setLinkId] = useState("");
 
   const submit = async () => {
     const parsed = decisionFormSchema.safeParse({
@@ -269,16 +301,36 @@ export default function Decisions() {
     if (wagerError) return toast.error(wagerError);
 
     try {
-      await create.mutateAsync({
+      const revenueNum = form.revenue_impact ? parseFloat(form.revenue_impact) : null;
+      const outcomeWithRevenue = [
+        parsed.data.expected_outcome || "",
+        revenueNum !== null && !isNaN(revenueNum) ? `[Gelir etkisi: ${revenueNum > 0 ? "+" : ""}${revenueNum}]` : "",
+      ].filter(Boolean).join(" ") || null;
+
+      const contextWithOwner = [
+        parsed.data.context || "",
+        form.owner_name.trim() ? `[Karar sorumlusu: ${form.owner_name.trim()}]` : "",
+      ].filter(Boolean).join("\n") || null;
+
+      const created = await create.mutateAsync({
         title: parsed.data.title,
-        context: parsed.data.context || null,
+        context: contextWithOwner,
         decision: parsed.data.decision || null,
         rationale: parsed.data.rationale || null,
         status: parsed.data.status,
-        expected_outcome: parsed.data.expected_outcome || null,
+        expected_outcome: outcomeWithRevenue,
         confidence: parsed.data.confidence ?? null,
         reversibility: parsed.data.reversibility ?? null,
       });
+
+      // Baglantilari olustur
+      for (const lo of form.linked_objects) {
+        await createLink.mutateAsync({
+          from_type: "decision", from_id: created.id,
+          to_type: lo.type, to_id: lo.id,
+        });
+      }
+
       toast.success(
         form.status === "decided"
           ? "Karar kaydedildi — şirket durumu donduruldu, 90 gün sonra yeniden açılacak"
@@ -370,6 +422,67 @@ export default function Decisions() {
                   </div>
                 </div>
 
+                <div className="space-y-1.5">
+                  <Label className="flex items-center gap-1.5">
+                    <User className="h-3.5 w-3.5" /> Karar Sorumlusu
+                  </Label>
+                  <Input value={form.owner_name}
+                    onChange={(e) => setForm({ ...form, owner_name: e.target.value })}
+                    placeholder="Sorumlu kisi (orn: Ali Yilmaz)" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="flex items-center gap-1.5">
+                    <TrendingUp className="h-3.5 w-3.5" /> Tahmini Gelir Etkisi
+                  </Label>
+                  <Input type="number" value={form.revenue_impact}
+                    onChange={(e) => setForm({ ...form, revenue_impact: e.target.value })}
+                    placeholder="Orn: 50000 veya -20000" />
+                  <p className="text-xs text-muted-foreground">Pozitif = gelir artisi, negatif = gelir kaybi</p>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="flex items-center gap-1.5">
+                    <Link2 className="h-3.5 w-3.5" /> Bagli Nesneler
+                  </Label>
+                  <div className="flex gap-2">
+                    <Select value={linkType} onValueChange={(v) => setLinkType(v as LinkableType)}>
+                      <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {LINK_TARGET_TYPES.map((t) => (
+                          <SelectItem key={t} value={t}>{LINKABLE_LABELS[t]}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Input className="flex-1" placeholder="Nesne ID"
+                      value={linkId} onChange={(e) => setLinkId(e.target.value)} />
+                    <Button type="button" variant="outline" size="sm"
+                      onClick={() => {
+                        if (!linkId.trim()) return;
+                        setForm({
+                          ...form,
+                          linked_objects: [...form.linked_objects, { type: linkType, id: linkId.trim(), label: LINKABLE_LABELS[linkType] }],
+                        });
+                        setLinkId("");
+                      }}>
+                      Ekle
+                    </Button>
+                  </div>
+                  {form.linked_objects.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {form.linked_objects.map((lo, idx) => (
+                        <Badge key={idx} variant="secondary" className="gap-1 cursor-pointer"
+                          onClick={() => setForm({
+                            ...form,
+                            linked_objects: form.linked_objects.filter((_, i) => i !== idx),
+                          })}>
+                          {lo.label}: {lo.id.slice(0, 8)}...
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 {form.status === "decided" && (
                   <div className="space-y-4 rounded-md border border-emerald-500/30 bg-success/5 p-3">
                     <div className="space-y-1.5">
@@ -407,6 +520,23 @@ export default function Decisions() {
           </TabsList>
 
           <TabsContent value="active" className="space-y-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input className="pl-9" placeholder="Kararlarda ara..."
+              value={filterText} onChange={(e) => setFilterText(e.target.value)} />
+          </div>
+          <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as DecisionStatus | "all")}>
+            <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tum durumlar</SelectItem>
+              {(Object.keys(STATUS_LABELS) as DecisionStatus[]).map((s) => (
+                <SelectItem key={s} value={s}>{STATUS_LABELS[s]}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {decisions && <CalibrationCard decisions={decisions} />}
 
         {reviewQueue && reviewQueue.length > 0 && (
@@ -438,7 +568,12 @@ export default function Decisions() {
           </Card>
         ) : (
           <div className="space-y-3">
-            {decisions.map((d) => {
+            {decisions.filter((d) => {
+              const matchText = !filterText || d.title.toLowerCase().includes(filterText.toLowerCase())
+                || (d.decision ?? "").toLowerCase().includes(filterText.toLowerCase());
+              const matchStatus = filterStatus === "all" || d.status === filterStatus;
+              return matchText && matchStatus;
+            }).map((d) => {
               const lifecycle = ((d as unknown as { lifecycle_state?: DecisionLifecycle })
                 .lifecycle_state ?? "framed") as DecisionLifecycle;
               const reopenReason = (d as unknown as { reopen_reason?: string | null }).reopen_reason;
@@ -498,6 +633,8 @@ export default function Decisions() {
                       <> · yeniden açılış: {format(new Date(d.review_at), "d MMM yyyy", { locale: tr })}</>
                     )}
                   </p>
+
+                  <RelatedObjectsBadges decisionId={d.id} />
 
                   <div className="flex flex-wrap gap-2 pt-1">
                     <DecisionContractPanel decisionId={d.id} title={d.title} lifecycleState={lifecycle} />

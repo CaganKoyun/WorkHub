@@ -5,6 +5,7 @@ import {
   CATEGORY_LABELS, CATEGORY_ORDER,
   type WorkflowStateCategory, type WorkflowState,
 } from '@/lib/workflow-states-hooks';
+import { DomainWorkspace } from '@/components/DomainWorkspace';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -187,21 +188,17 @@ export default function WorkflowStates() {
   }, {} as any);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6">
-      <div className="flex items-baseline justify-between">
-        <div>
-          <h1 className="text-[20px] font-semibold tracking-tight">Workflow states</h1>
-          <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-            Ekibinin gerçek iş akışını yansıt. Her state bir kategoriye bağlıdır
-            (backlog / unstarted / started / completed / canceled), metrikler
-            ve otomasyonlar buna göre çalışır.
-          </p>
-        </div>
+    <DomainWorkspace
+      domain="company"
+      title="İş Akışı Durumları"
+      subtitle="Ekibinin gerçek iş akışını yansıt. Metrikler ve otomasyonlar kategorilere göre çalışır."
+      showAgent={false}
+      headerActions={
         <Button size="sm" onClick={() => setOpen(true)} className="h-8 gap-1.5">
           <Plus className="h-3.5 w-3.5" /> Yeni state
         </Button>
-      </div>
-
+      }
+    >
       {isLoading ? (
         <div className="space-y-2">{[1,2,3].map(i => <Skeleton key={i} className="h-9" />)}</div>
       ) : (
@@ -241,6 +238,6 @@ export default function WorkflowStates() {
       )}
 
       <CreateDialog open={open} onOpenChange={setOpen} />
-    </div>
+    </DomainWorkspace>
   );
 }

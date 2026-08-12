@@ -5,7 +5,7 @@ import { CheckCircle2, AlertCircle, Loader2, Link as LinkIcon, Trash2, ExternalL
 import type { CatalogEntry, WorkspaceConnection } from "@/lib/integrations-types";
 import { useConnectMutation, useDisconnectMutation, useRetryConnection } from "@/lib/integrations-hooks";
 import { useOAuthPopup } from "@/lib/use-oauth-popup";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useState } from "react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
@@ -21,7 +21,6 @@ type Props = {
 };
 
 export function ConnectionCard({ entry, connection, isAdmin }: Props) {
-  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [scope, setScope] = useState<"workspace" | "personal">("personal");
   const [bearer, setBearer] = useState("");
@@ -45,7 +44,7 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
 
   const handleConnect = async () => {
     if (!mcpUrl) {
-      toast({ title: "MCP URL missing", description: "This integration doesn't publish an MCP URL yet. Use Custom MCP to add it manually.", variant: "destructive" });
+      toast.error("MCP URL missing: This integration doesn't publish an MCP URL yet. Use Custom MCP to add it manually.");
       return;
     }
     try {
@@ -59,15 +58,15 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
       });
       setOpen(false);
       if (res?.probe?.ok) {
-        toast({ title: `${entry.name} connected`, description: `${res.probe.tools?.length ?? 0} tools available.` });
+        toast.success(`${entry.name} connected -- ${res.probe.tools?.length ?? 0} tools available.`);
       } else if (res?.probe?.authUrl) {
-        toast({ title: "Sign in required", description: "Complete OAuth in the popup — this window will refresh automatically." });
+        toast("Sign in required -- Complete OAuth in the popup -- this window will refresh automatically.");
         oauth.open(res.probe.authUrl);
       } else {
-        toast({ title: "Connection failed", description: res?.probe?.error || "Unknown error", variant: "destructive" });
+        toast.error("Connection failed: " + (res?.probe?.error || "Unknown error"));
       }
     } catch (e: any) {
-      toast({ title: "Connect failed", description: e.message, variant: "destructive" });
+      toast.error("Connect failed: " + e.message);
     }
   };
 

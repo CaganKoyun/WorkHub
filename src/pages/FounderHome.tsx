@@ -15,6 +15,7 @@ import {
   TrendingUp, TrendingDown, Minus, Brain, Activity,
   ListTodo, GitBranch, Gavel,
 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { FounderBottleneckRadar } from "@/components/FounderBottleneckRadar";
 import { FounderMirrorCard } from "@/components/FounderMirrorCard";
 import { DecisionDebtCard } from "@/components/decisions/DecisionDebtCard";
@@ -263,7 +264,7 @@ function RecentActivityFeed() {
 
 export default function FounderHome() {
   const { profile } = useAuth();
-  const { data: pulse, isLoading, dataUpdatedAt } = useCompanyPulse();
+  const { data: pulse, isLoading, isError, dataUpdatedAt } = useCompanyPulse();
   const { data: pendingApprovals } = useApprovals({ status: "pending" });
   const { data: trends } = useWeekTrend();
   const prov = (source: string) =>
@@ -293,6 +294,16 @@ export default function FounderHome() {
             {now.toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </p>
         </div>
+
+        {isError && (
+          <EmptyState
+            icon={AlertTriangle}
+            title="Could not load workspace data"
+            description="There was a problem fetching your workspace metrics. Please try refreshing."
+            action={{ label: "Refresh", onClick: () => window.location.reload() }}
+            compact
+          />
+        )}
 
         {/* AI Daily Briefing */}
         <DailyBriefing pulse={pulse} trends={trends} />

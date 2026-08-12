@@ -3,6 +3,7 @@ import {
   useApiTokens, useCreateApiToken, useRevokeApiToken, useDeleteApiToken,
   SCOPE_LABELS, type ApiToken, type TokenScope,
 } from '@/lib/api-tokens-hooks';
+import { DomainWorkspace } from '@/components/DomainWorkspace';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -221,24 +222,17 @@ export default function ApiTokens() {
   const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string) ?? 'https://<project>.supabase.co';
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-[20px] font-semibold tracking-tight flex items-center gap-2">
-            <KeyRound className="h-5 w-5 text-muted-foreground" /> API tokens
-          </h1>
-          <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-            Kişisel access token'lar (PAT) — otomasyon, script, Zapier gibi
-            harici entegrasyonlar için. Token yalnızca oluşturma anında bir kez
-            gösterilir; SHA-256 hash olarak saklanır. Kaybedilen token yeniden
-            gösterilemez — iptal edip yenisini oluştur.
-          </p>
-        </div>
+    <DomainWorkspace
+      domain="company"
+      title="API Anahtarları"
+      subtitle="Kişisel access token'lar (PAT) — otomasyon, script, Zapier gibi harici entegrasyonlar için."
+      showAgent={false}
+      headerActions={
         <Button size="sm" className="h-8 gap-1.5" onClick={() => setCreateOpen(true)}>
           <Plus className="h-3.5 w-3.5" /> Yeni token
         </Button>
-      </div>
-
+      }
+    >
       {isLoading ? (
         <div className="space-y-1.5">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-12" />)}</div>
       ) : (tokens ?? []).length === 0 ? (
@@ -283,6 +277,6 @@ export default function ApiTokens() {
 
       <CreateDialog open={createOpen} onOpenChange={setCreateOpen} onCreated={setNewTokenRaw} />
       {newTokenRaw && <RevealDialog token={newTokenRaw} onClose={() => setNewTokenRaw(null)} />}
-    </div>
+    </DomainWorkspace>
   );
 }

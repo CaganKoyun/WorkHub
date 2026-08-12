@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { DomainWorkspace } from "@/components/DomainWorkspace";
 
 // ---- SLA helpers ---------------------------------------------------------
 
@@ -264,24 +265,31 @@ export default function ServiceDesk() {
   const [filter, setFilter] = useState<TicketStatus | 'all'>('open');
 
   return (
-    <div className="flex h-[calc(100vh-52px)] flex-col">
-      <div className="flex items-center gap-1 border-b border-border/60 px-3 py-1.5 overflow-x-auto">
-        {FILTERS.map(f => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={cn(
-              'rounded-md px-2 py-1 text-[12px] transition',
-              filter === f
-                ? 'bg-primary/15 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/40',
-            )}
-          >
-            {FILTER_LABELS[f]}
-          </button>
-        ))}
-      </div>
-      <div className="flex flex-1 overflow-hidden">
+    <DomainWorkspace
+      domain="inbox"
+      title="Destek Masası"
+      showAgent={false}
+      maxWidth="max-w-none"
+      tabs={
+        <>
+          {FILTERS.map(f => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={cn(
+                'rounded-md px-2 py-1 text-[12px] transition',
+                filter === f
+                  ? 'bg-primary/15 text-primary'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/40',
+              )}
+            >
+              {FILTER_LABELS[f]}
+            </button>
+          ))}
+        </>
+      }
+    >
+      <div className="flex h-[calc(100vh-140px)] overflow-hidden -mx-4 lg:-mx-6 -my-5">
         <Inbox_
           status={filter}
           onSelect={tid => navigate(`/desk/${tid}`)}
@@ -297,6 +305,6 @@ export default function ServiceDesk() {
           </main>
         )}
       </div>
-    </div>
+    </DomainWorkspace>
   );
 }

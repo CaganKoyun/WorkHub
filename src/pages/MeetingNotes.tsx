@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { DomainWorkspace } from "@/components/DomainWorkspace";
 
 // ---- List ---------------------------------------------------------------
 
@@ -32,22 +33,18 @@ function NotesList() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-[20px] font-semibold tracking-tight flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-muted-foreground" /> Toplantı notları
-          </h1>
-          <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-            Ham transkripti yapıştır, özeti ve aksiyon maddelerini heuristik olarak çıkar.
-            Her aksiyon maddesini tek tıkla task’a çevir.
-          </p>
-        </div>
+    <DomainWorkspace
+      domain="projects"
+      title="Toplantı Notları"
+      subtitle="Ham transkripti yapıştır, özeti ve aksiyon maddelerini heuristik olarak çıkar. Her aksiyon maddesini tek tıkla task'a çevir."
+      showAgent={false}
+      maxWidth="max-w-4xl"
+      headerActions={
         <Button size="sm" className="h-8 gap-1.5" onClick={() => navigate('/meetings/new')}>
           <Plus className="h-3.5 w-3.5" /> Yeni not
         </Button>
-      </div>
-
+      }
+    >
       {isLoading ? (
         <div className="space-y-2">
           {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16" />)}
@@ -86,7 +83,7 @@ function NotesList() {
           })}
         </div>
       )}
-    </div>
+    </DomainWorkspace>
   );
 }
 
@@ -300,7 +297,7 @@ function NoteDetail({ id }: { id: string }) {
                 <a href={`/tasks`} className="inline-flex items-center gap-1 text-[11px] text-success"><CheckCircle2 className="h-3 w-3" /> task oluştu <ExternalLink className="h-3 w-3" /></a>
               ) : (
                 <Button size="sm" variant="ghost" className="h-6 gap-1 px-1.5 text-[11.5px]" onClick={() => toTask(a)}>
-                  <ArrowRight className="h-3 w-3" /> Task’a çevir
+                  <ArrowRight className="h-3 w-3" /> Task'a çevir
                 </Button>
               )}
               <button onClick={() => remove(a.id)} className="text-destructive/70 hover:text-destructive opacity-0 group-hover:opacity-100">

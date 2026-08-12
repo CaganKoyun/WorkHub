@@ -253,7 +253,7 @@ export default function Docs() {
             </div>
           ) : filteredTree.length === 0 ? (
             <div className="px-3 py-8 text-center text-[12px] text-muted-foreground">
-              {q ? 'Eşleşme yok.' : 'Henüz sayfa yok. Yukarıdan “Yeni” ile başla.'}
+              {q ? 'Eşleşme yok.' : 'Henüz sayfa yok. Yukarıdan "Yeni" ile başla.'}
             </div>
           ) : (
             filteredTree.map(n => (

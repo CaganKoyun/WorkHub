@@ -41,7 +41,7 @@ export function ProjectMessagesTab({
           <DialogTrigger asChild>
             <Button size="sm"><MessageSquarePlus className="h-4 w-4 mr-1" />Mesaj yaz</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>Yeni mesaj</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <Input placeholder="Başlık" value={title} onChange={e => setTitle(e.target.value)} />

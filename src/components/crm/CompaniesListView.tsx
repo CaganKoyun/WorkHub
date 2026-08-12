@@ -19,7 +19,7 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Plus, Search, AlertTriangle, Building2 } from 'lucide-react';
 
 export function CompaniesListView() {
@@ -99,7 +99,7 @@ function NewCompanyDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
   );
 
   async function submit() {
-    if (!name.trim()) { toast({ title: 'İsim gerekli', variant: 'destructive' }); return; }
+    if (!name.trim()) { toast.error("Isim gerekli"); return; }
     try {
       await create.mutateAsync({
         name: name.trim(),
@@ -111,11 +111,11 @@ function NewCompanyDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
         annual_revenue: revenue ? Number(revenue) : null,
         description: description || null,
       });
-      toast({ title: 'Şirket oluşturuldu' });
+      toast.success("Sirket olusturuldu");
       onOpenChange(false);
       setName(''); setDomain(''); setIndustry(''); setCountry(''); setRevenue(''); setDescription('');
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 
