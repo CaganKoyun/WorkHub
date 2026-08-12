@@ -60,8 +60,7 @@ const SPARK_HQ_CSS = `
 .shq .floor-header{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .shq .floor-header h2{font-size:18px;font-weight:700;letter-spacing:-.02em}
 .shq .floor-header .fh-sub{font-size:12px;color:var(--dim)}
-.shq .plan-holder{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center}
-.shq .plan-holder svg{width:100%;height:100%;max-height:calc(100vh - 180px)}
+.shq .plan-holder{flex:1;min-height:0;position:relative;overflow-y:auto;padding:0 24px 80px}
 .shq .room-poly{fill:var(--card);stroke:rgba(255,255,255,.06);stroke-width:1;cursor:pointer;transition:fill .2s,stroke .2s}
 .shq .room-g:hover .room-poly{fill:var(--hover);stroke:rgba(255,255,255,.1)}
 .shq .room-g.sel .room-poly{stroke:var(--lime);stroke-width:1.6;fill:rgba(198,244,50,.04)}
@@ -293,6 +292,43 @@ const SPARK_HQ_CSS = `
 .shq .ent-brief .eb-line:first-child{color:var(--ink);font-weight:600}
 .shq .ent-hint{position:absolute;bottom:24px;font-size:11px;color:var(--dim);opacity:0;transition:opacity .3s 1s}
 .shq .ent-hint.in{opacity:1}
+.shq .room-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;
+  width:100%;max-width:1100px;margin:0 auto;align-content:start}
+.shq .room-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px;cursor:pointer;transition:border-color .2s,box-shadow .2s;display:flex;flex-direction:column;gap:8px}
+.shq .room-card:hover{border-color:var(--border-hi);box-shadow:var(--elev1)}
+.shq .room-card.active{border-color:var(--lime);box-shadow:0 0 0 1px rgba(198,244,50,.15)}
+.shq .rc-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.shq .rc-head .rc-title{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.shq .rc-head .rc-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:99px;white-space:nowrap;letter-spacing:.02em;flex-shrink:0}
+.shq .rc-badge.ok{background:var(--ok-soft);color:var(--ok)}
+.shq .rc-badge.warn{background:var(--warn-soft);color:var(--warn)}
+.shq .rc-badge.risk{background:var(--risk-soft);color:var(--risk)}
+.shq .rc-badge .bd{width:5px;height:5px;border-radius:50%;background:currentColor}
+.shq .rc-mission{font-size:12.5px;color:var(--muted);line-height:1.4}
+.shq .rc-bar{display:flex;align-items:center;gap:8px}
+.shq .rc-bar .track{flex:1;height:4px;background:var(--hover);border-radius:2px;overflow:hidden}
+.shq .rc-bar .track i{display:block;height:100%;border-radius:2px}
+.shq .rc-bar .pct{font-size:11px;font-weight:700;color:var(--dim);font-variant-numeric:tabular-nums;min-width:28px;text-align:right}
+.shq .rc-warn{font-size:11px;color:var(--risk);display:flex;gap:4px;line-height:1.4;background:var(--risk-soft);
+  border-radius:var(--radius-xs);padding:5px 8px}
+.shq .rc-warn::before{content:'›';font-weight:800;flex-shrink:0}
+.shq .rc-team{display:flex;gap:0;margin-top:auto;padding-top:4px}
+.shq .rc-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:8px;font-weight:800;color:#fff;border:2px solid var(--card);margin-left:-4px;cursor:pointer;transition:transform .15s}
+.shq .rc-av:first-child{margin-left:0}
+.shq .rc-av:hover{transform:scale(1.15);z-index:1}
+.shq .rc-foot{display:flex;gap:10px;font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums;
+  border-top:1px solid var(--border);padding-top:8px;margin-top:4px}
+.shq .rc-foot b{color:var(--ink);font-weight:700;margin-right:2px}
+.shq .rc-foot .cb b{color:var(--risk)}
+.shq .room-card.frosted{border-style:dashed;border-color:rgba(255,255,255,.06)}
+.shq .room-card.frosted .rc-mission,.shq .room-card.frosted .rc-bar,.shq .room-card.frosted .rc-warn,.shq .room-card.frosted .rc-foot{display:none}
+.shq .room-card.frosted .rc-team .rc-av{opacity:.4}
+.shq .room-card.locked{border-style:dashed;border-color:rgba(255,255,255,.04);opacity:.5;cursor:not-allowed}
+.shq .room-card.locked .rc-mission,.shq .room-card.locked .rc-bar,.shq .room-card.locked .rc-warn,
+.shq .room-card.locked .rc-team,.shq .room-card.locked .rc-foot{display:none}
 @media(prefers-reduced-motion:reduce){.shq *,.shq *::before,.shq *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 @media(max-width:640px){.shq #shqSheet{width:100vw}.shq .duo{flex-direction:column}.shq #shqPopup{width:92vw}}
 `;
@@ -567,76 +603,71 @@ function initSparkHQ(root: HTMLElement) {
     });
   }
 
-  function renderPlan(keepVB?: boolean){
-    const f=F(),{cx,cy,s}=ISO;
+  function renderPlan(){
+    const f=F();
     const ft=$("#floorTitle");if(ft)ft.textContent=f.name;
     const fs=$("#floorSub");if(fs)fs.textContent=f.rooms.length+" oda · "+f.rooms.reduce((a,r)=>a+r.members.length,0)+" kişi";
     const isPulse=state.mode==="pulse";
-    let svg=`<svg id="planSvg" ${isPulse?'class="pulse"':''} viewBox="${(keepVB&&curVB?curVB:FULL_VB).join(" ")}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-      <defs><filter id="cs" x="-40%" y="-40%" width="180%" height="180%">
-        <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0A0A0E" flood-opacity="0.5"/></filter></defs>`;
-    const slab=pts([P(0,0,0,cx,cy,s),P(100,0,0,cx,cy,s),P(100,100,0,cx,cy,s),P(0,100,0,cx,cy,s)]);
-    const wall=9;
-    const wR=pts([P(100,0,0,cx,cy,s),P(100,100,0,cx,cy,s),P(100,100,-wall/s,cx,cy,s),P(100,0,-wall/s,cx,cy,s)]);
-    const wF=pts([P(0,100,0,cx,cy,s),P(100,100,0,cx,cy,s),P(100,100,-wall/s,cx,cy,s),P(0,100,-wall/s,cx,cy,s)]);
-    svg+=`<polygon points="${wF}" fill="#151518" stroke="rgba(255,255,255,.04)"/>
-          <polygon points="${wR}" fill="#18181B" stroke="rgba(255,255,255,.04)"/>
-          <polygon points="${slab}" fill="#1C1C1F" stroke="rgba(255,255,255,.05)" stroke-width="1"/>`;
+    const ph=$("#planHolder");if(!ph)return;
 
+    let html='<div class="room-grid">';
     f.rooms.forEach(r=>{
-      const[x,y,w,h]=r.rect,sel=r.id===state.room,st=rSt(r);
-      const poly=pts([P(x,y,0,cx,cy,s),P(x+w,y,0,cx,cy,s),P(x+w,y+h,0,cx,cy,s),P(x,y+h,0,cx,cy,s)]);
-      const tw=Math.min(w,42)*.5,th=Math.min(h,34)*.34,tx=x+w/2-tw/2,ty=y+h/2-th/2;
-      const table=pts([P(tx,ty,0,cx,cy,s),P(tx+tw,ty,0,cx,cy,s),P(tx+tw,ty+th,0,cx,cy,s),P(tx,ty+th,0,cx,cy,s)]);
-      let ppl="";
-      const seats=deskLayout(r);
-      r.members.forEach((mm,i)=>{
-        const[px,py]=P(seats[i][0],seats[i][1],0,cx,cy,s);
-        const st2=pSt(mm);
-        ppl+=`<g class="person-g" data-room="${r.id}" data-person="${mm.name}">
-          <title>${mm.name} · ${mm.role}${mm.late?` · ${mm.late} gecikmiş`:""}</title>
-          <circle class="person-dot pd-${st2}" cx="${px}" cy="${py}" r="5"/>
-          <text class="p-init" x="${px}" y="${py+1.4}">${initials(mm.name)}</text>
-          <text class="p-name" x="${px}" y="${py+10}">${mm.name.split(" ")[0]}</text>
-        </g>`;
-      });
+      const st=rSt(r);
+      const stCls=st==="ahead"?"ok":st;
       const rv=roomVis(state.floor!,r.id);
       const visCls=rv==="pulse"?" frosted":rv==="shape"?" locked":"";
-      svg+=`<g class="room-g ${sel?"sel":""}${visCls}" data-room="${r.id}" data-vis="${rv}">
-        <polygon class="room-poly p-${st==="ahead"?"ok":st}" points="${poly}"/>
-        <polygon class="furn" points="${table}"/>
-        ${ppl}</g>`;
-    });
-    f.rooms.forEach(r=>{
-      const[x,y,w,h]=r.rect;
-      const[ccx,ccy]=P(x+w/2,y+h/2,0,cx,cy,s);
-      const st=ST[rSt(r)],sel=r.id===state.room;
-      const rv2=roomVis(state.floor!,r.id);const visCls2=rv2==="pulse"?" frosted":rv2==="shape"?" locked":"";
-      if(isPulse){svg+=`<g class="rcard ${sel?"sel":""}${visCls2}" data-room="${r.id}"><text class="rc-name" x="${ccx}" y="${ccy-20}" text-anchor="middle">${r.name}</text></g>`;return}
-      const cw=128,ch=52;
-      svg+=`<g class="rcard ${sel?"sel":""}${visCls2}" data-room="${r.id}">
-        <rect x="${ccx-cw/2}" y="${ccy-ch-12}" width="${cw}" height="${ch}" filter="url(#cs)"/>
-        <text class="rc-name" x="${ccx-cw/2+10}" y="${ccy-ch+4}">${r.name}</text>
-        <text class="rc-status ${st.cls}" x="${ccx-cw/2+10}" y="${ccy-ch+17}">${rLabel(r)}</text>
-        <text class="rc-sub" x="${ccx-cw/2+10}" y="${ccy-ch+29}">${r.members.length} kişi${r.wrong.length?` · ${r.wrong.length} engel`:""}</text>
-      </g>`;
-    });
-    svg+=`</svg>`;
-    const ph=$("#planHolder");if(ph)ph.innerHTML=svg;
-    planSvgEl=root.querySelector("#planSvg") as SVGSVGElement|null;
-    if(!keepVB)curVB=[...FULL_VB];
-    if(state.room&&planSvgEl)planSvgEl.classList.add("zoomed");
+      const sel=r.id===state.room?" active":"";
+      const openT=(r.tasks||[]).filter(x=>!x.done).length;
+      const blocked=(r.tasks||[]).filter(x=>x.urgent&&!x.done).length;
+      const done=(r.tasks||[]).filter(x=>x.done).length;
 
-    root.querySelectorAll(".room-g,.rcard").forEach(g=>{
-      g.addEventListener("click",e=>{if((e.target as Element).closest(".person-g"))return;
-        hideTooltip();showPopupRoom((g as HTMLElement).dataset.room!,e as MouseEvent)});
-      g.addEventListener("mouseenter",e=>{if(!$("#shqPopup")?.classList.contains("show"))showTooltipRoom(e as MouseEvent,(g as HTMLElement).dataset.room!)});
-      g.addEventListener("mouseleave",hideTooltip);
+      html+=`<div class="room-card${visCls}${sel}" data-room="${r.id}" data-vis="${rv}">
+        <div class="rc-head">
+          <span class="rc-title">${r.name}</span>
+          <span class="rc-badge ${stCls}"><span class="bd"></span>${rLabel(r)}</span>
+        </div>`;
+
+      if(!isPulse && rv==="content"){
+        html+=`<div class="rc-mission">${r.mission}</div>`;
+        if(r.pct) html+=`<div class="rc-bar"><div class="track"><i style="width:${r.pct}%;background:${stColor(st)}"></i></div><span class="pct">%${r.pct}</span></div>`;
+        if(r.wrong.length) html+=r.wrong.slice(0,1).map(w=>`<div class="rc-warn">${w}</div>`).join("");
+      }
+
+      if(rv!=="shape" && r.members.length){
+        html+=`<div class="rc-team">${r.members.map(mm=>{
+          const mst=pSt(mm);
+          return `<div class="rc-av" style="background:${avc(mm.name)};box-shadow:0 0 0 2px ${stColor(mst)}" title="${mm.name} · ${mm.role}" data-room="${r.id}" data-person="${mm.name}">${initials(mm.name)}</div>`;
+        }).join("")}</div>`;
+      }
+
+      if(!isPulse && rv==="content"){
+        html+=`<div class="rc-foot"><span><b>${openT}</b> açık</span>${blocked?`<span class="cb"><b>${blocked}</b> engel</span>`:""}<span><b>${done}</b> bitti</span></div>`;
+      }
+
+      html+=`</div>`;
     });
-    root.querySelectorAll(".person-g").forEach(g=>{
-      g.addEventListener("click",e=>{(e as Event).stopPropagation();hideTooltip();showPopupPerson((g as HTMLElement).dataset.room!,(g as HTMLElement).dataset.person!,e as MouseEvent)});
-      g.addEventListener("mouseenter",e=>{if(!$("#shqPopup")?.classList.contains("show"))showTooltipPerson(e as MouseEvent,(g as HTMLElement).dataset.room!,(g as HTMLElement).dataset.person!)});
-      g.addEventListener("mouseleave",hideTooltip);
+    html+='</div>';
+    ph.innerHTML=html;
+
+    ph.querySelectorAll(".room-card").forEach(el=>{
+      const rid=(el as HTMLElement).dataset.room!;
+      const vis=(el as HTMLElement).dataset.vis!;
+      el.addEventListener("click",e=>{
+        if((e.target as Element).closest(".rc-av"))return;
+        if(vis==="shape"){showDoor(f.rooms.find(x=>x.id===rid)!.name,"Bu alan yalnızca ilgili ekibe açık.","Erişim iste");return}
+        if(vis==="pulse"){showDoorPulse(rid);return}
+        openSheet(rid);
+      });
+    });
+    ph.querySelectorAll(".rc-av").forEach(el=>{
+      el.addEventListener("click",e=>{
+        e.stopPropagation();
+        const rid=(el as HTMLElement).dataset.room!;
+        const vis=roomVis(state.floor!,rid);
+        if(vis!=="content"){showDoorPulse(rid);return}
+        const pname=(el as HTMLElement).dataset.person!;
+        openSheet(rid,pname);
+      });
     });
   }
 
@@ -709,7 +740,7 @@ function initSparkHQ(root: HTMLElement) {
     const openT=(r.tasks||[]).filter(x=>!x.done).length;
     const blocked=(r.tasks||[]).filter(x=>x.urgent&&!x.done).length;
     const done=(r.tasks||[]).filter(x=>x.done).length;
-    state.room=rid;renderPlan(true);planSvgEl?.classList.add("zoomed");animVB(roomBBox(r));
+    state.room=rid;
     const pop=$("#shqPopup");if(!pop)return;
     pop.innerHTML=`
       <div class="pop-head">
@@ -743,7 +774,7 @@ function initSparkHQ(root: HTMLElement) {
     const r=F().rooms.find(x=>x.id===rid)!;
     const mm=r.members.find(x=>x.name===pname)!;
     const pd=pdOf(mm);
-    state.room=rid;state.person=pname;renderPlan(true);planSvgEl?.classList.add("zoomed");animVB(roomBBox(r));
+    state.room=rid;state.person=pname;
     const pop=$("#shqPopup");if(!pop)return;
     pop.innerHTML=`
       <div class="pop-head">
@@ -790,21 +821,22 @@ function initSparkHQ(root: HTMLElement) {
     const pop=$("#shqPopup");if(pop)pop.classList.remove("show");
     if(!$("#shqSheet")?.classList.contains("open")){
       state.room=null;state.person=null;
-      if(planSvgEl){planSvgEl.classList.remove("zoomed");renderPlan(true);animVB(FULL_VB)}
       renderCrumbs();
     }
   }
 
   function openSheet(rid: string,person?: string){
     state.room=rid;state.person=person||null;
-    renderPlan(true);planSvgEl?.classList.add("zoomed");const rm=RM();if(rm)animVB(roomBBox(rm));
+    root.querySelectorAll(".room-card").forEach(el=>{
+      el.classList.toggle("active",(el as HTMLElement).dataset.room===rid);
+    });
     renderSheet();$("#shqSheet")?.classList.add("open");renderCrumbs();
   }
   function closeSheet(){
     state.room=null;state.person=null;
     $("#shqSheet")?.classList.remove("open");
-    planSvgEl?.classList.remove("zoomed");
-    renderPlan(true);animVB(FULL_VB);renderCrumbs();
+    root.querySelectorAll(".room-card").forEach(el=>el.classList.remove("active"));
+    renderCrumbs();
   }
 
   function renderSheet(){
@@ -844,7 +876,7 @@ function initSparkHQ(root: HTMLElement) {
           else fakeAct("Bu kişi için empati modu desteklenmiyor")});return}
         b.addEventListener("click",()=>fakeAct(act==="msg"?"Mesaj gönderildi":act==="assign"?"Görev atandı":"Hafta görünümü açıldı"));
       });
-      back.onclick=()=>{state.person=null;renderPlan(true);planSvgEl?.classList.add("zoomed");renderSheet();renderCrumbs()};
+      back.onclick=()=>{state.person=null;renderSheet();renderCrumbs()};
       return;
     }
 
@@ -877,7 +909,7 @@ function initSparkHQ(root: HTMLElement) {
       <button class="btn-ghost" data-act="meeting">Toplantı</button>
       <button class="btn-ghost" data-act="ask-sheet">Ask AI</button>`;
     body.querySelectorAll("[data-person]").forEach(el=>el.addEventListener("click",()=>{
-      state.person=(el as HTMLElement).dataset.person!;renderPlan(true);planSvgEl?.classList.add("zoomed");renderSheet();renderCrumbs();
+      state.person=(el as HTMLElement).dataset.person!;renderSheet();renderCrumbs();
     }));
     body.querySelectorAll("[data-act=approve]").forEach(b=>b.addEventListener("click",()=>fakeAct("Onaylandı")));
     acts.querySelector("[data-act=work-list]")?.addEventListener("click",()=>fakeAct("İş listesi"));
@@ -930,7 +962,7 @@ function initSparkHQ(root: HTMLElement) {
       const n=(b as HTMLElement).dataset.nav;
       if(n==="hq")goHQ();
       if(n==="floor"){closePopup();closeSheet()}
-      if(n==="room"){state.person=null;renderPlan(true);planSvgEl?.classList.add("zoomed");renderSheet();renderCrumbs()}
+      if(n==="room"){state.person=null;renderSheet();renderCrumbs()}
     }));
     const modes=$("#shqModes");if(modes)modes.classList.toggle("hidden",!state.floor);
   }
@@ -939,7 +971,7 @@ function initSparkHQ(root: HTMLElement) {
     const isWork=state.mode==="work";
     const ph=$("#planHolder");if(ph)ph.style.display=isWork?"none":"flex";
     const ww=$("#workWrap");if(ww)ww.classList.toggle("on",isWork);
-    if(!isWork)renderPlan(true);if(isWork)renderWork();
+    if(!isWork)renderPlan();if(isWork)renderWork();
   }
   root.querySelectorAll("#shqModes button").forEach(b=>b.addEventListener("click",()=>{
     state.mode=(b as HTMLElement).dataset.m!;
@@ -953,7 +985,7 @@ function initSparkHQ(root: HTMLElement) {
       `<button class="${i===state.time?"on":""}" data-t="${i}">${tt}</button>`).join("");
     rep.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
       state.time=+(b as HTMLElement).dataset.t!;renderReplay();renderReplayNote();
-      if(!state.floor)renderHQ();else{renderPlan(true);if(state.room)renderSheet()}}));
+      if(!state.floor)renderHQ();else{renderPlan();if(state.room)renderSheet()}}));
     renderReplayNote();
   }
   function renderReplayNote(){
@@ -1052,7 +1084,7 @@ function initSparkHQ(root: HTMLElement) {
     if(e.key==="Escape"){
       if($("#shqAskPanel")?.classList.contains("open")){closeAsk();return}
       if($("#shqPopup")?.classList.contains("show")){closePopup();return}
-      if(state.person&&$("#shqSheet")?.classList.contains("open")){state.person=null;renderPlan(true);planSvgEl?.classList.add("zoomed");renderSheet();renderCrumbs();return}
+      if(state.person&&$("#shqSheet")?.classList.contains("open")){state.person=null;renderSheet();renderCrumbs();return}
       if(state.room){closeSheet();return}
       if(state.floor){goHQ();return}
     }
@@ -1061,7 +1093,7 @@ function initSparkHQ(root: HTMLElement) {
 
   $("#shqShClose")?.addEventListener("click",closeSheet);
   $("#planHolder")?.addEventListener("click",(e: Event)=>{
-    if(!(e.target as Element).closest(".room-g")&&!(e.target as Element).closest(".rcard")){
+    if(!(e.target as Element).closest(".room-card")){
       if($("#shqPopup")?.classList.contains("show"))closePopup();
       else if(state.room&&$("#shqSheet")?.classList.contains("open"))closeSheet()
     }
