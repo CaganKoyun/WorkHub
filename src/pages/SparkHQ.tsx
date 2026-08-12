@@ -993,8 +993,9 @@ function initSparkHQ(root: HTMLElement) {
   }
   function askContext(){
     if(state.person)return{key:"room",label:`Kişi · ${state.person}`};
-    if(state.room)return{key:ASK_QA[state.floor!]?state.floor!:"room",label:`Oda · ${RM()?.name}`};
-    if(state.floor)return{key:ASK_QA[state.floor]?state.floor:"room",label:`Kat · ${F().name}`};
+    const qa=askQA();
+    if(state.room)return{key:qa[state.floor!]?state.floor!:"room",label:`Oda · ${RM()?.name}`};
+    if(state.floor)return{key:qa[state.floor]?state.floor:"room",label:`Kat · ${F().name}`};
     return{key:"hq",label:"Şirket geneli"};
   }
   function openAsk(){
