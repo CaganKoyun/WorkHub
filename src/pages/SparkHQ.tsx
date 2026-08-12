@@ -47,8 +47,16 @@ const SPARK_HQ_CSS = `
 .shq .ps-item b{font-weight:800;font-size:15px;color:var(--ink)}
 .shq .ps-item.risk b{color:var(--risk)}.shq .ps-item.ok b{color:var(--ok)}
 .shq .ps-dot{width:6px;height:6px;border-radius:50%}
-.shq #hqBuilding{width:min(480px,92vw)}
-.shq #hqBuilding svg{width:100%;height:auto}
+.shq #hqBuilding{width:min(480px,92vw);cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none}
+.shq #hqBuilding.dragging{cursor:grabbing}
+.shq #hqBuilding svg{width:100%;height:auto;pointer-events:none}
+.shq #hqBuilding svg *{pointer-events:auto}
+.shq .cam-ctrl{display:flex;align-items:center;gap:8px;margin-top:6px;justify-content:center}
+.shq .cam-hint{font-size:10.5px;color:var(--dim);opacity:.5;transition:opacity .5s}
+.shq .cam-hint.faded{opacity:0}
+.shq .cam-reset{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:2px 8px;font-size:11px;color:var(--dim);transition:all .15s;opacity:0;pointer-events:none}
+.shq .cam-reset.show{opacity:1;pointer-events:auto}
+.shq .cam-reset:hover{background:var(--hover);color:var(--ink)}
 .shq .bfloor{cursor:pointer}
 .shq .bfloor .face-top{transition:fill .2s}
 .shq .bfloor:hover .face-top{fill:#2A2A2F !important}
@@ -512,7 +520,15 @@ function initSparkHQ(root: HTMLElement) {
   const pSt=(mm: Member)=>pdOf(mm).st;
   const stColor=(s: string)=>s==="risk"?"var(--risk)":s==="warn"?"var(--warn)":"var(--lime)";
 
-  const P=(x: number,y: number,z: number,cx: number,cy: number,s: number): [number,number]=>[cx+(x-y)*0.866*s, cy+(x+y)*0.5*s-z*s];
+  const cam={rot:Math.PI/4,tilt:0.616};
+  let camDrag:{x:number;y:number;rot:number;tilt:number}|null=null;
+  let wasCamDrag=false;
+  let camRaf=0;
+  const P=(x: number,y: number,z: number,cx: number,cy: number,s: number): [number,number]=>{
+    const ct=Math.cos(cam.rot),sn=Math.sin(cam.rot),sp=Math.sin(cam.tilt),cp=Math.cos(cam.tilt);
+    const rx=x*ct-y*sn,ry=x*sn+y*ct,k=s*1.225;
+    return[cx+rx*k,cy+ry*sp*k-z*cp*k];
+  };
   const pts=(a: [number,number][])=>a.map(p=>p.join(",")).join(" ");
 
   let curVB=[0,0,560,430];
@@ -546,7 +562,7 @@ function initSparkHQ(root: HTMLElement) {
   }
 
   function renderHQ(){
-    const W=170,D=105,H=44,s=1.15,cx=210,cy=268,n=FLOORS.length;
+    const W=170,D=105,H=44,s=1.15,n=FLOORS.length;
     const riskRooms=FLOORS.flatMap(f=>f.rooms).filter(r=>rSt(r)==="risk").length;
     const kpis=$("#hqKpis");
     if(kpis)kpis.innerHTML=`
@@ -554,37 +570,69 @@ function initSparkHQ(root: HTMLElement) {
       <span class="ps-item ok"><span class="ps-dot" style="background:var(--ok)"></span><b>27</b> tamamlanan</span>
       <span class="ps-item"><span class="ps-dot" style="background:var(--lime)"></span><b>5</b> milestone</span>`;
 
-    let svg=`<svg viewBox="0 0 460 520" xmlns="http://www.w3.org/2000/svg">`;
+    const bcPt=P(W/2,D/2,n*H/2,0,0,s);
+    const cx=-bcPt[0],cy=-bcPt[1];
+
     const g=30;
+    const corners: [number,number][]=[];
+    for(const bx of[-g,W+g])for(const by of[-g,D+g])for(const bz of[0,n*H+20])
+      corners.push(P(bx,by,bz,cx,cy,s));
+    const vPad=24;
+    const vx0=Math.min(...corners.map(c=>c[0]))-vPad;
+    const vy0=Math.min(...corners.map(c=>c[1]))-vPad;
+    const vx1=Math.max(...corners.map(c=>c[0]))+vPad;
+    const vy1=Math.max(...corners.map(c=>c[1]))+vPad;
+
+    const showFront=Math.cos(cam.rot)>0;
+    const showRight=Math.sin(cam.rot)>0;
+
+    let svg=`<svg viewBox="${vx0} ${vy0} ${vx1-vx0} ${vy1-vy0}" xmlns="http://www.w3.org/2000/svg">`;
     svg+=`<polygon points="${pts([P(-g,-g,0,cx,cy,s),P(W+g,-g,0,cx,cy,s),P(W+g,D+g,0,cx,cy,s),P(-g,D+g,0,cx,cy,s)])}" fill="#111114"/>`;
 
     for(let i=0;i<n;i++){
       const f=FLOORS[n-1-i],zb=i*H,zt=zb+H;
-      const st=fSt(f),sc=ST[st].c;
-      const front=pts([P(0,D,zb,cx,cy,s),P(W,D,zb,cx,cy,s),P(W,D,zt,cx,cy,s),P(0,D,zt,cx,cy,s)]);
-      const right=pts([P(W,0,zb,cx,cy,s),P(W,D,zb,cx,cy,s),P(W,D,zt,cx,cy,s),P(W,0,zt,cx,cy,s)]);
+      const st2=fSt(f),sc=ST[st2].c;
+
+      const sideA=showFront
+        ?pts([P(0,D,zb,cx,cy,s),P(W,D,zb,cx,cy,s),P(W,D,zt,cx,cy,s),P(0,D,zt,cx,cy,s)])
+        :pts([P(W,0,zb,cx,cy,s),P(0,0,zb,cx,cy,s),P(0,0,zt,cx,cy,s),P(W,0,zt,cx,cy,s)]);
+      const sideB=showRight
+        ?pts([P(W,0,zb,cx,cy,s),P(W,D,zb,cx,cy,s),P(W,D,zt,cx,cy,s),P(W,0,zt,cx,cy,s)])
+        :pts([P(0,D,zb,cx,cy,s),P(0,0,zb,cx,cy,s),P(0,0,zt,cx,cy,s),P(0,D,zt,cx,cy,s)]);
       const top=pts([P(0,0,zt,cx,cy,s),P(W,0,zt,cx,cy,s),P(W,D,zt,cx,cy,s),P(0,D,zt,cx,cy,s)]);
-      const[lx,ly]=P(10,D,zb+H*.62,cx,cy,s);
-      const[sx,sy]=P(10,D,zb+H*.26,cx,cy,s);
-      const[dx,dy]=P(W-8,D,zb+H*.5,cx,cy,s);
-      const riskOutline=st==="risk"?`<polygon points="${front}" fill="rgba(255,107,94,.04)" stroke="var(--risk)" stroke-width="1.4" stroke-dasharray="4 3"/>`:"";
+
+      const labelFaceY=showFront?D:0;
+      const labelX0=showFront?10:W-10;
+      const dotX=showFront?W-8:8;
+      const[lx,ly]=P(labelX0,labelFaceY,zb+H*.62,cx,cy,s);
+      const[sx,sy]=P(labelX0,labelFaceY,zb+H*.26,cx,cy,s);
+      const[dx,dy]=P(dotX,labelFaceY,zb+H*.5,cx,cy,s);
+      const riskOutline=st2==="risk"?`<polygon points="${sideA}" fill="rgba(255,107,94,.04)" stroke="var(--risk)" stroke-width="1.4" stroke-dasharray="4 3"/>`:"";
       svg+=`<g class="bfloor" data-f="${f.id}">
-        <polygon points="${front}" fill="#1C1C1F" stroke="rgba(255,255,255,.05)"/>
-        <polygon points="${right}" fill="#202024" stroke="rgba(255,255,255,.05)"/>
+        <polygon points="${sideA}" fill="#1C1C1F" stroke="rgba(255,255,255,.05)"/>
+        <polygon points="${sideB}" fill="#202024" stroke="rgba(255,255,255,.05)"/>
         <polygon class="face-top" points="${top}" fill="#232327" stroke="rgba(255,255,255,.06)"/>
-        <polygon class="fl-glow" points="${top}" fill="${st==="risk"?"rgba(255,107,94,.06)":st==="warn"?"rgba(251,191,36,.05)":"rgba(198,244,50,.04)"}" style="opacity:0;transition:opacity .3s"/>
+        <polygon class="fl-glow" points="${top}" fill="${st2==="risk"?"rgba(255,107,94,.06)":st2==="warn"?"rgba(251,191,36,.05)":"rgba(198,244,50,.04)"}" style="opacity:0;transition:opacity .3s"/>
         <text class="bf-name" x="${lx}" y="${ly}">${f.name}</text>
-        <text class="bf-stat ${st==="risk"?"risk":st==="warn"?"warn":"ok"}" x="${sx}" y="${sy}">${fLabel(f)}</text>
+        <text class="bf-stat ${st2==="risk"?"risk":st2==="warn"?"warn":"ok"}" x="${sx}" y="${sy}">${fLabel(f)}</text>
         <circle cx="${dx}" cy="${dy}" r="4.5" fill="${sc}"/>
         ${riskOutline}
       </g>`;
     }
     const rz=n*H;
-    svg+=`<polygon points="${pts([P(104,12,rz+13,cx,cy,s),P(138,12,rz+13,cx,cy,s),P(138,36,rz+13,cx,cy,s),P(104,36,rz+13,cx,cy,s)])}" fill="#1E1E22" stroke="rgba(255,255,255,.05)"/>
-    <polygon points="${pts([P(104,36,rz,cx,cy,s),P(138,36,rz,cx,cy,s),P(138,36,rz+13,cx,cy,s),P(104,36,rz+13,cx,cy,s)])}" fill="#18181B" stroke="rgba(255,255,255,.04)"/>
-    <polygon points="${pts([P(138,12,rz,cx,cy,s),P(138,36,rz,cx,cy,s),P(138,36,rz+13,cx,cy,s),P(138,12,rz+13,cx,cy,s)])}" fill="#1A1A1E" stroke="rgba(255,255,255,.04)"/>
-    <circle cx="${P(121,24,rz+16,cx,cy,s)[0]}" cy="${P(121,24,rz+16,cx,cy,s)[1]}" r="3" fill="var(--lime)" opacity=".6"/>
-    <circle cx="${P(121,24,rz+16,cx,cy,s)[0]}" cy="${P(121,24,rz+16,cx,cy,s)[1]}" r="8" fill="var(--lime)" opacity=".08"/>
+    const antSideA=showFront
+      ?pts([P(104,36,rz,cx,cy,s),P(138,36,rz,cx,cy,s),P(138,36,rz+13,cx,cy,s),P(104,36,rz+13,cx,cy,s)])
+      :pts([P(138,12,rz,cx,cy,s),P(104,12,rz,cx,cy,s),P(104,12,rz+13,cx,cy,s),P(138,12,rz+13,cx,cy,s)]);
+    const antSideB=showRight
+      ?pts([P(138,12,rz,cx,cy,s),P(138,36,rz,cx,cy,s),P(138,36,rz+13,cx,cy,s),P(138,12,rz+13,cx,cy,s)])
+      :pts([P(104,36,rz,cx,cy,s),P(104,12,rz,cx,cy,s),P(104,12,rz+13,cx,cy,s),P(104,36,rz+13,cx,cy,s)]);
+    const antTop=pts([P(104,12,rz+13,cx,cy,s),P(138,12,rz+13,cx,cy,s),P(138,36,rz+13,cx,cy,s),P(104,36,rz+13,cx,cy,s)]);
+    const antLight=P(121,24,rz+16,cx,cy,s);
+    svg+=`<polygon points="${antSideA}" fill="#18181B" stroke="rgba(255,255,255,.04)"/>
+    <polygon points="${antSideB}" fill="#1A1A1E" stroke="rgba(255,255,255,.04)"/>
+    <polygon points="${antTop}" fill="#1E1E22" stroke="rgba(255,255,255,.05)"/>
+    <circle cx="${antLight[0]}" cy="${antLight[1]}" r="3" fill="var(--lime)" opacity=".6"/>
+    <circle cx="${antLight[0]}" cy="${antLight[1]}" r="8" fill="var(--lime)" opacity=".08"/>
     </svg>`;
     const bld=$("#hqBuilding");
     if(bld)bld.innerHTML=svg;
@@ -594,13 +642,17 @@ function initSparkHQ(root: HTMLElement) {
       if(vis==="pulse")el.classList.add("frosted");
       else if(vis==="shape")el.classList.add("locked");
       el.addEventListener("click",()=>{
+        if(wasCamDrag)return;
         const v=floorVis(fid);
-        if(v==="shape"){showDoor(FLOORS.find(f=>f.id===fid)!.name,"Bu kat yalnızca ilgili ekibe açık.","Kat liderinden erişim iste.");return}
+        if(v==="shape"){showDoor(FLOORS.find(f2=>f2.id===fid)!.name,"Bu kat yalnızca ilgili ekibe açık.","Kat liderinden erişim iste.");return}
         goFloor(fid);
       });
       el.addEventListener("mouseenter",e=>showTooltipFloor(e as MouseEvent,fid));
       el.addEventListener("mouseleave",hideTooltip);
     });
+    const isDefault=Math.abs(cam.rot-Math.PI/4)<0.02&&Math.abs(cam.tilt-0.616)<0.02;
+    const resetBtn=$("#camReset");
+    if(resetBtn)resetBtn.classList.toggle("show",!isDefault);
   }
 
   function renderPlan(){
@@ -1248,6 +1300,56 @@ function initSparkHQ(root: HTMLElement) {
   renderHQ();renderCrumbs();renderReplay();renderEmpathy();
   playEntrance();
 
+  const bldEl=$("#hqBuilding");
+  if(bldEl){
+    bldEl.addEventListener("pointerdown",(e: PointerEvent)=>{
+      if(state.view!=="hq"&&state.floor)return;
+      camDrag={x:e.clientX,y:e.clientY,rot:cam.rot,tilt:cam.tilt};
+      bldEl.setPointerCapture(e.pointerId);
+      bldEl.classList.add("dragging");
+      wasCamDrag=false;
+      hideTooltip();
+    });
+    bldEl.addEventListener("pointermove",(e: PointerEvent)=>{
+      if(!camDrag)return;
+      const ddx=e.clientX-camDrag.x,ddy=e.clientY-camDrag.y;
+      if(ddx*ddx+ddy*ddy>25)wasCamDrag=true;
+      cam.rot=camDrag.rot+ddx*0.008;
+      cam.tilt=Math.max(0.15,Math.min(1.3,camDrag.tilt-ddy*0.005));
+      if(!camRaf)camRaf=requestAnimationFrame(()=>{camRaf=0;renderHQ()});
+      const hint=$("#camHint");
+      if(hint&&!hint.classList.contains("faded"))hint.classList.add("faded");
+    });
+    bldEl.addEventListener("pointerup",(e: PointerEvent)=>{
+      if(camDrag){bldEl.releasePointerCapture(e.pointerId);bldEl.classList.remove("dragging")}
+      camDrag=null;
+      if(wasCamDrag)setTimeout(()=>{wasCamDrag=false},50);
+    });
+    bldEl.addEventListener("pointercancel",()=>{
+      camDrag=null;bldEl.classList.remove("dragging");
+      if(wasCamDrag)setTimeout(()=>{wasCamDrag=false},50);
+    });
+  }
+  const resetBtn=$("#camReset");
+  if(resetBtn){
+    resetBtn.addEventListener("click",()=>{
+      const from={rot:cam.rot,tilt:cam.tilt};
+      let rotDiff=Math.PI/4-from.rot;
+      while(rotDiff>Math.PI)rotDiff-=2*Math.PI;
+      while(rotDiff<-Math.PI)rotDiff+=2*Math.PI;
+      const tiltDiff=0.616-from.tilt;
+      const t0=performance.now(),dur=400;
+      const step=(now: number)=>{
+        let k=Math.min(1,(now-t0)/dur);k=1-Math.pow(1-k,3);
+        cam.rot=from.rot+rotDiff*k;
+        cam.tilt=from.tilt+tiltDiff*k;
+        renderHQ();
+        if(k<1)requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
   return ()=>{document.removeEventListener("keydown",keyHandler)};
 }
 
@@ -1290,6 +1392,10 @@ export default function SparkHQ() {
             </div>
             <div className="pulse-strip" id="hqKpis"></div>
             <div id="hqBuilding"></div>
+            <div className="cam-ctrl">
+              <span className="cam-hint" id="camHint">Sürükle: döndür</span>
+              <button className="cam-reset" id="camReset">↺</button>
+            </div>
           </div>
           <div className="view" id="floorView">
             <div className="floor-header" style={{width:"100%",padding:"0 24px"}}>
