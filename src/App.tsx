@@ -86,6 +86,7 @@ import CompareNotion from "./pages/compare/CompareNotion";
 import CompareAsana from "./pages/compare/CompareAsana";
 import CompareLinear from "./pages/compare/CompareLinear";
 import CompareMonday from "./pages/compare/CompareMonday";
+import SparkHQ from "./pages/SparkHQ";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -185,6 +186,7 @@ const App = () => (
                 <Route path="/decisions/:id" element={<ProtectedRoute><WorkspaceGate><DecisionDetail /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/product" element={<ProtectedRoute><WorkspaceGate><Product /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/company" element={<ProtectedRoute><WorkspaceGate><Company /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/spark-hq" element={<ProtectedRoute><WorkspaceGate><SparkHQ /></WorkspaceGate></ProtectedRoute>} />
 
                 <Route path="/workspace/settings" element={<ProtectedRoute><WorkspaceGate><WorkspaceSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/integrations" element={<ProtectedRoute><WorkspaceGate><Integrations /></WorkspaceGate></ProtectedRoute>} />

@@ -3,7 +3,7 @@ import {
   Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles, Shield, Bookmark, KeyRound, UserRound, Trophy,
   ScrollText, Rocket, Plug, Building2, Compass, Layers, LineChart, Boxes,
   RefreshCw, FileText, Timer, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones, Activity,
-  Settings, Bot, Mic,
+  Settings, Bot, Mic, Flame,
 } from "lucide-react";
 
 export type NavItem = {
@@ -36,6 +36,7 @@ export const clusters: NavCluster[] = [
           { icon: Home, label: "Ana Sayfa", path: "/home" },
           { icon: Inbox, label: "Gelen Kutusu", path: "/inbox", badgeKey: "inbox" },
           { icon: LayoutDashboard, label: "Kontrol Paneli", path: "/dashboard" },
+          { icon: Flame, label: "Spark HQ", path: "/spark-hq" },
         ],
       },
     ],
