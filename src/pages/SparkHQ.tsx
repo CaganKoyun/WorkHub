@@ -60,7 +60,7 @@ const SPARK_HQ_CSS = `
 .shq .floor-header{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .shq .floor-header h2{font-size:18px;font-weight:700;letter-spacing:-.02em}
 .shq .floor-header .fh-sub{font-size:12px;color:var(--dim)}
-.shq .plan-holder{flex:1;min-height:0;position:relative;overflow-y:auto;padding:0 24px 80px}
+.shq .plan-holder{flex:1;min-height:0;position:relative;overflow:auto;padding:16px 24px 80px;display:flex;align-items:flex-start;justify-content:center}
 .shq .room-poly{fill:var(--card);stroke:rgba(255,255,255,.06);stroke-width:1;cursor:pointer;transition:fill .2s,stroke .2s}
 .shq .room-g:hover .room-poly{fill:var(--hover);stroke:rgba(255,255,255,.1)}
 .shq .room-g.sel .room-poly{stroke:var(--lime);stroke-width:1.6;fill:rgba(198,244,50,.04)}
@@ -610,63 +610,117 @@ function initSparkHQ(root: HTMLElement) {
     const isPulse=state.mode==="pulse";
     const ph=$("#planHolder");if(!ph)return;
 
-    let html='<div class="room-grid">';
+    const S=5.2;
+    const pad=8;
+    const maxX=Math.max(...f.rooms.map(r=>r.rect[0]+r.rect[2]));
+    const maxY=Math.max(...f.rooms.map(r=>r.rect[1]+r.rect[3]));
+    const vw=maxX*S+pad*2;
+    const vh=maxY*S+pad*2;
+
+    let svg=`<svg viewBox="0 0 ${vw} ${vh}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:${Math.min(vw*1.1,880)}px;height:auto">`;
+    svg+=`<rect width="${vw}" height="${vh}" rx="8" fill="var(--panel)"/>`;
+
     f.rooms.forEach(r=>{
+      const[rx,ry,rw,rh]=r.rect;
+      const x=rx*S+pad, y=ry*S+pad, w=rw*S, h=rh*S;
       const st=rSt(r);
-      const stCls=st==="ahead"?"ok":st;
       const rv=roomVis(state.floor!,r.id);
-      const visCls=rv==="pulse"?" frosted":rv==="shape"?" locked":"";
-      const sel=r.id===state.room?" active":"";
-      const openT=(r.tasks||[]).filter(x=>!x.done).length;
-      const blocked=(r.tasks||[]).filter(x=>x.urgent&&!x.done).length;
-      const done=(r.tasks||[]).filter(x=>x.done).length;
+      const sel=r.id===state.room;
 
-      html+=`<div class="room-card${visCls}${sel}" data-room="${r.id}" data-vis="${rv}">
-        <div class="rc-head">
-          <span class="rc-title">${r.name}</span>
-          <span class="rc-badge ${stCls}"><span class="bd"></span>${rLabel(r)}</span>
-        </div>`;
+      const stC=st==="risk"?"rgba(255,107,94,.12)":st==="warn"?"rgba(251,191,36,.08)":"rgba(74,222,128,.06)";
+      const stStroke=st==="risk"?"rgba(255,107,94,.35)":st==="warn"?"rgba(251,191,36,.25)":"rgba(255,255,255,.08)";
 
-      if(!isPulse && rv==="content"){
-        html+=`<div class="rc-mission">${r.mission}</div>`;
-        if(r.pct) html+=`<div class="rc-bar"><div class="track"><i style="width:${r.pct}%;background:${stColor(st)}"></i></div><span class="pct">%${r.pct}</span></div>`;
-        if(r.wrong.length) html+=r.wrong.slice(0,1).map(w=>`<div class="rc-warn">${w}</div>`).join("");
+      let cls="room-g";
+      if(rv==="pulse")cls+=" frosted";
+      else if(rv==="shape")cls+=" locked";
+      if(sel)cls+=" sel";
+
+      svg+=`<g class="${cls}" data-room="${r.id}" data-vis="${rv}" style="cursor:pointer">`;
+      svg+=`<rect class="room-poly" x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${isPulse?stC:"var(--card)"}" stroke="${sel?"var(--lime)":isPulse?stStroke:"rgba(255,255,255,.06)"}" stroke-width="${sel?1.6:1}"/>`;
+
+      if(isPulse){
+        svg+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${stC}" pointer-events="none"/>`;
       }
 
-      if(rv!=="shape" && r.members.length){
-        html+=`<div class="rc-team">${r.members.map(mm=>{
+      svg+=`<text x="${x+8}" y="${y+14}" class="bf-name" style="font-size:11px;font-weight:700;fill:var(--ink)">${r.name}</text>`;
+
+      if(rv!=="shape"){
+        const stLabel=rLabel(r);
+        const stFill=st==="risk"?"var(--risk)":st==="warn"?"var(--warn)":"var(--ok)";
+        svg+=`<text x="${x+8}" y="${y+26}" style="font-size:8.5px;font-weight:700;fill:${stFill};letter-spacing:.03em">${stLabel}</text>`;
+      }
+
+      if(!isPulse && rv==="content" && r.mission){
+        svg+=`<text x="${x+8}" y="${y+38}" style="font-size:8px;fill:var(--muted)">${r.mission.length>30?r.mission.slice(0,30)+"…":r.mission}</text>`;
+      }
+
+      if(!isPulse && rv==="content" && r.pct){
+        const barW=w-16, barH=3, barX=x+8, barY=y+h-18;
+        svg+=`<rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" rx="1.5" fill="var(--hover)"/>`;
+        svg+=`<rect x="${barX}" y="${barY}" width="${barW*r.pct/100}" height="${barH}" rx="1.5" fill="${stColor(st)}"/>`;
+        svg+=`<text x="${barX+barW+1}" y="${barY+3}" style="font-size:7px;font-weight:700;fill:var(--dim);text-anchor:start" dx="2">%${r.pct}</text>`;
+      }
+
+      if(rv!=="shape"){
+        const desks=deskLayout(r);
+        r.members.forEach((mm,mi)=>{
+          if(mi>=desks.length)return;
+          const[dx,dy]=desks[mi];
+          const px=dx*S+pad, py=dy*S+pad;
           const mst=pSt(mm);
-          return `<div class="rc-av" style="background:${avc(mm.name)};box-shadow:0 0 0 2px ${stColor(mst)}" title="${mm.name} · ${mm.role}" data-room="${r.id}" data-person="${mm.name}">${initials(mm.name)}</div>`;
-        }).join("")}</div>`;
+          const dotR=rv==="pulse"?4:5;
+
+          svg+=`<g class="person-g" data-room="${r.id}" data-person="${mm.name}">`;
+          if(rv==="content"){
+            svg+=`<rect x="${px-6}" y="${py-4}" width="12" height="8" rx="2" class="furn"/>`;
+          }
+          svg+=`<circle class="person-dot pd-${mst}" cx="${px}" cy="${py}" r="${dotR}" stroke="${stColor(mst)}"/>`;
+          svg+=`<text class="p-init" x="${px}" y="${py+1.3}" style="font-size:${rv==="pulse"?3:3.8}px">${initials(mm.name)}</text>`;
+          if(rv==="content"){
+            svg+=`<text class="p-name" x="${px}" y="${py+dotR+7}" style="font-size:6px;fill:var(--muted);text-anchor:middle;opacity:.8">${mm.name.split(" ")[0]}</text>`;
+          }
+          svg+=`</g>`;
+        });
       }
 
       if(!isPulse && rv==="content"){
-        html+=`<div class="rc-foot"><span><b>${openT}</b> açık</span>${blocked?`<span class="cb"><b>${blocked}</b> engel</span>`:""}<span><b>${done}</b> bitti</span></div>`;
+        const openT=(r.tasks||[]).filter(t2=>!t2.done).length;
+        const blocked=(r.tasks||[]).filter(t2=>t2.urgent&&!t2.done).length;
+        let foot=`${openT} açık`;
+        if(blocked)foot+=` · ${blocked} engel`;
+        svg+=`<text x="${x+w-8}" y="${y+h-6}" style="font-size:7px;fill:var(--dim);text-anchor:end;font-variant-numeric:tabular-nums">${foot}</text>`;
       }
 
-      html+=`</div>`;
-    });
-    html+='</div>';
-    ph.innerHTML=html;
+      if(rv==="shape"){
+        svg+=`<text x="${x+w/2}" y="${y+h/2+4}" style="font-size:16px;text-anchor:middle;opacity:.4">🔒</text>`;
+      }
 
-    ph.querySelectorAll(".room-card").forEach(el=>{
+      svg+=`</g>`;
+    });
+
+    svg+=`</svg>`;
+    ph.innerHTML=svg;
+
+    ph.querySelectorAll(".room-g").forEach(el=>{
       const rid=(el as HTMLElement).dataset.room!;
       const vis=(el as HTMLElement).dataset.vis!;
       el.addEventListener("click",e=>{
-        if((e.target as Element).closest(".rc-av"))return;
+        if((e.target as Element).closest(".person-g"))return;
         if(vis==="shape"){showDoor(f.rooms.find(x=>x.id===rid)!.name,"Bu alan yalnızca ilgili ekibe açık.","Erişim iste");return}
         if(vis==="pulse"){showDoorPulse(rid);return}
-        openSheet(rid);
+        showPopupRoom(rid,e as MouseEvent);
       });
+      el.addEventListener("mouseenter",e=>showTooltipRoom(e as MouseEvent,rid));
+      el.addEventListener("mouseleave",hideTooltip);
     });
-    ph.querySelectorAll(".rc-av").forEach(el=>{
+    ph.querySelectorAll(".person-g").forEach(el=>{
       el.addEventListener("click",e=>{
         e.stopPropagation();
         const rid=(el as HTMLElement).dataset.room!;
         const vis=roomVis(state.floor!,rid);
         if(vis!=="content"){showDoorPulse(rid);return}
         const pname=(el as HTMLElement).dataset.person!;
-        openSheet(rid,pname);
+        showPopupPerson(rid,pname,e as MouseEvent);
       });
     });
   }
@@ -827,15 +881,15 @@ function initSparkHQ(root: HTMLElement) {
 
   function openSheet(rid: string,person?: string){
     state.room=rid;state.person=person||null;
-    root.querySelectorAll(".room-card").forEach(el=>{
-      el.classList.toggle("active",(el as HTMLElement).dataset.room===rid);
+    root.querySelectorAll(".room-g").forEach(el=>{
+      el.classList.toggle("sel",(el as HTMLElement).dataset.room===rid);
     });
     renderSheet();$("#shqSheet")?.classList.add("open");renderCrumbs();
   }
   function closeSheet(){
     state.room=null;state.person=null;
     $("#shqSheet")?.classList.remove("open");
-    root.querySelectorAll(".room-card").forEach(el=>el.classList.remove("active"));
+    root.querySelectorAll(".room-g").forEach(el=>el.classList.remove("sel"));
     renderCrumbs();
   }
 
@@ -1093,7 +1147,7 @@ function initSparkHQ(root: HTMLElement) {
 
   $("#shqShClose")?.addEventListener("click",closeSheet);
   $("#planHolder")?.addEventListener("click",(e: Event)=>{
-    if(!(e.target as Element).closest(".room-card")){
+    if(!(e.target as Element).closest(".room-g")){
       if($("#shqPopup")?.classList.contains("show"))closePopup();
       else if(state.room&&$("#shqSheet")?.classList.contains("open"))closeSheet()
     }
