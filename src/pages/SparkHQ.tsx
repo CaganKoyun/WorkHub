@@ -517,7 +517,7 @@ function initSparkHQ(root: HTMLElement) {
 
   let curVB=[0,0,560,430];
   let vbAnim=0;
-  let planSvgEl: SVGSVGElement|null=null;
+  const planSvgEl: SVGSVGElement|null=null;
   const FULL_VB=[0,0,560,430];
   const ISO={cx:255,cy:70,s:2.05};
   function setVB(vb: number[]){curVB=vb;if(planSvgEl)planSvgEl.setAttribute("viewBox",vb.join(" "))}
