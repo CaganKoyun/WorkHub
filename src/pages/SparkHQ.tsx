@@ -2,15 +2,16 @@ import { useEffect, useRef, useCallback } from "react";
 import { AppLayout } from "@/components/AppLayout";
 
 const SPARK_HQ_CSS = `
-.shq{--bg:#17171A;--shell:#0E0E10;--panel:#1C1C1F;--card:#232327;--hover:#2A2A2F;--float:#2E2E33;
-  --border:rgba(255,255,255,.06);--border-hi:rgba(255,255,255,.12);
-  --ink:#F5F5F7;--muted:#A8A8B0;--dim:#6B6B75;
-  --lime:#C6F432;--lime-soft:rgba(198,244,50,.10);--lime-mid:rgba(198,244,50,.20);--lime-glow:rgba(198,244,50,.06);
-  --ok:#4ADE80;--ok-soft:rgba(74,222,128,.12);
-  --warn:#FBBF24;--warn-soft:rgba(251,191,36,.12);
-  --risk:#FF6B5E;--risk-soft:rgba(255,107,94,.12);
-  --elev1:0 1px 0 0 rgba(255,255,255,.02) inset,0 1px 2px 0 rgba(10,10,14,.5),0 8px 24px -8px rgba(10,10,14,.4);
-  --elev2:0 1px 0 0 rgba(255,255,255,.03) inset,0 2px 6px -1px rgba(10,10,14,.6),0 24px 60px -16px rgba(10,10,14,.55);
+.shq{--bg:#F6F6F3;--shell:#F6F6F3;--panel:#FFF;--card:#FFF;--hover:#F0F0ED;--float:#FFF;
+  --border:rgba(0,0,0,.08);--border-hi:rgba(0,0,0,.14);
+  --ink:#14161F;--muted:#6B6E7A;--dim:#9DA1AD;
+  --accent:#6D5EF4;--accent-soft:rgba(109,94,244,.10);--accent-mid:rgba(109,94,244,.20);--accent-glow:rgba(109,94,244,.06);
+  --ok:#17A34A;--ok-soft:rgba(23,163,74,.10);
+  --warn:#E9A23B;--warn-soft:rgba(233,162,59,.10);
+  --risk:#E0342B;--risk-soft:rgba(224,52,43,.10);
+  --line:#EAECF2;--line2:#D5D9E4;--corridor:#F1F2F5;--woodTop:#F9F1E3;
+  --elev1:0 1px 0 0 rgba(255,255,255,.6) inset,0 1px 2px 0 rgba(20,22,31,.06),0 8px 24px -8px rgba(20,22,31,.12);
+  --elev2:0 1px 0 0 rgba(255,255,255,.7) inset,0 2px 6px -1px rgba(20,22,31,.08),0 24px 60px -16px rgba(20,22,31,.18);
   --radius:12px;--radius-sm:8px;--radius-xs:6px;
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:13px;
   color:var(--ink);-webkit-font-smoothing:antialiased;
@@ -18,11 +19,11 @@ const SPARK_HQ_CSS = `
 .shq *,.shq *::before,.shq *::after{box-sizing:border-box;margin:0;padding:0}
 .shq button{font:inherit;cursor:pointer;color:inherit}
 .shq ::-webkit-scrollbar{width:5px}.shq ::-webkit-scrollbar-track{background:transparent}
-.shq ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
+.shq ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:3px}
 .shq .topbar{height:44px;display:flex;align-items:center;gap:12px;padding:0 20px;
   background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10}
 .shq .brand{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
-.shq .brand-mark{width:22px;height:22px;background:var(--lime);border-radius:6px;display:flex;align-items:center;
+.shq .brand-mark{width:22px;height:22px;background:var(--accent);border-radius:6px;display:flex;align-items:center;
   justify-content:center;font-weight:800;font-size:12px;color:var(--shell)}
 .shq .brand span{font-weight:400;color:var(--muted)}
 .shq .crumbs{display:flex;align-items:center;gap:2px;flex:1;min-width:0;font-size:12.5px}
@@ -33,7 +34,7 @@ const SPARK_HQ_CSS = `
 .shq .mode-tabs{display:flex;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px}
 .shq .mode-tabs button{border:none;background:none;font-size:12px;font-weight:600;color:var(--dim);
   padding:5px 12px;border-radius:var(--radius-sm);transition:all .15s}
-.shq .mode-tabs button.on{background:var(--lime-soft);color:var(--lime)}
+.shq .mode-tabs button.on{background:var(--accent-soft);color:var(--accent)}
 .shq .mode-tabs.hidden{visibility:hidden}
 .shq #shqStage{flex:1;position:relative;min-height:0;overflow:hidden}
 .shq .view{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center}
@@ -41,7 +42,7 @@ const SPARK_HQ_CSS = `
 .shq .hq-hero{text-align:center;margin-bottom:12px}
 .shq .hq-hero h2{font-size:22px;font-weight:700;letter-spacing:-.03em}
 .shq .hq-hero p{font-size:13px;color:var(--muted);margin-top:4px}
-.shq .hq-hero em{font-style:normal;color:var(--lime)}
+.shq .hq-hero em{font-style:normal;color:var(--accent)}
 .shq .pulse-strip{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
 .shq .ps-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .shq .ps-item b{font-weight:800;font-size:15px;color:var(--ink)}
@@ -59,28 +60,28 @@ const SPARK_HQ_CSS = `
 .shq .cam-reset:hover{background:var(--hover);color:var(--ink)}
 .shq .bfloor{cursor:pointer}
 .shq .bfloor .face-top{transition:fill .2s}
-.shq .bfloor:hover .face-top{fill:#2A2A2F !important}
+.shq .bfloor:hover .face-top{fill:#E8E8E5 !important}
 .shq .bfloor:hover .fl-glow{opacity:1 !important}
 .shq .bf-name{font-size:13px;font-weight:700;fill:var(--ink);pointer-events:none;letter-spacing:-.01em}
 .shq .bf-stat{font-size:10px;fill:var(--muted);pointer-events:none;font-weight:600}
 .shq .bf-stat.risk{fill:var(--risk)}.shq .bf-stat.warn{fill:var(--warn)}.shq .bf-stat.ok{fill:var(--ok)}
 .shq .bfloor.draggable{cursor:grab}
 .shq .bfloor.dragging{cursor:grabbing;opacity:.88}
-.shq .bfloor.dragging .face-top{fill:#2A2A2F !important}
+.shq .bfloor.dragging .face-top{fill:#E8E8E5 !important}
 .shq .grip{opacity:0;transition:opacity .15s;fill:var(--dim);font-size:13px;font-weight:800}
 .shq .bfloor.draggable:hover .grip{opacity:1}
-.shq #dropInd{stroke:var(--lime);stroke-width:2.5;stroke-dasharray:7 5;opacity:0;pointer-events:none}
+.shq #dropInd{stroke:var(--accent);stroke-width:2.5;stroke-dasharray:7 5;opacity:0;pointer-events:none}
 .shq #dropInd.show{opacity:1}
 .shq .drag-hint{font-size:11px;color:var(--dim);margin-top:5px;text-align:center}
 .shq .fctl{opacity:0;transition:opacity .15s;cursor:pointer}
 .shq .bfloor:hover .fctl{opacity:1}
 .shq .fctl circle{fill:var(--card);stroke:var(--border);stroke-width:1}
-.shq .fctl:hover circle{stroke:var(--lime)}
+.shq .fctl:hover circle{stroke:var(--accent)}
 .shq .fctl text{font-size:9.5px;fill:var(--muted);text-anchor:middle;font-weight:700;pointer-events:none}
-.shq .fctl:hover text{fill:var(--lime)}
+.shq .fctl:hover text{fill:var(--accent)}
 .shq .fctl.del:hover circle{stroke:var(--risk)}
 .shq .fctl.del:hover text{fill:var(--risk)}
-.shq #shqModal{position:absolute;inset:0;background:rgba(10,10,14,.5);display:none;align-items:center;justify-content:center;z-index:60}
+.shq #shqModal{position:absolute;inset:0;background:rgba(20,22,31,.35);display:none;align-items:center;justify-content:center;z-index:60}
 .shq #shqModal.open{display:flex}
 .shq .modal-card{width:min(400px,92vw);background:var(--panel);border:1px solid var(--border-hi);border-radius:var(--radius);box-shadow:var(--elev2);padding:22px}
 .shq .modal-card h3{font-size:16px;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
@@ -88,19 +89,19 @@ const SPARK_HQ_CSS = `
 .shq .mfield{margin-bottom:12px}
 .shq .mfield label{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:6px}
 .shq .mfield input{width:100%;border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 12px;font:inherit;font-size:13px;outline:none;background:var(--card);color:var(--ink)}
-.shq .mfield input:focus{border-color:var(--lime)}
+.shq .mfield input:focus{border-color:var(--accent)}
 .shq .modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
 .shq .hq-tools{display:flex;align-items:center;gap:12px;margin-top:6px;flex-wrap:wrap;justify-content:center}
 .shq .sortseg{display:flex;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px}
 .shq .sortseg span{font-size:10.5px;color:var(--dim);align-self:center;padding:0 6px 0 9px;font-weight:700;letter-spacing:.06em}
 .shq .sortseg button{border:none;background:none;font-size:12px;font-weight:600;color:var(--muted);padding:5px 11px;border-radius:7px}
-.shq .sortseg button.on{background:var(--lime-soft);color:var(--lime)}
+.shq .sortseg button.on{background:var(--accent-soft);color:var(--accent)}
 .shq .addbtn{display:flex;align-items:center;gap:6px;border:1px dashed var(--border);background:var(--card);
   border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
-.shq .addbtn:hover{border-color:var(--lime);color:var(--lime)}
+.shq .addbtn:hover{border-color:var(--accent);color:var(--accent)}
 .shq .chip{border:1px solid var(--border);background:var(--card);border-radius:10px;padding:6px 11px;
   font-size:12px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer}
-.shq .chip:hover{border-color:var(--lime);color:var(--lime)}
+.shq .chip:hover{border-color:var(--accent);color:var(--accent)}
 .shq .empty-floor{text-align:center;color:var(--muted);padding:40px}
 .shq .empty-floor .ico{font-size:38px;margin-bottom:10px}
 .shq .empty-floor p{font-size:13px;margin-bottom:14px}
@@ -114,13 +115,13 @@ const SPARK_HQ_CSS = `
 .shq .floor-header h2{font-size:18px;font-weight:700;letter-spacing:-.02em}
 .shq .floor-header .fh-sub{font-size:12px;color:var(--dim)}
 .shq .plan-holder{flex:1;min-height:0;position:relative;overflow:auto;padding:16px 24px 80px;display:flex;align-items:flex-start;justify-content:center}
-.shq .room-poly{fill:var(--card);stroke:rgba(255,255,255,.06);stroke-width:1;cursor:pointer;transition:fill .2s,stroke .2s}
-.shq .room-g:hover .room-poly{fill:var(--hover);stroke:rgba(255,255,255,.1)}
-.shq .room-g.sel .room-poly{stroke:var(--lime);stroke-width:1.6;fill:rgba(198,244,50,.04)}
-.shq .pulse .room-poly.p-risk{fill:rgba(255,107,94,.08);stroke:rgba(255,107,94,.25)}
-.shq .pulse .room-poly.p-warn{fill:rgba(251,191,36,.06);stroke:rgba(251,191,36,.2)}
-.shq .pulse .room-poly.p-ok{fill:rgba(74,222,128,.05);stroke:rgba(74,222,128,.15)}
-.shq .furn{fill:var(--panel);stroke:rgba(255,255,255,.04);stroke-width:.7;pointer-events:none}
+.shq .room-poly{fill:var(--woodTop);stroke:rgba(0,0,0,.08);stroke-width:1;cursor:pointer;transition:fill .2s,stroke .2s}
+.shq .room-g:hover .room-poly{fill:#F0E8D6;stroke:rgba(0,0,0,.12)}
+.shq .room-g.sel .room-poly{stroke:var(--accent);stroke-width:1.6;fill:rgba(109,94,244,.04)}
+.shq .pulse .room-poly.p-risk{fill:rgba(224,52,43,.10);stroke:rgba(224,52,43,.3)}
+.shq .pulse .room-poly.p-warn{fill:rgba(233,162,59,.08);stroke:rgba(233,162,59,.25)}
+.shq .pulse .room-poly.p-ok{fill:rgba(23,163,74,.06);stroke:rgba(23,163,74,.18)}
+.shq .furn{fill:#E2E5EE;stroke:rgba(0,0,0,.06);stroke-width:.7;pointer-events:none}
 .shq .person-dot{stroke-width:1.4;fill:var(--card);cursor:pointer;transition:fill .15s}
 .shq .pd-ok{stroke:var(--ok)}.shq .pd-warn{stroke:var(--warn)}.shq .pd-risk{stroke:var(--risk)}
 .shq .person-g:hover .person-dot{fill:var(--ink)}
@@ -131,7 +132,7 @@ const SPARK_HQ_CSS = `
 .shq .rcard{cursor:pointer;transition:opacity .2s}
 .shq svg.zoomed .rcard.sel{opacity:0;pointer-events:none}
 .shq .rcard rect{fill:var(--card);stroke:var(--border);stroke-width:.8;rx:6;ry:6}
-.shq .rcard.sel rect{stroke:var(--lime);stroke-width:1.4}
+.shq .rcard.sel rect{stroke:var(--accent);stroke-width:1.4}
 .shq .rc-name{font-size:11px;font-weight:700;fill:var(--ink)}
 .shq .rc-sub{font-size:9px;fill:var(--muted)}
 .shq .rc-status{font-size:9px;font-weight:700;letter-spacing:.03em}
@@ -180,15 +181,15 @@ const SPARK_HQ_CSS = `
 .shq .pop-meta b{color:var(--ink);font-weight:700;margin-right:3px}
 .shq .pop-meta .cb b{color:var(--risk)}
 .shq .pop-foot{display:flex;gap:6px;padding:0 16px 14px}
-.shq .btn-lime{background:var(--lime);color:var(--shell);border:none;border-radius:var(--radius-sm);
+.shq .btn-lime{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);
   padding:7px 14px;font-size:12px;font-weight:700;transition:background .15s,transform .1s}
-.shq .btn-lime:hover{background:#d4ff4a}.shq .btn-lime:active{transform:scale(.97)}
+.shq .btn-lime:hover{background:#5B4ED4}.shq .btn-lime:active{transform:scale(.97)}
 .shq .btn-ghost{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
   padding:7px 12px;font-size:12px;font-weight:600;color:var(--muted);transition:border-color .15s,color .15s}
-.shq .btn-ghost:hover{border-color:var(--lime);color:var(--lime)}
+.shq .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
 .shq .btn-danger{background:var(--risk-soft);border:1px solid var(--risk);border-radius:var(--radius-sm);
   padding:7px 14px;font-size:12px;font-weight:700;color:var(--risk);transition:background .15s,transform .1s}
-.shq .btn-danger:hover{background:rgba(255,107,94,.2)}.shq .btn-danger:active{transform:scale(.97)}
+.shq .btn-danger:hover{background:rgba(224,52,43,.18)}.shq .btn-danger:active{transform:scale(.97)}
 .shq .pp-header{display:flex;align-items:center;gap:10px;margin-bottom:4px}
 .shq .pp-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-weight:800;font-size:14px;color:#fff}
@@ -200,7 +201,7 @@ const SPARK_HQ_CSS = `
 .shq .pp-li .lmeta{color:var(--dim);font-size:10.5px;margin-top:1px}
 .shq .goalline{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:12px}
 .shq .goalline .gbar{flex:1;max-width:80px;height:3px;background:var(--hover);border-radius:2px;overflow:hidden}
-.shq .goalline .gbar i{display:block;height:100%;background:var(--lime)}
+.shq .goalline .gbar i{display:block;height:100%;background:var(--accent)}
 .shq .goalline .gp{margin-left:auto;font-weight:700;font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
 .shq #shqSheet{position:absolute;top:0;right:0;bottom:0;width:min(420px,94vw);background:var(--panel);
   border-left:1px solid var(--border);box-shadow:var(--elev2);transform:translateX(105%);
@@ -208,7 +209,7 @@ const SPARK_HQ_CSS = `
 .shq #shqSheet.open{transform:none}
 .shq .sheet-head{display:flex;align-items:center;gap:8px;padding:14px 18px 0;flex-shrink:0}
 .shq .sh-back{background:none;border:none;color:var(--dim);font-size:12px;padding:0;display:none;transition:color .15s}
-.shq .sh-back.show{display:inline}.shq .sh-back:hover{color:var(--lime)}
+.shq .sh-back.show{display:inline}.shq .sh-back:hover{color:var(--accent)}
 .shq .sh-x{margin-left:auto;background:none;border:none;color:var(--dim);font-size:16px;width:28px;height:28px;
   display:flex;align-items:center;justify-content:center;border-radius:var(--radius-xs);transition:all .15s}
 .shq .sh-x:hover{background:var(--hover);color:var(--ink)}
@@ -232,7 +233,7 @@ const SPARK_HQ_CSS = `
 .shq .chips{display:flex;flex-wrap:wrap;gap:6px}
 .shq .pchip{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:99px;
   padding:4px 10px 4px 4px;font-size:12px;font-weight:600;background:var(--card);cursor:pointer;transition:border-color .15s}
-.shq .pchip:hover{border-color:var(--lime)}
+.shq .pchip:hover{border-color:var(--accent)}
 .shq .pchip .pav{width:20px;height:20px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;
   display:flex;align-items:center;justify-content:center}
 .shq .pchip .pst{width:6px;height:6px;border-radius:50%}
@@ -250,7 +251,7 @@ const SPARK_HQ_CSS = `
 .shq .wgroup h4{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:6px}
 .shq .wrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);
   border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:4px;cursor:pointer;font-size:13px;transition:border-color .15s}
-.shq .wrow:hover{border-color:var(--lime)}
+.shq .wrow:hover{border-color:var(--accent)}
 .shq .wrow .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .shq .wrow .wt{flex:1;font-weight:600;min-width:0}
 .shq .wrow .wr{font-size:11.5px;color:var(--dim)}
@@ -262,15 +263,15 @@ const SPARK_HQ_CSS = `
   font-family:'Geist Mono','SF Mono',ui-monospace,monospace}
 .shq #shqReplay button{border:none;background:none;font-size:11.5px;font-weight:600;color:var(--dim);
   padding:5px 10px;border-radius:99px;transition:all .15s}
-.shq #shqReplay button.on{background:var(--lime);color:var(--shell)}
+.shq #shqReplay button.on{background:var(--accent);color:var(--shell)}
 .shq #shqReplayNote{position:absolute;left:50%;bottom:56px;transform:translateX(-50%);background:var(--float);
   border:1px solid var(--border-hi);color:var(--ink);font-size:12px;padding:8px 14px;
   border-radius:var(--radius-sm);max-width:min(500px,90vw);text-align:center;z-index:15;display:none;box-shadow:var(--elev1)}
 .shq #shqReplayNote.show{display:block}
 .shq #shqAskBtn{position:absolute;right:16px;bottom:14px;z-index:15;display:flex;align-items:center;gap:8px;
-  background:var(--lime);color:var(--shell);border:none;border-radius:99px;padding:9px 16px;
+  background:var(--accent);color:var(--shell);border:none;border-radius:99px;padding:9px 16px;
   font-size:12.5px;font-weight:700;box-shadow:var(--elev1);transition:background .15s,transform .1s}
-.shq #shqAskBtn:hover{background:#d4ff4a}.shq #shqAskBtn:active{transform:scale(.97)}
+.shq #shqAskBtn:hover{background:#5B4ED4}.shq #shqAskBtn:active{transform:scale(.97)}
 .shq #shqAskBtn kbd{font-family:'Geist Mono','SF Mono',ui-monospace,monospace;font-size:10px;
   background:rgba(0,0,0,.12);border-radius:4px;padding:2px 5px}
 .shq #shqAskPanel{position:absolute;right:16px;bottom:60px;width:min(360px,92vw);max-height:55vh;
@@ -281,14 +282,14 @@ const SPARK_HQ_CSS = `
 .shq .ask-head b{font-size:13px}
 .shq .ask-ctx{font-size:10.5px;color:var(--dim);margin-top:2px}
 .shq .ask-thread{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:8px}
-.shq .ask-q{align-self:flex-end;background:var(--lime-soft);color:var(--lime);font-weight:600;font-size:12px;
+.shq .ask-q{align-self:flex-end;background:var(--accent-soft);color:var(--accent);font-weight:600;font-size:12px;
   padding:7px 12px;border-radius:12px 12px 4px 12px;max-width:88%}
 .shq .ask-a{align-self:flex-start;background:var(--card);font-size:12px;line-height:1.5;padding:9px 12px;
   border-radius:12px 12px 12px 4px;max-width:92%;color:var(--muted)}
 .shq .ask-sugs{display:flex;flex-direction:column;gap:4px;padding:0 14px 8px}
 .shq .ask-sugs button{text-align:left;border:1px solid var(--border);background:var(--card);border-radius:var(--radius-sm);
   padding:7px 10px;font-size:12px;color:var(--muted);transition:border-color .15s,color .15s}
-.shq .ask-sugs button:hover{border-color:var(--lime);color:var(--lime)}
+.shq .ask-sugs button:hover{border-color:var(--accent);color:var(--accent)}
 .shq .ask-input{display:flex;border-top:1px solid var(--border)}
 .shq .ask-input input{flex:1;border:none;outline:none;font:inherit;font-size:12.5px;padding:11px 14px;
   background:transparent;color:var(--ink)}
@@ -297,8 +298,8 @@ const SPARK_HQ_CSS = `
 .shq .role-sw{display:flex;align-items:center;gap:2px;margin-left:8px}
 .shq .role-av{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);cursor:pointer;
   transition:all .2s;display:flex;align-items:center;justify-content:center;background:var(--card);position:relative;flex-shrink:0}
-.shq .role-av:hover{border-color:var(--lime-mid);transform:scale(1.1)}
-.shq .role-av.on{border-color:var(--lime);box-shadow:0 0 0 2px rgba(198,244,50,.18)}
+.shq .role-av:hover{border-color:var(--accent-mid);transform:scale(1.1)}
+.shq .role-av.on{border-color:var(--accent);box-shadow:0 0 0 2px rgba(109,94,244,.18)}
 .shq .role-av svg{width:26px;height:26px;border-radius:50%;pointer-events:none}
 .shq .role-av .role-tip{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;
   background:var(--float);border:1px solid var(--border-hi);border-radius:var(--radius-xs);padding:5px 10px;
@@ -307,24 +308,24 @@ const SPARK_HQ_CSS = `
 .shq .role-av .role-badge-icon{position:absolute;bottom:-3px;right:-3px;font-size:10px;line-height:1;
   background:var(--card);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;
   border:1px solid var(--border);pointer-events:none}
-.shq .empathy-bar{display:none;align-items:center;gap:8px;background:rgba(198,244,50,.08);
-  border:1px solid rgba(198,244,50,.15);border-radius:99px;padding:4px 12px 4px 8px;font-size:11px;color:var(--lime);font-weight:600;
+.shq .empathy-bar{display:none;align-items:center;gap:8px;background:rgba(109,94,244,.08);
+  border:1px solid rgba(109,94,244,.15);border-radius:99px;padding:4px 12px 4px 8px;font-size:11px;color:var(--accent);font-weight:600;
   position:absolute;top:52px;left:50%;transform:translateX(-50%);z-index:16}
 .shq .empathy-bar.show{display:flex}
 .shq .empathy-bar button{background:none;border:none;color:var(--dim);font-size:11px;padding:2px 6px;cursor:pointer}
-.shq .empathy-bar button:hover{color:var(--lime)}
+.shq .empathy-bar button:hover{color:var(--accent)}
 .shq .bfloor.frosted .face-top{opacity:.55}
 .shq .bfloor.frosted .bf-stat{opacity:.5}
-.shq .bfloor.frosted:hover .face-top{fill:#252528 !important}
-.shq .bfloor.locked .face-top{opacity:.3}
+.shq .bfloor.frosted:hover .face-top{fill:#ECECE8 !important}
+.shq .bfloor.locked .face-top{opacity:.4}
 .shq .bfloor.locked .bf-name{opacity:.5}
 .shq .bfloor.locked .bf-stat{display:none}
-.shq .bfloor.locked:hover .face-top{fill:#222225 !important}
-.shq .room-g.frosted .room-poly{fill:rgba(255,255,255,.02)!important;stroke-dasharray:4 3}
+.shq .bfloor.locked:hover .face-top{fill:#EFEFEC !important}
+.shq .room-g.frosted .room-poly{fill:rgba(0,0,0,.02)!important;stroke-dasharray:4 3}
 .shq .room-g.frosted .person-dot,.shq .room-g.frosted .p-init{opacity:.25}
 .shq .room-g.frosted .p-name{display:none}
 .shq .room-g.frosted .furn{opacity:.3}
-.shq .room-g.locked .room-poly{fill:rgba(255,255,255,.01)!important;stroke-dasharray:6 4;stroke:rgba(255,255,255,.04)!important}
+.shq .room-g.locked .room-poly{fill:rgba(0,0,0,.015)!important;stroke-dasharray:6 4;stroke:rgba(0,0,0,.06)!important}
 .shq .room-g.locked .person-dot,.shq .room-g.locked .p-init,.shq .room-g.locked .p-name,.shq .room-g.locked .furn{display:none}
 .shq .rcard.frosted .rc-sub{display:none}.shq .rcard.frosted .rc-status{opacity:.5}
 .shq .rcard.locked rect{opacity:.3}.shq .rcard.locked .rc-sub,.shq .rcard.locked .rc-status{display:none}
@@ -364,7 +365,7 @@ const SPARK_HQ_CSS = `
 .shq .room-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   padding:16px;cursor:pointer;transition:border-color .2s,box-shadow .2s;display:flex;flex-direction:column;gap:8px}
 .shq .room-card:hover{border-color:var(--border-hi);box-shadow:var(--elev1)}
-.shq .room-card.active{border-color:var(--lime);box-shadow:0 0 0 1px rgba(198,244,50,.15)}
+.shq .room-card.active{border-color:var(--accent);box-shadow:0 0 0 1px rgba(109,94,244,.15)}
 .shq .rc-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .shq .rc-head .rc-title{font-size:14px;font-weight:700;letter-spacing:-.01em}
 .shq .rc-head .rc-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;
@@ -390,10 +391,10 @@ const SPARK_HQ_CSS = `
   border-top:1px solid var(--border);padding-top:8px;margin-top:4px}
 .shq .rc-foot b{color:var(--ink);font-weight:700;margin-right:2px}
 .shq .rc-foot .cb b{color:var(--risk)}
-.shq .room-card.frosted{border-style:dashed;border-color:rgba(255,255,255,.06)}
+.shq .room-card.frosted{border-style:dashed;border-color:rgba(0,0,0,.08)}
 .shq .room-card.frosted .rc-mission,.shq .room-card.frosted .rc-bar,.shq .room-card.frosted .rc-warn,.shq .room-card.frosted .rc-foot{display:none}
 .shq .room-card.frosted .rc-team .rc-av{opacity:.4}
-.shq .room-card.locked{border-style:dashed;border-color:rgba(255,255,255,.04);opacity:.5;cursor:not-allowed}
+.shq .room-card.locked{border-style:dashed;border-color:rgba(0,0,0,.06);opacity:.5;cursor:not-allowed}
 .shq .room-card.locked .rc-mission,.shq .room-card.locked .rc-bar,.shq .room-card.locked .rc-warn,
 .shq .room-card.locked .rc-team,.shq .room-card.locked .rc-foot{display:none}
 @media(prefers-reduced-motion:reduce){.shq *,.shq *::before,.shq *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -605,7 +606,7 @@ function initSparkHQ(root: HTMLElement) {
         "Bugun: 3 gorev · 1 toplanti","Seni bekleyenler: Backend refactor (Diren)",
         "Ekibin: Mobile Squad · YOLUNDA · v2.4 %72"],
       floorAccess:{growth:"pulse",satis:"pulse",finans:"shape",lobi:"pulse"},ownRooms:["mobile"],
-      avatar:{skin:"#D4A574",hair:"#1a1a1a",hairStyle:"curly",acc:"headset",accColor:"var(--lime)",shirt:"#065f46",badge:"💻"}},
+      avatar:{skin:"#D4A574",hair:"#1a1a1a",hairStyle:"curly",acc:"headset",accColor:"var(--accent)",shirt:"#065f46",badge:"💻"}},
   };
   const activeRole=()=>ROLE_PROFILES[state.empathy||state.role];
   const floorVis=(fid: string)=>{const p=activeRole();return (p.floorAccess[fid]||"content") as string};
@@ -676,7 +677,7 @@ function initSparkHQ(root: HTMLElement) {
     return s==="ok"?f.sub:ST[s].t;
   };
   const pSt=(mm: Member)=>pdOf(mm).st;
-  const stColor=(s: string)=>s==="risk"?"var(--risk)":s==="warn"?"var(--warn)":"var(--lime)";
+  const stColor=(s: string)=>s==="risk"?"var(--risk)":s==="warn"?"var(--warn)":"var(--accent)";
 
   const cam={rot:Math.PI/4,tilt:0.616};
   let camDrag:{x:number;y:number;rot:number;tilt:number}|null=null;
@@ -766,7 +767,7 @@ function initSparkHQ(root: HTMLElement) {
     if(kpis)kpis.innerHTML=`
       <span class="ps-item risk"><span class="ps-dot" style="background:var(--risk)"></span><b>${riskRooms+4}</b> riskte is</span>
       <span class="ps-item ok"><span class="ps-dot" style="background:var(--ok)"></span><b>27</b> tamamlanan</span>
-      <span class="ps-item"><span class="ps-dot" style="background:var(--lime)"></span><b>5</b> milestone</span>`;
+      <span class="ps-item"><span class="ps-dot" style="background:var(--accent)"></span><b>5</b> milestone</span>`;
 
     const bcPt=P(W/2,D/2,n*H/2,0,0,s);
     const cx=-bcPt[0],cy=-bcPt[1];
@@ -785,7 +786,39 @@ function initSparkHQ(root: HTMLElement) {
     const showRight=Math.sin(cam.rot)>0;
 
     let svg=`<svg viewBox="${vx0} ${vy0} ${vx1-vx0} ${vy1-vy0}" xmlns="http://www.w3.org/2000/svg">`;
-    svg+=`<polygon points="${pts([P(-g,-g,0,cx,cy,s),P(W+g,-g,0,cx,cy,s),P(W+g,D+g,0,cx,cy,s),P(-g,D+g,0,cx,cy,s)])}" fill="#111114"/>`;
+    svg+=`<defs>
+      <linearGradient id="glassF" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#B0C4E8" stop-opacity="0.35"/>
+        <stop offset="50%" stop-color="#8FAED8" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="#A0BEE0" stop-opacity="0.32"/>
+      </linearGradient>
+      <linearGradient id="glassR" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#98B6D8" stop-opacity="0.30"/>
+        <stop offset="100%" stop-color="#7AA0CC" stop-opacity="0.22"/>
+      </linearGradient>
+      <linearGradient id="warm" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FFF8E8" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#FFE8B0" stop-opacity="0.5"/>
+      </linearGradient>
+    </defs>`;
+    svg+=`<polygon points="${pts([P(-g,-g,0,cx,cy,s),P(W+g,-g,0,cx,cy,s),P(W+g,D+g,0,cx,cy,s),P(-g,D+g,0,cx,cy,s)])}" fill="#E8EAD8"/>`;
+
+    // Simple landscape elements around the building base
+    const treeSvg=(tx: number,ty: number,tz: number)=>{
+      const[bx,by]=P(tx,ty,tz,cx,cy,s);
+      const[tx2,ty2]=P(tx,ty,tz+20,cx,cy,s);
+      return `<line x1="${bx}" y1="${by}" x2="${tx2}" y2="${ty2}" stroke="#8B6914" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="${tx2}" cy="${ty2-6}" r="8" fill="#3A8B2A" opacity="0.8"/>
+        <circle cx="${tx2-3}" cy="${ty2-3}" r="6" fill="#4DA63A" opacity="0.7"/>
+        <circle cx="${tx2+4}" cy="${ty2-4}" r="5" fill="#5CB849" opacity="0.6"/>`;
+    };
+    const treePositions: [number,number,number][]=[
+      [-15,20,0],[-15,50,0],[-15,80,0],
+      [W+15,25,0],[W+15,55,0],[W+15,85,0],
+      [30,-15,0],[80,-15,0],[130,-15,0],
+      [40,D+15,0],[90,D+15,0],[140,D+15,0],
+    ];
+    treePositions.forEach(([tx,ty,tz])=>{svg+=treeSvg(tx,ty,tz)});
 
     // Track non-lobby order index for drag
     let nonLobbyIdx = 0;
@@ -811,7 +844,7 @@ function initSparkHQ(root: HTMLElement) {
       const[lx,ly]=P(labelX0,labelFaceY,zb+H*.62,cx,cy,s);
       const[sx,sy]=P(labelX0,labelFaceY,zb+H*.26,cx,cy,s);
       const[dx,dy]=P(dotX,labelFaceY,zb+H*.5,cx,cy,s);
-      const riskOutline=st2==="risk"?`<polygon points="${sideA}" fill="rgba(255,107,94,.04)" stroke="var(--risk)" stroke-width="1.4" stroke-dasharray="4 3"/>`:"";
+      const riskOutline=st2==="risk"?`<polygon points="${sideA}" fill="rgba(224,52,43,.06)" stroke="var(--risk)" stroke-width="1.4" stroke-dasharray="4 3"/>`:"";
 
       // Floor control positions
       const fctlBaseX = showFront ? labelX0 : labelX0;
@@ -821,11 +854,51 @@ function initSparkHQ(root: HTMLElement) {
       // Grip position
       const[gx,gy]=P(fctlBaseX + (showFront?-8:8), labelFaceY, zb+H*.5, cx, cy, s);
 
+      // Glass facade windows on the visible faces
+      let windows="";
+      const windowCount=5;
+      const ww2=W/(windowCount+1);
+      for(let wi=1;wi<=windowCount;wi++){
+        const wx=wi*ww2, wz1=zb+H*0.15, wz2=zb+H*0.85;
+        if(showFront){
+          windows+=`<polygon points="${pts([P(wx-ww2*0.35,D,wz1,cx,cy,s),P(wx+ww2*0.35,D,wz1,cx,cy,s),P(wx+ww2*0.35,D,wz2,cx,cy,s),P(wx-ww2*0.35,D,wz2,cx,cy,s)])}" fill="url(#glassF)" opacity="0.6"/>`;
+          windows+=`<polygon points="${pts([P(wx-ww2*0.3,D,wz1+2,cx,cy,s),P(wx+ww2*0.3,D,wz1+2,cx,cy,s),P(wx+ww2*0.3,D,wz2-2,cx,cy,s),P(wx-ww2*0.3,D,wz2-2,cx,cy,s)])}" fill="url(#warm)" opacity="0.3"/>`;
+        }else{
+          windows+=`<polygon points="${pts([P(wx-ww2*0.35,0,wz1,cx,cy,s),P(wx+ww2*0.35,0,wz1,cx,cy,s),P(wx+ww2*0.35,0,wz2,cx,cy,s),P(wx-ww2*0.35,0,wz2,cx,cy,s)])}" fill="url(#glassF)" opacity="0.6"/>`;
+          windows+=`<polygon points="${pts([P(wx-ww2*0.3,0,wz1+2,cx,cy,s),P(wx+ww2*0.3,0,wz1+2,cx,cy,s),P(wx+ww2*0.3,0,wz2-2,cx,cy,s),P(wx-ww2*0.3,0,wz2-2,cx,cy,s)])}" fill="url(#warm)" opacity="0.3"/>`;
+        }
+      }
+      const sideWindowCount=3;
+      const sw2=D/(sideWindowCount+1);
+      for(let wi=1;wi<=sideWindowCount;wi++){
+        const wy=wi*sw2, wz1=zb+H*0.15, wz2=zb+H*0.85;
+        if(showRight){
+          windows+=`<polygon points="${pts([P(W,wy-sw2*0.35,wz1,cx,cy,s),P(W,wy+sw2*0.35,wz1,cx,cy,s),P(W,wy+sw2*0.35,wz2,cx,cy,s),P(W,wy-sw2*0.35,wz2,cx,cy,s)])}" fill="url(#glassR)" opacity="0.6"/>`;
+          windows+=`<polygon points="${pts([P(W,wy-sw2*0.3,wz1+2,cx,cy,s),P(W,wy+sw2*0.3,wz1+2,cx,cy,s),P(W,wy+sw2*0.3,wz2-2,cx,cy,s),P(W,wy-sw2*0.3,wz2-2,cx,cy,s)])}" fill="url(#warm)" opacity="0.3"/>`;
+        }else{
+          windows+=`<polygon points="${pts([P(0,wy-sw2*0.35,wz1,cx,cy,s),P(0,wy+sw2*0.35,wz1,cx,cy,s),P(0,wy+sw2*0.35,wz2,cx,cy,s),P(0,wy-sw2*0.35,wz2,cx,cy,s)])}" fill="url(#glassR)" opacity="0.6"/>`;
+          windows+=`<polygon points="${pts([P(0,wy-sw2*0.3,wz1+2,cx,cy,s),P(0,wy+sw2*0.3,wz1+2,cx,cy,s),P(0,wy+sw2*0.3,wz2-2,cx,cy,s),P(0,wy-sw2*0.3,wz2-2,cx,cy,s)])}" fill="url(#warm)" opacity="0.3"/>`;
+        }
+      }
+      // Vegetation on floor edges
+      let veg="";
+      const vegCount=6;
+      for(let vi=0;vi<vegCount;vi++){
+        const vx=(vi+0.5)*W/vegCount;
+        const vs=3+Math.sin(vx*0.1+zb*0.05)*2;
+        if(showFront){
+          const[vp1x,vp1y]=P(vx,D,zb,cx,cy,s);
+          veg+=`<ellipse cx="${vp1x}" cy="${vp1y+vs/2}" rx="4" ry="${vs}" fill="#4DA63A" opacity="0.5"/>`;
+        }
+      }
+
       svg+=`<g class="bfloor${isDraggable?" draggable":""}" data-f="${f.id}" data-ord="${ordIdx}">
-        <polygon points="${sideA}" fill="#1C1C1F" stroke="rgba(255,255,255,.05)"/>
-        <polygon points="${sideB}" fill="#202024" stroke="rgba(255,255,255,.05)"/>
-        <polygon class="face-top" points="${top}" fill="#232327" stroke="rgba(255,255,255,.06)"/>
-        <polygon class="fl-glow" points="${top}" fill="${st2==="risk"?"rgba(255,107,94,.06)":st2==="warn"?"rgba(251,191,36,.05)":"rgba(198,244,50,.04)"}" style="opacity:0;transition:opacity .3s"/>
+        <polygon points="${sideA}" fill="#E1E4ED" stroke="#CFD3E0"/>
+        <polygon points="${sideB}" fill="#EAECF3" stroke="#CFD3E0"/>
+        <polygon class="face-top" points="${top}" fill="#F0F2F8" stroke="#D5D9E4"/>
+        ${windows}
+        ${veg}
+        <polygon class="fl-glow" points="${top}" fill="${st2==="risk"?"rgba(224,52,43,.08)":st2==="warn"?"rgba(233,162,59,.07)":"rgba(109,94,244,.05)"}" style="opacity:0;transition:opacity .3s"/>
         <text class="bf-name" x="${lx}" y="${ly}">${f.name}</text>
         <text class="bf-stat ${st2==="risk"?"risk":st2==="warn"?"warn":"ok"}" x="${sx}" y="${sy}">${fLabel(f)}</text>
         <circle cx="${dx}" cy="${dy}" r="4.5" fill="${sc}"/>
@@ -859,11 +932,11 @@ function initSparkHQ(root: HTMLElement) {
       :pts([P(104,36,rz,cx,cy,s),P(104,12,rz,cx,cy,s),P(104,12,rz+13,cx,cy,s),P(104,36,rz+13,cx,cy,s)]);
     const antTop=pts([P(104,12,rz+13,cx,cy,s),P(138,12,rz+13,cx,cy,s),P(138,36,rz+13,cx,cy,s),P(104,36,rz+13,cx,cy,s)]);
     const antLight=P(121,24,rz+16,cx,cy,s);
-    svg+=`<polygon points="${antSideA}" fill="#18181B" stroke="rgba(255,255,255,.04)"/>
-    <polygon points="${antSideB}" fill="#1A1A1E" stroke="rgba(255,255,255,.04)"/>
-    <polygon points="${antTop}" fill="#1E1E22" stroke="rgba(255,255,255,.05)"/>
-    <circle cx="${antLight[0]}" cy="${antLight[1]}" r="3" fill="var(--lime)" opacity=".6"/>
-    <circle cx="${antLight[0]}" cy="${antLight[1]}" r="8" fill="var(--lime)" opacity=".08"/>`;
+    svg+=`<polygon points="${antSideA}" fill="#D5D9E4" stroke="#CFD3E0"/>
+    <polygon points="${antSideB}" fill="#E2E5EE" stroke="#CFD3E0"/>
+    <polygon points="${antTop}" fill="#EDEFF5" stroke="#D5D9E4"/>
+    <circle cx="${antLight[0]}" cy="${antLight[1]}" r="3" fill="var(--accent)" opacity=".7"/>
+    <circle cx="${antLight[0]}" cy="${antLight[1]}" r="8" fill="var(--accent)" opacity=".1"/>`;
 
     // Drop indicator line for drag-and-drop
     svg += `<line id="dropInd" x1="0" y1="0" x2="0" y2="0"/>`;
@@ -1052,8 +1125,8 @@ function initSparkHQ(root: HTMLElement) {
       const rv=roomVis(state.floor!,r.id);
       const sel=r.id===state.room;
 
-      const stC=st==="risk"?"rgba(255,107,94,.12)":st==="warn"?"rgba(251,191,36,.08)":"rgba(74,222,128,.06)";
-      const stStroke=st==="risk"?"rgba(255,107,94,.35)":st==="warn"?"rgba(251,191,36,.25)":"rgba(255,255,255,.08)";
+      const stC=st==="risk"?"rgba(224,52,43,.10)":st==="warn"?"rgba(233,162,59,.08)":"rgba(23,163,74,.06)";
+      const stStroke=st==="risk"?"rgba(224,52,43,.35)":st==="warn"?"rgba(233,162,59,.28)":"rgba(0,0,0,.08)";
 
       let cls="room-g";
       if(rv==="pulse")cls+=" frosted";
@@ -1061,7 +1134,7 @@ function initSparkHQ(root: HTMLElement) {
       if(sel)cls+=" sel";
 
       svg+=`<g class="${cls}" data-room="${r.id}" data-vis="${rv}" style="cursor:pointer">`;
-      svg+=`<rect class="room-poly" x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${isPulse?stC:"var(--card)"}" stroke="${sel?"var(--lime)":isPulse?stStroke:"rgba(255,255,255,.06)"}" stroke-width="${sel?1.6:1}"/>`;
+      svg+=`<rect class="room-poly" x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${isPulse?stC:"var(--woodTop)"}" stroke="${sel?"var(--accent)":isPulse?stStroke:"#E1E4ED"}" stroke-width="${sel?1.6:1}"/>`;
 
       if(isPulse){
         svg+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${stC}" pointer-events="none"/>`;
@@ -1098,10 +1171,14 @@ function initSparkHQ(root: HTMLElement) {
           svg+=`<g class="person-g" data-room="${r.id}" data-person="${mm.name}">`;
           if(rv==="content"){
             svg+=`<rect x="${px-6}" y="${py-4}" width="12" height="8" rx="2" class="furn"/>`;
+            svg+=`<ellipse cx="${px}" cy="${py+3}" rx="5" ry="3" fill="#DED2BE" opacity="0.6"/>`;
+            svg+=`<ellipse cx="${px}" cy="${py-1}" rx="4" ry="5" fill="${avc(mm.name)}" opacity="0.85"/>`;
+            svg+=`<circle cx="${px}" cy="${py-7}" r="3.2" fill="#F4C28B" stroke="#E8D4B0" stroke-width="0.5"/>`;
           }
           svg+=`<circle class="person-dot pd-${mst}" cx="${px}" cy="${py}" r="${dotR}" stroke="${stColor(mst)}"/>`;
           svg+=`<text class="p-init" x="${px}" y="${py+1.3}" style="font-size:${rv==="pulse"?3:3.8}px">${initials(mm.name)}</text>`;
           if(rv==="content"){
+            svg+=`<circle cx="${px+3.5}" cy="${py-9}" r="2" fill="${stColor(mst)}" stroke="var(--card)" stroke-width="0.8"/>`;
             svg+=`<text class="p-name" x="${px}" y="${py+dotR+7}" style="font-size:6px;fill:var(--muted);text-anchor:middle;opacity:.8">${mm.name.split(" ")[0]}</text>`;
           }
           svg+=`</g>`;
@@ -1334,13 +1411,13 @@ function initSparkHQ(root: HTMLElement) {
         </div>
         <span class="sh-status ${pd.st}">${pd.st==="risk"?"● Mudahale gerek":pd.st==="warn"?"● Dikkat":"● Yolunda"}</span>
         <div class="sh-sec"><h6>Bugun</h6><div style="font-size:13px">${pd.today}</div></div>
-        ${pd.working.length?`<div class="sh-sec"><h6>Uzerinde calistiklari</h6>${pd.working.map(w=>`<div class="li"><span class="ldot" style="background:var(--lime)"></span>${w}</div>`).join("")}</div>`:""}
+        ${pd.working.length?`<div class="sh-sec"><h6>Uzerinde calistiklari</h6>${pd.working.map(w=>`<div class="li"><span class="ldot" style="background:var(--accent)"></span>${w}</div>`).join("")}</div>`:""}
         ${pd.waiting.length?`<div class="sh-sec"><h6>Bekleyenler</h6>${pd.waiting.map(([w,k])=>`<div class="li"><span class="ldot" style="background:var(--${k})"></span>${w}</div>`).join("")}</div>`:""}
         ${pd.goals.length?`<div class="sh-sec"><h6>Hedefler</h6>${pd.goals.map(([g,p])=>`<div class="goalline">${g}<span class="gbar" style="max-width:100px"><i style="width:${p}%"></i></span><span class="gp" style="font-variant-numeric:tabular-nums">%${p}</span></div>`).join("")}</div>`:""}
         ${pd.recent.length?`<div class="sh-sec"><h6>Son hareketler</h6>${pd.recent.map(x=>`<div class="li"><span class="ldot" style="background:var(--hover)"></span><span style="color:var(--muted)">${x}</span></div>`).join("")}</div>`:""}
         <div class="sh-sec"><h6>Gorevleri</h6>
           ${(r.tasks||[]).filter(tk=>tk.who.startsWith(mm.name.split(" ")[0])).map(tk=>`
-            <div class="li"><span class="ldot" style="background:${tk.done?"var(--ok)":tk.urgent?"var(--risk)":"var(--lime)"}"></span>
+            <div class="li"><span class="ldot" style="background:${tk.done?"var(--ok)":tk.urgent?"var(--risk)":"var(--accent)"}"></span>
             <span>${tk.tt}<div class="lmeta">${tk.day}${tk.urgent?" · acil":""}</div></span></div>`).join("")||`<div style="font-size:12px;color:var(--dim)">Listelenen gorev yok.</div>`}
         </div>`;
       acts.innerHTML=`<button class="btn-lime" data-act="msg">Mesaj</button>
@@ -1410,7 +1487,7 @@ function initSparkHQ(root: HTMLElement) {
         <span class="wd ${tk.urgent?"urgent":""}">${tk.day}${tk.urgent?" !":""}</span></div>`).join("")}</div>`:"";
     const ww=$("#workWrap");if(!ww)return;
     ww.innerHTML=grp("Engelli / Acil",all.filter(x=>!x.done&&x.urgent),"var(--risk)")+
-      grp("Acik",all.filter(x=>!x.done&&!x.urgent),"var(--lime)")+
+      grp("Acik",all.filter(x=>!x.done&&!x.urgent),"var(--accent)")+
       grp("Bitti",all.filter(x=>x.done),"var(--ok)");
     root.querySelectorAll(".wrow").forEach(el=>el.addEventListener("click",()=>{
       state.mode="office";renderModeUI();applyMode();openSheet((el as HTMLElement).dataset.room!)}));
