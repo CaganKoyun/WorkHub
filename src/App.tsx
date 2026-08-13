@@ -40,7 +40,6 @@ import Tasks from "./pages/Tasks";
 import Issues from "./pages/Issues";
 import Cycles from "./pages/Cycles";
 import Teams from "./pages/Teams";
-import Templates from "./pages/Templates";
 import Workload from "./pages/Workload";
 import Insights from "./pages/Insights";
 import Roadmap from "./pages/Roadmap";
@@ -52,13 +51,8 @@ import CustomFields from "./pages/CustomFields";
 import Docs from "./pages/Docs";
 import Chat from "./pages/Chat";
 import Automations from "./pages/Automations";
-import Forms from "./pages/Forms";
-import PublicForm from "./pages/PublicForm";
-import Whiteboards from "./pages/Whiteboards";
 import ServiceDesk from "./pages/ServiceDesk";
 import PublicSupport from "./pages/PublicSupport";
-import Portfolios from "./pages/Portfolios";
-import MeetingNotes from "./pages/MeetingNotes";
 import AuditLog from "./pages/AuditLog";
 import SavedViews from "./pages/SavedViews";
 import ApiTokens from "./pages/ApiTokens";
@@ -70,7 +64,6 @@ import Pricing from "./pages/Pricing";
 import Compare from "./pages/Compare";
 import Security from "./pages/Security";
 import Changelog from "./pages/Changelog";
-import AgentRuns from "./pages/AgentRuns";
 import Leaderboard from "./pages/Leaderboard";
 import Crm from "./pages/Crm";
 import Finance from "./pages/Finance";
@@ -86,6 +79,7 @@ import CompareNotion from "./pages/compare/CompareNotion";
 import CompareAsana from "./pages/compare/CompareAsana";
 import CompareLinear from "./pages/compare/CompareLinear";
 import CompareMonday from "./pages/compare/CompareMonday";
+import SparkHQ from "./pages/SparkHQ";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -142,7 +136,6 @@ const App = () => (
                 <Route path="/issues" element={<ProtectedRoute><WorkspaceGate><Issues /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/cycles" element={<ProtectedRoute><WorkspaceGate><Cycles /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/teams" element={<ProtectedRoute><WorkspaceGate><Teams /></WorkspaceGate></ProtectedRoute>} />
-                <Route path="/templates" element={<ProtectedRoute><WorkspaceGate><Templates /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/workload" element={<ProtectedRoute><WorkspaceGate><Workload /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/insights" element={<ProtectedRoute><WorkspaceGate><Insights /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/roadmap" element={<ProtectedRoute><WorkspaceGate><Roadmap /></WorkspaceGate></ProtectedRoute>} />
@@ -156,17 +149,9 @@ const App = () => (
                 <Route path="/chat" element={<ProtectedRoute><WorkspaceGate><Chat /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/chat/:channelId" element={<ProtectedRoute><WorkspaceGate><Chat /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/automations" element={<ProtectedRoute><WorkspaceGate><Automations /></WorkspaceGate></ProtectedRoute>} />
-                <Route path="/forms" element={<ProtectedRoute><WorkspaceGate><Forms /></WorkspaceGate></ProtectedRoute>} />
-                <Route path="/f/:slug" element={<PublicForm />} />
-                <Route path="/whiteboards" element={<ProtectedRoute><WorkspaceGate><Whiteboards /></WorkspaceGate></ProtectedRoute>} />
-                <Route path="/whiteboards/:id" element={<ProtectedRoute><WorkspaceGate><Whiteboards /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/desk" element={<ProtectedRoute><WorkspaceGate><ServiceDesk /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/desk/:id" element={<ProtectedRoute><WorkspaceGate><ServiceDesk /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/support/:workspaceId" element={<PublicSupport />} />
-                <Route path="/portfolios" element={<ProtectedRoute><WorkspaceGate><Portfolios /></WorkspaceGate></ProtectedRoute>} />
-                <Route path="/portfolios/:id" element={<ProtectedRoute><WorkspaceGate><Portfolios /></WorkspaceGate></ProtectedRoute>} />
-                <Route path="/meetings" element={<ProtectedRoute><WorkspaceGate><MeetingNotes /></WorkspaceGate></ProtectedRoute>} />
-                <Route path="/meetings/:id" element={<ProtectedRoute><WorkspaceGate><MeetingNotes /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/audit" element={<ProtectedRoute><WorkspaceGate><AuditLog /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/views" element={<ProtectedRoute><WorkspaceGate><SavedViews /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/api-tokens" element={<ProtectedRoute><WorkspaceGate><ApiTokens /></WorkspaceGate></ProtectedRoute>} />
@@ -175,7 +160,6 @@ const App = () => (
                 <Route path="/pub/:token" element={<PublicDashboard />} />
                 <Route path="/notifications" element={<ProtectedRoute><WorkspaceGate><Notifications /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/notification-settings" element={<ProtectedRoute><WorkspaceGate><NotificationSettings /></WorkspaceGate></ProtectedRoute>} />
-                <Route path="/agent" element={<ProtectedRoute><WorkspaceGate><AgentRuns /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/leaderboard" element={<ProtectedRoute><WorkspaceGate><Leaderboard /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/crm" element={<ProtectedRoute><WorkspaceGate><Crm /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/finance" element={<ProtectedRoute><WorkspaceGate><Finance /></WorkspaceGate></ProtectedRoute>} />
@@ -185,6 +169,7 @@ const App = () => (
                 <Route path="/decisions/:id" element={<ProtectedRoute><WorkspaceGate><DecisionDetail /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/product" element={<ProtectedRoute><WorkspaceGate><Product /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/company" element={<ProtectedRoute><WorkspaceGate><Company /></WorkspaceGate></ProtectedRoute>} />
+                <Route path="/spark-hq" element={<ProtectedRoute><WorkspaceGate><SparkHQ /></WorkspaceGate></ProtectedRoute>} />
 
                 <Route path="/workspace/settings" element={<ProtectedRoute><WorkspaceGate><WorkspaceSettings /></WorkspaceGate></ProtectedRoute>} />
                 <Route path="/integrations" element={<ProtectedRoute><WorkspaceGate><Integrations /></WorkspaceGate></ProtectedRoute>} />

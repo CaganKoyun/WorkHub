@@ -2,8 +2,8 @@ import {
   LayoutDashboard, Bug, BarChart3, Package, Users, FolderKanban, CheckSquare,
   Home, Inbox, Briefcase, DollarSign, Target, ShieldAlert, Sparkles, Shield, Bookmark, KeyRound, UserRound, Trophy,
   ScrollText, Rocket, Plug, Building2, Compass, Layers, LineChart, Boxes,
-  RefreshCw, FileText, Timer, BookOpen, MessageSquare, Zap, ClipboardList, PenSquare, Headphones, Activity,
-  Settings, Bot, Mic,
+  RefreshCw, Timer, BookOpen, MessageSquare, Zap, Headphones, Activity,
+  Settings, Flame,
 } from "lucide-react";
 
 export type NavItem = {
@@ -36,6 +36,7 @@ export const clusters: NavCluster[] = [
           { icon: Home, label: "Ana Sayfa", path: "/home" },
           { icon: Inbox, label: "Gelen Kutusu", path: "/inbox", badgeKey: "inbox" },
           { icon: LayoutDashboard, label: "Kontrol Paneli", path: "/dashboard" },
+          { icon: Flame, label: "Spark HQ", path: "/spark-hq" },
         ],
       },
     ],
@@ -54,7 +55,6 @@ export const clusters: NavCluster[] = [
           { icon: RefreshCw, label: "Sprintler", path: "/cycles" },
           { icon: Rocket, label: "Yol Haritası", path: "/roadmap" },
           { icon: FolderKanban, label: "Projeler", path: "/projects" },
-          { icon: Briefcase, label: "Portföyler", path: "/portfolios" },
           { icon: CheckSquare, label: "Görevlerim", path: "/tasks" },
           { icon: BarChart3, label: "İş Yükü", path: "/workload" },
           { icon: Activity, label: "İçgörüler", path: "/insights" },
@@ -133,7 +133,6 @@ export const clusters: NavCluster[] = [
         label: "İletişim",
         items: [
           { icon: MessageSquare, label: "Mesajlar", path: "/chat" },
-          { icon: Mic, label: "Toplantı Notları", path: "/meetings" },
           { icon: Headphones, label: "Destek Masası", path: "/desk" },
         ],
       },
@@ -141,9 +140,6 @@ export const clusters: NavCluster[] = [
         label: "İçerik",
         items: [
           { icon: BookOpen, label: "Belgeler", path: "/docs" },
-          { icon: PenSquare, label: "Panolar", path: "/whiteboards" },
-          { icon: ClipboardList, label: "Formlar", path: "/forms" },
-          { icon: FileText, label: "Şablonlar", path: "/templates" },
         ],
       },
     ],
@@ -158,7 +154,6 @@ export const clusters: NavCluster[] = [
         label: "Yapay Zeka",
         items: [
           { icon: Sparkles, label: "Yapay Zeka Asistanı", path: "/ai-chat" },
-          { icon: Bot, label: "Ajan Çalışmaları", path: "/agent" },
           { icon: Zap, label: "Otomasyonlar", path: "/automations" },
         ],
       },
@@ -193,7 +188,6 @@ export const navItems: NavItem[] = clusters.flatMap(c =>
 // ---------------------------------------------------------------------------
 export const PATH_MODULE: Record<string, string> = {
   "/projects": "work",
-  "/portfolios": "work",
   "/tasks": "work",
   "/issues": "work",
   "/cycles": "work",
