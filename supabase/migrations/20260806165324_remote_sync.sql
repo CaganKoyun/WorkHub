@@ -1,0 +1,1 @@
+-- Applied via Supabase Dashboard; placeholder for migration version sync.
