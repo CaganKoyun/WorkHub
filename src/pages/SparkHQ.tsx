@@ -57,28 +57,6 @@ const SPARK_HQ_CSS = `
 .shq .cam-reset{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:2px 8px;font-size:11px;color:var(--dim);transition:all .15s;opacity:0;pointer-events:none}
 .shq .cam-reset.show{opacity:1;pointer-events:auto}
 .shq .cam-reset:hover{background:var(--hover);color:var(--ink)}
-.shq .sort-bar{display:flex;align-items:center;gap:4px;margin-top:8px;justify-content:center}
-.shq .sort-bar .sort-label{font-size:10px;color:var(--dim);letter-spacing:.05em;text-transform:uppercase;margin-right:4px}
-.shq .sort-bar button{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:3px 10px;font-size:10.5px;color:var(--dim);transition:all .15s;white-space:nowrap}
-.shq .sort-bar button.on{background:var(--lime-soft);color:var(--lime);border-color:rgba(198,244,50,.2)}
-.shq .sort-bar button:hover:not(.on){background:var(--hover);color:var(--muted)}
-.shq .add-floor-btn{cursor:pointer}
-.shq .add-floor-btn text{transition:fill .2s}
-.shq .add-floor-btn:hover text{fill:var(--lime)!important}
-.shq .add-floor-btn:hover polygon{fill:#2A2A2F!important}
-.shq #shqAddFloor{position:absolute;z-index:23;display:none;width:min(340px,88vw);
-  background:var(--panel);border:1px solid var(--border-hi);border-radius:var(--radius);
-  box-shadow:var(--elev2);overflow:hidden;padding:20px 24px;
-  left:50%;top:50%;transform:translate(-50%,-50%)}
-.shq #shqAddFloor.show{display:block}
-.shq .af-title{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:16px}
-.shq .af-field{margin-bottom:12px}
-.shq .af-field label{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:4px}
-.shq .af-field input,.shq .af-field select{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);
-  color:var(--ink);font:inherit;font-size:13px;padding:8px 12px;outline:none;transition:border-color .15s}
-.shq .af-field input:focus,.shq .af-field select:focus{border-color:var(--lime)}
-.shq .af-field input::placeholder{color:var(--dim)}
-.shq .af-actions{display:flex;gap:8px;margin-top:16px}
 .shq .bfloor{cursor:pointer}
 .shq .bfloor .face-top{transition:fill .2s}
 .shq .bfloor:hover .face-top{fill:#2A2A2F !important}
@@ -86,6 +64,51 @@ const SPARK_HQ_CSS = `
 .shq .bf-name{font-size:13px;font-weight:700;fill:var(--ink);pointer-events:none;letter-spacing:-.01em}
 .shq .bf-stat{font-size:10px;fill:var(--muted);pointer-events:none;font-weight:600}
 .shq .bf-stat.risk{fill:var(--risk)}.shq .bf-stat.warn{fill:var(--warn)}.shq .bf-stat.ok{fill:var(--ok)}
+.shq .bfloor.draggable{cursor:grab}
+.shq .bfloor.dragging{cursor:grabbing;opacity:.88}
+.shq .bfloor.dragging .face-top{fill:#2A2A2F !important}
+.shq .grip{opacity:0;transition:opacity .15s;fill:var(--dim);font-size:13px;font-weight:800}
+.shq .bfloor.draggable:hover .grip{opacity:1}
+.shq #dropInd{stroke:var(--lime);stroke-width:2.5;stroke-dasharray:7 5;opacity:0;pointer-events:none}
+.shq #dropInd.show{opacity:1}
+.shq .drag-hint{font-size:11px;color:var(--dim);margin-top:5px;text-align:center}
+.shq .fctl{opacity:0;transition:opacity .15s;cursor:pointer}
+.shq .bfloor:hover .fctl{opacity:1}
+.shq .fctl circle{fill:var(--card);stroke:var(--border);stroke-width:1}
+.shq .fctl:hover circle{stroke:var(--lime)}
+.shq .fctl text{font-size:9.5px;fill:var(--muted);text-anchor:middle;font-weight:700;pointer-events:none}
+.shq .fctl:hover text{fill:var(--lime)}
+.shq .fctl.del:hover circle{stroke:var(--risk)}
+.shq .fctl.del:hover text{fill:var(--risk)}
+.shq #shqModal{position:absolute;inset:0;background:rgba(10,10,14,.5);display:none;align-items:center;justify-content:center;z-index:60}
+.shq #shqModal.open{display:flex}
+.shq .modal-card{width:min(400px,92vw);background:var(--panel);border:1px solid var(--border-hi);border-radius:var(--radius);box-shadow:var(--elev2);padding:22px}
+.shq .modal-card h3{font-size:16px;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
+.shq .mnote{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:6px}
+.shq .mfield{margin-bottom:12px}
+.shq .mfield label{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:6px}
+.shq .mfield input{width:100%;border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 12px;font:inherit;font-size:13px;outline:none;background:var(--card);color:var(--ink)}
+.shq .mfield input:focus{border-color:var(--lime)}
+.shq .modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.shq .hq-tools{display:flex;align-items:center;gap:12px;margin-top:6px;flex-wrap:wrap;justify-content:center}
+.shq .sortseg{display:flex;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px}
+.shq .sortseg span{font-size:10.5px;color:var(--dim);align-self:center;padding:0 6px 0 9px;font-weight:700;letter-spacing:.06em}
+.shq .sortseg button{border:none;background:none;font-size:12px;font-weight:600;color:var(--muted);padding:5px 11px;border-radius:7px}
+.shq .sortseg button.on{background:var(--lime-soft);color:var(--lime)}
+.shq .addbtn{display:flex;align-items:center;gap:6px;border:1px dashed var(--border);background:var(--card);
+  border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
+.shq .addbtn:hover{border-color:var(--lime);color:var(--lime)}
+.shq .chip{border:1px solid var(--border);background:var(--card);border-radius:10px;padding:6px 11px;
+  font-size:12px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer}
+.shq .chip:hover{border-color:var(--lime);color:var(--lime)}
+.shq .empty-floor{text-align:center;color:var(--muted);padding:40px}
+.shq .empty-floor .ico{font-size:38px;margin-bottom:10px}
+.shq .empty-floor p{font-size:13px;margin-bottom:14px}
+.shq .fade-scale{transition:opacity .32s ease,transform .32s ease}
+.shq .leaving-in{opacity:0;transform:scale(1.5)}
+.shq .leaving-out{opacity:0;transform:scale(.8)}
+.shq .entering{animation:shqEnterScale .38s ease both}
+@keyframes shqEnterScale{from{opacity:0;transform:scale(1.12)}to{opacity:1;transform:scale(1)}}
 .shq #floorView{padding:16px 24px 0;justify-content:flex-start;align-items:stretch}
 .shq .floor-header{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .shq .floor-header h2{font-size:18px;font-weight:700;letter-spacing:-.02em}
@@ -146,7 +169,7 @@ const SPARK_HQ_CSS = `
 .shq .pop-bar .pb-pct{font-size:11px;font-weight:700;color:var(--dim);font-variant-numeric:tabular-nums;min-width:28px;text-align:right}
 .shq .pop-wrong{background:var(--risk-soft);border-radius:var(--radius-xs);padding:6px 10px;margin-bottom:8px}
 .shq .pop-wrong .pw-item{display:flex;gap:5px;font-size:11px;color:var(--risk);padding:1px 0;line-height:1.4}
-.shq .pop-wrong .pw-item::before{content:'›';font-weight:800}
+.shq .pop-wrong .pw-item::before{content:'>';font-weight:800}
 .shq .pop-people{display:flex;gap:0;margin-bottom:10px}
 .shq .pop-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:8px;font-weight:800;color:#fff;border:2px solid var(--panel);margin-left:-4px;cursor:pointer;
@@ -163,6 +186,9 @@ const SPARK_HQ_CSS = `
 .shq .btn-ghost{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
   padding:7px 12px;font-size:12px;font-weight:600;color:var(--muted);transition:border-color .15s,color .15s}
 .shq .btn-ghost:hover{border-color:var(--lime);color:var(--lime)}
+.shq .btn-danger{background:var(--risk-soft);border:1px solid var(--risk);border-radius:var(--radius-sm);
+  padding:7px 14px;font-size:12px;font-weight:700;color:var(--risk);transition:background .15s,transform .1s}
+.shq .btn-danger:hover{background:rgba(255,107,94,.2)}.shq .btn-danger:active{transform:scale(.97)}
 .shq .pp-header{display:flex;align-items:center;gap:10px;margin-bottom:4px}
 .shq .pp-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-weight:800;font-size:14px;color:#fff}
@@ -202,7 +228,7 @@ const SPARK_HQ_CSS = `
 .shq .mbar-lab{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:4px;font-variant-numeric:tabular-nums}
 .shq .wrong-box{background:var(--risk-soft);border-radius:var(--radius-sm);padding:10px 12px}
 .shq .wrong-box .wi{display:flex;gap:8px;font-size:12.5px;color:var(--risk);padding:2px 0;line-height:1.4}
-.shq .wrong-box .wi::before{content:'›';font-weight:800}
+.shq .wrong-box .wi::before{content:'>';font-weight:800}
 .shq .chips{display:flex;flex-wrap:wrap;gap:6px}
 .shq .pchip{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:99px;
   padding:4px 10px 4px 4px;font-size:12px;font-weight:600;background:var(--card);cursor:pointer;transition:border-color .15s}
@@ -343,7 +369,7 @@ const SPARK_HQ_CSS = `
 .shq .rc-bar .pct{font-size:11px;font-weight:700;color:var(--dim);font-variant-numeric:tabular-nums;min-width:28px;text-align:right}
 .shq .rc-warn{font-size:11px;color:var(--risk);display:flex;gap:4px;line-height:1.4;background:var(--risk-soft);
   border-radius:var(--radius-xs);padding:5px 8px}
-.shq .rc-warn::before{content:'›';font-weight:800;flex-shrink:0}
+.shq .rc-warn::before{content:'>';font-weight:800;flex-shrink:0}
 .shq .rc-team{display:flex;gap:0;margin-top:auto;padding-top:4px}
 .shq .rc-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:8px;font-weight:800;color:#fff;border:2px solid var(--card);margin-left:-4px;cursor:pointer;transition:transform .15s}
@@ -365,148 +391,154 @@ const SPARK_HQ_CSS = `
 
 function initSparkHQ(root: HTMLElement) {
   const AVC=["#6D5EF4","#E0662B","#17A3A3","#D14BA0","#4B77E0","#7A9A2E","#B0542B","#5E6AD2"];
-  const ST: Record<string,{t:string;cls:string;c:string}>={risk:{t:"RİSKTE",cls:"risk",c:"var(--risk)"},warn:{t:"DİKKAT",cls:"warn",c:"var(--warn)"},
-    ok:{t:"YOLUNDA",cls:"ok",c:"var(--ok)"},ahead:{t:"İLERİDE",cls:"ok",c:"var(--ok)"}};
+  const ST: Record<string,{t:string;cls:string;c:string}>={risk:{t:"RiSKTE",cls:"risk",c:"var(--risk)"},warn:{t:"DiKKAT",cls:"warn",c:"var(--warn)"},
+    ok:{t:"YOLUNDA",cls:"ok",c:"var(--ok)"},ahead:{t:"iLERiDE",cls:"ok",c:"var(--ok)"}};
   const SEV: Record<string,number>={ok:0,ahead:0,warn:1,risk:2};
 
   type Member = {name:string;role:string;g:number;late:number};
   type TaskItem = {tt:string;who:string;day:string;urgent:boolean;done:boolean};
   type Room = {id:string;name:string;rect:number[];st:string;mission:string;pct:number;note:string;
     wrong:string[];mile:string[];members:Member[];tasks:TaskItem[]};
-  type Floor = {id:string;name:string;sub:string;rooms:Room[]};
+  type Floor = {id:string;name:string;sub:string;rooms:Room[];lobby?:boolean};
 
   function room(id: string,name: string,rect: number[],st: string,d: Partial<Room>): Room {
     return {id,name,rect,st,mission:"",pct:0,note:"",wrong:[],mile:["",""],members:[],tasks:[],...d};
   }
+  function blankRoom(id: string, name: string): Room {
+    return room(id, name, [0,0,44,30], "ok", {mission:"Hedef belirlenmedi", pct:0, note:"Yeni ekip",
+      wrong:[], mile:["ilk milestone","belirlenmedi"], members:[], tasks:[]});
+  }
   function m(name: string,role: string,g: number,late: number): Member {return{name,role,g,late}}
   function t(tt: string,who: string,day: string,urgent?: boolean,done?: boolean): TaskItem {return{tt,who,day,urgent:!!urgent,done:!!done}}
 
+  const slug = (p: string) => p + "-" + Math.random().toString(36).slice(2,7);
+
   const FLOORS: Floor[]=[
-   {id:"urun",name:"Ürün",sub:"12 aktif iş",rooms:[
-     room("mobile","Mobile Squad",[0,0,44,30],"ok",{mission:"v2.4 Cuma Store'da",pct:72,note:"Release adayı hazır",
-       wrong:["SPK-231 crash fix backend refactor bekliyor"],mile:["v2.4 Release","4 gün"],
-       members:[m("Burak Çavdur","Mobile Lead",8,3),m("Can Yıldırım","iOS Dev",5,0),m("İpek Aydın","Android Dev",6,1)],
-       tasks:[t("Android build final","Burak Ç.","Yarın",true),t("iOS TestFlight","Can Y.","Bugün",false,true),t("Store metadata","İpek A.","Perşembe")]}),
-     room("backend","Backend Squad",[56,0,44,30],"warn",{mission:"OCPI v2 canlıda",pct:58,note:"Refactor uzadı",
-       wrong:["Refactor mobil crash fix'ini blokluyor"],mile:["Webhook refactor","2 gün"],
-       members:[m("Diren Gündoğdu","Backend Lead",7,1),m("Mert Acar","Backend Dev",6,0)],
-       tasks:[t("OCPI webhook refactor","Diren G.","Yarın",true),t("Fatura servisi testleri","Mert A.","Cuma")]}),
-     room("design","Design Studio",[0,36,44,30],"ok",{mission:"Şarj akışı v3 testte",pct:80,note:"Test Perşembe",wrong:[],mile:["Usability test","2 gün"],
-       members:[m("Zeynep Tan","Product Designer",4,0),m("Arda Koç","UI Designer",3,0)],
-       tasks:[t("Şarj akışı v3 prototip","Zeynep T.","Perşembe"),t("Token temizliği","Arda K.","Bitti",false,true)]}),
-     room("qa","QA Lab",[56,36,44,30],"ok",{mission:"Tam regresyon",pct:60,note:"%60 tamam",wrong:[],mile:["Regresyon bitişi","3 gün"],
-       members:[m("Baran Öztürk","QA Engineer",5,0)],
-       tasks:[t("Regresyon koşusu","Baran Ö.","Perşembe")]}),
-     room("platform","Platform",[0,72,100,28],"ahead",{mission:"Altyapı maliyeti −%15",pct:90,note:"Hedefin önünde",wrong:[],mile:["CDN geçişi","tamamlandı"],
+   {id:"urun",name:"Urun",sub:"12 aktif is",rooms:[
+     room("mobile","Mobile Squad",[0,0,44,30],"ok",{mission:"v2.4 Cuma Store'da",pct:72,note:"Release adayi hazir",
+       wrong:["SPK-231 crash fix backend refactor bekliyor"],mile:["v2.4 Release","4 gun"],
+       members:[m("Burak Cavdur","Mobile Lead",8,3),m("Can Yildirim","iOS Dev",5,0),m("ipek Aydin","Android Dev",6,1)],
+       tasks:[t("Android build final","Burak C.","Yarin",true),t("iOS TestFlight","Can Y.","Bugun",false,true),t("Store metadata","ipek A.","Persembe")]}),
+     room("backend","Backend Squad",[56,0,44,30],"warn",{mission:"OCPI v2 canlida",pct:58,note:"Refactor uzadi",
+       wrong:["Refactor mobil crash fix'ini blokluyor"],mile:["Webhook refactor","2 gun"],
+       members:[m("Diren Gundogdu","Backend Lead",7,1),m("Mert Acar","Backend Dev",6,0)],
+       tasks:[t("OCPI webhook refactor","Diren G.","Yarin",true),t("Fatura servisi testleri","Mert A.","Cuma")]}),
+     room("design","Design Studio",[0,36,44,30],"ok",{mission:"Sarj akisi v3 testte",pct:80,note:"Test Persembe",wrong:[],mile:["Usability test","2 gun"],
+       members:[m("Zeynep Tan","Product Designer",4,0),m("Arda Koc","UI Designer",3,0)],
+       tasks:[t("Sarj akisi v3 prototip","Zeynep T.","Persembe"),t("Token temizligi","Arda K.","Bitti",false,true)]}),
+     room("qa","QA Lab",[56,36,44,30],"ok",{mission:"Tam regresyon",pct:60,note:"%60 tamam",wrong:[],mile:["Regresyon bitisi","3 gun"],
+       members:[m("Baran Ozturk","QA Engineer",5,0)],
+       tasks:[t("Regresyon kosusu","Baran O.","Persembe")]}),
+     room("platform","Platform",[0,72,100,28],"ahead",{mission:"Altyapi maliyeti -%15",pct:90,note:"Hedefin onunde",wrong:[],mile:["CDN gecisi","tamamlandi"],
        members:[m("Efe Duran","DevOps",4,0)],
-       tasks:[t("Monitoring alarmları","Efe D.","Cuma"),t("CDN geçişi","Efe D.","Bitti",false,true)]}),
+       tasks:[t("Monitoring alarmlari","Efe D.","Cuma"),t("CDN gecisi","Efe D.","Bitti",false,true)]}),
    ]},
-   {id:"growth",name:"Growth · Launch",sub:"Launch: 1 Eylül",rooms:[
+   {id:"growth",name:"Growth · Launch",sub:"Launch: 1 Eylul",rooms:[
      room("gmarketing","Growth Marketing",[0,0,44,30],"risk",{mission:"CAC ₺38 → ₺30",pct:45,note:"Kreatifler bekleniyor",
-       wrong:["Kreatif üretimi launch filmine bağımlı"],mile:["Kampanya seti","3 gün"],
-       members:[m("Şevval Beyhan","Growth Lead",5,0),m("Emre Gür","Performance",6,1)],
-       tasks:[t("Meta kampanya kurulumu","Emre G.","Perşembe"),t("Kreatif brief revizyonu","Şevval B.","Yarın",true)]}),
-     room("product-room","Product",[56,0,44,30],"ahead",{mission:"Launch feature set",pct:84,note:"Planın önünde",wrong:[],mile:["Feature freeze","tamamlandı"],
+       wrong:["Kreatif uretimi launch filmine bagimli"],mile:["Kampanya seti","3 gun"],
+       members:[m("Sevval Beyhan","Growth Lead",5,0),m("Emre Gur","Performance",6,1)],
+       tasks:[t("Meta kampanya kurulumu","Emre G.","Persembe"),t("Kreatif brief revizyonu","Sevval B.","Yarin",true)]}),
+     room("product-room","Product",[56,0,44,30],"ahead",{mission:"Launch feature set",pct:84,note:"Planin onunde",wrong:[],mile:["Feature freeze","tamamlandi"],
        members:[m("Ela Sarp","PM",6,0),m("Ozan Kaya","APM",4,0)],
        tasks:[t("Launch feature QA","Ela S.","Cuma")]}),
-     room("content","Content & PR",[0,36,44,30],"ok",{mission:"Basın kiti + video",pct:66,note:"Son revizyonda",
-       wrong:["PR içerikleri onaya bağlı"],mile:["Basın kiti teslim","2 gün"],
-       members:[m("Yağmur Balcı","Content Lead",5,1),m("Deniz Ak","Copywriter",4,0)],
-       tasks:[t("Basın kiti final","Yağmur B.","Yarın",true),t("Launch blog yazısı","Deniz A.","Cuma")]}),
-     room("launchops","Launch Ops",[56,36,44,30],"risk",{mission:"Launch — 1 Eylül",pct:68,note:"4 gün gecikme",
-       wrong:["Android release launch'ı blokluyor","Launch filmi onay bekliyor","PR içerikleri hazır değil"],mile:["Public Beta","6 gün"],
-       members:[m("Çağan Koyun","Founder",6,2),m("Burak Çavdur","Mobile Lead",8,3),m("Şevval Beyhan","Growth Lead",5,0),
-                m("Diren Gündoğdu","Backend Lead",7,1),m("Enes Nazikoğlu","Ops Specialist",4,0)],
-       tasks:[t("Android build final","Burak Ç.","Yarın",true),t("Launch filmi onayı","Çağan K.","Perşembe",true),
-              t("PR içeriklerini gönder","Şevval B.","Cuma"),t("Partner listesi","Enes N.","Pazartesi")]}),
-     room("partner","Partnerships",[0,72,44,28],"ok",{mission:"12 launch partneri",pct:70,note:"9/12 onaylı",wrong:[],mile:["Duyuru paketi","5 gün"],
-       members:[m("Enes Nazikoğlu","Ops Specialist",4,0),m("Melis Ünal","Partnership Mgr",5,0)],
-       tasks:[t("Ortak duyuru metinleri","Melis Ü.","Cuma")]}),
-     room("data","Data & Analytics",[56,72,44,28],"ok",{mission:"Launch dashboard canlı",pct:75,note:"Event şeması tamam",wrong:[],mile:["Funnel dashboard","4 gün"],
+     room("content","Content & PR",[0,36,44,30],"ok",{mission:"Basin kiti + video",pct:66,note:"Son revizyonda",
+       wrong:["PR icerikleri onaya bagli"],mile:["Basin kiti teslim","2 gun"],
+       members:[m("Yagmur Balci","Content Lead",5,1),m("Deniz Ak","Copywriter",4,0)],
+       tasks:[t("Basin kiti final","Yagmur B.","Yarin",true),t("Launch blog yazisi","Deniz A.","Cuma")]}),
+     room("launchops","Launch Ops",[56,36,44,30],"risk",{mission:"Launch — 1 Eylul",pct:68,note:"4 gun gecikme",
+       wrong:["Android release launch'i blokluyor","Launch filmi onay bekliyor","PR icerikleri hazir degil"],mile:["Public Beta","6 gun"],
+       members:[m("Cagan Koyun","Founder",6,2),m("Burak Cavdur","Mobile Lead",8,3),m("Sevval Beyhan","Growth Lead",5,0),
+                m("Diren Gundogdu","Backend Lead",7,1),m("Enes Nazikoglu","Ops Specialist",4,0)],
+       tasks:[t("Android build final","Burak C.","Yarin",true),t("Launch filmi onayi","Cagan K.","Persembe",true),
+              t("PR iceriklerini gonder","Sevval B.","Cuma"),t("Partner listesi","Enes N.","Pazartesi")]}),
+     room("partner","Partnerships",[0,72,44,28],"ok",{mission:"12 launch partneri",pct:70,note:"9/12 onayli",wrong:[],mile:["Duyuru paketi","5 gun"],
+       members:[m("Enes Nazikoglu","Ops Specialist",4,0),m("Melis Unal","Partnership Mgr",5,0)],
+       tasks:[t("Ortak duyuru metinleri","Melis U.","Cuma")]}),
+     room("data","Data & Analytics",[56,72,44,28],"ok",{mission:"Launch dashboard canli",pct:75,note:"Event semasi tamam",wrong:[],mile:["Funnel dashboard","4 gun"],
        members:[m("Kaan Erol","Data Analyst",4,0)],
        tasks:[t("Funnel dashboard","Kaan E.","Cuma")]}),
    ]},
-   {id:"satis",name:"Satış",sub:"₺680K pipeline",rooms:[
-     room("enterprise","Enterprise Sales",[0,0,44,44],"ok",{mission:"Q3 hedefi ₺2.4M",pct:55,note:"Fleet A.Ş. imzada",
-       wrong:["Sözleşme onayı lobide bekliyor"],mile:["Fleet A.Ş. imza","bu hafta"],
-       members:[m("Kerem Vural","Sales Lead",6,0),m("Aslı Nur","AE",5,0)],
-       tasks:[t("Fleet A.Ş. takibi","Kerem V.","Yarın",true),t("Marina Otopark demo","Aslı N.","Yarın 14:00")]}),
-     room("cs","Customer Success",[56,0,44,44],"ok",{mission:"Onboarding < 7 gün",pct:70,note:"Yıldız Enerji 3/7",wrong:[],mile:["Yıldız canlı","4 gün"],
+   {id:"satis",name:"Satis",sub:"₺680K pipeline",rooms:[
+     room("enterprise","Enterprise Sales",[0,0,44,44],"ok",{mission:"Q3 hedefi ₺2.4M",pct:55,note:"Fleet A.S. imzada",
+       wrong:["Sozlesme onayi lobide bekliyor"],mile:["Fleet A.S. imza","bu hafta"],
+       members:[m("Kerem Vural","Sales Lead",6,0),m("Asli Nur","AE",5,0)],
+       tasks:[t("Fleet A.S. takibi","Kerem V.","Yarin",true),t("Marina Otopark demo","Asli N.","Yarin 14:00")]}),
+     room("cs","Customer Success",[56,0,44,44],"ok",{mission:"Onboarding < 7 gun",pct:70,note:"Yildiz Enerji 3/7",wrong:[],mile:["Yildiz canli","4 gun"],
        members:[m("Berk Has","CS Manager",5,0)],
-       tasks:[t("Yıldız Enerji onboarding","Berk H.","Cuma")]}),
-     room("revops","RevOps & CRM",[0,50,100,50],"warn",{mission:"Pipeline hijyeni %95",pct:40,note:"14 bayat kayıt",
-       wrong:["Tahmin doğruluğu düşük"],mile:["Q3 temizliği","bu hafta"],
+       tasks:[t("Yildiz Enerji onboarding","Berk H.","Cuma")]}),
+     room("revops","RevOps & CRM",[0,50,100,50],"warn",{mission:"Pipeline hijyeni %95",pct:40,note:"14 bayat kayit",
+       wrong:["Tahmin dogrulugu dusuk"],mile:["Q3 temizligi","bu hafta"],
        members:[m("Selen Er","RevOps Analyst",4,1)],
-       tasks:[t("Q3 pipeline temizliği","Selen E.","Cuma",true)]}),
+       tasks:[t("Q3 pipeline temizligi","Selen E.","Cuma",true)]}),
    ]},
    {id:"finans",name:"Finans",sub:"Runway 14 ay",rooms:[
-     room("revenue","Revenue Room",[0,0,44,44],"ok",{mission:"MRR ₺4.1M · ↑%14",pct:74,note:"Büyüme sağlıklı",wrong:[],mile:["Q3 hedefi","yolunda"],
-       members:[m("Onur Çelik","Finance Lead",5,0)],
-       tasks:[t("Q4 bütçe revizyonu","Onur Ç.","Cuma"),t("Runway modeli","Onur Ç.","Bitti",false,true)]}),
-     room("muhasebe","Muhasebe",[56,0,44,44],"ok",{mission:"Temmuz kapanışı",pct:60,note:"Mutabakatlar tamam",wrong:[],mile:["Ay kapanışı","4 gün"],
-       members:[m("Nazlı Ekin","Muhasebe Uzmanı",4,0)],
-       tasks:[t("Temmuz kapanışı","Nazlı E.","15 Ağu")]}),
-     room("procurement","Satın Alma & Legal",[0,50,100,50],"warn",{mission:"Sözleşme yenilemeleri",pct:50,note:"AWS onay bekliyor",
-       wrong:["Onay gecikirse kesinti riski"],mile:["AWS yenileme","3 gün"],
+     room("revenue","Revenue Room",[0,0,44,44],"ok",{mission:"MRR ₺4.1M · ↑%14",pct:74,note:"Buyume saglikli",wrong:[],mile:["Q3 hedefi","yolunda"],
+       members:[m("Onur Celik","Finance Lead",5,0)],
+       tasks:[t("Q4 butce revizyonu","Onur C.","Cuma"),t("Runway modeli","Onur C.","Bitti",false,true)]}),
+     room("muhasebe","Muhasebe",[56,0,44,44],"ok",{mission:"Temmuz kapanisi",pct:60,note:"Mutabakatlar tamam",wrong:[],mile:["Ay kapanisi","4 gun"],
+       members:[m("Nazli Ekin","Muhasebe Uzmani",4,0)],
+       tasks:[t("Temmuz kapanisi","Nazli E.","15 Agu")]}),
+     room("procurement","Satin Alma & Legal",[0,50,100,50],"warn",{mission:"Sozlesme yenilemeleri",pct:50,note:"AWS onay bekliyor",
+       wrong:["Onay gecikirse kesinti riski"],mile:["AWS yenileme","3 gun"],
        members:[m("Cem Tok","Operations",3,1)],
-       tasks:[t("AWS faturası onayı","Cem T.","Yarın",true)]}),
+       tasks:[t("AWS faturasi onayi","Cem T.","Yarin",true)]}),
    ]},
-   {id:"lobi",name:"Lobi",sub:"5 şey seni bekliyor",rooms:[
-     room("inbox","Founder Inbox",[0,0,100,58],"risk",{mission:"Kuyruğu sıfırla — ~10 dk",pct:0,note:"1 aksiyon 3+ gündür",
-       wrong:["Growth bütçesi 3 gündür onaysız — launch'ı geciktiriyor"],mile:["Hepsi bugün","kapanabilir"],
-       members:[m("Çağan Koyun","Founder",5,1)],
-       tasks:[t("Growth bütçe artışı onayı","Çağan K.","3 gündür",true),t("Fleet A.Ş. sözleşme imzası","Çağan K.","bugün",true),
-              t("AWS faturası onayı","Çağan K.","dün"),t("v2.4 go/no-go","Çağan K.","bugün"),
-              t("İşe alım onayı: Backend Dev","Çağan K.","2 gündür")]}),
-     room("meeting","Toplantı Salonu",[0,64,100,36],"ok",{mission:"Bugün 3 toplantı",pct:0,note:"14:00'e kadar müsait",wrong:[],mile:["Launch sync","16:00"],
-       members:[],tasks:[t("Launch sync","Tüm liderler","16:00")]}),
+   {id:"lobi",name:"Lobi",sub:"5 sey seni bekliyor",lobby:true,rooms:[
+     room("inbox","Founder Inbox",[0,0,100,58],"risk",{mission:"Kuyrugu sifirla — ~10 dk",pct:0,note:"1 aksiyon 3+ gundur",
+       wrong:["Growth butcesi 3 gundur onaysiz — launch'i geciktiriyor"],mile:["Hepsi bugun","kapanabilir"],
+       members:[m("Cagan Koyun","Founder",5,1)],
+       tasks:[t("Growth butce artisi onayi","Cagan K.","3 gundur",true),t("Fleet A.S. sozlesme imzasi","Cagan K.","bugun",true),
+              t("AWS faturasi onayi","Cagan K.","dun"),t("v2.4 go/no-go","Cagan K.","bugun"),
+              t("ise alim onayi: Backend Dev","Cagan K.","2 gundur")]}),
+     room("meeting","Toplanti Salonu",[0,64,100,36],"ok",{mission:"Bugun 3 toplanti",pct:0,note:"14:00'e kadar musait",wrong:[],mile:["Launch sync","16:00"],
+       members:[],tasks:[t("Launch sync","Tum liderler","16:00")]}),
    ]},
   ];
 
-  const TIMES=["Pzt","Çar","Per","Bugün"];
+  const TIMES=["Pzt","Car","Per","Bugun"];
   const OV: Record<string,string[]>={launchops:["ok","warn","risk","risk"],gmarketing:["ok","ok","warn","risk"],
     backend:["ok","ok","warn","warn"],content:["ok","ok","ok","ok"],
     revops:["ok","warn","warn","warn"],procurement:["ok","ok","ok","warn"],
     inbox:["warn","warn","risk","risk"]};
   const DELAY: Record<string,number[]>={launchops:[0,0,2,4],gmarketing:[0,0,0,2]};
-  const NOTES: (string|null)[]=[null,"Çar · Backend refactor uzadı → Backend Squad DİKKAT'e düştü.",
-   "Per · Android release kaydı → Launch Ops RİSKTE. Zincir: Backend → Mobile → Launch.",
-   "Bugün · Gecikme 4 güne çıktı; kreatifler beklediği için Growth Marketing de RİSKTE."];
+  const NOTES: (string|null)[]=[null,"Car · Backend refactor uzadi → Backend Squad DiKKAT'e dustu.",
+   "Per · Android release kaydi → Launch Ops RiSKTE. Zincir: Backend → Mobile → Launch.",
+   "Bugun · Gecikme 4 gune cikti; kreatifler bekledigi icin Growth Marketing de RiSKTE."];
 
   const PDETAIL: Record<string,{st:string;today:string;working:string[];waiting:[string,string][];goals:[string,number][];recent:string[]}>={
-   "Çağan Koyun":{st:"warn",today:"3 toplantı · 6 görev · 2 onay",
-     working:["Launch filmi onayı","Yatırımcı sunumu","İş Bankası partnership"],
-     waiting:[["Launch filmini onayla","risk"],["Growth bütçesini onayla","risk"],["Fleet sözleşmesini imzala","warn"]],
-     goals:[["Launch Spark",68],["İş Bankası'nı kapat",45]],
-     recent:["Kanal bütçesini onayladı","Basın kitine yorum yaptı"]},
-   "Burak Çavdur":{st:"risk",today:"1 toplantı · 8 görev · 3 gecikmiş",
+   "Cagan Koyun":{st:"warn",today:"3 toplanti · 6 gorev · 2 onay",
+     working:["Launch filmi onayi","Yatirimci sunumu","is Bankasi partnership"],
+     waiting:[["Launch filmini onayla","risk"],["Growth butcesini onayla","risk"],["Fleet sozlesmesini imzala","warn"]],
+     goals:[["Launch Spark",68],["is Bankasi'ni kapat",45]],
+     recent:["Kanal butcesini onayladi","Basin kitine yorum yapti"]},
+   "Burak Cavdur":{st:"risk",today:"1 toplanti · 8 gorev · 3 gecikmis",
      working:["Android build final","SPK-231 crash","Store metadata"],
-     waiting:[["Backend refactor'ın bitmesi","risk"]],
+     waiting:[["Backend refactor'in bitmesi","risk"]],
      goals:[["v2.4 Store'da",72]],
-     recent:["TestFlight dağıttı","Crash raporunu inceledi"]},
+     recent:["TestFlight dagitti","Crash raporunu inceledi"]},
   };
   type RoleProfile = {label:string;person:string;homeFloor:string|null;homeRoom:string|null;
     greeting:string;roleSub:string;briefing:string[];floorAccess:Record<string,string>;ownRooms:string[]};
   const ROLE_PROFILES: Record<string,RoleProfile>={
-    owner:{label:"Owner (Çağan)",person:"Çağan Koyun",homeFloor:null,homeRoom:null,
-      greeting:"Günaydın Çağan.",roleSub:"Şirketin tamamı senin masan.",
-      briefing:["Şirket nasıl gidiyor?","🔴 1 kırmızı zincir: Backend → Mobile → Launch (4 gün)",
-        "📥 5 karar seni bekliyor — en eskisi 3 gündür","İlk hamle önerisi: Growth bütçesini onayla (~2 dk)"],
+    owner:{label:"Owner (Cagan)",person:"Cagan Koyun",homeFloor:null,homeRoom:null,
+      greeting:"Gunaydin Cagan.",roleSub:"Sirketin tamami senin masan.",
+      briefing:["Sirket nasil gidiyor?","🔴 1 kirmizi zincir: Backend → Mobile → Launch (4 gun)",
+        "📥 5 karar seni bekliyor — en eskisi 3 gundur","ilk hamle onerisi: Growth butcesini onayla (~2 dk)"],
       floorAccess:{},ownRooms:[]},
-    admin:{label:"Admin (Onur)",person:"Onur Çelik",homeFloor:null,homeRoom:null,
-      greeting:"Günaydın Onur.",roleSub:"Tüm katlar sana açık.",
-      briefing:["Şirket geneli yolunda, 1 kritik zincir var.","🔴 Launch 4 gün geride — Backend → Mobile → Launch",
-        "📊 Runway 14 ay · MRR ₺4.1M","3 onay kuyruğunda bekliyor"],
+    admin:{label:"Admin (Onur)",person:"Onur Celik",homeFloor:null,homeRoom:null,
+      greeting:"Gunaydin Onur.",roleSub:"Tum katlar sana acik.",
+      briefing:["Sirket geneli yolunda, 1 kritik zincir var.","🔴 Launch 4 gun geride — Backend → Mobile → Launch",
+        "📊 Runway 14 ay · MRR ₺4.1M","3 onay kuyrugunda bekliyor"],
       floorAccess:{},ownRooms:[]},
-    lead:{label:"Kat Lideri (Şevval)",person:"Şevval Beyhan",homeFloor:"growth",homeRoom:null,
-      greeting:"Günaydın Şevval.",roleSub:"Growth katı senin alanın.",
-      briefing:["Growth · Launch — RİSKTE · 4 gün","Ne ters gidiyor: Android release → Launch Ops → kreatifler zinciri",
-        "Ekiplerin: 2 riskte, 1 ileride, 3 yolunda","Bugün senden bekleyen: kreatif brief revizyonu"],
+    lead:{label:"Kat Lideri (Sevval)",person:"Sevval Beyhan",homeFloor:"growth",homeRoom:null,
+      greeting:"Gunaydin Sevval.",roleSub:"Growth kati senin alanin.",
+      briefing:["Growth · Launch — RiSKTE · 4 gun","Ne ters gidiyor: Android release → Launch Ops → kreatifler zinciri",
+        "Ekiplerin: 2 riskte, 1 ileride, 3 yolunda","Bugun senden bekleyen: kreatif brief revizyonu"],
       floorAccess:{urun:"pulse",satis:"pulse",finans:"shape",lobi:"pulse"},ownRooms:[]},
-    member:{label:"Üye (Burak)",person:"Burak Çavdur",homeFloor:"urun",homeRoom:"mobile",
-      greeting:"Günaydın Burak.",roleSub:"Mobile Squad masanda oturuyorsun.",
-      briefing:["🔴 Dikkatini bekleyen: Android build final — yarın, launch'ı blokluyor",
-        "Bugün: 3 görev · 1 toplantı","Seni bekleyenler: Backend refactor (Diren)",
+    member:{label:"Uye (Burak)",person:"Burak Cavdur",homeFloor:"urun",homeRoom:"mobile",
+      greeting:"Gunaydin Burak.",roleSub:"Mobile Squad masanda oturuyorsun.",
+      briefing:["🔴 Dikkatini bekleyen: Android build final — yarin, launch'i blokluyor",
+        "Bugun: 3 gorev · 1 toplanti","Seni bekleyenler: Backend refactor (Diren)",
         "Ekibin: Mobile Squad · YOLUNDA · v2.4 %72"],
       floorAccess:{growth:"pulse",satis:"pulse",finans:"shape",lobi:"pulse"},ownRooms:["mobile"]},
   };
@@ -522,20 +554,46 @@ function initSparkHQ(root: HTMLElement) {
   function pdOf(mm: Member) {
     if(PDETAIL[mm.name])return PDETAIL[mm.name];
     return{st:mm.late>=3?"risk":mm.late>=1?"warn":"ok",
-      today:`${mm.g} görev`+(mm.late?` · ${mm.late} gecikmiş`:""),
+      today:`${mm.g} gorev`+(mm.late?` · ${mm.late} gecikmis`:""),
       working:[] as string[],waiting:[] as [string,string][],goals:[] as [string,number][],recent:[] as string[]};
   }
 
-  let floorSort: "default"|"perf"|"size"|"alpha" = "default";
-  function sortedFloors(): Floor[] {
-    const arr=[...FLOORS];
-    if(floorSort==="perf") arr.sort((a,b)=>SEV[fSt(b)]-SEV[fSt(a)]||b.rooms.reduce((s,r)=>s+r.members.length,0)-a.rooms.reduce((s,r)=>s+r.members.length,0));
-    else if(floorSort==="size") arr.sort((a,b)=>b.rooms.reduce((s,r)=>s+r.members.length,0)-a.rooms.reduce((s,r)=>s+r.members.length,0));
-    else if(floorSort==="alpha") arr.sort((a,b)=>a.name.localeCompare(b.name,"tr"));
-    return arr;
+  const fPeople = (f: Floor) => f.rooms.reduce((a,r)=>a+r.members.length, 0);
+
+  function orderedFloors(): Floor[] {
+    const lobby = FLOORS.filter(f => f.lobby);
+    let rest = FLOORS.filter(f => !f.lobby);
+    if(state.sort === "risk") rest = [...rest].sort((a,b) => {
+      const d = SEV[fSt(b)] - SEV[fSt(a)];
+      if(d) return d;
+      const da = a.rooms.reduce((s,r) => s+rDelay(r), 0);
+      const db = b.rooms.reduce((s,r) => s+rDelay(r), 0);
+      return db - da;
+    });
+    if(state.sort === "people") rest = [...rest].sort((a,b) => fPeople(b) - fPeople(a));
+    return [...rest, ...lobby];
   }
 
-  const state={view:"hq",floor:null as string|null,room:null as string|null,person:null as string|null,mode:"office",time:3,role:"owner" as string,empathy:null as string|null};
+  function relayoutFloor(f: Floor) {
+    const n = f.rooms.length;
+    if(!n) return;
+    const layouts: Record<number, number[][]> = {
+      1: [[0,0,100,100]],
+      2: [[0,0,100,46],[0,54,100,46]],
+      3: [[0,0,44,46],[56,0,44,46],[0,54,100,46]],
+      4: [[0,0,44,46],[56,0,44,46],[0,54,44,46],[56,54,44,46]],
+      5: [[0,0,44,30],[56,0,44,30],[0,36,44,30],[56,36,44,30],[0,72,100,28]],
+      6: [[0,0,44,30],[56,0,44,30],[0,36,44,30],[56,36,44,30],[0,72,44,28],[56,72,44,28]],
+    };
+    if(layouts[n]) { f.rooms.forEach((r,i) => r.rect = layouts[n][i]); return; }
+    const rows = Math.ceil(n/2), rh = (100-(rows-1)*6)/rows;
+    f.rooms.forEach((r,i) => {
+      const row = Math.floor(i/2), col = i%2, y = row*(rh+6);
+      r.rect = (i===n-1 && n%2===1) ? [0,y,100,rh] : [col?56:0,y,44,rh];
+    });
+  }
+
+  const state={view:"hq",floor:null as string|null,room:null as string|null,person:null as string|null,mode:"office",time:3,role:"owner" as string,empathy:null as string|null,sort:"custom" as string};
   const $=(s: string)=>root.querySelector(s) as HTMLElement|null;
   const F=()=>FLOORS.find(f=>f.id===state.floor)!;
   const RM=()=>state.room?F().rooms.find(r=>r.id===state.room)!:null;
@@ -543,11 +601,15 @@ function initSparkHQ(root: HTMLElement) {
   const avc=(n: string)=>AVC[[...n].reduce((s,c)=>s+c.charCodeAt(0),0)%AVC.length];
   const rSt=(r: Room)=>OV[r.id]?OV[r.id][state.time]:r.st;
   const rDelay=(r: Room)=>DELAY[r.id]?DELAY[r.id][state.time]:0;
-  const rLabel=(r: Room)=>{const s=ST[rSt(r)];const d=rDelay(r);return s.t+(d?` · ${d} gün`:"")};
+  const rLabel=(r: Room)=>{const s=ST[rSt(r)];const d=rDelay(r);return s.t+(d?` · ${d} gun`:"")};
   const fSt=(f: Floor)=>{let mx="ok";f.rooms.forEach(r=>{if(SEV[rSt(r)]>SEV[mx])mx=rSt(r)});return mx};
-  const fLabel=(f: Floor)=>{const s=fSt(f);
+  const fLabel=(f: Floor)=>{
+    const s=fSt(f);
     if(f.id==="growth"&&s==="risk")return rLabel(f.rooms.find(r=>r.id==="launchops")!);
-    if(f.id==="lobi")return f.sub;return s==="ok"?f.sub:ST[s].t};
+    if(f.lobby)return f.sub;
+    if(!f.rooms.length)return "Bos kat — oda ekle";
+    return s==="ok"?f.sub:ST[s].t;
+  };
   const pSt=(mm: Member)=>pdOf(mm).st;
   const stColor=(s: string)=>s==="risk"?"var(--risk)":s==="warn"?"var(--warn)":"var(--lime)";
 
@@ -592,13 +654,52 @@ function initSparkHQ(root: HTMLElement) {
     return list;
   }
 
+  // --- Modal system ---
+  function openModal(title: string, fields: {label:string;ph?:string;value?:string}[], onOk: (vals:string[])=>void, opts?: {note?:string;okLabel?:string;danger?:boolean}) {
+    const modal = $("#shqModal"); if(!modal) return;
+    const o = opts || {};
+    let html = `<div class="modal-card"><h3>${title}</h3>`;
+    if(o.note) html += `<div class="mnote">${o.note}</div>`;
+    fields.forEach((f, i) => {
+      html += `<div class="mfield"><label>${f.label}</label><input data-idx="${i}" placeholder="${f.ph||""}" value="${f.value||""}" /></div>`;
+    });
+    html += `<div class="modal-btns"><button class="btn-ghost" data-act="cancel">iptal</button>`;
+    html += o.danger
+      ? `<button class="btn-danger" data-act="ok">${o.okLabel||"Sil"}</button>`
+      : `<button class="btn-lime" data-act="ok">${o.okLabel||"Kaydet"}</button>`;
+    html += `</div></div>`;
+    modal.innerHTML = html;
+    modal.classList.add("open");
+
+    const inputs = modal.querySelectorAll("input");
+    const getVals = () => Array.from(inputs).map(inp => (inp as HTMLInputElement).value.trim());
+
+    modal.querySelector("[data-act=cancel]")?.addEventListener("click", closeModal);
+    modal.querySelector("[data-act=ok]")?.addEventListener("click", () => {
+      const vals = getVals();
+      onOk(vals);
+    });
+    inputs.forEach(inp => inp.addEventListener("keydown", (e: Event) => {
+      const ke = e as KeyboardEvent;
+      if(ke.key === "Enter") { onOk(getVals()); }
+      if(ke.key === "Escape") { closeModal(); }
+    }));
+    if(inputs.length) setTimeout(() => (inputs[0] as HTMLInputElement).focus(), 50);
+  }
+  function closeModal() {
+    const modal = $("#shqModal"); if(modal) modal.classList.remove("open");
+  }
+
+  // --- Drag state for floor reordering ---
+  let drag: {fid:string; el:Element; startY:number; moved:boolean; ord:number; svgEl:SVGSVGElement}|null = null;
+
   function renderHQ(){
-    const sf=sortedFloors();
+    const sf=orderedFloors();
     const W=170,D=105,H=44,s=1.15,n=sf.length;
     const riskRooms=sf.flatMap(f=>f.rooms).filter(r=>rSt(r)==="risk").length;
     const kpis=$("#hqKpis");
     if(kpis)kpis.innerHTML=`
-      <span class="ps-item risk"><span class="ps-dot" style="background:var(--risk)"></span><b>${riskRooms+4}</b> riskte iş</span>
+      <span class="ps-item risk"><span class="ps-dot" style="background:var(--risk)"></span><b>${riskRooms+4}</b> riskte is</span>
       <span class="ps-item ok"><span class="ps-dot" style="background:var(--ok)"></span><b>27</b> tamamlanan</span>
       <span class="ps-item"><span class="ps-dot" style="background:var(--lime)"></span><b>5</b> milestone</span>`;
 
@@ -621,9 +722,15 @@ function initSparkHQ(root: HTMLElement) {
     let svg=`<svg viewBox="${vx0} ${vy0} ${vx1-vx0} ${vy1-vy0}" xmlns="http://www.w3.org/2000/svg">`;
     svg+=`<polygon points="${pts([P(-g,-g,0,cx,cy,s),P(W+g,-g,0,cx,cy,s),P(W+g,D+g,0,cx,cy,s),P(-g,D+g,0,cx,cy,s)])}" fill="#111114"/>`;
 
+    // Track non-lobby order index for drag
+    let nonLobbyIdx = 0;
+
     for(let i=0;i<n;i++){
       const f=sf[n-1-i],zb=i*H,zt=zb+H;
       const st2=fSt(f),sc=ST[st2].c;
+      const isLobby = !!f.lobby;
+      const isDraggable = state.sort === "custom" && !isLobby;
+      const ordIdx = isLobby ? -1 : nonLobbyIdx++;
 
       const sideA=showFront
         ?pts([P(0,D,zb,cx,cy,s),P(W,D,zb,cx,cy,s),P(W,D,zt,cx,cy,s),P(0,D,zt,cx,cy,s)])
@@ -640,7 +747,16 @@ function initSparkHQ(root: HTMLElement) {
       const[sx,sy]=P(labelX0,labelFaceY,zb+H*.26,cx,cy,s);
       const[dx,dy]=P(dotX,labelFaceY,zb+H*.5,cx,cy,s);
       const riskOutline=st2==="risk"?`<polygon points="${sideA}" fill="rgba(255,107,94,.04)" stroke="var(--risk)" stroke-width="1.4" stroke-dasharray="4 3"/>`:"";
-      svg+=`<g class="bfloor" data-f="${f.id}">
+
+      // Floor control positions
+      const fctlBaseX = showFront ? labelX0 : labelX0;
+      const[ex,ey]=P(fctlBaseX + (showFront?90:-90), labelFaceY, zb+H*.55, cx, cy, s);
+      const[delx,dely]=[ex + 22, ey];
+
+      // Grip position
+      const[gx,gy]=P(fctlBaseX + (showFront?-8:8), labelFaceY, zb+H*.5, cx, cy, s);
+
+      svg+=`<g class="bfloor${isDraggable?" draggable":""}" data-f="${f.id}" data-ord="${ordIdx}">
         <polygon points="${sideA}" fill="#1C1C1F" stroke="rgba(255,255,255,.05)"/>
         <polygon points="${sideB}" fill="#202024" stroke="rgba(255,255,255,.05)"/>
         <polygon class="face-top" points="${top}" fill="#232327" stroke="rgba(255,255,255,.06)"/>
@@ -648,8 +764,26 @@ function initSparkHQ(root: HTMLElement) {
         <text class="bf-name" x="${lx}" y="${ly}">${f.name}</text>
         <text class="bf-stat ${st2==="risk"?"risk":st2==="warn"?"warn":"ok"}" x="${sx}" y="${sy}">${fLabel(f)}</text>
         <circle cx="${dx}" cy="${dy}" r="4.5" fill="${sc}"/>
-        ${riskOutline}
-      </g>`;
+        ${riskOutline}`;
+
+      // Grip handle for draggable floors
+      if(isDraggable) {
+        svg += `<text class="grip" x="${gx}" y="${gy+4}" text-anchor="middle">⠇</text>`;
+      }
+
+      // Floor controls (edit + delete) - not for lobby
+      if(!isLobby) {
+        svg += `<g class="fctl edit" data-fctl="edit" data-fid="${f.id}">
+          <circle cx="${ex}" cy="${ey}" r="10"/>
+          <text x="${ex}" y="${ey+3.5}">✎</text>
+        </g>
+        <g class="fctl del" data-fctl="del" data-fid="${f.id}">
+          <circle cx="${delx}" cy="${dely}" r="10"/>
+          <text x="${delx}" y="${dely+3.5}">🗑</text>
+        </g>`;
+      }
+
+      svg+=`</g>`;
     }
     const rz=n*H;
     const antSideA=showFront
@@ -665,96 +799,161 @@ function initSparkHQ(root: HTMLElement) {
     <polygon points="${antTop}" fill="#1E1E22" stroke="rgba(255,255,255,.05)"/>
     <circle cx="${antLight[0]}" cy="${antLight[1]}" r="3" fill="var(--lime)" opacity=".6"/>
     <circle cx="${antLight[0]}" cy="${antLight[1]}" r="8" fill="var(--lime)" opacity=".08"/>`;
-    const addZ=n*H+22;
-    const addCenter=P(W/2,D/2,addZ,cx,cy,s);
-    svg+=`<g class="add-floor-btn" data-act="add-floor" style="cursor:pointer">
-      <circle cx="${addCenter[0]}" cy="${addCenter[1]}" r="14" fill="var(--card)" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 3"/>
-      <text x="${addCenter[0]}" y="${addCenter[1]+5}" text-anchor="middle" font-size="16" font-weight="700" fill="var(--dim)">+</text>
-    </g>
-    </svg>`;
+
+    // Drop indicator line for drag-and-drop
+    svg += `<line id="dropInd" x1="0" y1="0" x2="0" y2="0"/>`;
+
+    svg+=`</svg>`;
     const bld=$("#hqBuilding");
     if(bld)bld.innerHTML=svg;
+
+    // Floor click handlers
     root.querySelectorAll(".bfloor").forEach(el=>{
       const fid=(el as HTMLElement).dataset.f!;
       const vis=floorVis(fid);
       if(vis==="pulse")el.classList.add("frosted");
       else if(vis==="shape")el.classList.add("locked");
-      el.addEventListener("click",()=>{
+
+      el.addEventListener("click",(e)=>{
+        // Check if fctl was clicked
+        const fctlEl = (e.target as Element).closest(".fctl");
+        if(fctlEl) {
+          e.stopPropagation();
+          const act = (fctlEl as HTMLElement).dataset.fctl;
+          const targetFid = (fctlEl as HTMLElement).dataset.fid!;
+          if(act === "edit") renameFloor(targetFid);
+          if(act === "del") deleteFloor(targetFid);
+          return;
+        }
         if(wasCamDrag)return;
+        if(drag && drag.moved) return;
         const v=floorVis(fid);
-        if(v==="shape"){showDoor(FLOORS.find(f2=>f2.id===fid)!.name,"Bu kat yalnızca ilgili ekibe açık.","Kat liderinden erişim iste.");return}
+        if(v==="shape"){showDoor(FLOORS.find(f2=>f2.id===fid)!.name,"Bu kat yalnizca ilgili ekibe acik.","Kat liderinden erisim iste.");return}
         goFloor(fid);
       });
       el.addEventListener("mouseenter",e=>showTooltipFloor(e as MouseEvent,fid));
       el.addEventListener("mouseleave",hideTooltip);
     });
-    root.querySelector("[data-act=add-floor]")?.addEventListener("click",(e)=>{
-      e.stopPropagation();
-      if(wasCamDrag)return;
-      openAddFloor();
-    });
+
     const isDefault=Math.abs(cam.rot-Math.PI/4)<0.02&&Math.abs(cam.tilt-0.616)<0.02;
     const resetBtn=$("#camReset");
     if(resetBtn)resetBtn.classList.toggle("show",!isDefault);
-    renderSortBar();
+    renderHQTools();
   }
 
-  function renderSortBar(){
-    const bar=$("#sortBar");if(!bar)return;
-    const opts: [string,string][]=[["default","Varsayılan"],["perf","Performans"],["size","Kişi"],["alpha","A-Z"]];
-    bar.innerHTML=`<span class="sort-label">Sırala</span>`+opts.map(([k,l])=>`<button class="${floorSort===k?"on":""}" data-sort="${k}">${l}</button>`).join("");
-    bar.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
-      floorSort=(b as HTMLElement).dataset.sort as typeof floorSort;
+  function renderHQTools() {
+    const tools = $("#hqTools"); if(!tools) return;
+    tools.innerHTML = `<div class="sortseg" id="sortSeg">
+      <span>SIRALA</span>
+      <button data-s="custom" class="${state.sort==="custom"?"on":""}">Ozel</button>
+      <button data-s="risk" class="${state.sort==="risk"?"on":""}">Riske gore</button>
+      <button data-s="people" class="${state.sort==="people"?"on":""}">Kisi sayisi</button>
+    </div>
+    <button class="addbtn" id="addFloorBtn2">＋ Kat Ekle</button>`;
+    tools.querySelectorAll("#sortSeg button").forEach(b => b.addEventListener("click", () => {
+      state.sort = (b as HTMLElement).dataset.s!;
       renderHQ();
     }));
+    tools.querySelector("#addFloorBtn2")?.addEventListener("click", addFloor);
+    const hint = $("#dragHint");
+    if(hint) hint.textContent = state.sort === "custom" ? "Ozel modda katlari surukleyerek yeniden sirala" : "";
   }
 
-  function openAddFloor(){
-    const d=$("#shqAddFloor");if(!d)return;
-    d.innerHTML=`<div class="af-title">Yeni Departman Ekle</div>
-      <div class="af-field"><label>Departman Adı</label><input id="afName" placeholder="Örn: İK, Hukuk, Ar-Ge…" /></div>
-      <div class="af-field"><label>Alt Başlık</label><input id="afSub" placeholder="Örn: 3 açık pozisyon" /></div>
-      <div class="af-field"><label>Başlangıç Durumu</label>
-        <select id="afStatus">
-          <option value="ok">Yolunda</option>
-          <option value="warn">Dikkat</option>
-          <option value="risk">Riskte</option>
-        </select>
-      </div>
-      <div class="af-actions">
-        <button class="btn-lime" data-act="create">Kat Ekle</button>
-        <button class="btn-ghost" data-act="cancel">İptal</button>
-      </div>`;
-    d.classList.add("show");
-    d.querySelector("[data-act=cancel]")?.addEventListener("click",closeAddFloor);
-    d.querySelector("[data-act=create]")?.addEventListener("click",()=>{
-      const nameEl=d.querySelector("#afName") as HTMLInputElement;
-      const subEl=d.querySelector("#afSub") as HTMLInputElement;
-      const stEl=d.querySelector("#afStatus") as HTMLSelectElement;
-      const name=nameEl?.value.trim();
-      if(!name){nameEl?.focus();return}
-      const id=name.toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,12)||"dept"+FLOORS.length;
-      const sub=subEl?.value.trim()||"Yeni departman";
-      const st=stEl?.value||"ok";
-      const newFloor: Floor={id,name,sub,rooms:[
-        room("genel-"+id,"Genel",[0,0,100,50],st,{mission:name+" hedefleri",pct:0,note:"Henüz başlanmadı",
-          wrong:[],mile:["Kurulum","bu hafta"],members:[],tasks:[]})
-      ]};
-      FLOORS.push(newFloor);
-      closeAddFloor();
+  // --- Management functions using modal ---
+  function addFloor() {
+    if(FLOORS.filter(f => !f.lobby).length >= 9) {
+      fakeAct("Maksimum 9 kat ekleyebilirsiniz");
+      return;
+    }
+    openModal("Yeni Kat / Departman", [{label:"Departman adi", ph:"or. People & Culture"}], ([name]) => {
+      if(!name) return;
+      const id = slug(name.toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,12) || "dept");
+      const newFloor: Floor = {id, name, sub:"Yeni departman", rooms:[]};
+      // Insert before lobby
+      const lobbyIdx = FLOORS.findIndex(f => f.lobby);
+      if(lobbyIdx >= 0) FLOORS.splice(lobbyIdx, 0, newFloor);
+      else FLOORS.push(newFloor);
+      closeModal();
       renderHQ();
-      fakeAct(`"${name}" katı eklendi — ${FLOORS.length}. kat`);
+      fakeAct(`"${name}" kati eklendi — ${FLOORS.length}. kat`);
+      goFloor(id);
     });
-    setTimeout(()=>(d.querySelector("#afName") as HTMLInputElement)?.focus(),50);
   }
-  function closeAddFloor(){$("#shqAddFloor")?.classList.remove("show")}
+
+  function renameFloor(fid: string) {
+    const f = FLOORS.find(x => x.id === fid);
+    if(!f) return;
+    openModal("Kati Yeniden Adlandir", [{label:"Yeni ad", value: f.name}], ([name]) => {
+      if(!name) return;
+      f.name = name;
+      closeModal();
+      if(state.floor === fid) {
+        const ft = $("#floorTitle"); if(ft) ft.textContent = name;
+      }
+      renderHQ();
+      fakeAct(`Kat "${name}" olarak yeniden adlandirildi`);
+    });
+  }
+
+  function deleteFloor(fid: string) {
+    const f = FLOORS.find(x => x.id === fid);
+    if(!f || f.lobby) return;
+    openModal("Kati Sil", [], () => {
+      const idx = FLOORS.findIndex(x => x.id === fid);
+      if(idx >= 0) FLOORS.splice(idx, 1);
+      closeModal();
+      if(state.floor === fid) goHQ();
+      else renderHQ();
+      fakeAct(`"${f.name}" kati silindi`);
+    }, {note: `<b>${f.name}</b> kati ve icindeki tum odalar kalici olarak silinecek. Bu islem geri alinamaz.`, okLabel:"Kati Sil", danger: true});
+  }
+
+  function addRoom() {
+    const f = F();
+    if(!f) return;
+    openModal("Yeni Oda / Ekip", [{label:"Oda adi", ph:"or. Frontend Squad"}], ([name]) => {
+      if(!name) return;
+      const id = slug(name.toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,12) || "room");
+      const nr = blankRoom(id, name);
+      f.rooms.push(nr);
+      relayoutFloor(f);
+      closeModal();
+      renderPlan();
+      renderHQ();
+      fakeAct(`"${name}" odasi eklendi`);
+    });
+  }
+
+  function addMember() {
+    const r = RM();
+    if(!r) return;
+    openModal("Uye Ekle", [{label:"Ad Soyad", ph:"or. Ali Veli"}, {label:"Rol", ph:"or. Developer"}], ([name, role]) => {
+      if(!name) return;
+      r.members.push(m(name, role || "Uye", 0, 0));
+      closeModal();
+      renderPlan();
+      if($("#shqSheet")?.classList.contains("open")) renderSheet();
+      fakeAct(`${name} ekibe eklendi`);
+    });
+  }
 
   function renderPlan(){
     const f=F();
     const ft=$("#floorTitle");if(ft)ft.textContent=f.name;
-    const fs=$("#floorSub");if(fs)fs.textContent=f.rooms.length+" oda · "+f.rooms.reduce((a,r)=>a+r.members.length,0)+" kişi";
+    const fs=$("#floorSub");if(fs)fs.textContent=f.rooms.length+" oda · "+f.rooms.reduce((a,r)=>a+r.members.length,0)+" kisi";
     const isPulse=state.mode==="pulse";
     const ph=$("#planHolder");if(!ph)return;
+
+    // Empty floor state
+    if(f.rooms.length === 0) {
+      ph.innerHTML = `<div class="empty-floor">
+        <div class="ico">🏗️</div>
+        <p><b>${f.name}</b> kati henuz bos.<br>ilk odayi ekleyerek departmani kur.</p>
+        <button class="btn-lime" id="emptyAddRoom">＋ ilk odayi ekle</button>
+      </div>`;
+      ph.querySelector("#emptyAddRoom")?.addEventListener("click", addRoom);
+      return;
+    }
 
     const S=5.2;
     const pad=8;
@@ -832,7 +1031,7 @@ function initSparkHQ(root: HTMLElement) {
       if(!isPulse && rv==="content"){
         const openT=(r.tasks||[]).filter(t2=>!t2.done).length;
         const blocked=(r.tasks||[]).filter(t2=>t2.urgent&&!t2.done).length;
-        let foot=`${openT} açık`;
+        let foot=`${openT} acik`;
         if(blocked)foot+=` · ${blocked} engel`;
         svg+=`<text x="${x+w-8}" y="${y+h-6}" style="font-size:7px;fill:var(--dim);text-anchor:end;font-variant-numeric:tabular-nums">${foot}</text>`;
       }
@@ -852,7 +1051,7 @@ function initSparkHQ(root: HTMLElement) {
       const vis=(el as HTMLElement).dataset.vis!;
       el.addEventListener("click",e=>{
         if((e.target as Element).closest(".person-g"))return;
-        if(vis==="shape"){showDoor(f.rooms.find(x=>x.id===rid)!.name,"Bu alan yalnızca ilgili ekibe açık.","Erişim iste");return}
+        if(vis==="shape"){showDoor(f.rooms.find(x=>x.id===rid)!.name,"Bu alan yalnizca ilgili ekibe acik.","Erisim iste");return}
         if(vis==="pulse"){showDoorPulse(rid);return}
         showPopupRoom(rid,e as MouseEvent);
       });
@@ -881,11 +1080,11 @@ function initSparkHQ(root: HTMLElement) {
     }else if(vis==="pulse"){
       tt.innerHTML=`<div class="tt-name">${f.name}</div>
         <div class="tt-stat" style="color:${stC}">${ST[st].t}</div>
-        <div class="tt-line">${f.rooms.length} oda · ${f.rooms.reduce((a,r)=>a+r.members.length,0)} kişi</div>`;
+        <div class="tt-line">${f.rooms.length} oda · ${f.rooms.reduce((a,r)=>a+r.members.length,0)} kisi</div>`;
     }else{
       tt.innerHTML=`<div class="tt-name">${f.name}</div>
         <div class="tt-stat" style="color:${stC}">${fLabel(f)}</div>
-        <div class="tt-line">${f.rooms.length} oda · ${f.rooms.reduce((a,r)=>a+r.members.length,0)} kişi</div>`;
+        <div class="tt-line">${f.rooms.length} oda · ${f.rooms.reduce((a,r)=>a+r.members.length,0)} kisi</div>`;
     }
     posTooltip(e);tt.style.display="block";
   }
@@ -898,7 +1097,7 @@ function initSparkHQ(root: HTMLElement) {
     }else if(rv==="pulse"){
       tt.innerHTML=`<div class="tt-name">${r.name}</div>
         <div class="tt-stat" style="color:${stColor(st)}">${ST[rSt(r)].t}</div>
-        <div class="tt-line">${r.members.length} kişi${r.wrong.length?` · ${r.wrong.length} engel`:""}</div>`;
+        <div class="tt-line">${r.members.length} kisi${r.wrong.length?` · ${r.wrong.length} engel`:""}</div>`;
     }else{
       tt.innerHTML=`<div class="tt-name">${r.name}</div>
         <div class="tt-stat" style="color:${stColor(st)}">${rLabel(r)}</div>
@@ -933,7 +1132,7 @@ function initSparkHQ(root: HTMLElement) {
 
   function showPopupRoom(rid: string,e: MouseEvent){
     const rv=roomVis(state.floor!,rid);
-    if(rv==="shape"){showDoor(F().rooms.find(x=>x.id===rid)!.name,"Bu alan yalnızca ilgili ekibe açık.","Erişim iste");return}
+    if(rv==="shape"){showDoor(F().rooms.find(x=>x.id===rid)!.name,"Bu alan yalnizca ilgili ekibe acik.","Erisim iste");return}
     if(rv==="pulse"){showDoorPulse(rid);return}
     closePopup();
     const r=F().rooms.find(x=>x.id===rid)!,st=rSt(r);
@@ -946,7 +1145,7 @@ function initSparkHQ(root: HTMLElement) {
       <div class="pop-head">
         <button class="pop-x" data-act="close-popup">✕</button>
         <div class="pop-name">${r.name}</div>
-        <div class="pop-sub">${F().name} katı</div>
+        <div class="pop-sub">${F().name} kati</div>
         <div class="pop-badge ${st==="ahead"?"ok":st}"><span class="bd"></span>${rLabel(r)}</div>
       </div>
       <div class="pop-body">
@@ -954,7 +1153,7 @@ function initSparkHQ(root: HTMLElement) {
         ${r.pct?`<div class="pop-bar"><div class="pb-track"><i style="width:${r.pct}%;background:${stColor(st)}"></i></div><span class="pb-pct">%${r.pct}</span></div>`:""}
         ${r.wrong.length?`<div class="pop-wrong">${r.wrong.map(w=>`<div class="pw-item">${w}</div>`).join("")}</div>`:""}
         ${r.members.length?`<div class="pop-people">${r.members.map(mm=>`<div class="pop-av" style="background:${avc(mm.name)}" title="${mm.name}" data-room="${r.id}" data-person="${mm.name}">${initials(mm.name)}</div>`).join("")}</div>`:""}
-        <div class="pop-meta"><span><b>${openT}</b> açık</span>${blocked?`<span class="cb"><b>${blocked}</b> engelli</span>`:""}<span><b>${done}</b> bitti</span></div>
+        <div class="pop-meta"><span><b>${openT}</b> acik</span>${blocked?`<span class="cb"><b>${blocked}</b> engelli</span>`:""}<span><b>${done}</b> bitti</span></div>
       </div>
       <div class="pop-foot">
         <button class="btn-lime" data-act="enter-room">Gir</button>
@@ -983,7 +1182,7 @@ function initSparkHQ(root: HTMLElement) {
           <div class="pp-av" style="background:${avc(mm.name)}">${initials(mm.name)}</div>
           <div><div class="pop-name" style="font-size:15px">${mm.name}</div><div class="pop-sub">${mm.role}</div></div>
         </div>
-        <div class="pop-badge ${pd.st}"><span class="bd"></span>${pd.st==="risk"?"Müdahale gerek":pd.st==="warn"?"Dikkat":"Yolunda"}</div>
+        <div class="pop-badge ${pd.st}"><span class="bd"></span>${pd.st==="risk"?"Mudahale gerek":pd.st==="warn"?"Dikkat":"Yolunda"}</div>
       </div>
       <div class="pop-body">
         <div class="pp-today">${pd.today}</div>
@@ -991,17 +1190,17 @@ function initSparkHQ(root: HTMLElement) {
         ${pd.goals.length?`<div class="pp-sec"><h6>Hedefler</h6>${pd.goals.map(([g,p])=>`<div class="goalline">${g}<span class="gbar"><i style="width:${p}%"></i></span><span class="gp">%${p}</span></div>`).join("")}</div>`:""}
       </div>
       <div class="pop-foot">
-        <button class="btn-lime" data-act="enter-person">Masasına Git</button>
+        <button class="btn-lime" data-act="enter-person">Masasina Git</button>
         <button class="btn-ghost" data-act="msg">Mesaj</button>
-        ${state.role==="owner"?`<button class="btn-ghost" data-act="empathy" style="font-size:11px">👁 Gözünden Gör</button>`:""}
+        ${state.role==="owner"?`<button class="btn-ghost" data-act="empathy" style="font-size:11px">👁 Gozunden Gor</button>`:""}
       </div>`;
     pop.querySelector("[data-act=close-popup]")?.addEventListener("click",closePopup);
     pop.querySelector("[data-act=enter-person]")?.addEventListener("click",()=>{closePopup();openSheet(rid,pname)});
-    pop.querySelector("[data-act=msg]")?.addEventListener("click",()=>fakeAct("Mesaj gönderildi"));
+    pop.querySelector("[data-act=msg]")?.addEventListener("click",()=>fakeAct("Mesaj gonderildi"));
     pop.querySelector("[data-act=empathy]")?.addEventListener("click",()=>{
       closePopup();const targetRole=Object.entries(ROLE_PROFILES).find(([,p])=>p.person===pname);
       if(targetRole){state.empathy=targetRole[0];renderEmpathy();goHQ();playEntrance()}
-      else fakeAct("Bu kişi için empati modu — prototipte yalnızca tanımlı roller destekleniyor")});
+      else fakeAct("Bu kisi icin empati modu — prototipte yalnizca tanimli roller destekleniyor")});
     posPopup(e);pop.classList.add("show");renderCrumbs();
   }
 
@@ -1053,28 +1252,28 @@ function initSparkHQ(root: HTMLElement) {
           <div style="width:44px;height:44px;border-radius:50%;background:${avc(mm.name)};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">${initials(mm.name)}</div>
           <div><div class="sh-title" style="font-size:17px">${mm.name}</div><div class="sh-sub">${mm.role}</div></div>
         </div>
-        <span class="sh-status ${pd.st}">${pd.st==="risk"?"● Müdahale gerek":pd.st==="warn"?"● Dikkat":"● Yolunda"}</span>
-        <div class="sh-sec"><h6>Bugün</h6><div style="font-size:13px">${pd.today}</div></div>
-        ${pd.working.length?`<div class="sh-sec"><h6>Üzerinde çalıştıkları</h6>${pd.working.map(w=>`<div class="li"><span class="ldot" style="background:var(--lime)"></span>${w}</div>`).join("")}</div>`:""}
+        <span class="sh-status ${pd.st}">${pd.st==="risk"?"● Mudahale gerek":pd.st==="warn"?"● Dikkat":"● Yolunda"}</span>
+        <div class="sh-sec"><h6>Bugun</h6><div style="font-size:13px">${pd.today}</div></div>
+        ${pd.working.length?`<div class="sh-sec"><h6>Uzerinde calistiklari</h6>${pd.working.map(w=>`<div class="li"><span class="ldot" style="background:var(--lime)"></span>${w}</div>`).join("")}</div>`:""}
         ${pd.waiting.length?`<div class="sh-sec"><h6>Bekleyenler</h6>${pd.waiting.map(([w,k])=>`<div class="li"><span class="ldot" style="background:var(--${k})"></span>${w}</div>`).join("")}</div>`:""}
         ${pd.goals.length?`<div class="sh-sec"><h6>Hedefler</h6>${pd.goals.map(([g,p])=>`<div class="goalline">${g}<span class="gbar" style="max-width:100px"><i style="width:${p}%"></i></span><span class="gp" style="font-variant-numeric:tabular-nums">%${p}</span></div>`).join("")}</div>`:""}
         ${pd.recent.length?`<div class="sh-sec"><h6>Son hareketler</h6>${pd.recent.map(x=>`<div class="li"><span class="ldot" style="background:var(--hover)"></span><span style="color:var(--muted)">${x}</span></div>`).join("")}</div>`:""}
-        <div class="sh-sec"><h6>Görevleri</h6>
+        <div class="sh-sec"><h6>Gorevleri</h6>
           ${(r.tasks||[]).filter(tk=>tk.who.startsWith(mm.name.split(" ")[0])).map(tk=>`
             <div class="li"><span class="ldot" style="background:${tk.done?"var(--ok)":tk.urgent?"var(--risk)":"var(--lime)"}"></span>
-            <span>${tk.tt}<div class="lmeta">${tk.day}${tk.urgent?" · acil":""}</div></span></div>`).join("")||`<div style="font-size:12px;color:var(--dim)">Listelenen görev yok.</div>`}
+            <span>${tk.tt}<div class="lmeta">${tk.day}${tk.urgent?" · acil":""}</div></span></div>`).join("")||`<div style="font-size:12px;color:var(--dim)">Listelenen gorev yok.</div>`}
         </div>`;
       acts.innerHTML=`<button class="btn-lime" data-act="msg">Mesaj</button>
-        <button class="btn-ghost" data-act="assign">Görev Ata</button>
-        <button class="btn-ghost" data-act="week">Haftasını Gör</button>
-        ${state.role==="owner"?`<button class="btn-ghost" data-act="empathy" style="font-size:11px">👁 Gözünden Gör</button>`:""}`;
+        <button class="btn-ghost" data-act="assign">Gorev Ata</button>
+        <button class="btn-ghost" data-act="week">Haftasini Gor</button>
+        ${state.role==="owner"?`<button class="btn-ghost" data-act="empathy" style="font-size:11px">👁 Gozunden Gor</button>`:""}`;
       acts.querySelectorAll("[data-act]").forEach(b=>{
         const act=(b as HTMLElement).dataset.act!;
         if(act==="empathy"){b.addEventListener("click",()=>{
           const targetRole=Object.entries(ROLE_PROFILES).find(([,p])=>p.person===mm.name);
           if(targetRole){closeSheet();state.empathy=targetRole[0];renderEmpathy();goHQ();playEntrance()}
-          else fakeAct("Bu kişi için empati modu desteklenmiyor")});return}
-        b.addEventListener("click",()=>fakeAct(act==="msg"?"Mesaj gönderildi":act==="assign"?"Görev atandı":"Hafta görünümü açıldı"));
+          else fakeAct("Bu kisi icin empati modu desteklenmiyor")});return}
+        b.addEventListener("click",()=>fakeAct(act==="msg"?"Mesaj gonderildi":act==="assign"?"Gorev atandi":"Hafta gorunumu acildi"));
       });
       back.onclick=()=>{state.person=null;renderSheet();renderCrumbs()};
       return;
@@ -1085,7 +1284,7 @@ function initSparkHQ(root: HTMLElement) {
     const isInbox=r.id==="inbox";
     body.innerHTML=`
       <div class="sh-title">${r.name}</div>
-      <div class="sh-sub">${F().name} katı</div>
+      <div class="sh-sub">${F().name} kati</div>
       <span class="sh-status ${st==="ahead"?"ok":st}">${rLabel(r)}</span>
       <div class="sh-sec mission-block"><h6>Misyon</h6>
         <b>${r.mission}</b>
@@ -1099,21 +1298,21 @@ function initSparkHQ(root: HTMLElement) {
           <span class="pst" style="background:${ST[pSt(mm)].c}"></span></button>`).join("")}</div></div>`:""}
       <div class="sh-sec duo">
         <div class="cell"><b>${r.mile[0]}</b><span>${r.mile[1]}</span></div>
-        <div class="cell"><b>${isInbox?openT+" bekleyen":openT+" açık"}</b><span>${blocked?blocked+" engelli · ":""}${done} bitti</span></div>
+        <div class="cell"><b>${isInbox?openT+" bekleyen":openT+" acik"}</b><span>${blocked?blocked+" engelli · ":""}${done} bitti</span></div>
       </div>
       ${isInbox?`<div class="sh-sec"><h6>Seni bekleyenler</h6>
         ${(r.tasks||[]).map(tk=>`<div class="li"><span class="ldot" style="background:${tk.urgent?"var(--risk)":"var(--warn)"}"></span>
           <span style="flex:1">${tk.tt}<div class="lmeta">${tk.day}</div></span>
           <button class="btn-ghost" style="padding:4px 10px;font-size:11px" data-act="approve">Onayla</button></div>`).join("")}</div>`:""}`;
-    acts.innerHTML=`<button class="btn-lime" data-act="work-list">İşleri Gör</button>
-      <button class="btn-ghost" data-act="meeting">Toplantı</button>
+    acts.innerHTML=`<button class="btn-lime" data-act="work-list">isleri Gor</button>
+      <button class="btn-ghost" data-act="meeting">Toplanti</button>
       <button class="btn-ghost" data-act="ask-sheet">Ask AI</button>`;
     body.querySelectorAll("[data-person]").forEach(el=>el.addEventListener("click",()=>{
       state.person=(el as HTMLElement).dataset.person!;renderSheet();renderCrumbs();
     }));
-    body.querySelectorAll("[data-act=approve]").forEach(b=>b.addEventListener("click",()=>fakeAct("Onaylandı")));
-    acts.querySelector("[data-act=work-list]")?.addEventListener("click",()=>fakeAct("İş listesi"));
-    acts.querySelector("[data-act=meeting]")?.addEventListener("click",()=>fakeAct("Toplantı başlatıldı"));
+    body.querySelectorAll("[data-act=approve]").forEach(b=>b.addEventListener("click",()=>fakeAct("Onaylandi")));
+    acts.querySelector("[data-act=work-list]")?.addEventListener("click",()=>fakeAct("is listesi"));
+    acts.querySelector("[data-act=meeting]")?.addEventListener("click",()=>fakeAct("Toplanti baslatildi"));
     acts.querySelector("[data-act=ask-sheet]")?.addEventListener("click",openAsk);
   }
 
@@ -1131,24 +1330,73 @@ function initSparkHQ(root: HTMLElement) {
         <span class="wd ${tk.urgent?"urgent":""}">${tk.day}${tk.urgent?" !":""}</span></div>`).join("")}</div>`:"";
     const ww=$("#workWrap");if(!ww)return;
     ww.innerHTML=grp("Engelli / Acil",all.filter(x=>!x.done&&x.urgent),"var(--risk)")+
-      grp("Açık",all.filter(x=>!x.done&&!x.urgent),"var(--lime)")+
+      grp("Acik",all.filter(x=>!x.done&&!x.urgent),"var(--lime)")+
       grp("Bitti",all.filter(x=>x.done),"var(--ok)");
     root.querySelectorAll(".wrow").forEach(el=>el.addEventListener("click",()=>{
       state.mode="office";renderModeUI();applyMode();openSheet((el as HTMLElement).dataset.room!)}));
   }
 
   function goFloor(id: string){
-    state.floor=id;state.room=null;state.person=null;
-    $("#hqView")?.classList.remove("on");$("#floorView")?.classList.add("on");
-    renderModeUI();renderPlan();renderWork();applyMode();renderCrumbs();
+    const hqInner = $("#hqInner");
+    const floorView = $("#floorView");
+
+    if(hqInner && floorView) {
+      hqInner.classList.add("fade-scale", "leaving-in");
+      setTimeout(() => {
+        hqInner.classList.remove("fade-scale", "leaving-in");
+        state.floor=id;state.room=null;state.person=null;
+        $("#hqView")?.classList.remove("on");floorView.classList.add("on");
+        renderModeUI();renderPlan();renderWork();applyMode();renderCrumbs();
+        renderFloorButtons();
+        floorView.classList.add("entering");
+        setTimeout(() => floorView.classList.remove("entering"), 400);
+      }, 300);
+    } else {
+      state.floor=id;state.room=null;state.person=null;
+      $("#hqView")?.classList.remove("on");$("#floorView")?.classList.add("on");
+      renderModeUI();renderPlan();renderWork();applyMode();renderCrumbs();
+      renderFloorButtons();
+    }
   }
+
   function goHQ(){
     closeAsk();closePopup();
     $("#shqSheet")?.classList.remove("open");
-    state.view="hq";state.floor=null;state.room=null;state.person=null;
-    $("#floorView")?.classList.remove("on");$("#hqView")?.classList.add("on");
-    renderHQ();renderCrumbs();
+
+    const floorView = $("#floorView");
+    const hqView = $("#hqView");
+
+    if(floorView && hqView && state.floor) {
+      floorView.classList.add("fade-scale", "leaving-out");
+      setTimeout(() => {
+        floorView.classList.remove("fade-scale", "leaving-out");
+        state.view="hq";state.floor=null;state.room=null;state.person=null;
+        floorView.classList.remove("on");hqView.classList.add("on");
+        renderHQ();renderCrumbs();
+        const hqInner = $("#hqInner");
+        if(hqInner) {
+          hqInner.classList.add("entering");
+          setTimeout(() => hqInner.classList.remove("entering"), 400);
+        }
+      }, 280);
+    } else {
+      state.view="hq";state.floor=null;state.room=null;state.person=null;
+      $("#floorView")?.classList.remove("on");$("#hqView")?.classList.add("on");
+      renderHQ();renderCrumbs();
+    }
   }
+
+  function renderFloorButtons() {
+    const btns = $("#floorBtns");
+    if(!btns) return;
+    btns.innerHTML = `<button class="chip" id="renameFloorBtn">✎ Yeniden adlandir</button>
+      <button class="chip" id="addRoomBtn">＋ Oda / Ekip</button>`;
+    btns.querySelector("#renameFloorBtn")?.addEventListener("click", () => {
+      if(state.floor) renameFloor(state.floor);
+    });
+    btns.querySelector("#addRoomBtn")?.addEventListener("click", addRoom);
+  }
+
   function renderCrumbs(){
     const c=$("#shqCrumbs");if(!c)return;
     let h=`<button data-nav="hq">Spark HQ</button>`;
@@ -1191,32 +1439,32 @@ function initSparkHQ(root: HTMLElement) {
   function renderReplayNote(){
     const n=$("#shqReplayNote");if(!n)return;
     const note=NOTES[state.time];
-    if(note&&state.time!==0){n.textContent="Ne değişti? · "+note;n.classList.add("show")}
+    if(note&&state.time!==0){n.textContent="Ne degisti? · "+note;n.classList.add("show")}
     else n.classList.remove("show");
   }
 
   const ASK_QA_OWNER: Record<string,[string,string][]>={
-   hq:[["Şirket bugün nasıl?","Bir kırmızı zincir var: Backend refactor → Android release → Launch Ops, launch 4 gün geride. Onun dışında Satış ve Finans yolunda; lobide 5 karar seni bekliyor."],
-       ["En acil ne?","Growth bütçe onayı — 3 gündür bekliyor ve launch kreatiflerini blokluyor. 2 dakikanı alır."],
-       ["Dünden beri ne değişti?","Growth Marketing de RİSKTE'ye düştü; gecikme 3'ten 4 güne çıktı. Kaynak aynı: Android release."]],
-   growth:[["Growth neden riskte?","Kritik yol: Android release gecikti → Launch Ops 4 gün geride → kreatifler launch filmini beklediği için Growth Marketing de kaydı."],
-       ["Launch'ı kim blokluyor?","İki kişi üzerinde düğümleniyor: Burak (Android build final, yarın) ve sen (launch filmi onayı + Growth bütçesi)."]],
-   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynağı gösteriyor."],
-       ["Kim yardıma ihtiyaç duyuyor?","Kırmızı halkalı kişiler gecikmiş işi olanlar."]]};
+   hq:[["Sirket bugun nasil?","Bir kirmizi zincir var: Backend refactor → Android release → Launch Ops, launch 4 gun geride. Onun disinda Satis ve Finans yolunda; lobide 5 karar seni bekliyor."],
+       ["En acil ne?","Growth butce onayi — 3 gundur bekliyor ve launch kreatiflerini blokluyor. 2 dakikanizi alir."],
+       ["Dunden beri ne degisti?","Growth Marketing de RiSKTE'ye dustu; gecikme 3'ten 4 gune cikti. Kaynak ayni: Android release."]],
+   growth:[["Growth neden riskte?","Kritik yol: Android release gecikti → Launch Ops 4 gun geride → kreatifler launch filmini bekledigi icin Growth Marketing de kaydi."],
+       ["Launch'i kim blokluyor?","iki kisi uzerinde dugumleniyor: Burak (Android build final, yarin) ve sen (launch filmi onayi + Growth butcesi)."]],
+   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gosteriyor."],
+       ["Kim yardima ihtiyac duyuyor?","Kirmizi halkali kisiler gecikmis isi olanlar."]]};
   const ASK_QA_MEMBER: Record<string,[string,string][]>={
-   hq:[["Şirket bugün nasıl?","Ürün katı yolunda; senin kritik işin Android build (yarın). Şirket genelinde Growth katı kırmızı görünüyor — detayı kat liderinde."],
-       ["Benim günüm nasıl?","3 görev, 1 toplantı. Android build final yarın bitirilmeli — launch'ı blokluyor."],
-       ["Finans nasıl?","Bu alana erişimin yok. İstersen Onur'a soru iletebilirim ya da erişim isteği açabilirim."]],
-   room:[["Ekibim nasıl?","Mobile Squad yolunda — v2.4 %72'de. Android build yarın bitirilmeli."],
-       ["Kime sormalıyım?","Backend refactor için Diren'e, store metadata için İpek'e sor."]]};
+   hq:[["Sirket bugun nasil?","Urun kati yolunda; senin kritik isin Android build (yarin). Sirket genelinde Growth kati kirmizi gorunuyor — detayi kat liderinde."],
+       ["Benim gunum nasil?","3 gorev, 1 toplanti. Android build final yarin bitirilmeli — launch'i blokluyor."],
+       ["Finans nasil?","Bu alana erisimin yok. istersen Onur'a soru iletebilirim ya da erisim istegi acabilirim."]],
+   room:[["Ekibim nasil?","Mobile Squad yolunda — v2.4 %72'de. Android build yarin bitirilmeli."],
+       ["Kime sormaliyim?","Backend refactor icin Diren'e, store metadata icin ipek'e sor."]]};
   const ASK_QA_LEAD: Record<string,[string,string][]>={
-   hq:[["Şirket bugün nasıl?","Growth katın riskte — 4 gün gecikme. Ürün yolunda, Satış yolunda. Finans detayına erişimin yok."],
-       ["Katım nasıl?","2 ekip riskte (Growth Marketing, Launch Ops), 1 ileride (Product), 3 yolunda. Kritik yol: Android release."],
-       ["Dünden beri ne değişti?","Gecikme 3'ten 4 güne çıktı. Growth Marketing de RİSKTE'ye düştü."]],
-   growth:[["Launch'ı kim blokluyor?","Burak (Android build final) ve Çağan (launch filmi onayı + bütçe). İkisi de yarın/bugün çözülebilir."],
-       ["Kreatifler ne zaman hazır?","Launch filmi onayına bağlı — Çağan'dan geldiğinde kreatif üretimi başlar. Tahmini: 2-3 gün."]],
-   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynağı gösteriyor."],
-       ["Kim yardıma ihtiyaç duyuyor?","Kırmızı halkalı kişiler gecikmiş işi olanlar."]]};
+   hq:[["Sirket bugun nasil?","Growth katin riskte — 4 gun gecikme. Urun yolunda, Satis yolunda. Finans detayina erisimin yok."],
+       ["Katim nasil?","2 ekip riskte (Growth Marketing, Launch Ops), 1 ileride (Product), 3 yolunda. Kritik yol: Android release."],
+       ["Dunden beri ne degisti?","Gecikme 3'ten 4 gune cikti. Growth Marketing de RiSKTE'ye dustu."]],
+   growth:[["Launch'i kim blokluyor?","Burak (Android build final) ve Cagan (launch filmi onayi + butce). ikisi de yarin/bugun cozulebilir."],
+       ["Kreatifler ne zaman hazir?","Launch filmi onayina bagli — Cagan'dan geldiginde kreatif uretimi baslar. Tahmini: 2-3 gun."]],
+   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gosteriyor."],
+       ["Kim yardima ihtiyac duyuyor?","Kirmizi halkali kisiler gecikmis isi olanlar."]]};
   function askQA(){
     const r=state.role;
     if(r==="member")return ASK_QA_MEMBER;
@@ -1224,15 +1472,15 @@ function initSparkHQ(root: HTMLElement) {
     return ASK_QA_OWNER;
   }
   function askContext(){
-    if(state.person)return{key:"room",label:`Kişi · ${state.person}`};
+    if(state.person)return{key:"room",label:`Kisi · ${state.person}`};
     const qa=askQA();
     if(state.room)return{key:qa[state.floor!]?state.floor!:"room",label:`Oda · ${RM()?.name}`};
     if(state.floor)return{key:qa[state.floor]?state.floor:"room",label:`Kat · ${F().name}`};
-    return{key:"hq",label:"Şirket geneli"};
+    return{key:"hq",label:"Sirket geneli"};
   }
   function openAsk(){
     const ctx=askContext();
-    const actx=$("#shqAskCtx");if(actx)actx.textContent="Bağlam: "+ctx.label;
+    const actx=$("#shqAskCtx");if(actx)actx.textContent="Baglam: "+ctx.label;
     const th=$("#shqAskThread");if(th)th.innerHTML="";
     const qa=askQA();const sugs=qa[ctx.key]||qa.room||[];
     const sugEl=$("#shqAskSugs");
@@ -1255,33 +1503,34 @@ function initSparkHQ(root: HTMLElement) {
       if(f.name.toLocaleLowerCase("tr").includes(lq)){
         const fv=floorVis(f.id);
         if(fv==="shape"){const th2=$("#shqAskThread");
-          if(th2){th2.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">O kata anahtarın yok. İstersen erişim isteği açabilirim.</div>`;th2.scrollTop=th2.scrollHeight}
+          if(th2){th2.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">O kata anahtarin yok. istersen erisim istegi acabilirim.</div>`;th2.scrollTop=th2.scrollHeight}
           (e.target as HTMLInputElement).value="";return}
         closeAsk();goFloorAnywhere(f.id);(e.target as HTMLInputElement).value="";return}
       for(const r of f.rooms){
         if(r.name.toLocaleLowerCase("tr").includes(lq)){
           const rv3=roomVis(f.id,r.id);
           if(rv3==="shape"){const th2=$("#shqAskThread");
-            if(th2){th2.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">O alana anahtarın yok. İstersen erişim isteği açabilirim.</div>`;th2.scrollTop=th2.scrollHeight}
+            if(th2){th2.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">O alana anahtarin yok. istersen erisim istegi acabilirim.</div>`;th2.scrollTop=th2.scrollHeight}
             (e.target as HTMLInputElement).value="";return}
           closeAsk();goFloorAnywhere(f.id,()=>{if(rv3==="content")openSheet(r.id)});(e.target as HTMLInputElement).value="";return}
         for(const mm of r.members)
           if(mm.name.toLocaleLowerCase("tr").includes(lq)){closeAsk();goFloorAnywhere(f.id,()=>openSheet(r.id,mm.name));(e.target as HTMLInputElement).value="";return}
       }}
     const th=$("#shqAskThread");
-    if(th){th.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">Prototipte bu soru için hazır yanıt yok — gerçek üründe Company Graph üzerinde çalışan AI'a gider.</div>`;
+    if(th){th.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">Prototipte bu soru icin hazir yanit yok — gercek urunde Company Graph uzerinde calisan AI'a gider.</div>`;
     th.scrollTop=th.scrollHeight}
     (e.target as HTMLInputElement).value="";
   });
   function goFloorAnywhere(id: string,after?: ()=>void){
     if(!state.floor){goFloor(id);if(after)setTimeout(after,250)}
     else{state.floor=id;state.room=null;state.person=null;$("#shqSheet")?.classList.remove("open");
-      renderPlan();renderWork();applyMode();renderCrumbs();if(after)setTimeout(after,80)}
+      renderPlan();renderWork();applyMode();renderCrumbs();renderFloorButtons();if(after)setTimeout(after,80)}
   }
 
   const keyHandler=(e: KeyboardEvent)=>{
     if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();if($("#shqAskPanel")?.classList.contains("open")){closeAsk()}else{openAsk()}return}
     if(e.key==="Escape"){
+      if($("#shqModal")?.classList.contains("open")){closeModal();return}
       if($("#shqAskPanel")?.classList.contains("open")){closeAsk();return}
       if($("#shqPopup")?.classList.contains("show")){closePopup();return}
       if(state.person&&$("#shqSheet")?.classList.contains("open")){state.person=null;renderSheet();renderCrumbs();return}
@@ -1301,7 +1550,7 @@ function initSparkHQ(root: HTMLElement) {
 
   function showDoor(name: string,desc: string,actionLabel: string){
     const d=$("#shqDoor");if(!d)return;
-    d.innerHTML=`<div class="door-icon">🚪</div>
+    d.innerHTML=`<div class="door-icon">🚧</div>
       <div class="door-title">${name}</div>
       <div class="door-sub">${desc}</div>
       <div class="door-actions">
@@ -1310,26 +1559,26 @@ function initSparkHQ(root: HTMLElement) {
       </div>`;
     d.classList.add("show");
     d.querySelector("[data-act=request]")?.addEventListener("click",()=>{
-      fakeAct("Erişim isteği gönderildi — Lobi'deki Inbox'a düştü");closeDoor()});
+      fakeAct("Erisim istegi gonderildi — Lobi'deki Inbox'a dustu");closeDoor()});
     d.querySelector("[data-act=close]")?.addEventListener("click",closeDoor);
   }
   function showDoorPulse(rid: string){
     const r=F().rooms.find(x=>x.id===rid)!;
     const st=rSt(r);
     const d=$("#shqDoor");if(!d)return;
-    d.innerHTML=`<div class="door-icon">🚪</div>
+    d.innerHTML=`<div class="door-icon">🚧</div>
       <div class="door-title">${r.name}</div>
       <div class="door-sub" style="text-align:left">
-        <div style="margin-bottom:6px">${r.members.length} kişi · <span style="color:${stColor(st)};font-weight:700">${ST[rSt(r)].t}</span></div>
-        <div style="color:var(--dim);font-size:12px">İçerik detaylarını görmek için erişim gerekiyor.</div>
+        <div style="margin-bottom:6px">${r.members.length} kisi · <span style="color:${stColor(st)};font-weight:700">${ST[rSt(r)].t}</span></div>
+        <div style="color:var(--dim);font-size:12px">icerik detaylarini gormek icin erisim gerekiyor.</div>
       </div>
       <div class="door-actions">
-        <button class="btn-lime" data-act="request">Erişim İste</button>
+        <button class="btn-lime" data-act="request">Erisim iste</button>
         <button class="btn-ghost" data-act="close">Kapat</button>
       </div>`;
     d.classList.add("show");
     d.querySelector("[data-act=request]")?.addEventListener("click",()=>{
-      fakeAct("Erişim isteği gönderildi");closeDoor()});
+      fakeAct("Erisim istegi gonderildi");closeDoor()});
     d.querySelector("[data-act=close]")?.addEventListener("click",closeDoor);
   }
   function closeDoor(){$("#shqDoor")?.classList.remove("show")}
@@ -1340,7 +1589,7 @@ function initSparkHQ(root: HTMLElement) {
     el.innerHTML=`<div class="ent-greet">${p.greeting}</div>
       <div class="ent-sub">${p.roleSub}</div>
       <div class="ent-brief">${p.briefing.map(b=>`<div class="eb-line">${b}</div>`).join("")}</div>
-      <div class="ent-hint">Tıkla veya Enter ile başla</div>`;
+      <div class="ent-hint">Tikla veya Enter ile basla</div>`;
     el.classList.add("active");el.classList.remove("fade");
     requestAnimationFrame(()=>{
       el.querySelector(".ent-greet")?.classList.add("in");
@@ -1372,7 +1621,7 @@ function initSparkHQ(root: HTMLElement) {
     const el=$("#shqEmpathy");if(!el)return;
     if(state.empathy){
       const ep=ROLE_PROFILES[state.empathy];
-      el.innerHTML=`👁 ${ep.person} gözünden bakıyorsun <button data-act="exit">Çık</button>`;
+      el.innerHTML=`👁 ${ep.person} gozunden bakiyorsun <button data-act="exit">Cik</button>`;
       el.classList.add("show");
       el.querySelector("[data-act=exit]")?.addEventListener("click",()=>{
         state.empathy=null;renderEmpathy();goHQ();renderHQ();renderCrumbs()});
@@ -1398,6 +1647,26 @@ function initSparkHQ(root: HTMLElement) {
   if(bldEl){
     bldEl.addEventListener("pointerdown",(e: PointerEvent)=>{
       if(state.view!=="hq"&&state.floor)return;
+      // Check if clicking on fctl
+      if((e.target as Element).closest(".fctl")) return;
+
+      const floorEl = (e.target as Element).closest(".bfloor");
+      const isDraggable = floorEl && floorEl.classList.contains("draggable");
+
+      if(isDraggable && state.sort === "custom") {
+        // Start drag for floor reordering
+        const fid = (floorEl as HTMLElement).dataset.f!;
+        const ord = parseInt((floorEl as HTMLElement).dataset.ord || "0", 10);
+        const svgEl = bldEl.querySelector("svg") as SVGSVGElement;
+        if(svgEl) {
+          drag = {fid, el: floorEl!, startY: e.clientY, moved: false, ord, svgEl};
+          bldEl.setPointerCapture(e.pointerId);
+          wasCamDrag = false;
+          hideTooltip();
+          return;
+        }
+      }
+
       camDrag={x:e.clientX,y:e.clientY,rot:cam.rot,tilt:cam.tilt};
       bldEl.setPointerCapture(e.pointerId);
       bldEl.classList.add("dragging");
@@ -1405,6 +1674,17 @@ function initSparkHQ(root: HTMLElement) {
       hideTooltip();
     });
     bldEl.addEventListener("pointermove",(e: PointerEvent)=>{
+      if(drag) {
+        const dy = e.clientY - drag.startY;
+        if(Math.abs(dy) > 5) drag.moved = true;
+        if(drag.moved) {
+          drag.el.classList.add("dragging");
+          // Apply translate via transform on the SVG group
+          const g = drag.el as SVGGElement;
+          g.setAttribute("transform", `translate(0, ${-dy * 0.6})`);
+        }
+        return;
+      }
       if(!camDrag)return;
       const ddx=e.clientX-camDrag.x,ddy=e.clientY-camDrag.y;
       if(ddx*ddx+ddy*ddy>25)wasCamDrag=true;
@@ -1415,11 +1695,44 @@ function initSparkHQ(root: HTMLElement) {
       if(hint&&!hint.classList.contains("faded"))hint.classList.add("faded");
     });
     bldEl.addEventListener("pointerup",(e: PointerEvent)=>{
+      if(drag) {
+        bldEl.releasePointerCapture(e.pointerId);
+        if(drag.moved) {
+          // Calculate drop position based on drag direction
+          const dy = e.clientY - drag.startY;
+          const rest = FLOORS.filter(f => !f.lobby);
+          const oldIdx = rest.findIndex(f => f.id === drag!.fid);
+          // Moving up in screen = moving to higher floor = later in array
+          const step = dy < -30 ? -1 : dy > 30 ? 1 : 0;
+          if(step !== 0 && oldIdx >= 0) {
+            const newIdx = Math.max(0, Math.min(rest.length - 1, oldIdx + step));
+            if(newIdx !== oldIdx) {
+              // Remove from FLOORS and reinsert
+              const floorIdx = FLOORS.indexOf(rest[oldIdx]);
+              const [moved] = FLOORS.splice(floorIdx, 1);
+              const targetFloor = rest[newIdx];
+              const targetIdx = FLOORS.indexOf(targetFloor);
+              FLOORS.splice(step > 0 ? targetIdx + 1 : targetIdx, 0, moved);
+            }
+          }
+        }
+        drag.el.classList.remove("dragging");
+        (drag.el as SVGGElement).removeAttribute("transform");
+        drag = null;
+        renderHQ();
+        return;
+      }
       if(camDrag){bldEl.releasePointerCapture(e.pointerId);bldEl.classList.remove("dragging")}
       camDrag=null;
       if(wasCamDrag)setTimeout(()=>{wasCamDrag=false},50);
     });
     bldEl.addEventListener("pointercancel",()=>{
+      if(drag) {
+        drag.el.classList.remove("dragging");
+        (drag.el as SVGGElement).removeAttribute("transform");
+        drag = null;
+        renderHQ();
+      }
       camDrag=null;bldEl.classList.remove("dragging");
       if(wasCamDrag)setTimeout(()=>{wasCamDrag=false},50);
     });
@@ -1465,36 +1778,40 @@ export default function SparkHQ() {
           <nav className="crumbs" id="shqCrumbs"></nav>
           <div className="mode-tabs hidden" id="shqModes">
             <button data-m="office" className="on">Ofis</button>
-            <button data-m="pulse">Nabız</button>
-            <button data-m="work">İş</button>
+            <button data-m="pulse">Nabiz</button>
+            <button data-m="work">is</button>
           </div>
           <div className="role-sw" id="shqRoleSw">
             <span className="role-label">Rol</span>
             <select id="shqRoleSelect">
-              <option value="owner">Owner (Çağan)</option>
+              <option value="owner">Owner (Cagan)</option>
               <option value="admin">Admin (Onur)</option>
-              <option value="lead">Kat Lideri (Şevval)</option>
-              <option value="member">Üye (Burak)</option>
+              <option value="lead">Kat Lideri (Sevval)</option>
+              <option value="member">Uye (Burak)</option>
             </select>
           </div>
         </div>
         <div id="shqStage" style={{flex:1,position:"relative",minHeight:0,overflow:"hidden"}}>
           <div className="view on" id="hqView">
-            <div className="hq-hero">
-              <h2>Şirket nasıl gidiyor?</h2>
-              <p>Bir kata dokun — <em>içine gir.</em></p>
+            <div id="hqInner" style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
+              <div className="hq-hero">
+                <h2>Sirket nasil gidiyor?</h2>
+                <p>Bir kata dokun &mdash; <em>icine gir.</em></p>
+              </div>
+              <div className="pulse-strip" id="hqKpis"></div>
+              <div id="hqBuilding"></div>
+              <div className="cam-ctrl">
+                <span className="cam-hint" id="camHint">Surukle: dondur</span>
+                <button className="cam-reset" id="camReset">&circlearrowleft;</button>
+              </div>
             </div>
-            <div className="pulse-strip" id="hqKpis"></div>
-            <div id="hqBuilding"></div>
-            <div className="cam-ctrl">
-              <span className="cam-hint" id="camHint">Sürükle: döndür</span>
-              <button className="cam-reset" id="camReset">↺</button>
-            </div>
-            <div className="sort-bar" id="sortBar"></div>
+            <div className="hq-tools" id="hqTools"></div>
+            <div className="drag-hint" id="dragHint"></div>
           </div>
           <div className="view" id="floorView">
             <div className="floor-header" style={{width:"100%",padding:"0 24px"}}>
               <h2 id="floorTitle"></h2><span className="fh-sub" id="floorSub"></span>
+              <div id="floorBtns" style={{display:"flex",gap:"6px",marginLeft:"auto"}}></div>
             </div>
             <div className="plan-holder" id="planHolder"></div>
             <div id="workWrap"></div>
@@ -1502,23 +1819,23 @@ export default function SparkHQ() {
           <div id="shqTooltip"></div>
           <div id="shqPopup"></div>
           <div id="shqDoor"></div>
-          <div id="shqAddFloor"></div>
+          <div id="shqModal"></div>
           <div id="shqEntrance"></div>
           <div className="empathy-bar" id="shqEmpathy"></div>
           <aside id="shqSheet">
-            <div className="sheet-head"><button className="sh-back" id="shBack"></button><button className="sh-x" id="shqShClose">✕</button></div>
+            <div className="sheet-head"><button className="sh-back" id="shBack"></button><button className="sh-x" id="shqShClose">&times;</button></div>
             <div className="sheet-body" id="sheetBody"></div>
             <div className="sheet-actions" id="sheetActions"></div>
           </aside>
           <div id="shqReplay"></div>
           <div id="shqReplayNote"></div>
-          <button id="shqAskBtn">Ask HQ <kbd>⌘K</kbd></button>
+          <button id="shqAskBtn">Ask HQ <kbd>&#8984;K</kbd></button>
           <div id="shqAskPanel">
             <div className="ask-head"><b>Ask HQ</b><div className="ask-ctx" id="shqAskCtx"></div></div>
             <div className="ask-thread" id="shqAskThread"></div>
             <div className="ask-sugs" id="shqAskSugs"></div>
-            <div className="ask-input"><input id="shqAskInput" placeholder="Sor ya da bir yere git…" /></div>
-            <div className="hint-foot">Enter = git/sor · Esc = kapat</div>
+            <div className="ask-input"><input id="shqAskInput" placeholder="Sor ya da bir yere git..." /></div>
+            <div className="hint-foot">Enter = git/sor &middot; Esc = kapat</div>
           </div>
         </div>
       </div>
