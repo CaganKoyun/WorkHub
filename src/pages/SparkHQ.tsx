@@ -294,13 +294,19 @@ const SPARK_HQ_CSS = `
   background:transparent;color:var(--ink)}
 .shq .ask-input input::placeholder{color:var(--dim)}
 .shq .hint-foot{font-size:10px;color:var(--dim);padding:0 14px 8px}
-.shq .role-sw{display:flex;align-items:center;gap:6px;margin-left:8px}
-.shq .role-sw select{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);
-  color:var(--ink);font:inherit;font-size:11px;font-weight:600;padding:4px 24px 4px 8px;cursor:pointer;outline:none;
-  -webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B6B75'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 8px center}
-.shq .role-sw select:focus{border-color:var(--lime)}
-.shq .role-sw .role-label{font-size:10px;color:var(--dim);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.shq .role-sw{display:flex;align-items:center;gap:2px;margin-left:8px}
+.shq .role-av{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;background:var(--card);position:relative;flex-shrink:0}
+.shq .role-av:hover{border-color:var(--lime-mid);transform:scale(1.1)}
+.shq .role-av.on{border-color:var(--lime);box-shadow:0 0 0 2px rgba(198,244,50,.18)}
+.shq .role-av svg{width:26px;height:26px;border-radius:50%;pointer-events:none}
+.shq .role-av .role-tip{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;
+  background:var(--float);border:1px solid var(--border-hi);border-radius:var(--radius-xs);padding:5px 10px;
+  font-size:10.5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:30;box-shadow:var(--elev1)}
+.shq .role-av:hover .role-tip{opacity:1}
+.shq .role-av .role-badge-icon{position:absolute;bottom:-3px;right:-3px;font-size:10px;line-height:1;
+  background:var(--card);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);pointer-events:none}
 .shq .empathy-bar{display:none;align-items:center;gap:8px;background:rgba(198,244,50,.08);
   border:1px solid rgba(198,244,50,.15);border-radius:99px;padding:4px 12px 4px 8px;font-size:11px;color:var(--lime);font-weight:600;
   position:absolute;top:52px;left:50%;transform:translateX(-50%);z-index:16}
@@ -348,6 +354,11 @@ const SPARK_HQ_CSS = `
 .shq .ent-brief .eb-line:first-child{color:var(--ink);font-weight:600}
 .shq .ent-hint{position:absolute;bottom:24px;font-size:11px;color:var(--dim);opacity:0;transition:opacity .3s 1s}
 .shq .ent-hint.in{opacity:1}
+.shq .ent-avatar{margin-bottom:16px;opacity:0;transform:scale(.5);transition:opacity .5s,transform .5s .05s}
+.shq .ent-avatar.in{opacity:1;transform:scale(1)}
+.shq .ent-avatar svg{width:72px;height:72px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
+.shq .conn-line{stroke-width:1.5;fill:none;opacity:.5;stroke-dasharray:4 3}
+.shq .conn-badge{font-size:7px;fill:var(--dim);text-anchor:middle;font-weight:700;letter-spacing:.04em}
 .shq .room-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;
   width:100%;max-width:1100px;margin:0 auto;align-content:start}
 .shq .room-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
@@ -518,29 +529,83 @@ function initSparkHQ(root: HTMLElement) {
      recent:["TestFlight dagitti","Crash raporunu inceledi"]},
   };
   type RoleProfile = {label:string;person:string;homeFloor:string|null;homeRoom:string|null;
-    greeting:string;roleSub:string;briefing:string[];floorAccess:Record<string,string>;ownRooms:string[]};
+    greeting:string;roleSub:string;briefing:string[];floorAccess:Record<string,string>;ownRooms:string[];
+    avatar:{skin:string;hair:string;hairStyle:string;acc?:string;accColor?:string;shirt:string;badge?:string}};
+
+  function memojiSVG(a:{skin:string;hair:string;hairStyle:string;acc?:string;accColor?:string;shirt:string;badge?:string}, sz:number=40): string {
+    const r=sz/2, cx=r, cy=r;
+    const headR=r*.72, eyeY=cy-headR*.08, mouthY=cy+headR*.32;
+    let s=`<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" xmlns="http://www.w3.org/2000/svg">`;
+    // Neck + shirt
+    s+=`<ellipse cx="${cx}" cy="${cy+headR*.95}" rx="${headR*.55}" ry="${headR*.35}" fill="${a.shirt}"/>`;
+    // Head
+    s+=`<circle cx="${cx}" cy="${cy}" r="${headR}" fill="${a.skin}"/>`;
+    // Hair
+    if(a.hairStyle==="short"){
+      s+=`<path d="M${cx-headR*.85} ${cy-headR*.25} Q${cx-headR*.85} ${cy-headR*1.15} ${cx} ${cy-headR*1.15} Q${cx+headR*.85} ${cy-headR*1.15} ${cx+headR*.85} ${cy-headR*.25}" fill="${a.hair}" stroke="none"/>`;
+    }else if(a.hairStyle==="long"){
+      s+=`<path d="M${cx-headR*.9} ${cy+headR*.1} Q${cx-headR*.9} ${cy-headR*1.2} ${cx} ${cy-headR*1.15} Q${cx+headR*.9} ${cy-headR*1.2} ${cx+headR*.9} ${cy+headR*.1}" fill="${a.hair}" stroke="none"/>`;
+      s+=`<path d="M${cx-headR*.88} ${cy-headR*.1} Q${cx-headR*1.1} ${cy+headR*.6} ${cx-headR*.7} ${cy+headR*.95}" fill="${a.hair}" stroke="none"/>`;
+      s+=`<path d="M${cx+headR*.88} ${cy-headR*.1} Q${cx+headR*1.1} ${cy+headR*.6} ${cx+headR*.7} ${cy+headR*.95}" fill="${a.hair}" stroke="none"/>`;
+    }else if(a.hairStyle==="buzz"){
+      s+=`<path d="M${cx-headR*.75} ${cy-headR*.35} Q${cx-headR*.75} ${cy-headR*.95} ${cx} ${cy-headR*.98} Q${cx+headR*.75} ${cy-headR*.95} ${cx+headR*.75} ${cy-headR*.35}" fill="${a.hair}" stroke="none"/>`;
+    }else if(a.hairStyle==="curly"){
+      s+=`<path d="M${cx-headR*.88} ${cy-headR*.15} Q${cx-headR*.95} ${cy-headR*1.25} ${cx} ${cy-headR*1.2} Q${cx+headR*.95} ${cy-headR*1.25} ${cx+headR*.88} ${cy-headR*.15}" fill="${a.hair}" stroke="none"/>`;
+      for(let i=-2;i<=2;i++){const bx=cx+i*headR*.32,by=cy-headR*1.1+Math.abs(i)*headR*.12;s+=`<circle cx="${bx}" cy="${by}" r="${headR*.18}" fill="${a.hair}"/>`}
+    }
+    // Eyes
+    s+=`<ellipse cx="${cx-headR*.28}" cy="${eyeY}" rx="${headR*.09}" ry="${headR*.11}" fill="#1a1a1a"/>`;
+    s+=`<ellipse cx="${cx+headR*.28}" cy="${eyeY}" rx="${headR*.09}" ry="${headR*.11}" fill="#1a1a1a"/>`;
+    s+=`<circle cx="${cx-headR*.26}" cy="${eyeY-headR*.03}" r="${headR*.035}" fill="#fff"/>`;
+    s+=`<circle cx="${cx+headR*.3}" cy="${eyeY-headR*.03}" r="${headR*.035}" fill="#fff"/>`;
+    // Mouth
+    s+=`<path d="M${cx-headR*.18} ${mouthY} Q${cx} ${mouthY+headR*.15} ${cx+headR*.18} ${mouthY}" fill="none" stroke="#c44" stroke-width="${headR*.06}" stroke-linecap="round"/>`;
+    // Accessories
+    if(a.acc==="glasses"){
+      const gc=a.accColor||"#444";
+      s+=`<circle cx="${cx-headR*.28}" cy="${eyeY}" r="${headR*.17}" fill="none" stroke="${gc}" stroke-width="${headR*.04}"/>`;
+      s+=`<circle cx="${cx+headR*.28}" cy="${eyeY}" r="${headR*.17}" fill="none" stroke="${gc}" stroke-width="${headR*.04}"/>`;
+      s+=`<line x1="${cx-headR*.11}" y1="${eyeY}" x2="${cx+headR*.11}" y2="${eyeY}" stroke="${gc}" stroke-width="${headR*.03}"/>`;
+    }else if(a.acc==="headset"){
+      s+=`<path d="M${cx-headR*.82} ${cy-headR*.1} Q${cx-headR*.85} ${cy-headR*1} ${cx} ${cy-headR*1.05} Q${cx+headR*.85} ${cy-headR*1} ${cx+headR*.82} ${cy-headR*.1}" fill="none" stroke="${a.accColor||"#666"}" stroke-width="${headR*.06}"/>`;
+      s+=`<ellipse cx="${cx-headR*.85}" cy="${cy+headR*.05}" rx="${headR*.1}" ry="${headR*.15}" fill="${a.accColor||"#666"}"/>`;
+      s+=`<ellipse cx="${cx+headR*.85}" cy="${cy+headR*.05}" rx="${headR*.1}" ry="${headR*.15}" fill="${a.accColor||"#666"}"/>`;
+    }
+    // Badge
+    if(a.badge){
+      s+=`<circle cx="${cx+headR*.65}" cy="${cy+headR*.65}" r="${headR*.28}" fill="var(--card)" stroke="var(--border)" stroke-width="1"/>`;
+      s+=`<text x="${cx+headR*.65}" y="${cy+headR*.73}" text-anchor="middle" font-size="${headR*.28}" fill="var(--ink)">${a.badge}</text>`;
+    }
+    s+=`</svg>`;
+    return s;
+  }
+
   const ROLE_PROFILES: Record<string,RoleProfile>={
     owner:{label:"Owner (Cagan)",person:"Cagan Koyun",homeFloor:null,homeRoom:null,
       greeting:"Gunaydin Cagan.",roleSub:"Sirketin tamami senin masan.",
       briefing:["Sirket nasil gidiyor?","🔴 1 kirmizi zincir: Backend → Mobile → Launch (4 gun)",
         "📥 5 karar seni bekliyor — en eskisi 3 gundur","ilk hamle onerisi: Growth butcesini onayla (~2 dk)"],
-      floorAccess:{},ownRooms:[]},
+      floorAccess:{},ownRooms:[],
+      avatar:{skin:"#F4C28B",hair:"#2C1810",hairStyle:"short",acc:"glasses",accColor:"#333",shirt:"#1a1a2e",badge:"👑"}},
     admin:{label:"Admin (Onur)",person:"Onur Celik",homeFloor:null,homeRoom:null,
       greeting:"Gunaydin Onur.",roleSub:"Tum katlar sana acik.",
       briefing:["Sirket geneli yolunda, 1 kritik zincir var.","🔴 Launch 4 gun geride — Backend → Mobile → Launch",
         "📊 Runway 14 ay · MRR ₺4.1M","3 onay kuyrugunda bekliyor"],
-      floorAccess:{},ownRooms:[]},
+      floorAccess:{},ownRooms:[],
+      avatar:{skin:"#E8B88A",hair:"#1a1a1a",hairStyle:"buzz",shirt:"#2d3748",badge:"🛡"}},
     lead:{label:"Kat Lideri (Sevval)",person:"Sevval Beyhan",homeFloor:"growth",homeRoom:null,
       greeting:"Gunaydin Sevval.",roleSub:"Growth kati senin alanin.",
       briefing:["Growth · Launch — RiSKTE · 4 gun","Ne ters gidiyor: Android release → Launch Ops → kreatifler zinciri",
         "Ekiplerin: 2 riskte, 1 ileride, 3 yolunda","Bugun senden bekleyen: kreatif brief revizyonu"],
-      floorAccess:{urun:"pulse",satis:"pulse",finans:"shape",lobi:"pulse"},ownRooms:[]},
+      floorAccess:{urun:"pulse",satis:"pulse",finans:"shape",lobi:"pulse"},ownRooms:[],
+      avatar:{skin:"#F0D0A8",hair:"#4A2800",hairStyle:"long",shirt:"#7c3aed",badge:"⚡"}},
     member:{label:"Uye (Burak)",person:"Burak Cavdur",homeFloor:"urun",homeRoom:"mobile",
       greeting:"Gunaydin Burak.",roleSub:"Mobile Squad masanda oturuyorsun.",
       briefing:["🔴 Dikkatini bekleyen: Android build final — yarin, launch'i blokluyor",
         "Bugun: 3 gorev · 1 toplanti","Seni bekleyenler: Backend refactor (Diren)",
         "Ekibin: Mobile Squad · YOLUNDA · v2.4 %72"],
-      floorAccess:{growth:"pulse",satis:"pulse",finans:"shape",lobi:"pulse"},ownRooms:["mobile"]},
+      floorAccess:{growth:"pulse",satis:"pulse",finans:"shape",lobi:"pulse"},ownRooms:["mobile"],
+      avatar:{skin:"#D4A574",hair:"#1a1a1a",hairStyle:"curly",acc:"headset",accColor:"var(--lime)",shirt:"#065f46",badge:"💻"}},
   };
   const activeRole=()=>ROLE_PROFILES[state.empathy||state.role];
   const floorVis=(fid: string)=>{const p=activeRole();return (p.floorAccess[fid]||"content") as string};
@@ -802,6 +867,21 @@ function initSparkHQ(root: HTMLElement) {
 
     // Drop indicator line for drag-and-drop
     svg += `<line id="dropInd" x1="0" y1="0" x2="0" y2="0"/>`;
+
+    // Role connection indicators
+    const rp=activeRole();
+    const connSide=showRight?W+8:(-8);
+    for(let i=0;i<n;i++){
+      const f=sf[n-1-i],zb=i*H,zt=zb+H;
+      const acc=rp.floorAccess[f.id];
+      if(!acc||acc==="content")continue;
+      const mid=(zb+zt)/2;
+      const[px,py]=P(connSide,D/2,mid,cx,cy,s);
+      const col=acc==="pulse"?"var(--warn)":"var(--dim)";
+      const label=acc==="pulse"?"NABIZ":"SEKIL";
+      svg+=`<circle cx="${px}" cy="${py}" r="4" fill="${col}" opacity=".5"/>`;
+      svg+=`<text class="conn-badge" x="${px}" y="${py+(showRight?-8:14)}" fill="${col}">${label}</text>`;
+    }
 
     svg+=`</svg>`;
     const bld=$("#hqBuilding");
@@ -1586,12 +1666,14 @@ function initSparkHQ(root: HTMLElement) {
   function playEntrance(){
     const p=activeRole();
     const el=$("#shqEntrance");if(!el)return;
-    el.innerHTML=`<div class="ent-greet">${p.greeting}</div>
+    el.innerHTML=`<div class="ent-avatar">${memojiSVG(p.avatar,72)}</div>
+      <div class="ent-greet">${p.greeting}</div>
       <div class="ent-sub">${p.roleSub}</div>
       <div class="ent-brief">${p.briefing.map(b=>`<div class="eb-line">${b}</div>`).join("")}</div>
       <div class="ent-hint">Tikla veya Enter ile basla</div>`;
     el.classList.add("active");el.classList.remove("fade");
     requestAnimationFrame(()=>{
+      el.querySelector(".ent-avatar")?.classList.add("in");
       el.querySelector(".ent-greet")?.classList.add("in");
       el.querySelector(".ent-sub")?.classList.add("in");
       el.querySelector(".ent-brief")?.classList.add("in");
@@ -1621,7 +1703,7 @@ function initSparkHQ(root: HTMLElement) {
     const el=$("#shqEmpathy");if(!el)return;
     if(state.empathy){
       const ep=ROLE_PROFILES[state.empathy];
-      el.innerHTML=`👁 ${ep.person} gozunden bakiyorsun <button data-act="exit">Cik</button>`;
+      el.innerHTML=`<span style="display:inline-flex;align-items:center;gap:4px">${memojiSVG(ep.avatar,18)} ${ep.person} gozunden bakiyorsun</span> <button data-act="exit">Cik</button>`;
       el.classList.add("show");
       el.querySelector("[data-act=exit]")?.addEventListener("click",()=>{
         state.empathy=null;renderEmpathy();goHQ();renderHQ();renderCrumbs()});
@@ -1631,14 +1713,31 @@ function initSparkHQ(root: HTMLElement) {
   }
   function switchRole(role: string){
     state.role=role;state.empathy=null;
+    renderRolePicker();
     goHQ();renderEmpathy();
     setTimeout(()=>playEntrance(),100);
   }
 
-  const roleSelect=$("#shqRoleSelect") as HTMLSelectElement|null;
-  if(roleSelect){
-    roleSelect.addEventListener("change",()=>switchRole(roleSelect.value));
+  function renderRolePicker(){
+    const sw=$("#shqRoleSw");if(!sw)return;
+    const keys=Object.keys(ROLE_PROFILES) as string[];
+    sw.innerHTML=keys.map(k=>{
+      const rp=ROLE_PROFILES[k];
+      const on=state.role===k?"on":"";
+      return `<div class="role-av ${on}" data-role="${k}" title="${rp.label}">
+        ${memojiSVG(rp.avatar,26)}
+        <span class="role-badge-icon">${rp.avatar.badge||""}</span>
+        <span class="role-tip">${rp.label}</span>
+      </div>`;
+    }).join("");
+    sw.querySelectorAll(".role-av").forEach(el=>{
+      el.addEventListener("click",()=>{
+        const r=(el as HTMLElement).dataset.role!;
+        if(r!==state.role)switchRole(r);
+      });
+    });
   }
+  renderRolePicker();
 
   renderHQ();renderCrumbs();renderReplay();renderEmpathy();
   playEntrance();
@@ -1781,15 +1880,7 @@ export default function SparkHQ() {
             <button data-m="pulse">Nabiz</button>
             <button data-m="work">is</button>
           </div>
-          <div className="role-sw" id="shqRoleSw">
-            <span className="role-label">Rol</span>
-            <select id="shqRoleSelect">
-              <option value="owner">Owner (Cagan)</option>
-              <option value="admin">Admin (Onur)</option>
-              <option value="lead">Kat Lideri (Sevval)</option>
-              <option value="member">Uye (Burak)</option>
-            </select>
-          </div>
+          <div className="role-sw" id="shqRoleSw"></div>
         </div>
         <div id="shqStage" style={{flex:1,position:"relative",minHeight:0,overflow:"hidden"}}>
           <div className="view on" id="hqView">
