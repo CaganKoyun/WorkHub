@@ -11,8 +11,8 @@ test.describe('Landing', () => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
-    // Nav "Get started" — the first one in the sticky nav.
-    const navCta = page.getByRole('link', { name: /Get started/i }).first();
+    // Nav "Ücretsiz başla" — the first one in the sticky nav (TR locale).
+    const navCta = page.getByRole('link', { name: /Ücretsiz başla|Get started/i }).first();
     await expect(navCta).toBeVisible();
     await navCta.click();
     await page.waitForURL('**/auth');
@@ -21,7 +21,7 @@ test.describe('Landing', () => {
 
   test('features section is reachable via anchor', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('link', { name: 'Product', exact: true }).first().click();
+    await page.getByRole('link', { name: /^(Product|Ürün)$/ }).first().click();
     // #features anchor
     await expect(page).toHaveURL(/#features$/);
     await expect(page.locator('#features')).toBeInViewport({ timeout: 5_000 });
