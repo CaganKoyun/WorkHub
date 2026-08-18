@@ -47,12 +47,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
+    const sessionTimeout = setTimeout(() => setLoading(false), 4000);
     supabase.auth.getSession().then(({ data: { session } }) => {
+      clearTimeout(sessionTimeout);
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
       }
+      setLoading(false);
+    }).catch(() => {
+      clearTimeout(sessionTimeout);
       setLoading(false);
     });
 

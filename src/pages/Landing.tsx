@@ -6,53 +6,53 @@ import {
 import { SparkLogo } from "@/components/SparkLogo";
 
 const features = [
-  { icon: LayoutGrid, title: "Work management", desc: "Projects, tasks and bugs across List, Board, Timeline and Calendar — connected through the Company Graph." },
-  { icon: Target, title: "Goals & OKRs", desc: "Objectives and key results that roll up automatically from every task and project underneath them." },
-  { icon: Users, title: "CRM & Revenue", desc: "Pipeline, quotes, contracts and customer health. Won deals feed straight into Finance and delivery projects." },
-  { icon: BarChart3, title: "Finance", desc: "Cash, burn, runway and project P&L. Multi-currency, budget variance, live from your actual records." },
-  { icon: Workflow, title: "Founder Inbox", desc: "One queue for every approval — hiring, spend, contracts. Decide with the full context attached." },
-  { icon: Sparkles, title: "Chief of Staff AI", desc: "A domain-expert agent inside every module, grounded in your own workspace data." },
+  { icon: LayoutGrid, title: "İş yönetimi", desc: "Projeler, görevler ve hatalar Liste, Board, Zaman Çizelgesi ve Takvim'de — Şirket Grafiği ile birbirine bağlı." },
+  { icon: Target, title: "Hedefler & OKR'lar", desc: "Altındaki her görev ve projeden otomatik olarak toplanan hedefler ve anahtar sonuçlar." },
+  { icon: Users, title: "CRM & Gelir", desc: "Pipeline, teklifler, sözleşmeler ve müşteri sağlığı. Kazanılan anlaşmalar doğrudan Finans ve teslimat projelerine akar." },
+  { icon: BarChart3, title: "Finans", desc: "Nakit, yakım, pist ve proje kâr/zarar. Çoklu para birimi, bütçe sapması, gerçek kayıtlarınızdan canlı." },
+  { icon: Workflow, title: "Kurucu Gelen Kutusu", desc: "Her onay için tek kuyruk — işe alım, harcama, sözleşmeler. Tam bağlamla karar verin." },
+  { icon: Sparkles, title: "Yapay Zeka Asistanı", desc: "Her modülde alan uzmanı bir ajan, kendi çalışma alanı verilerinize dayalı." },
 ];
 
 const modules = [
-  "Projects", "Tasks", "Bugs", "Goals", "Risks", "Decisions",
-  "CRM", "Finance", "Assets", "People", "Product", "Analytics",
+  "Projeler", "Görevler", "Hatalar", "Hedefler", "Riskler", "Kararlar",
+  "CRM", "Finans", "Varlıklar", "Çalışanlar", "Ürün", "Analitik",
 ];
 
 const boardColumns = [
   {
-    name: "To do",
+    name: "Yapılacak",
     tint: "bg-primary",
     cards: [
-      { title: "Q3 pricing decision", meta: "Decision · due Fri", tag: "Strategy" },
-      { title: "Onboard Acme Health", meta: "Project · 6 tasks", tag: "Delivery" },
+      { title: "Q3 fiyat kararı", meta: "Karar · Cuma'ya kadar", tag: "Strateji" },
+      { title: "Acme Health onboarding", meta: "Proje · 6 görev", tag: "Teslimat" },
     ],
   },
   {
-    name: "In progress",
+    name: "Devam ediyor",
     tint: "bg-info",
     cards: [
-      { title: "Runway model v4", meta: "Finance · Selin", tag: "Finance" },
-      { title: "Billing API rollout", meta: "Release · 72%", tag: "Product" },
+      { title: "Pist modeli v4", meta: "Finans · Selin", tag: "Finans" },
+      { title: "Fatura API sunumu", meta: "Sürüm · %72", tag: "Ürün" },
     ],
   },
   {
-    name: "Done",
+    name: "Tamamlandı",
     tint: "bg-success",
-    cards: [{ title: "Seed round close", meta: "Closed · 12 Jun", tag: "Revenue" }],
+    cards: [{ title: "Seed yatırım kapanışı", meta: "Kapandı · 12 Haz", tag: "Gelir" }],
   },
 ];
 
 const howItWorks = [
-  { step: "1", title: "Set up your workspace", desc: "Choose a template or start blank. Invite your team when ready — FounderOS works solo or with 50 people." },
-  { step: "2", title: "Connect everything", desc: "Projects, CRM, Finance, Goals, Decisions — all linked through the Company Graph. No more tab switching." },
-  { step: "3", title: "Decide with context", desc: "Every approval, every decision captures the why and the what-happened-after. Your company builds its own playbook." },
+  { step: "1", title: "Çalışma alanını kur", desc: "Bir şablon seç ya da sıfırdan başla. Hazır olduğunda ekibini davet et — tek kişi ya da 50 kişiyle çalışır." },
+  { step: "2", title: "Her şeyi birbirine bağla", desc: "Projeler, CRM, Finans, Hedefler, Kararlar — Şirket Grafiği ile hepsi bağlı. Artık sekme değiştirme yok." },
+  { step: "3", title: "Bağlamla karar ver", desc: "Her onay, her karar neden'i ve sonra ne olduğu'nu yakalar. Şirketin kendi oyun kitabını oluşturur." },
 ];
 
 const testimonials = [
-  { name: "Selin Aydin", role: "CEO, Kestrel Labs", quote: "We replaced Notion, Asana and a spreadsheet with one tool. The decision log alone paid for itself." },
-  { name: "James Chen", role: "COO, Volta", quote: "Founder Inbox changed how we make decisions. Everything has context, nothing falls through the cracks." },
-  { name: "Maria Santos", role: "Head of Ops, Bright & Co", quote: "The finance module gives me runway and burn in real-time. No more waiting for the monthly close." },
+  { name: "Selin Aydın", role: "CEO, Kestrel Labs", quote: "Notion, Asana ve bir tablo yerine tek bir araç kullanıyoruz. Karar günlüğü tek başına parasını hak etti." },
+  { name: "Ahmet Yılmaz", role: "COO, Volta", quote: "Kurucu Gelen Kutusu kararlarımızı nasıl aldığımızı değiştirdi. Her şeyin bağlamı var, hiçbir şey kaybolmuyor." },
+  { name: "Elif Demir", role: "Operasyon Müdürü, Bright & Co", quote: "Finans modülü bana pist ve yakımı gerçek zamanlı veriyor. Artık aylık kapanışı beklemek yok." },
 ];
 
 const Landing = () => {
@@ -67,16 +67,16 @@ const Landing = () => {
 
           <div className="hidden items-center gap-1 md:flex">
             <a href="#features" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Product
+              Ürün
             </a>
             <Link to="/pricing" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Pricing
+              Fiyatlandırma
             </Link>
             <Link to="/compare" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Compare
+              Karşılaştır
             </Link>
             <Link to="/security" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Security
+              Güvenlik
             </Link>
             <Link to="/changelog" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
               Changelog
@@ -85,13 +85,13 @@ const Landing = () => {
 
           <div className="flex items-center gap-2">
             <Link to="/auth" className="hidden rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-block">
-              Log in
+              Giriş yap
             </Link>
             <Link
               to="/auth"
               className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-[13.5px] font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
             >
-              Start free — no card
+              Ücretsiz başla
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -104,16 +104,16 @@ const Landing = () => {
         <div className="relative mx-auto max-w-[1000px] text-center">
           <div className="inline-flex h-7 items-center gap-2 rounded-full border border-border bg-background px-3 text-[11.5px] font-medium text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            Join 100+ founders on the waitlist
+            100+ kurucu bekleme listesinde
           </div>
 
           <h1 className="mx-auto mt-6 max-w-[860px] text-[clamp(2.5rem,5.4vw,4.25rem)] font-semibold leading-[1.03] tracking-[-0.035em]">
-            Where your company's<br className="hidden sm:block" /> work actually lives
+            Şirketinizin işleri<br className="hidden sm:block" /> gerçekten burada yaşıyor
           </h1>
 
           <p className="mx-auto mt-5 max-w-[600px] text-[16.5px] leading-relaxed text-muted-foreground">
-            Projects, CRM, Finance, Goals and Decisions in one workspace — connected by a Company
-            Graph and a Chief of Staff AI that knows your business.
+            Projeler, CRM, Finans, Hedefler ve Kararlar tek bir çalışma alanında — Şirket Grafiği
+            ve işinizi bilen bir AI ile birbirine bağlı.
           </p>
 
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
@@ -121,7 +121,7 @@ const Landing = () => {
               to="/auth"
               className="btn-lime inline-flex h-11 items-center gap-2 rounded-md px-6 text-[14.5px] font-semibold shadow-lg shadow-[hsl(var(--accent-lime)/0.25)]"
             >
-              Start free — no card
+              Ücretsiz başla
               <ArrowRight className="h-4 w-4" />
             </Link>
             <a
@@ -129,12 +129,12 @@ const Landing = () => {
               className="glass-panel inline-flex h-11 items-center rounded-md px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary/70"
             >
               <Play className="h-4 w-4" />
-              Watch demo
+              Demo izle
             </a>
           </div>
 
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px] text-muted-foreground">
-            {["Free to start", "No credit card", "2-minute setup"].map(t => (
+            {["Ücretsiz başla", "Kredi kartı yok", "2 dakikada kurulum"].map(t => (
               <span key={t} className="inline-flex items-center gap-1.5">
                 <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                 {t}
@@ -178,15 +178,15 @@ const Landing = () => {
               {/* content */}
               <div className="min-w-0 flex-1">
                 <div className="flex h-11 items-center gap-3 border-b border-border px-4">
-                  <span className="text-[12px] text-muted-foreground">Work</span>
+                  <span className="text-[12px] text-muted-foreground">İş</span>
                   <span className="text-[12px] text-muted-foreground">/</span>
-                  <span className="text-[12px] font-medium">Growth roadmap</span>
+                  <span className="text-[12px] font-medium">Büyüme yol haritası</span>
                   <div className="ml-auto hidden h-7 w-[240px] items-center gap-2 rounded-full bg-secondary px-3 text-[11.5px] text-muted-foreground sm:flex">
-                    <Search className="h-3 w-3" /> Search
+                    <Search className="h-3 w-3" /> Ara
                   </div>
                 </div>
                 <div className="flex h-10 items-center gap-1 border-b border-border px-4">
-                  {["Overview", "Board", "List", "Timeline", "Dashboard"].map((t, i) => (
+                  {["Genel Bakış", "Board", "Liste", "Zaman Çizelgesi", "Dashboard"].map((t, i) => (
                     <span key={t} className="asana-tab !h-10 !px-2.5 !text-[12px]" data-active={i === 1}>
                       {t}
                     </span>
@@ -227,10 +227,10 @@ const Landing = () => {
         <div className="mx-auto max-w-[1120px]">
           <div className="text-center">
             <span className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-primary">
-              How it works
+              Nasıl çalışır
             </span>
             <h2 className="mt-3 text-[clamp(1.8rem,3.4vw,2.6rem)] font-semibold leading-tight tracking-[-0.03em]">
-              From signup to your first decision in 3 steps
+              Kayıt oldan ilk kararınıza 3 adımda
             </h2>
           </div>
           <div className="mt-12 grid gap-8 md:grid-cols-3">
@@ -252,14 +252,14 @@ const Landing = () => {
         <div className="mx-auto max-w-[1120px]">
           <div className="max-w-[620px]">
             <span className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-primary">
-              One workspace
+              Tek çalışma alanı
             </span>
             <h2 className="mt-3 text-[clamp(1.8rem,3.4vw,2.6rem)] font-semibold leading-tight tracking-[-0.03em]">
-              Every part of the company, in the same system
+              Şirketin her parçası, aynı sistemde
             </h2>
             <p className="mt-4 text-[15.5px] leading-relaxed text-muted-foreground">
-              Stop stitching five tools together. Spark WorkHub links a project to its customer, budget,
-              goal, risk and the decision that started it.
+              Beş aracı birbirine bağlamayı bırakın. Spark WorkHub bir projeyi müşterisine, bütçesine,
+              hedefine, riskine ve onu başlatan karara bağlar.
             </p>
           </div>
 
@@ -282,20 +282,20 @@ const Landing = () => {
         <div className="mx-auto grid max-w-[1120px] items-center gap-12 lg:grid-cols-2">
           <div>
             <span className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-primary">
-              Decision system of record
+              Karar kayıt sistemi
             </span>
             <h2 className="mt-3 text-[clamp(1.7rem,3.2vw,2.4rem)] font-semibold leading-tight tracking-[-0.03em]">
-              Companies record outcomes. We record the decision itself.
+              Şirketler sonuçları kaydeder. Biz kararın kendisini kaydederiz.
             </h2>
             <p className="mt-4 text-[15.5px] leading-relaxed text-muted-foreground">
-              Capture the context, the options, the confidence level and the expected result — then
-              let Spark WorkHub show you what actually happened months later.
+              Bağlamı, seçenekleri, güven seviyesini ve beklenen sonucu yakalayın — sonra
+              Spark WorkHub'ın aylar sonra gerçekte ne olduğunu göstermesine izin verin.
             </p>
             <ul className="mt-6 space-y-3">
               {[
-                "Context snapshot frozen at decision time",
-                "Expected vs. realised outcome reviews",
-                "Every task, expense and risk linked back to its decision",
+                "Karar anında dondurulan bağlam görüntüsü",
+                "Beklenen ve gerçekleşen sonuç karşılaştırmaları",
+                "Her görev, harcama ve risk kararına bağlı",
               ].map(t => (
                 <li key={t} className="flex items-start gap-2.5 text-[14px]">
                   <CheckSquare className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -307,25 +307,25 @@ const Landing = () => {
               to="/auth"
               className="mt-7 inline-flex h-10 items-center gap-2 rounded-md bg-primary px-5 text-[14px] font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Start free <ArrowRight className="h-4 w-4" />
+              Ücretsiz başla <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
           <div className="rounded-xl border border-border bg-background p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <span className="text-[13px] font-semibold">Pricing change — EU tier</span>
+              <span className="text-[13px] font-semibold">Fiyat değişikliği — AB segmenti</span>
               <span className="rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-medium text-success">
-                Reviewed
+                İncelendi
               </span>
             </div>
             <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
-              Raise EU list price by 12% to protect margin after FX shift. Confidence at decision: 70%.
+              Döviz değişimi sonrası marjı korumak için AB liste fiyatını %12 artır. Karar anında güven: %70.
             </p>
             <div className="mt-4 grid grid-cols-3 gap-3 border-t border-border pt-4">
               {[
-                { k: "Expected ARR", v: "+$180k" },
-                { k: "Realised", v: "+$146k" },
-                { k: "Churn delta", v: "+0.8pt" },
+                { k: "Beklenen ARR", v: "+$180k" },
+                { k: "Gerçekleşen", v: "+$146k" },
+                { k: "Kayıp farkı", v: "+0.8pt" },
               ].map(m => (
                 <div key={m.k}>
                   <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground">{m.k}</div>
@@ -342,10 +342,10 @@ const Landing = () => {
         <div className="mx-auto max-w-[1120px]">
           <div className="text-center">
             <span className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-primary">
-              What founders say
+              Kurucular ne diyor
             </span>
             <h2 className="mt-3 text-[clamp(1.5rem,2.6vw,2rem)] font-semibold tracking-[-0.03em]">
-              Built by founders, for founders
+              Kurucular tarafından, kurucular için
             </h2>
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
@@ -366,7 +366,7 @@ const Landing = () => {
       <section className="border-t border-border px-6 py-16">
         <div className="mx-auto max-w-[900px] text-center">
           <h2 className="text-[clamp(1.5rem,2.6vw,2rem)] font-semibold tracking-[-0.03em]">
-            All modules included
+            Tüm modüller dahil
           </h2>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             {modules.map(m => (
@@ -384,16 +384,16 @@ const Landing = () => {
           <div className="pointer-events-none absolute inset-x-0 top-0 h-full glow-primary opacity-70" aria-hidden />
           <div className="relative">
             <h2 className="mx-auto max-w-[620px] text-[clamp(1.7rem,3.2vw,2.4rem)] font-semibold leading-tight tracking-[-0.03em] text-sidebar-accent-foreground">
-              Run the whole company from one place
+              Tüm şirketi tek yerden yönetin
             </h2>
             <p className="mx-auto mt-3 max-w-[520px] text-[15px] text-sidebar-foreground">
-              Set up your workspace in two minutes. Invite your team when you're ready.
+              Çalışma alanınızı iki dakikada kurun. Hazır olduğunuzda ekibinizi davet edin.
             </p>
             <Link
               to="/auth"
               className="mt-7 inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-[14.5px] font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Get started <ArrowRight className="h-4 w-4" />
+              Hemen başla <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -406,9 +406,9 @@ const Landing = () => {
             <SparkLogo size={16} />
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
-            <a href="#features" className="transition-colors hover:text-foreground">Product</a>
-            <Link to="/pricing" className="transition-colors hover:text-foreground">Pricing</Link>
-            <Link to="/security" className="transition-colors hover:text-foreground">Security</Link>
+            <a href="#features" className="transition-colors hover:text-foreground">Ürün</a>
+            <Link to="/pricing" className="transition-colors hover:text-foreground">Fiyatlandırma</Link>
+            <Link to="/security" className="transition-colors hover:text-foreground">Güvenlik</Link>
             <Link to="/changelog" className="transition-colors hover:text-foreground">Changelog</Link>
           </div>
           <span className="text-[12.5px] text-muted-foreground">&copy; {new Date().getFullYear()} Spark WorkHub</span>
