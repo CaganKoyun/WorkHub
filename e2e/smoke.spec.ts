@@ -12,7 +12,7 @@ test("landing açılıyor", async ({ page }) => {
   const errors = collectPageErrors(page);
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.getByText("FounderOS").first()).toBeVisible();
+  await expect(page.getByText(/WorkHub/i).first()).toBeVisible();
   expect(errors).toEqual([]);
 });
 
