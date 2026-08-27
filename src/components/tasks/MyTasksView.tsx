@@ -245,7 +245,7 @@ export function MyTasksView() {
                 key={t.id}
                 task={t}
                 projectName={project?.name}
-                href={`/projects/${t.project_id}`}
+                href={`/projects/${t.project_id}?task=${t.id}`}
                 rightSlot={
                   <Button
                     size="sm" variant="outline" className="h-6 shrink-0 text-[11px] px-2"
@@ -288,7 +288,7 @@ export function MyTasksView() {
                     key={t.id}
                     task={t}
                     projectName={project?.name}
-                    href={`/projects/${t.project_id}`}
+                    href={`/projects/${t.project_id}?task=${t.id}`}
                   />
                 );
               })}
