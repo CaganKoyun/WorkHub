@@ -320,7 +320,7 @@ export function MyTasksView() {
                 return (
                   <Link
                     key={t.id}
-                    to={`/projects/${t.project_id}`}
+                    to={`/projects/${t.project_id}?task=${t.id}`}
                     className="block rounded-md border border-border/60 bg-card p-2.5 hover:bg-accent/40 transition-colors"
                   >
                     <p className="text-sm font-medium truncate">{t.title}</p>

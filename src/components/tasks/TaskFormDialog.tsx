@@ -70,8 +70,8 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
     e.preventDefault();
     if (!title.trim()) { toast.error('Başlık gerekli'); return; }
     if (title.trim().length < 3) { toast.error('Başlık en az 3 karakter olmalı'); return; }
-    if (estimated && (Number(estimated) < 0 || Number(estimated) > 10000)) { toast.error('Tahmini saat 0-10000 arası olmalı'); return; }
-    if (points && (Number(points) < 0 || Number(points) > 100)) { toast.error('Story points 0-100 arası olmalı'); return; }
+    if (estimated && (isNaN(Number(estimated)) || Number(estimated) < 0 || Number(estimated) > 10000)) { toast.error('Tahmini saat 0-10000 arası olmalı'); return; }
+    if (points && (isNaN(Number(points)) || Number(points) < 0 || Number(points) > 100)) { toast.error('Story points 0-100 arası olmalı'); return; }
     const payload = {
       title: title.trim(),
       description: description || null,
