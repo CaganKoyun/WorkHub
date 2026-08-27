@@ -159,7 +159,7 @@ const Landing = () => {
               {/* sidebar */}
               <div className="hidden w-[176px] shrink-0 flex-col gap-2 bg-sidebar px-3 py-3 md:flex">
                 <div className="flex h-7 items-center justify-center gap-1.5 rounded-full bg-primary text-[11.5px] font-medium text-primary-foreground">
-                  <Plus className="h-3 w-3" /> Create
+                  <Plus className="h-3 w-3" /> Oluştur
                 </div>
                 <div className="mt-2 space-y-1">
                   {modules.slice(0, 7).map((m, i) => (

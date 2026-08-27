@@ -173,7 +173,7 @@ function ProductsTab() {
       const payload: AnyRow = { ...form, project_id: form.project_id || null };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Urun guncellendi" : "Urun eklendi");
+      toast.success(editItem ? "Ürün güncellendi" : "Ürün eklendi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };
@@ -303,7 +303,7 @@ function FeaturesTab() {
       };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Feature guncellendi" : "Feature eklendi");
+      toast.success(editItem ? "Özellik güncellendi" : "Özellik eklendi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };
@@ -528,7 +528,7 @@ function FeedbackTab() {
       const payload: AnyRow = { ...form };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Feedback guncellendi" : "Feedback eklendi");
+      toast.success(editItem ? "Geri bildirim güncellendi" : "Geri bildirim eklendi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };
@@ -654,7 +654,7 @@ function ReleasesTab() {
       const payload: AnyRow = { ...form, product_id: form.product_id || null, release_date: form.release_date || null };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Release guncellendi" : "Release kaydedildi");
+      toast.success(editItem ? "Sürüm güncellendi" : "Sürüm kaydedildi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };
@@ -764,7 +764,7 @@ function IncidentsTab() {
       const payload: AnyRow = { ...form };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Incident guncellendi" : "Incident kaydedildi");
+      toast.success(editItem ? "Olay güncellendi" : "Olay kaydedildi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };

@@ -202,7 +202,7 @@ function ChatInterface({
       });
     } catch (e) {
       setIsLoading(false);
-      toast.error(e instanceof Error ? e.message : "Failed to get response");
+      toast.error(e instanceof Error ? e.message : "Yanıt alınamadı");
     }
     inputRef.current?.focus();
   };

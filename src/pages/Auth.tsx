@@ -80,12 +80,17 @@ export default function Auth() {
   const handleResetPassword = async () => {
     if (!resetEmail) { toast.error("Lütfen e-posta adresinizi girin."); return; }
     setResetSending(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-      redirectTo: `${window.location.origin}/settings`,
-    });
-    setResetSending(false);
-    if (error) toast.error("Sıfırlama başarısız: " + error.message);
-    else toast.success("Şifre sıfırlama e-postası gönderildi. Gelen kutunuzu kontrol edin.");
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/settings`,
+      });
+      if (error) toast.error("Sıfırlama başarısız: " + error.message);
+      else toast.success("Şifre sıfırlama e-postası gönderildi. Gelen kutunuzu kontrol edin.");
+    } catch (err: any) {
+      toast.error("Sıfırlama başarısız: " + err.message);
+    } finally {
+      setResetSending(false);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {

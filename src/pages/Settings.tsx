@@ -54,13 +54,13 @@ function ProfileTab() {
     setUploadingAvatar(true);
     const filePath = `${user.id}/avatar.${fileExt}`;
     const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file, { upsert: true });
-    if (uploadError) { toast.error("Yukleme basarisiz: " + uploadError.message); setUploadingAvatar(false); return; }
+    if (uploadError) { toast.error("Yükleme başarısız: " + uploadError.message); setUploadingAvatar(false); return; }
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
     const avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;
     const { error: updateError } = await supabase.from("profiles").update({ avatar_url: avatarUrl }).eq("user_id", user.id);
     setUploadingAvatar(false);
     if (updateError) toast.error(updateError.message);
-    else { toast.success("Avatar guncellendi"); await refreshProfile(); }
+    else { toast.success("Avatar güncellendi"); await refreshProfile(); }
   };
 
   useEffect(() => {
@@ -72,10 +72,15 @@ function ProfileTab() {
   const handleSaveProfile = async () => {
     if (!user) return;
     setSaving(true);
-    const { error } = await supabase.from("profiles").update({ full_name: fullName, job_title: jobTitle }).eq("user_id", user.id);
-    setSaving(false);
-    if (error) toast.error(error.message);
-    else { toast.success("Profil guncellendi"); await refreshProfile(); }
+    try {
+      const { error } = await supabase.from("profiles").update({ full_name: fullName, job_title: jobTitle }).eq("user_id", user.id);
+      if (error) toast.error(error.message);
+      else { toast.success("Profil güncellendi"); await refreshProfile(); }
+    } catch (err: any) {
+      toast.error("Profil güncellenemedi: " + err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleChangePassword = async () => {
@@ -84,7 +89,7 @@ function ProfileTab() {
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     setChangingPassword(false);
     if (error) toast.error(error.message);
-    else { toast.success("Sifre guncellendi"); setNewPassword(""); }
+    else { toast.success("Şifre güncellendi"); setNewPassword(""); }
   };
 
   return (
@@ -162,7 +167,7 @@ function CompanyTab() {
       if (error) toast.error(error.message); else toast.success("Sirket ayarlari kaydedildi");
     } else {
       const { data, error } = await supabase.from("company_settings").insert({ ...form, user_id: user.id }).select().single();
-      if (error) toast.error(error.message); else { setExistingId(data.id); toast.success("Sirket ayarlari olusturuldu"); }
+      if (error) toast.error(error.message); else { setExistingId(data.id); toast.success("Şirket ayarları oluşturuldu"); }
     }
     setSaving(false);
   };
@@ -227,13 +232,17 @@ function TeamTab() {
   useEffect(() => { fetchData(); }, []);
 
   const handleInvite = async () => {
-    if (!user || !inviteEmail) return;
+    if (!user || !workspace) return;
+    const trimmed = inviteEmail.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      toast.error("Geçerli bir e-posta adresi girin.");
+      return;
+    }
     setSending(true);
-    if (!workspace) return;
-    const { error } = await supabase.from("workspace_invitations").insert({ workspace_id: workspace.id, email: inviteEmail, role: inviteRole as any, invited_by: user.id });
+    const { error } = await supabase.from("workspace_invitations").insert({ workspace_id: workspace.id, email: trimmed, role: inviteRole as any, invited_by: user.id });
     setSending(false);
     if (error) toast.error(error.message);
-    else { toast.success(`${inviteEmail} davet edildi`); setInviteEmail(""); fetchData(); }
+    else { toast.success(`${trimmed} davet edildi`); setInviteEmail(""); fetchData(); }
   };
 
   const handleRevoke = async (id: string) => {

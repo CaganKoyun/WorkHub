@@ -170,9 +170,9 @@ export default function AuditLog() {
       a.download = `audit-log-${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success('Denetim kaydi CSV indirildi');
+      toast.success('Denetim kaydı CSV indirildi');
     } catch {
-      toast.error('Aktarim basarisiz');
+      toast.error('Aktarım başarısız');
     } finally {
       setExporting(false);
     }

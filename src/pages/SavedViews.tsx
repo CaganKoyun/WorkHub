@@ -311,7 +311,7 @@ function ViewRow({ view, isFav, isMine, onDuplicate }: {
           </span>
           {view.updated_at !== view.created_at && (
             <span className="inline-flex items-center gap-1">
-              guncellendi: {formatRelativeDate(view.updated_at)}
+              güncellendi: {formatRelativeDate(view.updated_at)}
             </span>
           )}
           <span className="inline-flex items-center gap-1 text-primary/60">

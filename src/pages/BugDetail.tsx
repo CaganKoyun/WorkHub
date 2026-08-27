@@ -13,6 +13,7 @@ import { ArrowLeft, Loader2, Send, User } from "lucide-react";
 import type { Enums } from "@/integrations/supabase/types";
 import { Constants } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
+import { tr } from "date-fns/locale";
 import { useAllProfiles } from "@/lib/projects-hooks";
 import {
   useBug,
@@ -190,9 +191,9 @@ export default function BugDetail() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-[13px] font-medium">{profiles[c.user_id] || "User"}</span>
+                          <span className="text-[13px] font-medium">{profiles[c.user_id] || "Kullanıcı"}</span>
                           <span className="text-[11px] text-muted-foreground">
-                            {formatDistanceToNow(new Date(c.created_at), { addSuffix: true })}
+                            {formatDistanceToNow(new Date(c.created_at), { addSuffix: true, locale: tr })}
                           </span>
                         </div>
                         <p className="text-[13px] mt-0.5 leading-relaxed">{c.content}</p>
@@ -226,7 +227,7 @@ export default function BugDetail() {
             <div className="w-full lg:w-64 shrink-0">
               {/* Status workflow */}
               <div className="px-4 py-3 border-b border-border">
-                <p className="text-[12px] text-muted-foreground mb-2 font-medium">Status</p>
+                <p className="text-[12px] text-muted-foreground mb-2 font-medium">Durum</p>
                 <div className="flex flex-wrap gap-1">
                   {statusFlow.map((status) => (
                     <Button
@@ -289,11 +290,11 @@ export default function BugDetail() {
                 </div>
                 <div>
                   <p className="text-[12px] text-muted-foreground mb-0.5">Oluşturulma</p>
-                  <p>{formatDistanceToNow(new Date(bug.created_at), { addSuffix: true })}</p>
+                  <p>{formatDistanceToNow(new Date(bug.created_at), { addSuffix: true, locale: tr })}</p>
                 </div>
                 <div>
                   <p className="text-[12px] text-muted-foreground mb-0.5">Güncelleme</p>
-                  <p>{formatDistanceToNow(new Date(bug.updated_at), { addSuffix: true })}</p>
+                  <p>{formatDistanceToNow(new Date(bug.updated_at), { addSuffix: true, locale: tr })}</p>
                 </div>
               </div>
             </div>

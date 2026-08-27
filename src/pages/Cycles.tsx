@@ -37,6 +37,7 @@ import {
   Users,
 } from 'lucide-react';
 import { format, formatDistanceToNowStrict, differenceInDays, eachDayOfInterval, isBefore, isAfter, parseISO } from 'date-fns';
+import { tr } from 'date-fns/locale';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -137,7 +138,7 @@ function CycleCard({ cycle, isSelected, onSelect }: { cycle: Cycle; isSelected: 
       <div className="mt-3 flex items-center gap-3 text-[11.5px] text-muted-foreground">
         <span className="inline-flex items-center gap-1">
           <Calendar className="h-3 w-3" />
-          {format(start, 'MMM d')} &rarr; {format(end, 'MMM d')}
+          {format(start, 'd MMM', { locale: tr })} &rarr; {format(end, 'd MMM', { locale: tr })}
         </span>
         {cycle.status === 'active' && daysLeft > 0 && (
           <span className="text-[hsl(var(--status-in-progress))]">
@@ -145,7 +146,7 @@ function CycleCard({ cycle, isSelected, onSelect }: { cycle: Cycle; isSelected: 
           </span>
         )}
         {cycle.status === 'planned' && (
-          <span>{formatDistanceToNowStrict(start, { addSuffix: true })}</span>
+          <span>{formatDistanceToNowStrict(start, { addSuffix: true, locale: tr })}</span>
         )}
       </div>
 
@@ -364,7 +365,7 @@ function CycleTaskList({ tasks, isLoading, profileMap }: { tasks: Task[]; isLoad
                         )}
                         {task.due_date && (
                           <span className={`text-[10.5px] tabular-nums ${isOverdue ? 'text-red-400 font-medium' : 'text-muted-foreground'}`}>
-                            {format(new Date(task.due_date), 'MMM d')}
+                            {format(new Date(task.due_date), 'd MMM', { locale: tr })}
                           </span>
                         )}
                         <Tooltip>
@@ -478,7 +479,7 @@ function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
             )}
             <p className="mt-1.5 text-[12px] text-muted-foreground flex items-center gap-1.5">
               <Calendar className="h-3 w-3" />
-              {format(start, 'MMM d, yyyy')} &rarr; {format(end, 'MMM d, yyyy')}
+              {format(start, 'd MMM yyyy', { locale: tr })} &rarr; {format(end, 'd MMM yyyy', { locale: tr })}
               <span className="text-muted-foreground/50 mx-1">&middot;</span>
               {totalDays} gün
             </p>
