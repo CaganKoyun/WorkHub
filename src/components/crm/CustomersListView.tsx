@@ -5,7 +5,7 @@ import type { CrmCustomerHealth } from '@/lib/crm-types';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 // Health score inputs (product usage, tickets, payments, last contact, NPS, renewal, incidents, AM assessment)
 // v1: manual health selection + derived score display. Extend as usage telemetry lands.
@@ -18,9 +18,9 @@ export function CustomersListView() {
   async function setHealth(id: string, health: CrmCustomerHealth) {
     try {
       await update.mutateAsync({ id, health });
-      toast({ title: 'Sağlık güncellendi' });
+      toast.success("Saglik guncellendi");
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 
@@ -104,7 +104,7 @@ export function CustomersListView() {
 
 function Metric({ label, value, tone }: { label: string; value: string; tone?: 'warn' }) {
   return (
-    <div className={`rounded-lg border border-border bg-card p-3 ${tone === 'warn' ? 'border-amber-500/40' : ''}`}>
+    <div className={`rounded-lg border border-border bg-card p-3 ${tone === 'warn' ? 'border-warning/40' : ''}`}>
       <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
       <div className="text-lg font-semibold mt-0.5">{value}</div>
     </div>

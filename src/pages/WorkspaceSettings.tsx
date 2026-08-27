@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Trash2, Copy, Loader2 } from "lucide-react";
 import { SignalRulesPanel } from "@/components/SignalRulesPanel";
+import { PublicDashboardManager } from "@/components/PublicDashboardManager";
+import { ReferralPanel } from "@/components/ReferralPanel";
 
 const ROLES = ["manager","member","viewer","guest"] as const;
 const MODULES = ["work","crm","finance","people","assets","goals","risks","decisions","approvals","analytics","admin","ai"];
@@ -125,25 +127,27 @@ export default function WorkspaceSettings() {
     <AppLayout>
       <div className="p-6 max-w-6xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Workspace settings</h1>
-          <p className="text-sm text-muted-foreground">Manage your company, members, invitations and permissions.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Calisma Alani Ayarlari</h1>
+          <p className="text-sm text-muted-foreground">Sirket, uyeler, davetler ve izinleri yonetin.</p>
         </div>
 
         <Tabs defaultValue="general">
           <TabsList>
-            <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="members">Members</TabsTrigger>
-            <TabsTrigger value="invitations">Invitations</TabsTrigger>
-            <TabsTrigger value="permissions">Permissions</TabsTrigger>
-            <TabsTrigger value="signals">Signals</TabsTrigger>
+            <TabsTrigger value="general">Genel</TabsTrigger>
+            <TabsTrigger value="members">Uyeler</TabsTrigger>
+            <TabsTrigger value="invitations">Davetler</TabsTrigger>
+            <TabsTrigger value="permissions">Izinler</TabsTrigger>
+            <TabsTrigger value="signals">Sinyaller</TabsTrigger>
+            <TabsTrigger value="dashboards">Herkese Acik Panolar</TabsTrigger>
+            <TabsTrigger value="referrals">Davet Et Kazan</TabsTrigger>
           </TabsList>
 
           <TabsContent value="general" className="mt-4">
             <Card className="p-6 space-y-4 max-w-xl">
-              <div><Label>Workspace name</Label><Input value={name} onChange={e=>setName(e.target.value)} disabled={!canAdmin} /></div>
+              <div><Label>Calisma alani adi</Label><Input value={name} onChange={e=>setName(e.target.value)} disabled={!canAdmin} /></div>
               <div><Label>Plan</Label><div className="text-sm mt-1"><Badge variant="secondary">{currentWorkspace.plan}</Badge></div></div>
-              <div><Label>Default currency</Label><div className="text-sm mt-1">{currentWorkspace.default_currency}</div></div>
-              {canAdmin && <Button onClick={saveName}>Save changes</Button>}
+              <div><Label>Varsayilan para birimi</Label><div className="text-sm mt-1">{currentWorkspace.default_currency}</div></div>
+              {canAdmin && <Button onClick={saveName}>Degisiklikleri kaydet</Button>}
             </Card>
           </TabsContent>
 
@@ -256,6 +260,18 @@ export default function WorkspaceSettings() {
 
           <TabsContent value="signals" className="mt-4">
             <SignalRulesPanel canManage={canAdmin} />
+          </TabsContent>
+
+          <TabsContent value="dashboards" className="mt-4">
+            {canAdmin ? (
+              <PublicDashboardManager />
+            ) : (
+              <p className="text-sm text-muted-foreground py-4">Public dashboard yonetimi icin admin yetkisi gerekli.</p>
+            )}
+          </TabsContent>
+
+          <TabsContent value="referrals" className="mt-4">
+            <ReferralPanel />
           </TabsContent>
         </Tabs>
       </div>

@@ -48,8 +48,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 function toAuthUser(auth0User: ReturnType<typeof useAuth0>["user"]): AuthUser | null {
   if (!auth0User?.sub) return null;
   return {
-    // Map the Auth0 sub (e.g. "google-oauth2|123...") to a stable UUID so it
-    // fits the existing uuid user_id / owner_id / created_by columns.
     id: auth0SubToUuid(auth0User.sub),
     email: auth0User.email,
     user_metadata: {

@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import { useTaskComments, useAddTaskComment, useUpdateTask } from '@/lib/tasks-hooks';
+import { Link } from 'react-router-dom';
 import {
-  TASK_STATUS_COLORS, TASK_STATUS_LABELS,
-  TASK_PRIORITY_COLORS, TASK_PRIORITY_LABELS,
-} from '@/lib/tasks-types';
+  useTaskComments, useAddTaskComment, useUpdateTask,
+  useSubtasks, useTasks,
+  useTaskDependencies, useAddTaskDependency, useRemoveTaskDependency,
+  useTaskAssignees, useAddTaskAssignee, useRemoveTaskAssignee,
+} from '@/lib/tasks-hooks';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { TASK_STATUS_LABELS, TASK_PRIORITY_LABELS } from '@/lib/tasks-types';
 import type { Task, TaskStatus } from '@/lib/tasks-types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -11,7 +15,16 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Plus, X, GitMerge, GitBranch, ListTree, UserPlus } from 'lucide-react';
+import { RichTextDisplay } from '@/components/RichTextEditor';
+import { TaskTimer } from './TaskTimer';
+import { CustomFieldRenderer } from '@/components/CustomFieldRenderer';
+import { RollupPanel } from './RollupPanel';
+import { TaskAttachments } from './TaskAttachments';
+import type { FormulaContext } from '@/lib/formula-eval';
 import { toast } from 'sonner';
+import { TaskStatusIcon, TaskPriorityIcon } from './TaskStatusIcon';
 
 interface Member { user_id: string; profile?: { name: string | null } }
 
@@ -21,11 +34,103 @@ interface Props {
   members: Member[];
 }
 
+function LinkedTaskRow({
+  otherId, otherTitle, otherTracking, otherStatus, otherProjectId, onRemove,
+}: {
+  otherId: string;
+  otherTitle?: string | null;
+  otherTracking?: string | null;
+  otherStatus?: string | null;
+  otherProjectId?: string | null;
+  onRemove: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-2 rounded-md border border-border/60 bg-secondary/30 px-2 py-1.5 text-[12.5px]">
+      {otherStatus && <TaskStatusIcon status={otherStatus as any} size={12} />}
+      <span className="font-mono text-[10.5px] tabular-nums text-muted-foreground w-14">
+        {otherTracking ?? 'WH-—'}
+      </span>
+      <Link
+        to={otherProjectId ? `/projects/${otherProjectId}` : '/tasks'}
+        className="flex-1 truncate hover:underline"
+      >
+        {otherTitle ?? '(silinmiş görev)'}
+      </Link>
+      <Button variant="ghost" size="icon" className="h-5 w-5 opacity-60 hover:opacity-100" onClick={onRemove}>
+        <X className="h-3 w-3" />
+      </Button>
+    </div>
+  );
+}
+
+function AddDependencyPopover({
+  currentTaskId, projectId, direction, onAdd,
+}: {
+  currentTaskId: string;
+  projectId: string;
+  direction: 'blocking' | 'blocked_by';
+  onAdd: (otherId: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const { data: siblings } = useTasks(projectId);
+
+  const candidates = (siblings ?? [])
+    .filter(t => t.id !== currentTaskId)
+    .filter(t => !query || t.title.toLowerCase().includes(query.toLowerCase()) || (t.tracking_id ?? '').toLowerCase().includes(query.toLowerCase()))
+    .slice(0, 8);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="ghost" size="sm" className="h-6 text-[11px] gap-1">
+          <Plus className="h-3 w-3" /> Ekle
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-72 p-2">
+        <input
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder={`${direction === 'blocking' ? 'Blokladığın' : 'Seni bloklayan'} görev ara…`}
+          className="w-full h-8 px-2 rounded-md bg-secondary text-[12px] outline-none border border-transparent focus:border-border"
+          autoFocus
+        />
+        <div className="mt-2 max-h-56 overflow-y-auto space-y-0.5">
+          {candidates.length === 0 && (
+            <p className="text-center text-[11px] text-muted-foreground py-4">Sonuç yok</p>
+          )}
+          {candidates.map(t => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => { onAdd(t.id); setOpen(false); setQuery(''); }}
+              className="w-full flex items-center gap-2 rounded-md px-1.5 py-1 text-left text-[12px] hover:bg-sidebar-accent/60"
+            >
+              <TaskStatusIcon status={t.status} size={12} />
+              <span className="font-mono text-[10.5px] tabular-nums text-muted-foreground w-14">{t.tracking_id ?? 'WH-—'}</span>
+              <span className="flex-1 truncate">{t.title}</span>
+            </button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
   const { data: comments } = useTaskComments(task.id);
   const addComment = useAddTaskComment();
   const updateTask = useUpdateTask();
+  const { data: subtasks } = useSubtasks(task.id);
+  const { data: deps } = useTaskDependencies(task.id);
+  const { data: extraAssignees } = useTaskAssignees(task.id);
+  const addDep = useAddTaskDependency();
+  const removeDep = useRemoveTaskDependency();
+  const addAssignee = useAddTaskAssignee();
+  const removeAssignee = useRemoveTaskAssignee();
+  const { currentWorkspace } = useWorkspace();
   const [body, setBody] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const memberMap = new Map(members.map(m => [m.user_id, m.profile?.name ?? 'Kullanıcı']));
 
@@ -37,57 +142,296 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
     } catch (e: any) { toast.error(e.message); }
   };
 
-  const handleStatus = (s: TaskStatus) => {
-    updateTask.mutate({ id: task.id, status: s });
+  const handleStatus = (s: TaskStatus) => updateTask.mutate({ id: task.id, status: s });
+
+  const handleAddDep = async (otherId: string, direction: 'blocking' | 'blocked_by') => {
+    if (!currentWorkspace) return;
+    try {
+      await addDep.mutateAsync({
+        workspace_id: currentWorkspace.id,
+        blocking_task_id: direction === 'blocking' ? task.id : otherId,
+        blocked_task_id: direction === 'blocking' ? otherId : task.id,
+      });
+    } catch (e: any) { toast.error(e.message); }
   };
 
   return (
     <Dialog open onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>{task.title}</DialogTitle></DialogHeader>
-        <div className="space-y-4">
-          <div className="flex flex-wrap gap-2">
+        <DialogHeader>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{task.tracking_id ?? 'WH-—'}</span>
+            <TaskStatusIcon status={task.status} size={12} />
+            <span className="text-[12px] text-muted-foreground">{TASK_STATUS_LABELS[task.status]}</span>
+          </div>
+          <DialogTitle className="text-[18px]">{task.title}</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-5">
+          {/* Attributes bar */}
+          <div className="flex flex-wrap gap-2 items-center">
             <Select value={task.status} onValueChange={v => handleStatus(v as TaskStatus)}>
-              <SelectTrigger className="w-40 h-8">
-                <Badge className={`text-xs border ${TASK_STATUS_COLORS[task.status]}`}>{TASK_STATUS_LABELS[task.status]}</Badge>
+              <SelectTrigger className="w-36 h-7 text-[12px]">
+                <div className="flex items-center gap-1.5">
+                  <TaskStatusIcon status={task.status} size={12} />
+                  {TASK_STATUS_LABELS[task.status]}
+                </div>
               </SelectTrigger>
               <SelectContent>
                 {(Object.keys(TASK_STATUS_LABELS) as TaskStatus[]).map(s => (
-                  <SelectItem key={s} value={s}>{TASK_STATUS_LABELS[s]}</SelectItem>
+                  <SelectItem key={s} value={s}>
+                    <div className="flex items-center gap-1.5">
+                      <TaskStatusIcon status={s} size={12} />
+                      {TASK_STATUS_LABELS[s]}
+                    </div>
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Badge className={`text-xs ${TASK_PRIORITY_COLORS[task.priority]}`}>{TASK_PRIORITY_LABELS[task.priority]}</Badge>
-            {task.due_date && <Badge variant="outline" className="text-xs">📅 {task.due_date}</Badge>}
-            {task.assignee_id && <Badge variant="outline" className="text-xs">👤 {memberMap.get(task.assignee_id)}</Badge>}
+            <span className="inline-flex items-center gap-1.5 chip">
+              <TaskPriorityIcon priority={task.priority} size={11} />
+              {TASK_PRIORITY_LABELS[task.priority]}
+            </span>
+            {task.due_date && <Badge variant="outline" className="text-[11px] gap-1">📅 {task.due_date}</Badge>}
+            {task.assignee_id && (
+              <span className="inline-flex items-center gap-1.5 chip">
+                <Avatar className="h-4 w-4">
+                  <AvatarFallback className="text-[8px] bg-sidebar-accent">
+                    {(memberMap.get(task.assignee_id) ?? '?')[0]}
+                  </AvatarFallback>
+                </Avatar>
+                {memberMap.get(task.assignee_id)}
+              </span>
+            )}
           </div>
+
+          {/* Additional assignees (multi) */}
+          <section>
+            <div className="mb-1.5 flex items-center justify-between">
+              <h4 className="flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <UserPlus className="h-3 w-3" /> Atananlar
+              </h4>
+              <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-6 text-[11px] gap-1">
+                    <Plus className="h-3 w-3" /> Ekle
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-64 p-2">
+                  <div className="max-h-56 overflow-y-auto space-y-0.5">
+                    {members.length === 0 && (
+                      <p className="text-[11px] text-muted-foreground text-center py-3">Ekip üyesi yok.</p>
+                    )}
+                    {members
+                      .filter(m => !(extraAssignees ?? []).some(a => a.user_id === m.user_id))
+                      .map(m => (
+                        <button
+                          key={m.user_id}
+                          type="button"
+                          onClick={() => {
+                            if (!currentWorkspace) return;
+                            addAssignee.mutate({ task_id: task.id, user_id: m.user_id, workspace_id: currentWorkspace.id });
+                            setPickerOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2 rounded-md px-2 py-1 text-left text-[12px] hover:bg-sidebar-accent/60"
+                        >
+                          <Avatar className="h-5 w-5">
+                            <AvatarFallback className="text-[9px] bg-sidebar-accent">
+                              {(m.profile?.name ?? '?')[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          {m.profile?.name ?? 'Kullanıcı'}
+                        </button>
+                      ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {(extraAssignees ?? []).map(a => (
+                <span
+                  key={a.user_id}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-secondary/40 pl-1 pr-1.5 py-0.5 text-[11.5px]"
+                >
+                  <Avatar className="h-4 w-4">
+                    <AvatarFallback className="text-[8px] bg-sidebar-accent">
+                      {(memberMap.get(a.user_id) ?? '?')[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  {memberMap.get(a.user_id) ?? 'Kullanıcı'}
+                  <button
+                    type="button"
+                    className="ml-0.5 opacity-50 hover:opacity-100"
+                    onClick={() => removeAssignee.mutate({ task_id: task.id, user_id: a.user_id })}
+                  >
+                    <X className="h-2.5 w-2.5" />
+                  </button>
+                </span>
+              ))}
+              {(extraAssignees?.length ?? 0) === 0 && (
+                <p className="text-[12px] text-muted-foreground/70">Sadece birincil atanan var.</p>
+              )}
+            </div>
+          </section>
+
           {task.description && (
-            <div className="rounded-md border bg-muted/30 p-3 text-sm whitespace-pre-wrap">{task.description}</div>
-          )}
-          {task.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {task.tags.map(t => <Badge key={t} variant="outline" className="text-xs">{t}</Badge>)}
+            <div className="rounded-md border border-border/60 bg-secondary/30 p-3">
+              <RichTextDisplay html={task.description} />
             </div>
           )}
-          <div className="space-y-2">
-            <h4 className="text-sm font-semibold">Yorumlar ({comments?.length ?? 0})</h4>
+
+          {task.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {task.tags.map(t => (
+                <span key={t} className="rounded border border-border bg-secondary/40 px-1.5 py-0.5 text-[10.5px] text-muted-foreground">
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Time tracking */}
+          <TaskTimer taskId={task.id} />
+
+          {/* Rollup panel + custom fields — share one formula context */}
+          {(() => {
+            const formulaContext: FormulaContext = {
+              self: {
+                id: task.id,
+                due_date: task.due_date,
+                created_at: task.created_at,
+                completed_at: task.completed_at,
+                story_points: task.story_points,
+                estimated_hours: task.estimated_hours,
+                actual_hours: task.actual_hours,
+              },
+              subtasks: (subtasks ?? []).map(s => ({
+                id: s.id,
+                status: s.status,
+                story_points: s.story_points,
+                estimated_hours: s.estimated_hours,
+                actual_hours: s.actual_hours,
+              })),
+            };
+            return (
+              <>
+                <RollupPanel ctx={formulaContext} />
+                <CustomFieldRenderer entityType="task" entityId={task.id} formulaContext={formulaContext} />
+              </>
+            );
+          })()}
+
+          {/* Sub-tasks */}
+          <section>
+            <h4 className="mb-2 flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <ListTree className="h-3 w-3" /> Alt görevler ({subtasks?.length ?? 0})
+            </h4>
+            {subtasks && subtasks.length > 0 ? (
+              <div className="space-y-1">
+                {subtasks.map(s => (
+                  <div key={s.id} className="flex items-center gap-2 rounded-md border border-border/60 bg-secondary/20 px-2 py-1.5 text-[12.5px]">
+                    <TaskStatusIcon status={s.status} size={12} />
+                    <span className="font-mono text-[10.5px] tabular-nums text-muted-foreground w-14">{s.tracking_id ?? 'WH-—'}</span>
+                    <Link to={`/projects/${s.project_id}`} className="flex-1 truncate hover:underline">{s.title}</Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[12px] text-muted-foreground/70">Yok</p>
+            )}
+          </section>
+
+          {/* Dependencies */}
+          <section className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <h4 className="flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <GitBranch className="h-3 w-3" /> Blokluyor ({deps?.blocking.length ?? 0})
+                </h4>
+                <AddDependencyPopover
+                  currentTaskId={task.id}
+                  projectId={task.project_id}
+                  direction="blocking"
+                  onAdd={(id) => handleAddDep(id, 'blocking')}
+                />
+              </div>
+              <div className="space-y-1">
+                {(deps?.blocking ?? []).map(edge => (
+                  <LinkedTaskRow
+                    key={edge.id}
+                    otherId={edge.other?.id ?? ''}
+                    otherTitle={edge.other?.title}
+                    otherTracking={edge.other?.tracking_id}
+                    otherStatus={edge.other?.status}
+                    otherProjectId={edge.other?.project_id}
+                    onRemove={() => removeDep.mutate({ id: edge.id, blocked_task_id: task.id, blocking_task_id: task.id })}
+                  />
+                ))}
+                {(deps?.blocking.length ?? 0) === 0 && (
+                  <p className="text-[12px] text-muted-foreground/70">Yok</p>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <h4 className="flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <GitMerge className="h-3 w-3" /> Bloklanıyor ({deps?.blockedBy.length ?? 0})
+                </h4>
+                <AddDependencyPopover
+                  currentTaskId={task.id}
+                  projectId={task.project_id}
+                  direction="blocked_by"
+                  onAdd={(id) => handleAddDep(id, 'blocked_by')}
+                />
+              </div>
+              <div className="space-y-1">
+                {(deps?.blockedBy ?? []).map(edge => (
+                  <LinkedTaskRow
+                    key={edge.id}
+                    otherId={edge.other?.id ?? ''}
+                    otherTitle={edge.other?.title}
+                    otherTracking={edge.other?.tracking_id}
+                    otherStatus={edge.other?.status}
+                    otherProjectId={edge.other?.project_id}
+                    onRemove={() => removeDep.mutate({ id: edge.id, blocked_task_id: task.id, blocking_task_id: task.id })}
+                  />
+                ))}
+                {(deps?.blockedBy.length ?? 0) === 0 && (
+                  <p className="text-[12px] text-muted-foreground/70">Yok</p>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* Attachments */}
+          <TaskAttachments taskId={task.id} />
+
+          {/* Comments */}
+          <section>
+            <h4 className="mb-2 text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Yorumlar ({comments?.length ?? 0})
+            </h4>
             <div className="space-y-2">
               {(comments ?? []).map(c => (
                 <div key={c.id} className="flex gap-2">
-                  <Avatar className="h-7 w-7"><AvatarFallback className="text-[10px]">{(memberMap.get(c.author_id) ?? '?')[0]}</AvatarFallback></Avatar>
-                  <div className="flex-1 rounded-md border bg-card p-2">
-                    <p className="text-xs font-medium">{memberMap.get(c.author_id) ?? 'Kullanıcı'}</p>
-                    <p className="text-sm whitespace-pre-wrap">{c.body}</p>
+                  <Avatar className="h-6 w-6">
+                    <AvatarFallback className="text-[9px] bg-sidebar-accent">
+                      {(memberMap.get(c.author_id) ?? '?')[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 rounded-md border border-border/60 bg-card p-2">
+                    <p className="text-[11.5px] font-medium">{memberMap.get(c.author_id) ?? 'Kullanıcı'}</p>
+                    <p className="text-[13px] whitespace-pre-wrap">{c.body}</p>
                     <p className="text-[10px] text-muted-foreground mt-1">{new Date(c.created_at).toLocaleString()}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="flex gap-2">
-              <Textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Yorum yaz..." rows={2} />
-              <Button onClick={handleAdd} disabled={!body.trim() || addComment.isPending}>Gönder</Button>
+            <div className="mt-2 flex gap-2">
+              <Textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Yorum yaz…" rows={2} className="text-[13px]" />
+              <Button size="sm" onClick={handleAdd} disabled={!body.trim() || addComment.isPending}>Gönder</Button>
             </div>
-          </div>
+          </section>
         </div>
       </DialogContent>
     </Dialog>

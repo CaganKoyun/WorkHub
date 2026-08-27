@@ -152,7 +152,7 @@ export default function FounderInbox() {
                               <span className="italic">Not: {a.decision_note}</span>
                             )}
                             {a.status === "snoozed" && a.snooze_until && (
-                              <span className="flex items-center gap-1 text-amber-500">
+                              <span className="flex items-center gap-1 text-warning">
                                 <AlarmClock className="h-3 w-3" />
                                 {format(new Date(a.snooze_until), "d MMM HH:mm", { locale: tr })}'e kadar ertelendi
                               </span>
@@ -288,7 +288,7 @@ function InfoRequestDialog({ approval, onClose, onSubmit }: {
   const [note, setNote] = useState("");
   return (
     <Dialog open={!!approval} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Bilgi İste — {approval?.title}</DialogTitle>
         </DialogHeader>
@@ -323,7 +323,7 @@ function DelegateDialog({ approval, members, onClose, onSubmit }: {
   const [userId, setUserId] = useState("");
   return (
     <Dialog open={!!approval} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Devret — {approval?.title}</DialogTitle>
         </DialogHeader>
@@ -388,7 +388,7 @@ function NewApprovalDialog() {
           <Plus className="h-4 w-4 mr-1" /> Onay Talep Et
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Yeni Onay Talebi</DialogTitle>
         </DialogHeader>

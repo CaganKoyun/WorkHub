@@ -20,10 +20,10 @@ export function FounderBottleneckRadar() {
 
   return (
     <Link to="/inbox" className="block">
-      <Card className="border-amber-500/40 hover:border-amber-500/70 transition-colors">
+      <Card className="border-warning/40 hover:border-warning/70 transition-colors">
         <CardContent className="p-4 flex items-center gap-4">
-          <div className="h-10 w-10 rounded-md bg-amber-500/10 flex items-center justify-center shrink-0">
-            <Hourglass className="h-5 w-5 text-amber-400" />
+          <div className="h-10 w-10 rounded-md bg-warning/10 flex items-center justify-center shrink-0">
+            <Hourglass className="h-5 w-5 text-warning" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">

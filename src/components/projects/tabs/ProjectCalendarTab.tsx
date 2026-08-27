@@ -41,11 +41,11 @@ export function ProjectCalendarTab({ tasks, onOpen }: { tasks: Task[]; onOpen: (
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium capitalize">{monthLabel}</p>
         <div className="flex gap-1">
-          <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1))}>
+          <Button variant="outline" size="icon" className="h-8 w-8" aria-label="Önceki ay" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1))}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button variant="outline" size="sm" className="h-8" onClick={() => setCursor(new Date())}>Bugün</Button>
-          <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1))}>
+          <Button variant="outline" size="icon" className="h-8 w-8" aria-label="Sonraki ay" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1))}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>

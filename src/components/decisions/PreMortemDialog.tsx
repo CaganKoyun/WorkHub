@@ -97,7 +97,7 @@ export function PreMortemDialog({ decision }: { decision: Decision }) {
           )}
 
           {answer && !loading && (
-            <div className="space-y-1.5 rounded-lg border border-amber-500/40 bg-amber-500/5 p-3">
+            <div className="space-y-1.5 rounded-lg border border-warning/40 bg-warning/5 p-3">
               <Label>İzleyeceğim sinyal</Label>
               <Input
                 value={signal}

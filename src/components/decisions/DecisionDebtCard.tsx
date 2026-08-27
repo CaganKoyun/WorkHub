@@ -47,7 +47,7 @@ export function DecisionDebtCard({ compact = false }: { compact?: boolean }) {
           )}
         </ul>
         {debt.blockedAmount > 0 && (
-          <p className="rounded-md bg-amber-500/10 p-2 text-xs text-amber-700">
+          <p className="rounded-md bg-warning/10 p-2 text-xs text-warning">
             Bekleyen kararlar tahmini {fmt(debt.blockedAmount)} değerinde iş blokluyor.
           </p>
         )}

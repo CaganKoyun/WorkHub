@@ -1,22 +1,46 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, Command, ChevronRight, Sparkles } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ChevronRight, ChevronLeft, Sparkles, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./NotificationBell";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { GlobalSearch } from "./GlobalSearch";
-import { cn } from "@/lib/utils";
 import { clusterForPath, labelForPath } from "./nav-config";
+import { useActiveTimer, useStopTimer, useElapsedSeconds, formatHMS } from "@/lib/time-tracking-hooks";
+
+function ActiveTimerChip() {
+  const navigate = useNavigate();
+  const { data: active } = useActiveTimer();
+  const stop = useStopTimer();
+  const elapsed = useElapsedSeconds(active?.started_at);
+  if (!active) return null;
+  return (
+    <div className="flex items-center gap-1 rounded-full border border-[hsl(var(--status-in-progress))/50] bg-[hsl(var(--status-in-progress))/12] px-1.5 py-0.5 text-[11.5px]">
+      <button
+        type="button"
+        onClick={() => navigate('/timesheet')}
+        className="font-mono tabular-nums text-[hsl(var(--status-in-progress))]"
+        title="Timesheet'e git"
+      >
+        {formatHMS(elapsed)}
+      </button>
+      <button
+        type="button"
+        onClick={() => stop.mutate()}
+        className="h-4 w-4 grid place-items-center rounded-full hover:bg-[hsl(var(--status-in-progress))/20]"
+        title="Timer'ı durdur"
+      >
+        <Square className="h-2.5 w-2.5" fill="currentColor" />
+      </button>
+    </div>
+  );
+}
 
 export function TopBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isMac, setIsMac] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-
-  useEffect(() => {
-    setIsMac(typeof navigator !== "undefined" && /mac/i.test(navigator.platform));
-  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -33,50 +57,46 @@ export function TopBar() {
   const leaf = labelForPath(location.pathname);
 
   return (
-    <header className="sticky top-0 z-30 hidden h-12 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-md md:flex">
+    <header className="sticky top-0 z-30 hidden h-11 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-md md:flex">
+      {/* Back — history-based so it works on any nested page. Skipped on
+          top-level home to avoid a no-op. */}
+      {location.pathname !== "/" && location.pathname !== "/home" && location.pathname !== "/dashboard" && (
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
+          onClick={() => (window.history.length > 1 ? navigate(-1) : navigate("/home"))}
+          aria-label="Geri"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+      )}
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex min-w-0 items-center text-[13px] font-medium text-muted-foreground">
+      <nav aria-label="Breadcrumb" className="flex min-w-0 flex-1 items-center text-[13px] text-muted-foreground">
         <span className="truncate">{cluster.title}</span>
         {leaf && (
           <>
             <ChevronRight className="mx-1 h-3.5 w-3.5 shrink-0 opacity-60" />
-            <span className="truncate text-foreground">{leaf}</span>
+            <span className="truncate font-medium text-foreground">{leaf}</span>
           </>
         )}
       </nav>
 
-      {/* Global search (Cmd+K) */}
-      <div className="relative mx-auto w-full max-w-lg">
-        <button
-          type="button"
-          onClick={() => setSearchOpen(true)}
-          className={cn(
-            "flex h-8 w-full items-center rounded-full pl-3 pr-2 text-[12.5px]",
-            "bg-secondary/70 hover:bg-secondary",
-            "border border-transparent transition-colors focus:border-border focus:outline-none focus:ring-2 focus:ring-ring/40",
-            "text-muted-foreground"
-          )}
-        >
-          <Search className="mr-2 h-3.5 w-3.5 shrink-0" />
-          <span className="truncate">FounderOS içinde ara…</span>
-          <kbd className="ml-auto inline-flex h-5 shrink-0 items-center gap-0.5 rounded border border-border bg-background/60 px-1.5 font-mono text-[10px]">
-            {isMac ? <><Command className="h-2.5 w-2.5" />K</> : "Ctrl K"}
-          </kbd>
-        </button>
-      </div>
       <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1">
+        <ActiveTimerChip />
         <Button
           size="sm"
-          variant="outline"
-          className="h-8 gap-1.5 rounded-full border-primary/25 bg-primary/5 px-3 text-[12px] font-medium text-primary hover:bg-primary/10 hover:text-primary"
+          variant="ghost"
+          className="h-7 gap-1.5 px-2 text-[12px] font-medium text-muted-foreground hover:text-foreground"
           onClick={() => navigate("/ai-chat")}
         >
           <Sparkles className="h-3.5 w-3.5" />
           Ask AI
         </Button>
         <NotificationBell />
+        <LanguageSwitcher />
         <ThemeToggle />
       </div>
     </header>

@@ -15,7 +15,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Plus, AlertTriangle } from 'lucide-react';
 
 export function BudgetsList() {
@@ -26,8 +26,8 @@ export function BudgetsList() {
   return (
     <div className="space-y-4">
       {alerted.length > 0 && (
-        <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
-          <div className="flex items-center gap-2 text-amber-300 font-medium">
+        <div className="rounded-md border border-warning/40 bg-warning/10 p-3 text-sm">
+          <div className="flex items-center gap-2 text-warning font-medium">
             <AlertTriangle className="h-4 w-4" /> {alerted.length} bütçe uyarı eşiğini geçti
           </div>
           <div className="text-xs text-muted-foreground mt-1">
@@ -55,7 +55,7 @@ export function BudgetsList() {
             {(variance ?? []).map(v => {
               const pct = Math.min(v.utilizationPct, 999);
               const barPct = Math.min(v.utilizationPct, 100);
-              const tone = v.utilizationPct >= 100 ? 'bg-destructive' : v.alerted ? 'bg-amber-500' : 'bg-emerald-500';
+              const tone = v.utilizationPct >= 100 ? 'bg-destructive' : v.alerted ? 'bg-warning' : 'bg-success';
               return (
                 <TableRow key={v.budget.id}>
                   <TableCell>
@@ -81,7 +81,7 @@ export function BudgetsList() {
                     <Badge variant={v.variance < 0 ? 'destructive' : 'outline'} className="text-xs">
                       {v.variance >= 0 ? '+' : ''}{formatCurrency(v.variance, 'USD')}
                     </Badge>
-                    {v.alerted && <AlertTriangle className="inline h-3 w-3 ml-1 text-amber-400" />}
+                    {v.alerted && <AlertTriangle className="inline h-3 w-3 ml-1 text-warning" />}
                   </TableCell>
                 </TableRow>
               );
@@ -110,7 +110,7 @@ function NewBudgetDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
   const create = useCreateFinBudget();
 
   async function submit() {
-    if (!name.trim() || !amount) { toast({ title: 'İsim ve tutar gerekli', variant: 'destructive' }); return; }
+    if (!name.trim() || !amount) { toast.error("Isim ve tutar gerekli"); return; }
     try {
       await create.mutateAsync({
         name: name.trim(), period,
@@ -121,10 +121,10 @@ function NewBudgetDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
         department: department || null,
         alert_threshold_pct: Number(threshold) || 90,
       });
-      toast({ title: 'Bütçe oluşturuldu' });
+      toast.success("Butce olusturuldu");
       onOpenChange(false); setName(''); setAmount(''); setCategoryId(''); setProjectId(''); setDepartment('');
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 

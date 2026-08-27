@@ -5,12 +5,16 @@ import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "::",
+    host: "0.0.0.0",
     port: 8080,
     hmr: {
       overlay: false,
     },
   },
+  // Expose env vars from three prefixes so the same code works whether the
+  // deploy uses our own VITE_* keys or the ones Vercel's Supabase integration
+  // auto-provisions (workhub_* / NEXT_PUBLIC_workhub_*).
+  envPrefix: ["VITE_", "NEXT_PUBLIC_", "workhub_"],
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
@@ -33,6 +37,9 @@ export default defineConfig(({ mode }) => ({
             "@radix-ui/react-select",
             "@radix-ui/react-tooltip",
           ],
+          query: ["@tanstack/react-query"],
+          editor: ["@tiptap/react", "@tiptap/starter-kit"],
+          dates: ["date-fns"],
         },
       },
     },

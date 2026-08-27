@@ -41,7 +41,7 @@ export function ProjectMessagesTab({
           <DialogTrigger asChild>
             <Button size="sm"><MessageSquarePlus className="h-4 w-4 mr-1" />Mesaj yaz</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>Yeni mesaj</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <Input placeholder="Başlık" value={title} onChange={e => setTitle(e.target.value)} />
@@ -71,7 +71,7 @@ export function ProjectMessagesTab({
                         <p className="text-xs text-muted-foreground">{p?.name ?? 'Kullanıcı'} · {new Date(m.created_at).toLocaleString('tr-TR')}</p>
                       </div>
                       {m.author_id === user?.id && (
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => del.mutate({ id: m.id, project_id: projectId })}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Mesajı sil" onClick={() => del.mutate({ id: m.id, project_id: projectId })}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       )}

@@ -36,7 +36,7 @@ export function AppRail({
       <Link
         to="/home"
         className="mb-2 grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground"
-        aria-label="FounderOS"
+        aria-label="Spark WorkHub"
       >
         <StackedLogo size={14} color="currentColor" />
       </Link>

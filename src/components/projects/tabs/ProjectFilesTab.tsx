@@ -104,7 +104,7 @@ export function ProjectFilesTab({
                 <DialogTrigger asChild>
                   <Button size="sm" variant="outline">Bağlantı ekle</Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-w-md">
                   <DialogHeader><DialogTitle>{s.label} bağlantısı</DialogTitle></DialogHeader>
                   <div className="space-y-3">
                     <Input placeholder="Dosya adı" value={extName} onChange={e => setExtName(e.target.value)} />
@@ -137,7 +137,7 @@ export function ProjectFilesTab({
                 </p>
               </button>
               {f.uploaded_by === user?.id && (
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => del.mutate({ file: f, project_id: projectId })}>
+                <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Dosyayı sil" onClick={() => del.mutate({ file: f, project_id: projectId })}>
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               )}

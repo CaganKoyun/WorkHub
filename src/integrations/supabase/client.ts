@@ -1,8 +1,30 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+function pickEnv(...keys: string[]): string | undefined {
+  const env = import.meta.env as Record<string, string | undefined>;
+  for (const k of keys) {
+    const v = env[k];
+    if (v && v.length > 0) return v;
+  }
+  return undefined;
+}
+
+export const SUPABASE_URL = pickEnv(
+  'VITE_SUPABASE_URL',
+  'NEXT_PUBLIC_workhub_SUPABASE_URL',
+  'workhub_SUPABASE_URL',
+  'NEXT_PUBLIC_SUPABASE_URL',
+);
+
+export const SUPABASE_PUBLISHABLE_KEY = pickEnv(
+  'VITE_SUPABASE_PUBLISHABLE_KEY',
+  'NEXT_PUBLIC_workhub_SUPABASE_PUBLISHABLE_KEY',
+  'workhub_SUPABASE_PUBLISHABLE_KEY',
+  'NEXT_PUBLIC_workhub_SUPABASE_ANON_KEY',
+  'workhub_SUPABASE_ANON_KEY',
+  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+);
 
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith('sb_publishable_') || value.startsWith('sb_secret_');
@@ -50,9 +72,9 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+export const supabase = createClient<Database>(SUPABASE_URL!, SUPABASE_PUBLISHABLE_KEY!, {
   global: {
-    fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY),
+    fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY!),
   },
   auth: {
     storage: typeof window !== 'undefined' ? localStorage : undefined,

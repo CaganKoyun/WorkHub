@@ -3,7 +3,11 @@
 -- edge fonksiyonunda (service_role, günlük cron). Aynı nesne için aynı kural
 -- ikinci kez approval üretmez (signal_events dedup).
 
-CREATE TABLE public.signal_rules (
+-- NOTE: this migration is idempotent. An earlier migration (20260731074317)
+-- created the signal_rules and signal_events tables + policies with the same
+-- shape; a clean-DB replay (Supabase Preview) needs IF NOT EXISTS / DROP IF
+-- EXISTS to succeed.
+CREATE TABLE IF NOT EXISTS public.signal_rules (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   workspace_id uuid NOT NULL DEFAULT public.current_workspace_id() REFERENCES public.workspaces(id) ON DELETE CASCADE,
   rule_key text NOT NULL CHECK (rule_key IN (
@@ -22,25 +26,30 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON public.signal_rules TO authenticated;
 GRANT ALL ON public.signal_rules TO service_role;
 ALTER TABLE public.signal_rules ENABLE ROW LEVEL SECURITY;
 
+DROP TRIGGER IF EXISTS signal_rules_touch ON public.signal_rules;
 CREATE TRIGGER signal_rules_touch
   BEFORE UPDATE ON public.signal_rules
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP POLICY IF EXISTS "signal_rules member read" ON public.signal_rules;
 CREATE POLICY "signal_rules member read"
   ON public.signal_rules FOR SELECT TO authenticated
   USING (public.is_workspace_member(workspace_id, auth.uid()));
+DROP POLICY IF EXISTS "signal_rules admin insert" ON public.signal_rules;
 CREATE POLICY "signal_rules admin insert"
   ON public.signal_rules FOR INSERT TO authenticated
   WITH CHECK (public.workspace_role(workspace_id, auth.uid()) IN ('owner','admin'));
+DROP POLICY IF EXISTS "signal_rules admin update" ON public.signal_rules;
 CREATE POLICY "signal_rules admin update"
   ON public.signal_rules FOR UPDATE TO authenticated
   USING (public.workspace_role(workspace_id, auth.uid()) IN ('owner','admin'));
+DROP POLICY IF EXISTS "signal_rules admin delete" ON public.signal_rules;
 CREATE POLICY "signal_rules admin delete"
   ON public.signal_rules FOR DELETE TO authenticated
   USING (public.workspace_role(workspace_id, auth.uid()) IN ('owner','admin'));
 
 -- Dedup: hangi nesne için hangi kural approval üretti
-CREATE TABLE public.signal_events (
+CREATE TABLE IF NOT EXISTS public.signal_events (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   workspace_id uuid NOT NULL REFERENCES public.workspaces(id) ON DELETE CASCADE,
   rule_key text NOT NULL,
@@ -54,6 +63,7 @@ GRANT SELECT ON public.signal_events TO authenticated;
 GRANT ALL ON public.signal_events TO service_role;
 ALTER TABLE public.signal_events ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "signal_events member read" ON public.signal_events;
 CREATE POLICY "signal_events member read"
   ON public.signal_events FOR SELECT TO authenticated
   USING (public.is_workspace_member(workspace_id, auth.uid()));

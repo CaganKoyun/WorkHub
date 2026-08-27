@@ -1,276 +1,341 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import { StatCard } from "@/components/StatCard";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { SeverityBadge } from "@/components/SeverityBadge";
-import { StatusBadge } from "@/components/StatusBadge";
-import { Bug, Plus, Search, LayoutGrid, List, Loader2 } from "lucide-react";
-import type { Tables, Enums } from "@/integrations/supabase/types";
-import { Constants } from "@/integrations/supabase/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/EmptyState";
+import { useCompanyPulse, useRecentActivity } from "@/lib/graph-hooks";
+import { useProjects } from "@/lib/projects-hooks";
+import { useWorkspaceIssues } from "@/lib/tasks-hooks";
+import { useCycles } from "@/lib/cycles-hooks";
+import { useGoals } from "@/lib/graph-hooks";
+import {
+  FolderKanban, CheckSquare, Bug, Users, Target,
+  ArrowRight, BarChart3, Calendar, Loader2,
+  AlertTriangle, CheckCircle2, Clock, Layers,
+  LayoutDashboard, TrendingUp, GitBranch,
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell } from "recharts";
-import { NeonPatternDefs } from "@/components/NeonPatternDefs";
-import { useNeonCharts } from "@/hooks/use-neon-charts";
+import { tr } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+import type { Task, TaskStatus } from "@/lib/tasks-types";
 
-const STATUS_COLORS: Record<string, string> = {
-  new: "hsl(var(--info))",
-  assigned: "hsl(var(--primary))",
-  in_progress: "hsl(var(--warning))",
-  testing: "hsl(280, 60%, 55%)",
-  resolved: "hsl(var(--success))",
-  closed: "hsl(var(--muted-foreground))",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  new: "New", assigned: "Assigned", in_progress: "In Progress",
-  testing: "Testing", resolved: "Resolved", closed: "Closed",
-};
-
-const SEVERITY_COLORS: Record<string, string> = {
-  critical: "hsl(var(--severity-critical))", high: "hsl(var(--severity-high))",
-  medium: "hsl(var(--severity-medium))", low: "hsl(var(--severity-low))",
-};
-const SEVERITY_LABELS: Record<string, string> = {
-  critical: "Critical", high: "High", medium: "Medium", low: "Low",
-};
-
-type BugRow = Tables<"bugs">;
-const statusColumns: Enums<"bug_status">[] = ["new", "assigned", "in_progress", "testing", "resolved", "closed"];
-
-export default function Dashboard() {
-  const { profile } = useAuth();
-  const navigate = useNavigate();
-  const [bugs, setBugs] = useState<BugRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [view, setView] = useState<"kanban" | "table">("table");
-  const { getFill } = useNeonCharts();
-
-  useEffect(() => {
-    const fetchBugs = async () => {
-      const { data } = await supabase.from("bugs").select("*").order("created_at", { ascending: false });
-      setBugs(data || []);
-      setLoading(false);
-    };
-    fetchBugs();
-    const channel = supabase
-      .channel("bugs-realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "bugs" }, () => fetchBugs())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, []);
-
-  const filtered = bugs.filter(b =>
-    b.title.toLowerCase().includes(search.toLowerCase()) ||
-    b.tracking_id.toLowerCase().includes(search.toLowerCase())
+function TasksByStatus({ tasks }: { tasks: Task[] }) {
+  const statusGroups: { key: TaskStatus; label: string; color: string }[] = [
+    { key: "todo", label: "To Do", color: "bg-muted-foreground" },
+    { key: "in_progress", label: "In Progress", color: "bg-warning" },
+    { key: "review", label: "In Review", color: "bg-info" },
+    { key: "done", label: "Done", color: "bg-success" },
+  ];
+  const total = tasks.length || 1;
+  return (
+    <div className="space-y-2">
+      {statusGroups.map(g => {
+        const count = tasks.filter(t => t.status === g.key).length;
+        const pct = Math.round((count / total) * 100);
+        return (
+          <div key={g.key} className="flex items-center gap-3">
+            <span className="text-[11px] text-muted-foreground w-20 truncate">{g.label}</span>
+            <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+              <div className={cn("h-full rounded-full transition-all", g.color)} style={{ width: `${pct}%` }} />
+            </div>
+            <span className="text-[11px] text-muted-foreground w-8 text-right">{count}</span>
+          </div>
+        );
+      })}
+    </div>
   );
+}
 
-  const counts = {
-    total: bugs.length,
-    critical: bugs.filter(b => b.severity === "critical").length,
-    open: bugs.filter(b => !["resolved", "closed"].includes(b.status)).length,
-    resolved: bugs.filter(b => b.status === "resolved" || b.status === "closed").length,
-  };
+function UpcomingDeadlines({ tasks }: { tasks: Task[] }) {
+  const upcoming = tasks
+    .filter(t => t.due_date && t.status !== "done")
+    .sort((a, b) => new Date(a.due_date!).getTime() - new Date(b.due_date!).getTime())
+    .slice(0, 5);
 
-  const statusData = useMemo(() => {
-    const c: Record<string, number> = {};
-    bugs.forEach(b => { c[b.status] = (c[b.status] || 0) + 1; });
-    return Object.entries(STATUS_LABELS).map(([key, label]) => ({
-      status: label, count: c[key] || 0, fill: STATUS_COLORS[key],
-    }));
-  }, [bugs]);
-
-  const statusChartConfig: ChartConfig = Object.fromEntries(
-    Object.entries(STATUS_LABELS).map(([k, label]) => [k, { label, color: STATUS_COLORS[k] }])
-  );
-
-  const severityData = useMemo(() => {
-    const c: Record<string, number> = {};
-    bugs.forEach(b => { c[b.severity] = (c[b.severity] || 0) + 1; });
-    return Object.entries(SEVERITY_LABELS).map(([key, label]) => ({
-      name: label, value: c[key] || 0, fill: SEVERITY_COLORS[key],
-    }));
-  }, [bugs]);
-
-  const severityChartConfig: ChartConfig = Object.fromEntries(
-    Object.entries(SEVERITY_LABELS).map(([k, label]) => [k, { label, color: SEVERITY_COLORS[k] }])
-  );
-
-  if (loading) {
+  if (upcoming.length === 0) {
     return (
-      <AppLayout>
-        <div className="flex items-center justify-center h-full">
-          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-        </div>
-      </AppLayout>
+      <p className="text-sm text-muted-foreground text-center py-6">
+        No upcoming deadlines
+      </p>
     );
   }
 
   return (
+    <ul className="divide-y divide-border">
+      {upcoming.map(t => {
+        const due = new Date(t.due_date!);
+        const overdue = due < new Date();
+        return (
+          <li key={t.id} className="flex items-center gap-3 py-2.5 px-1">
+            <Clock className={cn("h-3.5 w-3.5 shrink-0", overdue ? "text-destructive" : "text-muted-foreground")} />
+            <span className="text-[13px] truncate flex-1">{t.title}</span>
+            <span className={cn("text-[11px] shrink-0", overdue ? "text-destructive font-medium" : "text-muted-foreground")}>
+              {formatDistanceToNow(due, { addSuffix: true, locale: tr })}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function RecentActivityList() {
+  const { data: items, isLoading } = useRecentActivity(6);
+
+  if (isLoading) return <Skeleton className="h-32" />;
+
+  const typeConfig: Record<string, { icon: React.ElementType; color: string }> = {
+    task: { icon: CheckSquare, color: "text-info" },
+    bug: { icon: Bug, color: "text-destructive" },
+    decision: { icon: GitBranch, color: "text-warning" },
+  };
+
+  if (!items || items.length === 0) {
+    return (
+      <p className="text-sm text-muted-foreground text-center py-6">
+        No recent activity yet
+      </p>
+    );
+  }
+
+  return (
+    <ul className="divide-y divide-border">
+      {items.map(item => {
+        const cfg = typeConfig[item.type] ?? { icon: CheckSquare, color: "text-muted-foreground" };
+        const Icon = cfg.icon;
+        return (
+          <li key={`${item.type}-${item.id}`} className="flex items-center gap-3 py-2.5 px-1">
+            <Icon className={cn("h-3.5 w-3.5 shrink-0", cfg.color)} />
+            <span className="text-[13px] truncate flex-1">{item.title}</span>
+            <Badge variant="outline" className="text-[10px] shrink-0">{item.status}</Badge>
+            <span className="text-[11px] text-muted-foreground shrink-0">
+              {formatDistanceToNow(new Date(item.updated_at), { addSuffix: true, locale: tr })}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+export default function Dashboard() {
+  const { data: pulse, isLoading: pulseLoading, isError: pulseError } = useCompanyPulse();
+  const { data: tasks, isLoading: tasksLoading } = useWorkspaceIssues();
+  const { data: projects } = useProjects();
+  const { data: cycles } = useCycles();
+  const { data: goals } = useGoals();
+
+  const allTasks = tasks ?? [];
+  const activeTasks = allTasks.filter(t => t.status !== "backlog" && t.status !== "done");
+  const overdueTasks = allTasks.filter(t =>
+    t.due_date && new Date(t.due_date) < new Date() && t.status !== "done"
+  );
+  const activeProjects = (projects ?? []).filter(p => p.status === "active");
+  const activeCycles = (cycles ?? []).filter(c => c.status === "active");
+  const activeGoals = (goals ?? []).filter(g =>
+    g.status === "on_track" || g.status === "at_risk" || g.status === "off_track"
+  );
+
+  const isLoading = pulseLoading || tasksLoading;
+
+  return (
     <AppLayout>
       <div className="flex flex-col h-full">
-        {/* Header bar */}
-        <div className="flex items-center justify-between px-4 md:px-6 h-11 border-b border-border shrink-0">
-          <h1 className="text-[13px] font-medium">Dashboard</h1>
+        <div className="flex items-center justify-between px-4 md:px-6 h-12 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
-            <Button asChild size="sm" className="h-7 text-[12px] gap-1.5">
-              <Link to="/bugs/new">
-                <Plus className="h-3.5 w-3.5" /> Report bug
-              </Link>
-            </Button>
+            <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+            <h1 className="text-sm font-semibold">Dashboard</h1>
           </div>
         </div>
 
         <div className="flex-1 overflow-auto">
-          <div className="p-4 md:p-6 space-y-6 max-w-[1400px]">
-            {/* Stats row */}
-            <NeonPatternDefs colors={[...Object.values(STATUS_COLORS), ...Object.values(SEVERITY_COLORS)]} />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border rounded-md overflow-hidden">
-              {[
-                { label: "Total bugs", value: counts.total },
-                { label: "Critical", value: counts.critical },
-                { label: "Open", value: counts.open },
-                { label: "Resolved", value: counts.resolved },
-              ].map((stat) => (
-                <div key={stat.label} className="bg-background p-4">
-                  <p className="text-[12px] text-muted-foreground">{stat.label}</p>
-                  <p className="text-2xl font-medium mt-1">{stat.value}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-border rounded-md overflow-hidden">
-              <div className="bg-background p-4">
-                <p className="text-[13px] font-medium mb-1">Bugs by status</p>
-                <p className="text-[12px] text-muted-foreground mb-4">Distribution across workflow stages</p>
-                <ChartContainer config={statusChartConfig} className="h-[200px] w-full">
-                  <BarChart data={statusData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="status" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="count" radius={0}>
-                      {statusData.map((entry, i) => <Cell key={i} {...getFill(entry.fill)} />)}
-                    </Bar>
-                  </BarChart>
-                </ChartContainer>
+          <div className="p-4 md:p-6 space-y-6 max-w-[1400px] mx-auto">
+            {isLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-24" />)}
               </div>
-              <div className="bg-background p-4">
-                <p className="text-[13px] font-medium mb-1">Severity distribution</p>
-                <p className="text-[12px] text-muted-foreground mb-4">Breakdown by severity level</p>
-                <ChartContainer config={severityChartConfig} className="h-[200px] w-full">
-                  <PieChart>
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Pie data={severityData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={75} paddingAngle={2}>
-                      {severityData.map((entry, i) => <Cell key={i} {...getFill(entry.fill)} />)}
-                    </Pie>
-                  </PieChart>
-                </ChartContainer>
-              </div>
-            </div>
-
-            {/* Search & View Toggle */}
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                <Input
-                  placeholder="Search bugs..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-8 h-8 text-[13px] bg-transparent"
-                />
-              </div>
-              <div className="flex items-center border rounded-md">
-                <Button variant={view === "table" ? "secondary" : "ghost"} size="sm" onClick={() => setView("table")} className="h-8 w-8 p-0">
-                  <List className="h-3.5 w-3.5" />
-                </Button>
-                <Button variant={view === "kanban" ? "secondary" : "ghost"} size="sm" onClick={() => setView("kanban")} className="h-8 w-8 p-0">
-                  <LayoutGrid className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Table View */}
-            {view === "table" && (
-              <div className="border border-border rounded-md overflow-hidden">
-                <table className="w-full text-[13px]">
-                  <thead>
-                    <tr className="border-b border-border bg-muted/30">
-                      <th className="text-left font-medium text-muted-foreground px-3 py-2">ID</th>
-                      <th className="text-left font-medium text-muted-foreground px-3 py-2">Title</th>
-                      <th className="text-left font-medium text-muted-foreground px-3 py-2">Status</th>
-                      <th className="text-left font-medium text-muted-foreground px-3 py-2">Priority</th>
-                      <th className="text-left font-medium text-muted-foreground px-3 py-2">Created</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filtered.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="text-center py-8 text-muted-foreground text-[13px]">No bugs found</td>
-                      </tr>
-                    ) : (
-                      filtered.map((bug) => (
-                        <tr
-                          key={bug.id}
-                          className="border-b border-border last:border-0 hover:bg-muted/30 cursor-pointer transition-colors"
-                          onClick={() => navigate(`/bugs/${bug.id}`)}
-                        >
-                          <td className="px-3 py-2 text-muted-foreground font-mono text-[12px]">{bug.tracking_id}</td>
-                          <td className="px-3 py-2 font-medium">{bug.title}</td>
-                          <td className="px-3 py-2"><StatusBadge status={bug.status} /></td>
-                          <td className="px-3 py-2"><SeverityBadge severity={bug.severity} /></td>
-                          <td className="px-3 py-2 text-muted-foreground text-[12px] whitespace-nowrap">
-                            {formatDistanceToNow(new Date(bug.created_at), { addSuffix: true })}
-                          </td>
-                        </tr>
-                      ))
+            ) : pulseError ? (
+              <EmptyState
+                icon={AlertTriangle}
+                title="Could not load dashboard data"
+                description="There was a problem fetching your workspace metrics. Please try refreshing the page."
+                action={{ label: "Refresh", onClick: () => window.location.reload() }}
+              />
+            ) : (
+              <>
+                {/* Key Metrics */}
+                <section>
+                  <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Overview</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <StatCard
+                      title="Active Tasks" value={activeTasks.length}
+                      subtitle={overdueTasks.length > 0 ? `${overdueTasks.length} overdue` : "No overdue tasks"}
+                      tone={overdueTasks.length > 0 ? "warning" : "default"}
+                      icon={CheckSquare} to="/issues"
+                    />
+                    <StatCard
+                      title="Projects" value={activeProjects.length}
+                      subtitle={`${(projects ?? []).length} total`}
+                      icon={FolderKanban} to="/projects"
+                    />
+                    <StatCard
+                      title="Active Cycles" value={activeCycles.length}
+                      subtitle={activeCycles[0]?.name ?? "No active cycle"}
+                      icon={Calendar} to="/cycles"
+                    />
+                    <StatCard
+                      title="Goals" value={activeGoals.length}
+                      subtitle={`${activeGoals.filter(g => g.status === "on_track").length} on track`}
+                      tone={activeGoals.some(g => g.status === "off_track") ? "danger" : "success"}
+                      icon={Target} to="/goals"
+                    />
+                    {pulse && (
+                      <>
+                        <StatCard
+                          title="Open Bugs" value={pulse.openBugs}
+                          subtitle={pulse.criticalBugs > 0 ? `${pulse.criticalBugs} critical` : "No critical bugs"}
+                          tone={pulse.criticalBugs > 0 ? "danger" : "default"}
+                          icon={Bug} to="/bugs"
+                        />
+                        <StatCard
+                          title="Team Members" value={pulse.totalEmployees}
+                          icon={Users} to="/employees"
+                        />
+                        <StatCard
+                          title="Pending Approvals" value={pulse.pendingApprovals}
+                          subtitle={pulse.urgentApprovals > 0 ? `${pulse.urgentApprovals} urgent` : "Inbox clear"}
+                          tone={pulse.urgentApprovals > 0 ? "warning" : "default"}
+                          icon={Layers} to="/inbox"
+                        />
+                        <StatCard
+                          title="Open Risks" value={pulse.openRisks}
+                          subtitle={pulse.criticalRisks > 0 ? `${pulse.criticalRisks} critical` : "No critical risks"}
+                          tone={pulse.criticalRisks > 0 ? "danger" : "default"}
+                          icon={AlertTriangle} to="/risks"
+                        />
+                      </>
                     )}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                  </div>
+                </section>
 
-            {/* Kanban View */}
-            {view === "kanban" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-                {statusColumns.map((status) => {
-                  const columnBugs = filtered.filter(b => b.status === status);
-                  return (
-                    <div key={status} className="space-y-1.5">
-                      <div className="flex items-center justify-between px-1">
-                        <StatusBadge status={status} />
-                        <span className="text-[11px] text-muted-foreground">{columnBugs.length}</span>
+                {/* Two-column layout: Task distribution + Upcoming */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <Card>
+                    <CardContent className="p-5">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-semibold">Task Distribution</h3>
+                        <Button variant="ghost" size="sm" asChild>
+                          <Link to="/issues" className="text-xs">
+                            View all <ArrowRight className="h-3 w-3 ml-1" />
+                          </Link>
+                        </Button>
                       </div>
-                      <div className="space-y-1">
-                        {columnBugs.map((bug) => (
-                          <Link key={bug.id} to={`/bugs/${bug.id}`}>
-                            <div className="border border-border rounded-md p-2.5 hover:bg-muted/30 transition-colors cursor-pointer space-y-1.5">
-                              <p className="text-[11px] text-muted-foreground font-mono">{bug.tracking_id}</p>
-                              <p className="text-[13px] font-medium leading-snug line-clamp-2">{bug.title}</p>
-                              <div className="flex items-center justify-between">
-                                <SeverityBadge severity={bug.severity} />
-                                <span className="text-[10px] text-muted-foreground">
-                                  {formatDistanceToNow(new Date(bug.created_at), { addSuffix: true })}
-                                </span>
-                              </div>
-                            </div>
+                      {allTasks.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-6">
+                          No tasks created yet. Start by creating your first issue.
+                        </p>
+                      ) : (
+                        <TasksByStatus tasks={allTasks} />
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-5">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-semibold">Upcoming Deadlines</h3>
+                        <Button variant="ghost" size="sm" asChild>
+                          <Link to="/tasks" className="text-xs">
+                            My tasks <ArrowRight className="h-3 w-3 ml-1" />
+                          </Link>
+                        </Button>
+                      </div>
+                      <UpcomingDeadlines tasks={allTasks} />
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Active Projects */}
+                <Card>
+                  <CardContent className="p-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-semibold">Active Projects</h3>
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link to="/projects" className="text-xs">
+                          All projects <ArrowRight className="h-3 w-3 ml-1" />
+                        </Link>
+                      </Button>
+                    </div>
+                    {activeProjects.length === 0 ? (
+                      <p className="text-sm text-muted-foreground text-center py-6">
+                        No active projects. Create a project to start tracking work.
+                      </p>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {activeProjects.slice(0, 6).map(p => (
+                          <Link key={p.id} to={`/projects/${p.id}`}>
+                            <Card className="hover:border-primary/50 transition-colors">
+                              <CardContent className="p-3">
+                                <div className="flex items-start gap-2">
+                                  <FolderKanban className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                                  <div className="min-w-0">
+                                    <p className="text-[13px] font-medium truncate">{p.name}</p>
+                                    {p.description && (
+                                      <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">{p.description}</p>
+                                    )}
+                                    <div className="flex items-center gap-2 mt-2">
+                                      <Badge variant="outline" className="text-[10px]">
+                                        {p.status}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
                           </Link>
                         ))}
-                        {columnBugs.length === 0 && (
-                          <div className="border border-dashed border-border rounded-md p-3 text-center">
-                            <p className="text-[11px] text-muted-foreground">No bugs</p>
-                          </div>
-                        )}
                       </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Recent Activity */}
+                <Card>
+                  <CardContent className="p-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-semibold">Recent Activity</h3>
                     </div>
-                  );
-                })}
-              </div>
+                    <RecentActivityList />
+                  </CardContent>
+                </Card>
+
+                {/* Quick Actions */}
+                <section>
+                  <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Quick Actions</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {[
+                      { to: "/issues", label: "Create Issue", icon: CheckSquare },
+                      { to: "/projects/new", label: "New Project", icon: FolderKanban },
+                      { to: "/bugs/new", label: "Report Bug", icon: Bug },
+                      { to: "/insights", label: "View Insights", icon: BarChart3 },
+                    ].map(q => (
+                      <Link key={q.to} to={q.to}>
+                        <Card className="hover:border-primary/50 transition-colors">
+                          <CardContent className="p-3 flex items-center gap-2.5">
+                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                              <q.icon className="h-4 w-4 text-primary" />
+                            </div>
+                            <span className="text-[13px] font-medium">{q.label}</span>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              </>
             )}
           </div>
         </div>

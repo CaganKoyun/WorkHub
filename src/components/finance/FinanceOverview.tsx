@@ -46,8 +46,8 @@ export function FinanceOverview() {
         </div>
       )}
       {s && runwayTone === 'warn' && (
-        <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm flex items-center gap-2">
-          <AlertTriangle className="h-4 w-4 text-amber-300" />
+        <div className="rounded-md border border-warning/40 bg-warning/10 p-3 text-sm flex items-center gap-2">
+          <AlertTriangle className="h-4 w-4 text-warning" />
           Runway 6 ayın altında. Fundraising / gelir planı öncelikli olmalı.
         </div>
       )}
@@ -59,7 +59,7 @@ function MetricTile({ icon, label, value, sub, tone }: {
   icon: React.ReactNode; label: string; value: string; sub?: string;
   tone?: 'ok' | 'warn' | 'crit';
 }) {
-  const ring = tone === 'crit' ? 'border-destructive/50' : tone === 'warn' ? 'border-amber-500/40' : 'border-border';
+  const ring = tone === 'crit' ? 'border-destructive/50' : tone === 'warn' ? 'border-warning/40' : 'border-border';
   return (
     <div className={`rounded-lg border ${ring} bg-card p-3`}>
       <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">

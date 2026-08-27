@@ -72,7 +72,7 @@ export function renderShareCard(content: ShareCardContent): HTMLCanvasElement {
   ctx.fillStyle = "#0b0d10";
   ctx.fillRect(0, 0, W, H);
   const grad = ctx.createLinearGradient(0, 0, W, H);
-  grad.addColorStop(0, "rgba(99,102,241,0.18)");
+  grad.addColorStop(0, "rgba(198,244,50,0.10)");
   grad.addColorStop(1, "rgba(16,185,129,0.10)");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
@@ -107,7 +107,7 @@ export function renderShareCard(content: ShareCardContent): HTMLCanvasElement {
 
   ctx.font = font(26, "600");
   ctx.fillStyle = "rgba(230,232,235,0.75)";
-  ctx.fillText("FounderOS · kararın kayıt sistemi", 80, 552);
+  ctx.fillText("Spark WorkHub · kararın kayıt sistemi", 80, 552);
 
   return canvas;
 }

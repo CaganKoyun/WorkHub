@@ -11,7 +11,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Plus, FileText } from 'lucide-react';
 
 const STATUS_COLORS: Record<CrmQuoteStatus, string> = {
@@ -20,7 +20,7 @@ const STATUS_COLORS: Record<CrmQuoteStatus, string> = {
   accepted: 'bg-emerald-500/20 text-emerald-300',
   declined: 'bg-destructive/20 text-destructive-foreground',
   expired: 'bg-amber-500/20 text-amber-300',
-  revised: 'bg-violet-500/20 text-violet-300',
+  revised: 'bg-[#BFD9FF]/20 text-[#8FBAFF]',
 };
 
 export function QuotesListView() {
@@ -96,11 +96,11 @@ function NewQuoteDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (
         valid_until: validUntil || null,
         notes: notes || null,
       });
-      toast({ title: 'Teklif oluşturuldu' });
+      toast.success("Teklif olusturuldu");
       onOpenChange(false);
       setOppId(''); setSubtotal('0'); setDiscountPct('0'); setTaxPct('0'); setValidUntil(''); setNotes('');
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 

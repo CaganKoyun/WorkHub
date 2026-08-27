@@ -120,14 +120,17 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const createWorkspace: WorkspaceContextValue["createWorkspace"] = async ({ name, industry, size, country, currency }) => {
+    // Explicit nulls — passing `undefined` makes supabase-js drop the key,
+    // which breaks Postgres overload resolution once PostgREST caches see
+    // multiple signatures.
     const { data, error } = await supabase.rpc("create_workspace", {
       _name: name,
-      _slug: null as any,
-      _industry: industry ?? undefined,
-      _size: size ?? undefined,
-      _country: country ?? undefined,
+      _slug: null,
+      _industry: industry ?? null,
+      _size: size ?? null,
+      _country: country ?? null,
       _currency: currency ?? "USD",
-    });
+    } as never);
     if (error) throw error;
     await loadAll();
     return data as string;

@@ -269,6 +269,34 @@ export function useCreateGoal() {
   });
 }
 
+export function useUpdateGoal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...patch }: Partial<Goal> & { id: string }) => {
+      const { data, error } = await (supabase as any)
+        .from('goals')
+        .update(patch)
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as Goal;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['goals'] }),
+  });
+}
+
+export function useDeleteGoal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await (supabase as any).from('goals').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['goals'] }),
+  });
+}
+
 export function useRisks() {
   return useQuery({
     queryKey: ['risks'],
@@ -291,6 +319,33 @@ export function useCreateRisk() {
         .select().single();
       if (error) throw error;
       return data as Risk;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['risks'] }),
+  });
+}
+
+export function useUpdateRisk() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...input }: Partial<Risk> & { id: string }) => {
+      const { data, error } = await supabase
+        .from('risks')
+        .update(input)
+        .eq('id', id)
+        .select().single();
+      if (error) throw error;
+      return data as Risk;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['risks'] }),
+  });
+}
+
+export function useDeleteRisk() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('risks').delete().eq('id', id);
+      if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['risks'] }),
   });
@@ -474,6 +529,66 @@ export function useCompanyPulse() {
         activeGoals: goalRows.filter(g => g.status !== 'archived' && g.status !== 'missed' && g.status !== 'achieved').length,
         onTrackGoals: goalRows.filter(g => g.status === 'on_track').length,
       };
+    },
+  });
+}
+
+export interface WeekTrend {
+  tasksCompleted: number;
+  tasksCompletedPrev: number;
+  bugsFixed: number;
+  bugsFixedPrev: number;
+  decisionsRecorded: number;
+  decisionsRecordedPrev: number;
+}
+
+export function useWeekTrend() {
+  return useQuery({
+    queryKey: ['week-trend'],
+    queryFn: async (): Promise<WeekTrend> => {
+      const now = new Date();
+      const weekAgo = new Date(now.getTime() - 7 * 86400000).toISOString();
+      const twoWeeksAgo = new Date(now.getTime() - 14 * 86400000).toISOString();
+
+      const [tasksThis, tasksPrev, bugsThis, bugsPrev, decisionsThis, decisionsPrev] = await Promise.all([
+        supabase.from('tasks').select('id', { count: 'exact', head: true }).eq('status', 'done').gte('updated_at', weekAgo),
+        supabase.from('tasks').select('id', { count: 'exact', head: true }).eq('status', 'done').gte('updated_at', twoWeeksAgo).lt('updated_at', weekAgo),
+        supabase.from('bugs').select('id', { count: 'exact', head: true }).in('status', ['resolved', 'closed']).gte('updated_at', weekAgo),
+        supabase.from('bugs').select('id', { count: 'exact', head: true }).in('status', ['resolved', 'closed']).gte('updated_at', twoWeeksAgo).lt('updated_at', weekAgo),
+        supabase.from('decisions').select('id', { count: 'exact', head: true }).gte('created_at', weekAgo),
+        supabase.from('decisions').select('id', { count: 'exact', head: true }).gte('created_at', twoWeeksAgo).lt('created_at', weekAgo),
+      ]);
+
+      return {
+        tasksCompleted: tasksThis.count ?? 0,
+        tasksCompletedPrev: tasksPrev.count ?? 0,
+        bugsFixed: bugsThis.count ?? 0,
+        bugsFixedPrev: bugsPrev.count ?? 0,
+        decisionsRecorded: decisionsThis.count ?? 0,
+        decisionsRecordedPrev: decisionsPrev.count ?? 0,
+      };
+    },
+  });
+}
+
+export function useRecentActivity(limit = 10) {
+  return useQuery({
+    queryKey: ['recent-activity', limit],
+    queryFn: async () => {
+      const [tasks, bugs, decisions] = await Promise.all([
+        supabase.from('tasks').select('id,title,status,updated_at').order('updated_at', { ascending: false }).limit(limit),
+        supabase.from('bugs').select('id,title,status,updated_at').order('updated_at', { ascending: false }).limit(limit),
+        supabase.from('decisions').select('id,title,status,updated_at').order('updated_at', { ascending: false }).limit(limit),
+      ]);
+
+      type Item = { id: string; title: string; status: string; updated_at: string; type: 'task' | 'bug' | 'decision' };
+      const items: Item[] = [
+        ...(tasks.data ?? []).map(t => ({ ...t, type: 'task' as const })),
+        ...(bugs.data ?? []).map(b => ({ ...b, type: 'bug' as const })),
+        ...(decisions.data ?? []).map(d => ({ ...d, type: 'decision' as const })),
+      ];
+      items.sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+      return items.slice(0, limit);
     },
   });
 }

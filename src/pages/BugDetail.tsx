@@ -1,19 +1,23 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusBadge } from "@/components/StatusBadge";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { ArrowLeft, Loader2, Send } from "lucide-react";
-import type { Tables, Enums } from "@/integrations/supabase/types";
+import type { Enums } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
-
-type BugRow = Tables<"bugs">;
-type CommentRow = Tables<"comments">;
+import {
+  useBug,
+  useBugComments,
+  useBugCommentProfiles,
+  useUpdateBug,
+  useAddBugComment,
+  useLogBugActivity,
+} from "@/lib/bugs-hooks";
 
 const statusFlow: Enums<"bug_status">[] = ["new", "assigned", "in_progress", "testing", "resolved", "closed"];
 
@@ -21,73 +25,48 @@ export default function BugDetail() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
-
-  const [bug, setBug] = useState<BugRow | null>(null);
-  const [comments, setComments] = useState<CommentRow[]>([]);
-  const [profiles, setProfiles] = useState<Record<string, string>>({});
   const [newComment, setNewComment] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [submittingComment, setSubmittingComment] = useState(false);
 
-  const fetchBug = async () => {
-    if (!id) return;
-    const { data } = await supabase.from("bugs").select("*").eq("id", id).single();
-    setBug(data);
-    setLoading(false);
-  };
+  const { data: bug, isLoading } = useBug(id);
+  const { data: comments = [] } = useBugComments(id);
 
-  const fetchComments = async () => {
-    if (!id) return;
-    const { data } = await supabase
-      .from("comments").select("*").eq("bug_id", id).order("created_at", { ascending: true });
-    setComments(data || []);
-    const userIds = [...new Set((data || []).map(c => c.user_id))];
-    if (userIds.length > 0) {
-      const { data: profileData } = await supabase.from("profiles").select("user_id, full_name").in("user_id", userIds);
-      const map: Record<string, string> = {};
-      (profileData || []).forEach(p => { map[p.user_id] = p.full_name; });
-      setProfiles(prev => ({ ...prev, ...map }));
-    }
-  };
+  const commentUserIds = useMemo(
+    () => [...new Set(comments.map((c) => c.user_id))],
+    [comments]
+  );
+  const { data: profiles = {} } = useBugCommentProfiles(commentUserIds);
 
-  useEffect(() => {
-    fetchBug();
-    fetchComments();
-    const channel = supabase
-      .channel(`bug-${id}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "comments", filter: `bug_id=eq.${id}` }, () => fetchComments())
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "bugs", filter: `id=eq.${id}` }, () => fetchBug())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [id]);
+  const updateBug = useUpdateBug();
+  const addComment = useAddBugComment();
+  const logActivity = useLogBugActivity();
 
   const updateStatus = async (newStatus: Enums<"bug_status">) => {
     if (!bug || !user) return;
-    const { error } = await supabase.from("bugs").update({ status: newStatus }).eq("id", bug.id);
-    if (error) {
-      toast({ title: "Failed to update status", description: error.message, variant: "destructive" });
-    } else {
-      await supabase.from("activity_log").insert({
-        bug_id: bug.id, user_id: user.id, action: "status_change",
-        old_value: bug.status, new_value: newStatus,
+    try {
+      await updateBug.mutateAsync({ id: bug.id, status: newStatus });
+      await logActivity.mutateAsync({
+        bug_id: bug.id,
+        action: "status_change",
+        old_value: bug.status,
+        new_value: newStatus,
       });
-      toast({ title: `Status updated to ${newStatus.replace("_", " ")}` });
+      toast.success(`Durum guncellendi: ${newStatus.replace("_", " ")}`);
+    } catch (error: any) {
+      toast.error("Durum guncellenemedi: " + error.message);
     }
   };
 
-  const addComment = async () => {
+  const handleAddComment = async () => {
     if (!newComment.trim() || !user || !bug) return;
-    setSubmittingComment(true);
-    const { error } = await supabase.from("comments").insert({
-      bug_id: bug.id, user_id: user.id, content: newComment.trim(),
-    });
-    if (error) toast({ title: "Failed to add comment", description: error.message, variant: "destructive" });
-    else setNewComment("");
-    setSubmittingComment(false);
+    try {
+      await addComment.mutateAsync({ bug_id: bug.id, content: newComment.trim() });
+      setNewComment("");
+    } catch (error: any) {
+      toast.error("Yorum eklenemedi: " + error.message);
+    }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <AppLayout>
         <div className="flex items-center justify-center h-full">
@@ -196,12 +175,12 @@ export default function BugDetail() {
                     className="text-[13px] min-h-[60px] resize-none"
                   />
                   <Button
-                    onClick={addComment}
-                    disabled={!newComment.trim() || submittingComment}
+                    onClick={handleAddComment}
+                    disabled={!newComment.trim() || addComment.isPending}
                     size="sm"
                     className="shrink-0 self-end h-8"
                   >
-                    {submittingComment ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
+                    {addComment.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
                   </Button>
                 </div>
               </div>

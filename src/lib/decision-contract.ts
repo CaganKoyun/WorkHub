@@ -44,12 +44,12 @@ export const LIFECYCLE_LABELS: Record<DecisionLifecycle, string> = {
 export const LIFECYCLE_TONE: Record<DecisionLifecycle, string> = {
   detected: "bg-muted text-muted-foreground",
   framed: "bg-blue-500/15 text-blue-600",
-  challenged: "bg-violet-500/15 text-violet-600",
-  approved: "bg-emerald-500/15 text-emerald-600",
-  committed: "bg-emerald-500/20 text-emerald-700",
+  challenged: "bg-orange-500/15 text-orange-600",
+  approved: "bg-emerald-500/15 text-success",
+  committed: "bg-emerald-500/20 text-success",
   executing: "bg-sky-500/15 text-sky-600",
-  checkpoint_due: "bg-amber-500/20 text-amber-700",
-  outcome_recorded: "bg-indigo-500/15 text-indigo-600",
+  checkpoint_due: "bg-amber-500/20 text-warning",
+  outcome_recorded: "bg-cyan-500/15 text-cyan-600",
   learned: "bg-teal-500/15 text-teal-700",
   policy: "bg-primary/15 text-primary",
 };
@@ -83,8 +83,8 @@ export const ASSUMPTION_LABELS: Record<AssumptionStatus, string> = {
 };
 
 export const ASSUMPTION_TONE: Record<AssumptionStatus, string> = {
-  holding: "bg-emerald-500/15 text-emerald-600",
-  at_risk: "bg-amber-500/20 text-amber-700",
+  holding: "bg-emerald-500/15 text-success",
+  at_risk: "bg-amber-500/20 text-warning",
   breached: "bg-destructive/15 text-destructive",
   unknown: "bg-muted text-muted-foreground",
 };
@@ -204,8 +204,8 @@ export function computeDecisionDebt(
 
 export function debtBand(score: number): { label: string; tone: string } {
   if (score >= 60) return { label: "Yüksek", tone: "text-destructive" };
-  if (score >= 30) return { label: "Orta", tone: "text-amber-600" };
-  return { label: "Düşük", tone: "text-emerald-600" };
+  if (score >= 30) return { label: "Orta", tone: "text-warning" };
+  return { label: "Düşük", tone: "text-success" };
 }
 
 /** Weekly Closed Decision Loops — north star metriği. */

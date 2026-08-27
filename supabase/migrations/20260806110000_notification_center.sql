@@ -82,6 +82,10 @@ DROP POLICY IF EXISTS "Users can update own notification prefs"  ON public.notif
 
 ALTER TABLE public.notification_preferences ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "notification_prefs select own" ON public.notification_preferences;
+DROP POLICY IF EXISTS "notification_prefs insert own" ON public.notification_preferences;
+DROP POLICY IF EXISTS "notification_prefs update own" ON public.notification_preferences;
+
 CREATE POLICY "notification_prefs select own"
   ON public.notification_preferences FOR SELECT TO authenticated
   USING (user_id = auth.uid());

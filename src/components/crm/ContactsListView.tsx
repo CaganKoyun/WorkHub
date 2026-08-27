@@ -17,7 +17,7 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { Plus, AlertTriangle, Mail, Phone } from 'lucide-react';
 
 export function ContactsListView() {
@@ -87,7 +87,7 @@ function NewContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
 
   async function submit() {
     if (!firstName.trim() && !lastName.trim() && !email.trim()) {
-      toast({ title: 'İsim veya e-posta gerekli', variant: 'destructive' }); return;
+      toast.error("Isim veya e-posta gerekli"); return;
     }
     try {
       await create.mutateAsync({
@@ -99,11 +99,11 @@ function NewContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
         company_id: companyId || null,
         lifecycle,
       });
-      toast({ title: 'Kişi eklendi' });
+      toast.success("Kisi eklendi");
       onOpenChange(false);
       setFirstName(''); setLastName(''); setEmail(''); setPhone(''); setTitle(''); setCompanyId('');
     } catch (err: unknown) {
-      toast({ title: 'Hata', description: (err as Error)?.message, variant: 'destructive' });
+      toast.error((err as Error)?.message ?? "Hata");
     }
   }
 
@@ -119,8 +119,8 @@ function NewContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
           </div>
           <div><Label>E-posta</Label><Input type="email" value={email} onChange={e => setEmail(e.target.value)} /></div>
           {(dupes ?? []).length > 0 && (
-            <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-2 text-xs">
-              <div className="flex items-center gap-1 text-amber-300 font-medium mb-1">
+            <div className="rounded-md border border-warning/40 bg-warning/10 p-2 text-xs">
+              <div className="flex items-center gap-1 text-warning font-medium mb-1">
                 <AlertTriangle className="h-3 w-3" /> Aynı e-posta ile kayıt var
               </div>
               <ul className="space-y-0.5">

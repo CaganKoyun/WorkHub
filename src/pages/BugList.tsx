@@ -1,40 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { DomainWorkspace } from "@/components/DomainWorkspace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search, Loader2 } from "lucide-react";
-import type { Tables, Enums } from "@/integrations/supabase/types";
+import { AlertTriangle, Plus, Search, Loader2 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Constants } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
-
-type BugRow = Tables<"bugs">;
+import { useWorkspacePermission } from "@/hooks/useWorkspacePermission";
+import { useBugs } from "@/lib/bugs-hooks";
 
 export default function BugList() {
   const navigate = useNavigate();
-  const [bugs, setBugs] = useState<BugRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: bugs = [], isLoading, isError } = useBugs();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [severityFilter, setSeverityFilter] = useState<string>("all");
-
-  useEffect(() => {
-    const fetchBugs = async () => {
-      const { data } = await supabase.from("bugs").select("*").order("created_at", { ascending: false });
-      setBugs(data || []);
-      setLoading(false);
-    };
-    fetchBugs();
-    const channel = supabase
-      .channel("buglist-realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "bugs" }, () => fetchBugs())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, []);
+  const canCreate = useWorkspacePermission("bugs", "create");
 
   const filtered = bugs.filter(b => {
     const matchesSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -44,11 +29,26 @@ export default function BugList() {
     return matchesSearch && matchesStatus && matchesSeverity;
   });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <DomainWorkspace domain="bugs" title="Bugs" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
         <div className="flex items-center justify-center h-full">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        </div>
+      </DomainWorkspace>
+    );
+  }
+
+  if (isError) {
+    return (
+      <DomainWorkspace domain="bugs" title="Bugs" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
+        <div className="p-6">
+          <EmptyState
+            icon={AlertTriangle}
+            title="Could not load bugs"
+            description="There was a problem fetching bug data. Please try refreshing the page."
+            action={{ label: "Refresh", onClick: () => window.location.reload() }}
+          />
         </div>
       </DomainWorkspace>
     );
@@ -60,11 +60,13 @@ export default function BugList() {
         {/* Header */}
         <div className="flex items-center justify-between px-4 md:px-6 h-11 border-b border-border shrink-0">
           <h1 className="text-[13px] font-medium">All Bugs</h1>
-          <Button asChild size="sm" className="h-7 text-[12px] gap-1.5">
-            <Link to="/bugs/new">
-              <Plus className="h-3.5 w-3.5" /> Report Bug
-            </Link>
-          </Button>
+          {canCreate && (
+            <Button asChild size="sm" className="h-7 text-[12px] gap-1.5">
+              <Link to="/bugs/new">
+                <Plus className="h-3.5 w-3.5" /> Report Bug
+              </Link>
+            </Button>
+          )}
         </div>
 
         {/* Filters bar */}

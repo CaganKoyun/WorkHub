@@ -3590,6 +3590,1236 @@ export type Database = {
           },
         ]
       }
+      xp_events: {
+        Row: {
+          created_at: string
+          detail: string | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          kind: string
+          points: number
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kind: string
+          points: number
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kind?: string
+          points?: number
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      agent_runs: {
+        Row: {
+          created_at: string
+          finished_at: string | null
+          id: string
+          plan: Json
+          prompt: string
+          results: Json
+          started_at: string | null
+          status: string
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          plan?: Json
+          prompt: string
+          results?: Json
+          started_at?: string | null
+          status?: string
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          plan?: Json
+          prompt?: string
+          results?: Json
+          started_at?: string | null
+          status?: string
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          last_used_at: string | null
+          p256dh: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          last_used_at?: string | null
+          p256dh: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          last_used_at?: string | null
+          p256dh?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      push_queue: {
+        Row: {
+          attempts: number
+          body: string | null
+          created_at: string
+          data: Json
+          id: string
+          last_error: string | null
+          scheduled_at: string
+          sent_at: string | null
+          status: string
+          title: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          last_error?: string | null
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: string
+          title: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          last_error?: string | null
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: string
+          title?: string
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      client_portals: {
+        Row: {
+          can_comment: boolean
+          client_email: string
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          name: string
+          project_ids: string[]
+          revoked_at: string | null
+          token: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          can_comment?: boolean
+          client_email: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          name: string
+          project_ids?: string[]
+          revoked_at?: string | null
+          token: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          can_comment?: boolean
+          client_email?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          name?: string
+          project_ids?: string[]
+          revoked_at?: string | null
+          token?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      client_portal_comments: {
+        Row: {
+          body: string
+          created_at: string
+          guest_email: string
+          guest_name: string | null
+          id: string
+          portal_id: string
+          task_id: string
+          workspace_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          guest_email: string
+          guest_name?: string | null
+          id?: string
+          portal_id: string
+          task_id: string
+          workspace_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          guest_email?: string
+          guest_name?: string | null
+          id?: string
+          portal_id?: string
+          task_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      api_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          last_used_at: string | null
+          name: string
+          revoked_at: string | null
+          scopes: string[]
+          token_hash: string
+          token_prefix: string
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          name: string
+          revoked_at?: string | null
+          scopes?: string[]
+          token_hash: string
+          token_prefix: string
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          name?: string
+          revoked_at?: string | null
+          scopes?: string[]
+          token_hash?: string
+          token_prefix?: string
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      saved_views: {
+        Row: {
+          created_at: string
+          description: string | null
+          filters: Json
+          group_by: string | null
+          id: string
+          is_shared: boolean
+          name: string
+          owner_id: string
+          sort: Json
+          target: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          filters?: Json
+          group_by?: string | null
+          id?: string
+          is_shared?: boolean
+          name: string
+          owner_id: string
+          sort?: Json
+          target: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          filters?: Json
+          group_by?: string | null
+          id?: string
+          is_shared?: boolean
+          name?: string
+          owner_id?: string
+          sort?: Json
+          target?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      saved_view_favorites: {
+        Row: {
+          created_at: string
+          user_id: string
+          view_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+          view_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+          view_id?: string
+        }
+        Relationships: []
+      }
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          after: Json | null
+          before: Json | null
+          changed_keys: string[]
+          created_at: string
+          entity_id: string | null
+          entity_label: string | null
+          entity_type: string
+          id: string
+          metadata: Json
+          workspace_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          after?: Json | null
+          before?: Json | null
+          changed_keys?: string[]
+          created_at?: string
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_type: string
+          id?: string
+          metadata?: Json
+          workspace_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          after?: Json | null
+          before?: Json | null
+          changed_keys?: string[]
+          created_at?: string
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      meeting_notes: {
+        Row: {
+          action_items: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          meeting_at: string
+          project_id: string | null
+          summary: string
+          title: string
+          transcript: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          action_items?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meeting_at?: string
+          project_id?: string | null
+          summary?: string
+          title?: string
+          transcript?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          action_items?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meeting_at?: string
+          project_id?: string | null
+          summary?: string
+          title?: string
+          transcript?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      portfolios: {
+        Row: {
+          archived_at: string | null
+          color: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          owner_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          owner_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          color?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      portfolio_projects: {
+        Row: {
+          created_at: string
+          portfolio_id: string
+          project_id: string
+        }
+        Insert: {
+          created_at?: string
+          portfolio_id: string
+          project_id: string
+        }
+        Update: {
+          created_at?: string
+          portfolio_id?: string
+          project_id?: string
+        }
+        Relationships: []
+      }
+      tickets: {
+        Row: {
+          assignee_id: string | null
+          body: string
+          created_at: string
+          first_response_at: string | null
+          id: string
+          priority: Database["public"]["Enums"]["ticket_priority"]
+          requester_email: string | null
+          requester_name: string | null
+          resolved_at: string | null
+          sla_due_at: string | null
+          status: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          submitter_ip: string | null
+          tracking_id: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          body?: string
+          created_at?: string
+          first_response_at?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          requester_email?: string | null
+          requester_name?: string | null
+          resolved_at?: string | null
+          sla_due_at?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          submitter_ip?: string | null
+          tracking_id?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          assignee_id?: string | null
+          body?: string
+          created_at?: string
+          first_response_at?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          requester_email?: string | null
+          requester_name?: string | null
+          resolved_at?: string | null
+          sla_due_at?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject?: string
+          submitter_ip?: string | null
+          tracking_id?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      ticket_replies: {
+        Row: {
+          author_id: string | null
+          body: string
+          created_at: string
+          id: string
+          is_internal: boolean
+          ticket_id: string
+          workspace_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          ticket_id: string
+          workspace_id: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          ticket_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      whiteboards: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          created_by: string | null
+          elements: Json
+          id: string
+          name: string
+          updated_at: string
+          updated_by: string | null
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          elements?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          elements?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      forms: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          fields: Json
+          id: string
+          is_open: boolean
+          is_public: boolean
+          name: string
+          slug: string
+          submission_count: number
+          submit_message: string
+          target_kind: string
+          target_project_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          fields?: Json
+          id?: string
+          is_open?: boolean
+          is_public?: boolean
+          name: string
+          slug: string
+          submission_count?: number
+          submit_message?: string
+          target_kind?: string
+          target_project_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          fields?: Json
+          id?: string
+          is_open?: boolean
+          is_public?: boolean
+          name?: string
+          slug?: string
+          submission_count?: number
+          submit_message?: string
+          target_kind?: string
+          target_project_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      form_submissions: {
+        Row: {
+          created_at: string
+          form_id: string
+          id: string
+          submitter_email: string | null
+          task_id: string | null
+          values: Json
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          form_id: string
+          id?: string
+          submitter_email?: string | null
+          task_id?: string | null
+          values?: Json
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          form_id?: string
+          id?: string
+          submitter_email?: string | null
+          task_id?: string | null
+          values?: Json
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      automations: {
+        Row: {
+          actions: Json
+          conditions: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          enabled: boolean
+          id: string
+          last_run_at: string | null
+          name: string
+          run_count: number
+          trigger: Json
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          actions?: Json
+          conditions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          name: string
+          run_count?: number
+          trigger: Json
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          actions?: Json
+          conditions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          name?: string
+          run_count?: number
+          trigger?: Json
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      automation_runs: {
+        Row: {
+          automation_id: string
+          created_at: string
+          detail: string | null
+          id: string
+          outcome: string
+          task_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          automation_id: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          outcome: string
+          task_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          automation_id?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          outcome?: string
+          task_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      chat_channels: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_private: boolean
+          name: string
+          slug: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean
+          name: string
+          slug: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          author_id: string | null
+          body: string
+          channel_id: string
+          created_at: string
+          edited_at: string | null
+          id: string
+          mentions: string[]
+          parent_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          channel_id: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          mentions?: string[]
+          parent_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          channel_id?: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          mentions?: string[]
+          parent_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      docs: {
+        Row: {
+          archived_at: string | null
+          body: string
+          created_at: string
+          created_by: string | null
+          icon: string | null
+          id: string
+          parent_id: string | null
+          position: number
+          title: string
+          updated_at: string
+          updated_by: string | null
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          icon?: string | null
+          id?: string
+          parent_id?: string | null
+          position?: number
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          icon?: string | null
+          id?: string
+          parent_id?: string | null
+          position?: number
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      custom_field_defs: {
+        Row: {
+          config: Json
+          created_at: string
+          entity_type: string
+          id: string
+          is_archived: boolean
+          key: string
+          kind: Database["public"]["Enums"]["custom_field_kind"]
+          name: string
+          position: number
+          required: boolean
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          entity_type: string
+          id?: string
+          is_archived?: boolean
+          key: string
+          kind: Database["public"]["Enums"]["custom_field_kind"]
+          name: string
+          position?: number
+          required?: boolean
+          updated_at?: string
+          workspace_id?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          entity_type?: string
+          id?: string
+          is_archived?: boolean
+          key?: string
+          kind?: Database["public"]["Enums"]["custom_field_kind"]
+          name?: string
+          position?: number
+          required?: boolean
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      custom_field_values: {
+        Row: {
+          created_at: string
+          def_id: string
+          entity_id: string
+          entity_type: string
+          id: string
+          updated_at: string
+          updated_by: string | null
+          value: Json | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          def_id: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json | null
+          workspace_id?: string
+        }
+        Update: {
+          created_at?: string
+          def_id?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      workflow_states: {
+        Row: {
+          category: Database["public"]["Enums"]["workflow_state_category"]
+          color: string
+          created_at: string
+          id: string
+          is_default: boolean
+          key: string
+          name: string
+          position: number
+          team_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["workflow_state_category"]
+          color?: string
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          key: string
+          name: string
+          position?: number
+          team_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["workflow_state_category"]
+          color?: string
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          key?: string
+          name?: string
+          position?: number
+          team_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      cycles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          end_date: string
+          goal: string | null
+          id: string
+          name: string
+          number: number
+          start_date: string
+          status: Database["public"]["Enums"]["cycle_status"]
+          team_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          end_date: string
+          goal?: string | null
+          id?: string
+          name: string
+          number?: number
+          start_date: string
+          status?: Database["public"]["Enums"]["cycle_status"]
+          team_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          end_date?: string
+          goal?: string | null
+          id?: string
+          name?: string
+          number?: number
+          start_date?: string
+          status?: Database["public"]["Enums"]["cycle_status"]
+          team_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      time_entries: {
+        Row: {
+          billable: boolean
+          created_at: string
+          duration_seconds: number | null
+          ended_at: string | null
+          id: string
+          note: string | null
+          started_at: string
+          task_id: string
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          billable?: boolean
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          note?: string | null
+          started_at?: string
+          task_id: string
+          user_id: string
+          workspace_id?: string
+        }
+        Update: {
+          billable?: boolean
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          note?: string | null
+          started_at?: string
+          task_id?: string
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      task_assignees: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          task_id: string
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          task_id: string
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          task_id?: string
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      task_templates: {
+        Row: {
+          body: Json
+          category: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          body?: Json
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Update: {
+          body?: Json
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      project_templates: {
+        Row: {
+          body: Json
+          category: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          body?: Json
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Update: {
+          body?: Json
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      task_dependencies: {
+        Row: {
+          blocked_task_id: string
+          blocking_task_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          workspace_id: string
+        }
+        Insert: {
+          blocked_task_id: string
+          blocking_task_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          workspace_id: string
+        }
+        Update: {
+          blocked_task_id?: string
+          blocking_task_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_dependencies_blocking_task_id_fkey"
+            columns: ["blocking_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_dependencies_blocked_task_id_fkey"
+            columns: ["blocked_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       task_comments: {
         Row: {
           author_id: string
@@ -3641,6 +4871,7 @@ export type Database = {
           assignee_id: string | null
           completed_at: string | null
           created_at: string
+          cycle_id: string | null
           description: string | null
           due_date: string | null
           estimated_hours: number | null
@@ -3649,10 +4880,15 @@ export type Database = {
           position: number
           priority: Database["public"]["Enums"]["task_priority"]
           project_id: string
+          recurrence: Json | null
+          recurrence_count_completed: number
+          recurrence_source_id: string | null
           reporter_id: string
           status: Database["public"]["Enums"]["task_status"]
+          story_points: number | null
           tags: string[]
           title: string
+          tracking_id: string
           updated_at: string
           workspace_id: string
         }
@@ -3661,6 +4897,7 @@ export type Database = {
           assignee_id?: string | null
           completed_at?: string | null
           created_at?: string
+          cycle_id?: string | null
           description?: string | null
           due_date?: string | null
           estimated_hours?: number | null
@@ -3669,10 +4906,15 @@ export type Database = {
           position?: number
           priority?: Database["public"]["Enums"]["task_priority"]
           project_id: string
+          recurrence?: Json | null
+          recurrence_count_completed?: number
+          recurrence_source_id?: string | null
           reporter_id: string
           status?: Database["public"]["Enums"]["task_status"]
+          story_points?: number | null
           tags?: string[]
           title: string
+          tracking_id?: string
           updated_at?: string
           workspace_id?: string
         }
@@ -3681,6 +4923,7 @@ export type Database = {
           assignee_id?: string | null
           completed_at?: string | null
           created_at?: string
+          cycle_id?: string | null
           description?: string | null
           due_date?: string | null
           estimated_hours?: number | null
@@ -3689,10 +4932,15 @@ export type Database = {
           position?: number
           priority?: Database["public"]["Enums"]["task_priority"]
           project_id?: string
+          recurrence?: Json | null
+          recurrence_count_completed?: number
+          recurrence_source_id?: string | null
           reporter_id?: string
           status?: Database["public"]["Enums"]["task_status"]
+          story_points?: number | null
           tags?: string[]
           title?: string
+          tracking_id?: string
           updated_at?: string
           workspace_id?: string
         }
@@ -4283,6 +5531,174 @@ export type Database = {
         Returns: string
       }
       current_workspace_id: { Args: never; Returns: string }
+      cycle_progress: {
+        Args: { _cycle_id: string }
+        Returns: {
+          total_tasks: number
+          done_tasks: number
+          total_points: number
+          done_points: number
+        }[]
+      }
+      time_task_totals: {
+        Args: { _task_id: string }
+        Returns: { user_id: string; total_seconds: number }[]
+      }
+      portfolio_rollup: {
+        Args: { _portfolio_id: string }
+        Returns: {
+          project_id: string
+          project_name: string
+          project_status: string
+          total_tasks: number
+          done_tasks: number
+          active_tasks: number
+          overdue_tasks: number
+          completion_pct: number
+        }[]
+      }
+      audit_log_page: {
+        Args: {
+          _workspace_id: string
+          _entity_type?: string
+          _actor_id?: string
+          _action_prefix?: string
+          _limit?: number
+          _offset?: number
+        }
+        Returns: {
+          action: string
+          actor_id: string | null
+          after: Json | null
+          before: Json | null
+          changed_keys: string[]
+          created_at: string
+          entity_id: string | null
+          entity_label: string | null
+          entity_type: string
+          id: string
+          metadata: Json
+          workspace_id: string
+        }[]
+      }
+      log_audit: {
+        Args: {
+          _workspace_id: string
+          _action: string
+          _entity_type: string
+          _entity_id?: string
+          _entity_label?: string
+          _metadata?: Json
+        }
+        Returns: string
+      }
+      create_api_token: {
+        Args: {
+          _workspace_id: string
+          _name: string
+          _scopes?: string[]
+          _expires_at?: string
+        }
+        Returns: { id: string; token: string }[]
+      }
+      revoke_api_token: {
+        Args: { _token_id: string }
+        Returns: boolean
+      }
+      verify_api_token: {
+        Args: { _raw: string }
+        Returns: { user_id: string; workspace_id: string; scopes: string[] }[]
+      }
+      portal_get: {
+        Args: { _token: string }
+        Returns: {
+          id: string
+          name: string
+          client_email: string
+          project_ids: string[]
+          can_comment: boolean
+          workspace_id: string
+        }[]
+      }
+      portal_projects: {
+        Args: { _token: string }
+        Returns: { id: string; name: string; status: string; description: string | null }[]
+      }
+      portal_tasks: {
+        Args: { _token: string; _project_id?: string }
+        Returns: {
+          id: string
+          tracking_id: string
+          title: string
+          description: string | null
+          status: string
+          priority: string
+          due_date: string | null
+          project_id: string
+          project_name: string
+        }[]
+      }
+      portal_task_comments: {
+        Args: { _token: string; _task_id: string }
+        Returns: {
+          id: string
+          guest_email: string
+          guest_name: string | null
+          body: string
+          created_at: string
+        }[]
+      }
+      portal_post_comment: {
+        Args: { _token: string; _task_id: string; _body: string; _guest_name?: string }
+        Returns: string
+      }
+      enqueue_push: {
+        Args: { _user_id: string; _title: string; _body?: string; _url?: string; _data?: Json }
+        Returns: string
+      }
+      award_xp: {
+        Args: {
+          _workspace_id: string
+          _user_id: string
+          _kind: string
+          _points: number
+          _entity_type?: string
+          _entity_id?: string
+          _detail?: string
+        }
+        Returns: string
+      }
+      workspace_leaderboard: {
+        Args: { _workspace_id: string; _limit?: number }
+        Returns: {
+          user_id: string
+          full_name: string | null
+          avatar_url: string | null
+          total_xp: number
+          event_count: number
+          level: number
+          next_level_xp: number
+          in_level_xp: number
+        }[]
+      }
+      user_streak: {
+        Args: { _workspace_id: string; _user_id: string }
+        Returns: number
+      }
+      user_xp_feed: {
+        Args: { _workspace_id: string; _user_id: string; _limit?: number }
+        Returns: {
+          id: string
+          workspace_id: string
+          user_id: string
+          kind: string
+          points: number
+          entity_type: string | null
+          entity_id: string | null
+          detail: string | null
+          created_at: string
+        }[]
+      }
       fin_burn_rate: { Args: { _days?: number }; Returns: number }
       fin_cash_balance: { Args: never; Returns: number }
       fin_lookup_fx: {
@@ -4453,7 +5869,15 @@ export type Database = {
       risk_level: "low" | "medium" | "high" | "critical"
       risk_status: "open" | "mitigating" | "accepted" | "closed"
       task_priority: "low" | "medium" | "high" | "urgent"
-      task_status: "todo" | "in_progress" | "review" | "done"
+      cycle_status: "planned" | "active" | "completed"
+      custom_field_kind:
+        | "text" | "long_text" | "number" | "currency" | "percent"
+        | "select" | "multi_select" | "date" | "datetime" | "boolean"
+        | "url" | "email" | "formula"
+      workflow_state_category: "backlog" | "unstarted" | "started" | "completed" | "canceled"
+      task_status: "backlog" | "todo" | "in_progress" | "review" | "done"
+      ticket_status: "open" | "in_progress" | "waiting" | "resolved" | "closed"
+      ticket_priority: "low" | "medium" | "high" | "urgent"
       workspace_plan: "trial" | "starter" | "growth" | "scale" | "enterprise"
       workspace_role:
         | "owner"
@@ -4714,7 +6138,16 @@ export const Constants = {
       risk_level: ["low", "medium", "high", "critical"],
       risk_status: ["open", "mitigating", "accepted", "closed"],
       task_priority: ["low", "medium", "high", "urgent"],
-      task_status: ["todo", "in_progress", "review", "done"],
+      cycle_status: ["planned", "active", "completed"],
+      custom_field_kind: [
+        "text", "long_text", "number", "currency", "percent", "formula",
+        "select", "multi_select", "date", "datetime", "boolean",
+        "url", "email",
+      ],
+      workflow_state_category: ["backlog", "unstarted", "started", "completed", "canceled"],
+      task_status: ["backlog", "todo", "in_progress", "review", "done"],
+      ticket_status: ["open", "in_progress", "waiting", "resolved", "closed"],
+      ticket_priority: ["low", "medium", "high", "urgent"],
       workspace_plan: ["trial", "starter", "growth", "scale", "enterprise"],
       workspace_role: [
         "owner",

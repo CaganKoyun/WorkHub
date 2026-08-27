@@ -1,7 +1,14 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { AppLayout } from "./AppLayout";
 
-/** Redirects to onboarding wizard until the active workspace is fully set up. */
+/**
+ * Every protected route passes through here. Provides two things:
+ *  1. Onboarding redirect until the active workspace is set up.
+ *  2. The AppLayout shell (sidebar + topbar) — so no page has to
+ *     remember to wrap itself, and no page can render orphaned
+ *     without a way back to the rest of the app.
+ */
 export function WorkspaceGate({ children }: { children: React.ReactNode }) {
   const { loading, needsOnboarding } = useWorkspace();
   const location = useLocation();
@@ -18,5 +25,5 @@ export function WorkspaceGate({ children }: { children: React.ReactNode }) {
     return <Navigate to="/onboarding" replace />;
   }
 
-  return <>{children}</>;
+  return <AppLayout>{children}</AppLayout>;
 }
