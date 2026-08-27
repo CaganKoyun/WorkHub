@@ -47,7 +47,7 @@ export default function BugList() {
   );
 
   const filtered = useMemo(() => {
-    let result = bugs.filter(b => {
+    const result = bugs.filter(b => {
       const matchesSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
         b.tracking_id.toLowerCase().includes(search.toLowerCase());
       const matchesStatus = statusFilter === "all" || b.status === statusFilter;
