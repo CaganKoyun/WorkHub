@@ -195,7 +195,7 @@ function CompanyTab() {
 
 function TeamTab() {
   const { user } = useAuth();
-  const { workspace } = useWorkspace();
+  const { currentWorkspace: workspace } = useWorkspace();
   const [members, setMembers] = useState<any[]>([]);
   const [invitations, setInvitations] = useState<any[]>([]);
   const [inviteEmail, setInviteEmail] = useState("");
