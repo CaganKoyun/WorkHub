@@ -290,7 +290,7 @@ export default function Auth() {
               <form onSubmit={handleSignup} className="space-y-3.5">
                 <div className="space-y-1.5">
                   <Label className="text-[12px]">Ad Soyad</Label>
-                  <Input type="text" placeholder="Jane Doe" value={signupName} onChange={(e) => setSignupName(e.target.value)} required className="h-9 text-[13px]" />
+                  <Input type="text" placeholder="Ayşe Yılmaz" value={signupName} onChange={(e) => setSignupName(e.target.value)} required className="h-9 text-[13px]" />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-[12px]">İş e-postası</Label>

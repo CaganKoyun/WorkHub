@@ -308,7 +308,7 @@ function NewTransactionDialog({ open, onOpenChange }: { open: boolean; onOpenCha
             </div>
             <div>
               <Label>Departman</Label>
-              <Input value={department} onChange={e => setDepartment(e.target.value)} placeholder="Engineering, Sales…" />
+              <Input value={department} onChange={e => setDepartment(e.target.value)} placeholder="Mühendislik, Satış…" />
             </div>
             <div>
               <Label>Sözleşme</Label>
