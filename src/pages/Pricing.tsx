@@ -72,7 +72,7 @@ function LandingNav() {
         <Link to="/pricing" className="text-foreground font-medium">Fiyatlandırma</Link>
         <Link to="/compare" className="text-muted-foreground hover:text-foreground">Karşılaştır</Link>
         <Link to="/security" className="text-muted-foreground hover:text-foreground">Güvenlik</Link>
-        <Link to="/changelog" className="text-muted-foreground hover:text-foreground">Changelog</Link>
+        <Link to="/changelog" className="text-muted-foreground hover:text-foreground">Değişiklik Günlüğü</Link>
         <Link to="/auth">
           <Button size="sm" className="h-8">Giriş yap</Button>
         </Link>

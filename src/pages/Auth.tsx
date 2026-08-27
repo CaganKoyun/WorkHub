@@ -41,9 +41,9 @@ export default function Auth() {
     setIsGoogleLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: nextPath ? `${window.location.origin}${nextPath}` : window.location.origin } });
-      if (error) toast.error("Google sign-in failed: " + error.message);
+      if (error) toast.error("Google girişi başarısız: " + error.message);
     } catch (error: any) {
-      toast.error("Google sign-in failed: " + error.message);
+      toast.error("Google girişi başarısız: " + error.message);
     } finally {
       setIsGoogleLoading(false);
     }
@@ -67,9 +67,9 @@ export default function Auth() {
           scopes: provider === "azure" ? "email openid profile" : undefined,
         },
       });
-      if (error) toast.error(`${label} sign-in failed: ${error.message}`);
+      if (error) toast.error(`${label} girişi başarısız: ${error.message}`);
     } catch (error: any) {
-      toast.error(`${label} sign-in failed: ${error.message}`);
+      toast.error(`${label} girişi başarısız: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -84,7 +84,7 @@ export default function Auth() {
       redirectTo: `${window.location.origin}/settings`,
     });
     setResetSending(false);
-    if (error) toast.error("Reset failed: " + error.message);
+    if (error) toast.error("Sıfırlama başarısız: " + error.message);
     else toast.success("Şifre sıfırlama e-postası gönderildi. Gelen kutunuzu kontrol edin.");
   };
 
@@ -112,7 +112,7 @@ export default function Auth() {
       await signUp(signupEmail, signupPassword, signupName);
       toast.success("Hesap oluşturuldu! — Hesabınızı doğrulamak için e-postanızı kontrol edin.");
     } catch (error: any) {
-      toast.error("Signup failed: " + error.message);
+      toast.error("Kayıt başarısız: " + error.message);
     } finally {
       setIsSubmitting(false);
     }

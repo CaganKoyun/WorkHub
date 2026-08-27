@@ -603,7 +603,7 @@ function TitlesTab() {
           <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Ünvan Düzenle" : "Yeni Ünvan"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>İsim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Finance Manager" /></div>
+              <div><Label>İsim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Finans Müdürü" /></div>
               <div>
                 <Label>Departman</Label>
                 <Select value={form.department_id || "none"} onValueChange={v => setForm(f => ({ ...f, department_id: v === "none" ? "" : v }))}>
@@ -753,7 +753,7 @@ function EntitiesTab() {
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-medium text-sm">{e.name}</span>
-                      {e.is_primary && <Badge className="text-[10px]">Primary</Badge>}
+                      {e.is_primary && <Badge className="text-[10px]">Birincil</Badge>}
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5">
                       {e.currency && <Badge variant="outline" className="text-[10px]">{e.currency}</Badge>}
@@ -878,7 +878,7 @@ function PermissionSetsTab() {
           <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Yetki Paketi Düzenle" : "Yeni Yetki Paketi"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>İsim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="External Accountant" /></div>
+              <div><Label>İsim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Dış Muhasebeci" /></div>
               <div><Label>Açıklama</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
             </div>
             <DialogFooter><Button onClick={save} disabled={upsert.isPending}>Kaydet</Button></DialogFooter>
@@ -899,7 +899,7 @@ function PermissionSetsTab() {
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-sm">{s.name}</span>
-                      {s.is_system && <Badge variant="secondary" className="text-[10px]">System</Badge>}
+                      {s.is_system && <Badge variant="secondary" className="text-[10px]">Sistem</Badge>}
                     </div>
                     {s.description && <p className="text-xs text-muted-foreground mt-1">{s.description}</p>}
                   </div>

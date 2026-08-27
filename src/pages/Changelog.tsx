@@ -80,7 +80,7 @@ export default function Changelog() {
 
       <div className="mx-auto max-w-3xl px-6 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold tracking-tight">Changelog</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Değişiklik Günlüğü</h1>
           <p className="mt-3 text-[15px] text-muted-foreground">
             Spark WorkHub'daki yenilikler, düzeltmeler ve iyileştirmeler.
           </p>

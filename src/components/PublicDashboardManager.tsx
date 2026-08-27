@@ -29,7 +29,7 @@ export function PublicDashboardManager() {
   const { currentWorkspace } = useWorkspace();
   const { user } = useAuth();
   const qc = useQueryClient();
-  const [newTitle, setNewTitle] = useState("Company Dashboard");
+  const [newTitle, setNewTitle] = useState("Şirket Panosu");
 
   const { data: dashboards, isLoading } = useQuery({
     queryKey: ["public-dashboards", currentWorkspace?.id],
@@ -56,7 +56,7 @@ export function PublicDashboardManager() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["public-dashboards"] });
       toast.success("Dashboard linki oluşturuldu");
-      setNewTitle("Company Dashboard");
+      setNewTitle("Şirket Panosu");
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -92,19 +92,19 @@ export function PublicDashboardManager() {
     <div className="space-y-4">
       <div className="flex items-end gap-3">
         <div className="flex-1">
-          <Label>Dashboard baslik</Label>
-          <Input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Company Dashboard" />
+          <Label>Dashboard başlık</Label>
+          <Input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Şirket Panosu" />
         </div>
         <Button onClick={() => createMut.mutate(newTitle)} disabled={createMut.isPending || !newTitle.trim()}>
           {createMut.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Plus className="h-4 w-4 mr-1" />}
-          Olustur
+          Oluştur
         </Button>
       </div>
 
-      {isLoading && <p className="text-sm text-muted-foreground">Yukleniyor...</p>}
+      {isLoading && <p className="text-sm text-muted-foreground">Yükleniyor...</p>}
 
       {dashboards && dashboards.length === 0 && (
-        <p className="text-sm text-muted-foreground py-4">Henuz paylasilan dashboard yok. Yukardaki butonla olusturabilirsin.</p>
+        <p className="text-sm text-muted-foreground py-4">Henüz paylaşılan dashboard yok. Yukarıdaki butonla oluşturabilirsin.</p>
       )}
 
       <div className="space-y-3">
@@ -116,7 +116,7 @@ export function PublicDashboardManager() {
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium truncate">{d.title}</p>
                     <Badge variant="outline" className={cn("text-[10px]", d.is_active ? "text-success" : "text-muted-foreground")}>
-                      {d.is_active ? "Aktif" : "Devre disi"}
+                      {d.is_active ? "Aktif" : "Devre dışı"}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5 font-mono truncate">
@@ -131,7 +131,7 @@ export function PublicDashboardManager() {
                   <Button variant="ghost" size="icon" onClick={() => copyLink(d.token)} title="Linki kopyala">
                     <Copy className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="ghost" size="icon" asChild title="Onizle">
+                  <Button variant="ghost" size="icon" asChild title="Önizle">
                     <a href={`/pub/${d.token}`} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="h-3.5 w-3.5" />
                     </a>

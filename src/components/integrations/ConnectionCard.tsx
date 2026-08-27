@@ -99,7 +99,7 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
           <div className="flex items-center gap-1">
             {entry.docs_url && (
               <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-                <a href={entry.docs_url} target="_blank" rel="noreferrer" title="Docs"><ExternalLink className="h-3.5 w-3.5" /></a>
+                <a href={entry.docs_url} target="_blank" rel="noreferrer" title="Belgeler"><ExternalLink className="h-3.5 w-3.5" /></a>
               </Button>
             )}
             {isConnected ? (
@@ -110,7 +110,7 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
                   </Button>
                 )}
                 <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive"
-                        onClick={() => disconnect.mutate(connection!.id)} title="Disconnect">
+                        onClick={() => disconnect.mutate(connection!.id)} title="Bağlantıyı Kes">
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </>

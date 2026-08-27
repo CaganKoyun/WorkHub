@@ -79,7 +79,7 @@ const Landing = () => {
               Güvenlik
             </Link>
             <Link to="/changelog" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Changelog
+              Değişiklik Günlüğü
             </Link>
           </div>
 
@@ -409,7 +409,7 @@ const Landing = () => {
             <a href="#features" className="transition-colors hover:text-foreground">Ürün</a>
             <Link to="/pricing" className="transition-colors hover:text-foreground">Fiyatlandırma</Link>
             <Link to="/security" className="transition-colors hover:text-foreground">Güvenlik</Link>
-            <Link to="/changelog" className="transition-colors hover:text-foreground">Changelog</Link>
+            <Link to="/changelog" className="transition-colors hover:text-foreground">Değişiklik Günlüğü</Link>
           </div>
           <span className="text-[12.5px] text-muted-foreground">&copy; {new Date().getFullYear()} Spark WorkHub</span>
         </div>

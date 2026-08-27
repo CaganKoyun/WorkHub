@@ -175,7 +175,7 @@ export default function PublicDashboard() {
             icon={Users}
           />
           <PulseCard
-            title="Company Health" value={`${healthScore}%`}
+            title="Şirket Sağlığı" value={`${healthScore}%`}
             tone={healthScore < 60 ? "danger" : healthScore < 80 ? "warning" : "success"}
             icon={AlertTriangle}
           />
