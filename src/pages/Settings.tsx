@@ -204,13 +204,22 @@ function TeamTab() {
   const [sending, setSending] = useState(false);
 
   const fetchData = async () => {
+    if (!workspace) { setLoading(false); return; }
     const [teamRes, invitationsRes] = await Promise.all([
-      supabase.rpc("get_team_members"),
+      supabase.from("workspace_members")
+        .select("id,user_id,role,is_active,profiles:user_id(full_name,avatar_url,job_title)")
+        .eq("workspace_id", workspace.id),
       supabase.from("workspace_invitations").select("*").eq("status", "pending"),
     ]);
     if (teamRes.error) toast.error("Takim yuklenemedi: " + teamRes.error.message);
     if (invitationsRes.error) toast.error("Davetiyeler yuklenemedi: " + invitationsRes.error.message);
-    setMembers(teamRes.data || []);
+    const mapped = (teamRes.data || []).map((m: any) => ({
+      ...m,
+      full_name: m.profiles?.full_name ?? null,
+      avatar_url: m.profiles?.avatar_url ?? null,
+      job_title: m.profiles?.job_title ?? null,
+    }));
+    setMembers(mapped);
     setInvitations(invitationsRes.data || []);
     setLoading(false);
   };
@@ -231,6 +240,20 @@ function TeamTab() {
     const { error } = await supabase.from("workspace_invitations").delete().eq("id", id);
     if (error) toast.error(error.message);
     else { toast.success("Davet iptal edildi"); fetchData(); }
+  };
+
+  const handleRoleChange = async (memberId: string, newRole: string) => {
+    if (!workspace) return;
+    const { error } = await supabase.from("workspace_members").update({ role: newRole as never }).eq("id", memberId);
+    if (error) toast.error(error.message);
+    else { toast.success("Rol güncellendi"); fetchData(); }
+  };
+
+  const handleRemoveMember = async (memberId: string) => {
+    if (!confirm("Bu üyeyi çalışma alanından çıkarmak istediğinize emin misiniz?")) return;
+    const { error } = await supabase.from("workspace_members").delete().eq("id", memberId);
+    if (error) toast.error(error.message);
+    else { toast.success("Üye çıkarıldı"); fetchData(); }
   };
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /></div>;
@@ -274,24 +297,50 @@ function TeamTab() {
       <div className="px-4 md:px-6 py-4">
         <p className="text-[12px] text-muted-foreground font-medium mb-3">Takim Uyeleri · {members.length}</p>
         <div className="space-y-1">
-          {members.map((m: any) => (
-            <div key={m.user_id} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-muted/30">
-              <div className="flex items-center gap-2">
-                <Avatar className="h-5 w-5">
-                  <AvatarImage src={m.avatar_url || ""} />
-                  <AvatarFallback className="text-2xs">{(m.full_name || "?").split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)}</AvatarFallback>
-                </Avatar>
-                <span className="text-[13px] font-medium">{m.full_name || "Unnamed"}</span>
-                <span className="text-[12px] text-muted-foreground">{m.job_title || ""}</span>
+          {members.map((m: any) => {
+            const isSelf = m.user_id === user?.id;
+            const initials = (m.full_name || "?").split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
+            return (
+              <div key={m.user_id} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-5 w-5">
+                    <AvatarImage src={m.avatar_url || ""} />
+                    <AvatarFallback className="text-2xs">{initials}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-[13px] font-medium">{m.full_name || "Unnamed"}</span>
+                  <span className="text-[12px] text-muted-foreground">{m.job_title || ""}</span>
+                  {isSelf && <Badge variant="secondary" className="text-[10px] h-4 px-1">Sen</Badge>}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {isSelf ? (
+                    <Badge variant="outline" className="text-[10px] h-4 px-1 gap-0.5">
+                      <Shield className="h-2.5 w-2.5" />{m.role}
+                    </Badge>
+                  ) : (
+                    <>
+                      <Select value={m.role} onValueChange={v => handleRoleChange(m.id, v)}>
+                        <SelectTrigger className="w-[100px] h-6 text-[11px]">
+                          <div className="flex items-center gap-1">
+                            <Shield className="h-2.5 w-2.5" />
+                            <SelectValue />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="member">Üye</SelectItem>
+                          <SelectItem value="manager">Yönetici</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="owner">Sahip</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button variant="ghost" size="sm" onClick={() => handleRemoveMember(m.id)} className="h-6 w-6 p-0 text-destructive opacity-60 hover:opacity-100">
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <Badge variant="outline" className="text-[10px] h-4 px-1 gap-0.5">
-                  <Shield className="h-2.5 w-2.5" />{m.role}
-                </Badge>
-                {m.user_id === user?.id && <Badge variant="secondary" className="text-[10px] h-4 px-1">Sen</Badge>}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

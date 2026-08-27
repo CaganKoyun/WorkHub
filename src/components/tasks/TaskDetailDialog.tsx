@@ -1,22 +1,23 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  useTaskComments, useAddTaskComment, useUpdateTask,
+  useTaskComments, useAddTaskComment, useUpdateTask, useCreateTask,
   useSubtasks, useTasks,
   useTaskDependencies, useAddTaskDependency, useRemoveTaskDependency,
   useTaskAssignees, useAddTaskAssignee, useRemoveTaskAssignee,
 } from '@/lib/tasks-hooks';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { TASK_STATUS_LABELS, TASK_PRIORITY_LABELS } from '@/lib/tasks-types';
-import type { Task, TaskStatus } from '@/lib/tasks-types';
+import type { Task, TaskStatus, TaskPriority } from '@/lib/tasks-types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Plus, X, GitMerge, GitBranch, ListTree, UserPlus } from 'lucide-react';
+import { Plus, X, GitMerge, GitBranch, ListTree, UserPlus, Calendar as CalendarIcon } from 'lucide-react';
 import { RichTextDisplay } from '@/components/RichTextEditor';
 import { TaskTimer } from './TaskTimer';
 import { CustomFieldRenderer } from '@/components/CustomFieldRenderer';
@@ -24,6 +25,7 @@ import { RollupPanel } from './RollupPanel';
 import { TaskAttachments } from './TaskAttachments';
 import type { FormulaContext } from '@/lib/formula-eval';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 import { TaskStatusIcon, TaskPriorityIcon } from './TaskStatusIcon';
 
 interface Member { user_id: string; profile?: { name: string | null } }
@@ -121,6 +123,7 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
   const { data: comments } = useTaskComments(task.id);
   const addComment = useAddTaskComment();
   const updateTask = useUpdateTask();
+  const createTask = useCreateTask();
   const { data: subtasks } = useSubtasks(task.id);
   const { data: deps } = useTaskDependencies(task.id);
   const { data: extraAssignees } = useTaskAssignees(task.id);
@@ -129,8 +132,10 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
   const addAssignee = useAddTaskAssignee();
   const removeAssignee = useRemoveTaskAssignee();
   const { currentWorkspace } = useWorkspace();
+  const qc = useQueryClient();
   const [body, setBody] = useState('');
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
 
   const memberMap = new Map(members.map(m => [m.user_id, m.profile?.name ?? 'Kullanıcı']));
 
@@ -143,6 +148,32 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
   };
 
   const handleStatus = (s: TaskStatus) => updateTask.mutate({ id: task.id, status: s });
+
+  const handlePriority = (p: TaskPriority) => updateTask.mutate({ id: task.id, priority: p });
+
+  const handleAssignee = (uid: string) => {
+    updateTask.mutate({ id: task.id, assignee_id: uid === '__none__' ? null : uid });
+  };
+
+  const handleDueDate = (date: string) => {
+    updateTask.mutate({ id: task.id, due_date: date || null });
+  };
+
+  const handleAddSubtask = async () => {
+    if (!newSubtaskTitle.trim()) return;
+    try {
+      await createTask.mutateAsync({
+        project_id: task.project_id,
+        title: newSubtaskTitle.trim(),
+        parent_task_id: task.id,
+        status: 'todo',
+        priority: 'medium',
+      });
+      setNewSubtaskTitle('');
+      qc.invalidateQueries({ queryKey: ['subtasks', task.id] });
+      toast.success('Alt görev eklendi');
+    } catch (e: any) { toast.error(e.message); }
+  };
 
   const handleAddDep = async (otherId: string, direction: 'blocking' | 'blocked_by') => {
     if (!currentWorkspace) return;
@@ -188,21 +219,60 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
                 ))}
               </SelectContent>
             </Select>
-            <span className="inline-flex items-center gap-1.5 chip">
-              <TaskPriorityIcon priority={task.priority} size={11} />
-              {TASK_PRIORITY_LABELS[task.priority]}
-            </span>
-            {task.due_date && <Badge variant="outline" className="text-[11px] gap-1">📅 {task.due_date}</Badge>}
-            {task.assignee_id && (
-              <span className="inline-flex items-center gap-1.5 chip">
-                <Avatar className="h-4 w-4">
-                  <AvatarFallback className="text-[8px] bg-sidebar-accent">
-                    {(memberMap.get(task.assignee_id) ?? '?')[0]}
-                  </AvatarFallback>
-                </Avatar>
-                {memberMap.get(task.assignee_id)}
-              </span>
-            )}
+            <Select value={task.priority} onValueChange={v => handlePriority(v as TaskPriority)}>
+              <SelectTrigger className="w-28 h-7 text-[12px]">
+                <div className="flex items-center gap-1.5">
+                  <TaskPriorityIcon priority={task.priority} size={11} />
+                  {TASK_PRIORITY_LABELS[task.priority]}
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(TASK_PRIORITY_LABELS) as TaskPriority[]).map(p => (
+                  <SelectItem key={p} value={p}>
+                    <div className="flex items-center gap-1.5">
+                      <TaskPriorityIcon priority={p} size={11} />
+                      {TASK_PRIORITY_LABELS[p]}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={task.assignee_id ?? '__none__'} onValueChange={handleAssignee}>
+              <SelectTrigger className="w-40 h-7 text-[12px]">
+                <div className="flex items-center gap-1.5">
+                  <Avatar className="h-4 w-4">
+                    <AvatarFallback className="text-[8px] bg-sidebar-accent">
+                      {task.assignee_id ? (memberMap.get(task.assignee_id) ?? '?')[0] : '?'}
+                    </AvatarFallback>
+                  </Avatar>
+                  {task.assignee_id ? memberMap.get(task.assignee_id) ?? 'Kullanıcı' : 'Atanmamış'}
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">Atanmamış</SelectItem>
+                {members.map(m => (
+                  <SelectItem key={m.user_id} value={m.user_id}>
+                    <div className="flex items-center gap-1.5">
+                      <Avatar className="h-4 w-4">
+                        <AvatarFallback className="text-[7px] bg-sidebar-accent">
+                          {(m.profile?.name ?? '?')[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      {m.profile?.name ?? 'Kullanıcı'}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="inline-flex items-center gap-1.5">
+              <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
+              <input
+                type="date"
+                value={task.due_date ?? ''}
+                onChange={e => handleDueDate(e.target.value)}
+                className="h-7 px-1.5 text-[12px] rounded border border-border bg-transparent text-foreground"
+              />
+            </div>
           </div>
 
           {/* Additional assignees (multi) */}
@@ -326,19 +396,35 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
             <h4 className="mb-2 flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
               <ListTree className="h-3 w-3" /> Alt görevler ({subtasks?.length ?? 0})
             </h4>
-            {subtasks && subtasks.length > 0 ? (
-              <div className="space-y-1">
+            {subtasks && subtasks.length > 0 && (
+              <div className="space-y-1 mb-2">
                 {subtasks.map(s => (
                   <div key={s.id} className="flex items-center gap-2 rounded-md border border-border/60 bg-secondary/20 px-2 py-1.5 text-[12.5px]">
                     <TaskStatusIcon status={s.status} size={12} />
                     <span className="font-mono text-[10.5px] tabular-nums text-muted-foreground w-14">{s.tracking_id ?? 'WH-—'}</span>
-                    <Link to={`/projects/${s.project_id}`} className="flex-1 truncate hover:underline">{s.title}</Link>
+                    <Link to={`/projects/${s.project_id}?task=${s.id}`} className="flex-1 truncate hover:underline">{s.title}</Link>
                   </div>
                 ))}
               </div>
-            ) : (
-              <p className="text-[12px] text-muted-foreground/70">Yok</p>
             )}
+            <div className="flex gap-2">
+              <Input
+                value={newSubtaskTitle}
+                onChange={e => setNewSubtaskTitle(e.target.value)}
+                placeholder="Alt görev ekle…"
+                className="h-7 text-[12px] flex-1"
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddSubtask(); } }}
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-[11px] gap-1 shrink-0"
+                onClick={handleAddSubtask}
+                disabled={!newSubtaskTitle.trim() || createTask.isPending}
+              >
+                <Plus className="h-3 w-3" /> Ekle
+              </Button>
+            </div>
           </section>
 
           {/* Dependencies */}
