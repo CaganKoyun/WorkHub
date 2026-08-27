@@ -26,13 +26,35 @@ export function useMyTasks() {
     queryKey: ['my-tasks', user?.id],
     enabled: !!user,
     queryFn: async (): Promise<Task[]> => {
-      const { data, error } = await supabase
-        .from('tasks')
-        .select('*')
-        .eq('assignee_id', user!.id)
-        .order('due_date', { ascending: true, nullsFirst: false });
-      if (error) throw error;
-      return (data ?? []) as Task[];
+      const [directRes, junctionRes] = await Promise.all([
+        supabase
+          .from('tasks')
+          .select('*')
+          .eq('assignee_id', user!.id)
+          .order('due_date', { ascending: true, nullsFirst: false }),
+        supabase
+          .from('task_assignees')
+          .select('task:tasks(*)')
+          .eq('user_id', user!.id),
+      ]);
+      if (directRes.error) throw directRes.error;
+      if (junctionRes.error) throw junctionRes.error;
+      const direct = (directRes.data ?? []) as Task[];
+      const fromJunction = (junctionRes.data ?? [])
+        .map((r: any) => (Array.isArray(r.task) ? r.task[0] : r.task) as Task | null)
+        .filter(Boolean) as Task[];
+      const seen = new Set(direct.map(t => t.id));
+      const merged = [...direct];
+      for (const t of fromJunction) {
+        if (!seen.has(t.id)) { merged.push(t); seen.add(t.id); }
+      }
+      merged.sort((a, b) => {
+        if (!a.due_date && !b.due_date) return 0;
+        if (!a.due_date) return 1;
+        if (!b.due_date) return -1;
+        return a.due_date.localeCompare(b.due_date);
+      });
+      return merged;
     },
   });
 }

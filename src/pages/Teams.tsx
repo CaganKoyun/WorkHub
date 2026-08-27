@@ -129,11 +129,12 @@ function InviteDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o:
 }
 
 function MemberRow({
-  member, profileMap, teams,
+  member, profileMap, teams, canManage,
 }: {
   member: WorkspaceMember;
   profileMap: Map<string, { name: string | null; avatar: string | null }>;
   teams: { id: string; name: string; color: string }[];
+  canManage: boolean;
 }) {
   const updateRole = useUpdateMemberRole();
   const assignTeam = useAssignMemberToTeam();
@@ -160,6 +161,7 @@ function MemberRow({
       <Select
         value={member.team_id ?? 'none'}
         onValueChange={(v) => assignTeam.mutate({ member_id: member.id, team_id: v === 'none' ? null : v })}
+        disabled={!canManage}
       >
         <SelectTrigger className="w-36 h-7 text-[11.5px]">
           {team ? (
@@ -184,7 +186,7 @@ function MemberRow({
       <Select
         value={member.role}
         onValueChange={(v) => updateRole.mutate({ id: member.id, role: v as WorkspaceRole })}
-        disabled={member.role === 'owner'}
+        disabled={!canManage || member.role === 'owner'}
       >
         <SelectTrigger className="w-28 h-7 text-[11.5px]">
           <SelectValue />
@@ -199,7 +201,7 @@ function MemberRow({
       </Select>
       <Button
         variant="ghost" size="icon" className="h-7 w-7 opacity-60 hover:opacity-100"
-        disabled={member.role === 'owner'}
+        disabled={!canManage || member.role === 'owner'}
         onClick={() => {
           if (confirm(`${profile?.name ?? 'kullanıcıyı'} workspace'ten çıkar?`)) {
             deactivate.mutate(member.id);
@@ -305,7 +307,7 @@ export default function Teams() {
         </h2>
         <div className="rounded-md border border-border/60 overflow-hidden">
           {(members ?? []).map(m => (
-            <MemberRow key={m.id} member={m} profileMap={profileMap} teams={teams ?? []} />
+            <MemberRow key={m.id} member={m} profileMap={profileMap} teams={teams ?? []} canManage={canManage} />
           ))}
           {(members?.length ?? 0) === 0 && (
             <p className="py-8 text-center text-[13px] text-muted-foreground">Üye yok.</p>

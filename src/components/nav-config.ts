@@ -168,6 +168,8 @@ export const clusters: NavCluster[] = [
       {
         label: "Ayarlar",
         items: [
+          { icon: Building2, label: "Workspace Ayarları", path: "/workspace/settings" },
+          { icon: UserRound, label: "Hesap Ayarları", path: "/settings" },
           { icon: Plug, label: "Entegrasyonlar", path: "/integrations" },
           { icon: KeyRound, label: "API Anahtarları", path: "/api-tokens" },
         ],

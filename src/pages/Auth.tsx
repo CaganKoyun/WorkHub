@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 export default function Auth() {
   const { user, loading, signIn, signUp } = useAuth();
+  const [searchParams] = useSearchParams();
+  const nextPath = searchParams.get("next");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetSending, setResetSending] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false);
   const [isMicrosoftLoading, setIsMicrosoftLoading] = useState(false);
@@ -31,12 +35,12 @@ export default function Auth() {
     );
   }
 
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to={nextPath || "/"} replace />;
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
+      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: nextPath ? `${window.location.origin}${nextPath}` : window.location.origin } });
       if (error) toast.error("Google sign-in failed: " + error.message);
     } catch (error: any) {
       toast.error("Google sign-in failed: " + error.message);
@@ -59,7 +63,7 @@ export default function Auth() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: nextPath ? `${window.location.origin}${nextPath}` : window.location.origin,
           scopes: provider === "azure" ? "email openid profile" : undefined,
         },
       });
@@ -72,6 +76,17 @@ export default function Auth() {
   };
   const handleLinkedInSignIn  = () => oauth("linkedin_oidc", setIsLinkedInLoading, "LinkedIn");
   const handleMicrosoftSignIn = () => oauth("azure",         setIsMicrosoftLoading, "Microsoft");
+
+  const handleResetPassword = async () => {
+    if (!resetEmail) { toast.error("Please enter your email address."); return; }
+    setResetSending(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/settings`,
+    });
+    setResetSending(false);
+    if (error) toast.error("Reset failed: " + error.message);
+    else toast.success("Password reset email sent. Check your inbox.");
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -244,6 +259,31 @@ export default function Auth() {
                   Sign in
                 </Button>
               </form>
+              <details className="mt-3">
+                <summary className="text-[12px] text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
+                  Forgot password?
+                </summary>
+                <div className="mt-2 space-y-2">
+                  <Input
+                    type="email"
+                    placeholder="you@company.com"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    className="h-8 text-[13px]"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-full h-8 text-[12px]"
+                    disabled={resetSending}
+                    onClick={handleResetPassword}
+                  >
+                    {resetSending && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
+                    Send reset link
+                  </Button>
+                </div>
+              </details>
             </TabsContent>
 
             <TabsContent value="signup" className="mt-5">

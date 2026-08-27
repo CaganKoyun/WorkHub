@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
@@ -194,17 +195,18 @@ function CompanyTab() {
 
 function TeamTab() {
   const { user } = useAuth();
+  const { workspace } = useWorkspace();
   const [members, setMembers] = useState<any[]>([]);
   const [invitations, setInvitations] = useState<any[]>([]);
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<string>("user");
+  const [inviteRole, setInviteRole] = useState<string>("member");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
 
   const fetchData = async () => {
     const [teamRes, invitationsRes] = await Promise.all([
       supabase.rpc("get_team_members"),
-      supabase.from("invitations").select("*").eq("status", "pending"),
+      supabase.from("workspace_invitations").select("*").eq("status", "pending"),
     ]);
     if (teamRes.error) toast.error("Takim yuklenemedi: " + teamRes.error.message);
     if (invitationsRes.error) toast.error("Davetiyeler yuklenemedi: " + invitationsRes.error.message);
@@ -218,14 +220,15 @@ function TeamTab() {
   const handleInvite = async () => {
     if (!user || !inviteEmail) return;
     setSending(true);
-    const { error } = await supabase.from("invitations").insert({ email: inviteEmail, role: inviteRole as any, invited_by: user.id });
+    if (!workspace) return;
+    const { error } = await supabase.from("workspace_invitations").insert({ workspace_id: workspace.id, email: inviteEmail, role: inviteRole as any, invited_by: user.id });
     setSending(false);
     if (error) toast.error(error.message);
     else { toast.success(`${inviteEmail} davet edildi`); setInviteEmail(""); fetchData(); }
   };
 
   const handleRevoke = async (id: string) => {
-    const { error } = await supabase.from("invitations").delete().eq("id", id);
+    const { error } = await supabase.from("workspace_invitations").delete().eq("id", id);
     if (error) toast.error(error.message);
     else { toast.success("Davet iptal edildi"); fetchData(); }
   };
@@ -240,7 +243,7 @@ function TeamTab() {
           <Input placeholder="colleague@company.com" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} className="h-8 text-[13px] flex-1" />
           <Select value={inviteRole} onValueChange={setInviteRole}>
             <SelectTrigger className="w-[100px] h-8 text-[12px]"><SelectValue /></SelectTrigger>
-            <SelectContent><SelectItem value="user">User</SelectItem><SelectItem value="moderator">Moderator</SelectItem><SelectItem value="admin">Admin</SelectItem></SelectContent>
+            <SelectContent><SelectItem value="member">Uye</SelectItem><SelectItem value="manager">Yonetici</SelectItem><SelectItem value="admin">Admin</SelectItem></SelectContent>
           </Select>
           <Button onClick={handleInvite} disabled={sending || !inviteEmail} size="sm" className="h-8 text-[12px] gap-1">
             {sending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />} Davet Et

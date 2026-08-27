@@ -1,4 +1,4 @@
-export type TaskStatus = 'backlog' | 'todo' | 'in_progress' | 'review' | 'done';
+export type TaskStatus = 'backlog' | 'todo' | 'in_progress' | 'review' | 'done' | 'cancelled';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 export type RecurrenceFreq = 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -62,6 +62,7 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   in_progress: 'Devam Ediyor',
   review: 'İncelemede',
   done: 'Tamamlandı',
+  cancelled: 'İptal Edildi',
 };
 
 export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
@@ -70,9 +71,10 @@ export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
   in_progress: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
   review: 'bg-amber-500/20 text-warning border-amber-500/30',
   done: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+  cancelled: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
-export const TASK_STATUS_ORDER: TaskStatus[] = ['backlog', 'todo', 'in_progress', 'review', 'done'];
+export const TASK_STATUS_ORDER: TaskStatus[] = ['backlog', 'todo', 'in_progress', 'review', 'done', 'cancelled'];
 
 export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
   low: 'Düşük',
