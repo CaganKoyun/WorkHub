@@ -93,7 +93,7 @@ export function TopBar() {
           onClick={() => navigate("/ai-chat")}
         >
           <Sparkles className="h-3.5 w-3.5" />
-          Ask AI
+          AI'a Sor
         </Button>
         <NotificationBell />
         <LanguageSwitcher />

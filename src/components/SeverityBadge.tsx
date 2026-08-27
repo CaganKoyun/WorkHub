@@ -2,10 +2,10 @@ import { cn } from "@/lib/utils";
 import type { Enums } from "@/integrations/supabase/types";
 
 const severityConfig: Record<Enums<"bug_severity">, { label: string; className: string }> = {
-  critical: { label: "Critical", className: "text-severity-critical" },
-  high: { label: "High", className: "text-severity-high" },
-  medium: { label: "Medium", className: "text-severity-medium" },
-  low: { label: "Low", className: "text-severity-low" },
+  critical: { label: "Kritik", className: "text-severity-critical" },
+  high: { label: "Yüksek", className: "text-severity-high" },
+  medium: { label: "Orta", className: "text-severity-medium" },
+  low: { label: "Düşük", className: "text-severity-low" },
 };
 
 export function SeverityBadge({ severity }: { severity: Enums<"bug_severity"> }) {

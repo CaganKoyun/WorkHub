@@ -33,6 +33,7 @@ import {
 import { IntegrationsPanel } from "@/components/integrations/IntegrationsPanel";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { tr } from "date-fns/locale";
 
 /* ------------------------------ Constants ------------------------------ */
 
@@ -223,7 +224,7 @@ function ProductsTab() {
               <div><span className="font-medium">Durum:</span> <Badge className={tone[detailItem.status] ?? ""}>{detailItem.status}</Badge></div>
               {detailItem.description && <div><span className="font-medium">Aciklama:</span><p className="text-muted-foreground mt-1">{detailItem.description}</p></div>}
               {detailItem.project_id && <div><span className="font-medium">Bagli Proje:</span> {projects?.find((pr: AnyRow) => pr.id === detailItem.project_id)?.name ?? detailItem.project_id}</div>}
-              {detailItem.created_at && <div><span className="font-medium">Olusturulma:</span> {format(new Date(detailItem.created_at), "PPp")}</div>}
+              {detailItem.created_at && <div><span className="font-medium">Oluşturulma:</span> {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
               <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
@@ -455,7 +456,7 @@ function FeaturesTab() {
                 <ScoreBadge rice={computeFeatureRice(detailItem)} ice={computeFeatureIce(detailItem)} />
               </div>
               <div className="flex items-center gap-2"><span className="font-medium">Oy:</span> {detailItem.votes ?? 0}</div>
-              {detailItem.created_at && <div className="text-xs text-muted-foreground">Olusturulma: {format(new Date(detailItem.created_at), "PPp")}</div>}
+              {detailItem.created_at && <div className="text-xs text-muted-foreground">Oluşturulma: {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
               <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
@@ -591,7 +592,7 @@ function FeedbackTab() {
                 <span className="font-mono">{detailItem.votes ?? 0}</span>
                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleVote(detailItem, -1)}><ThumbsDown className="h-3.5 w-3.5" /></Button>
               </div>
-              {detailItem.created_at && <div className="text-xs text-muted-foreground">Olusturulma: {format(new Date(detailItem.created_at), "PPp")}</div>}
+              {detailItem.created_at && <div className="text-xs text-muted-foreground">Oluşturulma: {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
               <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
@@ -706,9 +707,9 @@ function ReleasesTab() {
             </SheetHeader>
             <div className="mt-4 space-y-3 text-sm">
               <Badge className={tone[detailItem.status]}>{detailItem.status}</Badge>
-              {detailItem.release_date && <div><span className="font-medium">Tarih:</span> {format(new Date(detailItem.release_date), "PP")}</div>}
+              {detailItem.release_date && <div><span className="font-medium">Tarih:</span> {format(new Date(detailItem.release_date), "PP", { locale: tr })}</div>}
               {detailItem.notes && <div><span className="font-medium">Notlar:</span><p className="text-muted-foreground mt-1 whitespace-pre-wrap">{detailItem.notes}</p></div>}
-              {detailItem.created_at && <div className="text-xs text-muted-foreground">Olusturulma: {format(new Date(detailItem.created_at), "PPp")}</div>}
+              {detailItem.created_at && <div className="text-xs text-muted-foreground">Oluşturulma: {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
               <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
@@ -726,7 +727,7 @@ function ReleasesTab() {
                   <div className="flex justify-between items-start gap-2">
                     <div>
                       <div className="font-medium flex items-center gap-1">{r.version} {r.name && <span className="text-muted-foreground font-normal">· {r.name}</span>} <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" /></div>
-                      {r.release_date && <div className="text-xs text-muted-foreground">{format(new Date(r.release_date), "PP")}</div>}
+                      {r.release_date && <div className="text-xs text-muted-foreground">{format(new Date(r.release_date), "PP", { locale: tr })}</div>}
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <Badge className={tone[r.status]}>{r.status}</Badge>
@@ -815,8 +816,8 @@ function IncidentsTab() {
               <div className="flex gap-2"><Badge className={tone[detailItem.severity]}>{detailItem.severity}</Badge><Badge className={tone[detailItem.status]}>{detailItem.status}</Badge></div>
               {detailItem.summary && <div><span className="font-medium">Ozet:</span><p className="text-muted-foreground mt-1 whitespace-pre-wrap">{detailItem.summary}</p></div>}
               {detailItem.impact && <div><span className="font-medium">Etki:</span> {detailItem.impact}</div>}
-              {detailItem.started_at && <div><span className="font-medium">Baslangic:</span> {format(new Date(detailItem.started_at), "PPp")}</div>}
-              {detailItem.resolved_at && <div><span className="font-medium">Cozum:</span> {format(new Date(detailItem.resolved_at), "PPp")}</div>}
+              {detailItem.started_at && <div><span className="font-medium">Başlangıç:</span> {format(new Date(detailItem.started_at), "PPp", { locale: tr })}</div>}
+              {detailItem.resolved_at && <div><span className="font-medium">Çözüm:</span> {format(new Date(detailItem.resolved_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
               <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
@@ -835,7 +836,7 @@ function IncidentsTab() {
                     <div className="font-medium flex items-center gap-1">{i.title} <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" /></div>
                     {i.summary && <p className="text-sm text-muted-foreground line-clamp-2">{i.summary}</p>}
                     {i.impact && <div className="text-xs text-muted-foreground mt-1">Etki: {i.impact}</div>}
-                    <div className="text-xs text-muted-foreground">Baslangic: {format(new Date(i.started_at), "PPp")}</div>
+                    <div className="text-xs text-muted-foreground">Başlangıç: {format(new Date(i.started_at), "PPp", { locale: tr })}</div>
                   </div>
                   <div className="flex flex-col gap-1 items-end shrink-0">
                     <div className="flex items-center gap-1">

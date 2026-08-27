@@ -78,14 +78,14 @@ export default function Auth() {
   const handleMicrosoftSignIn = () => oauth("azure",         setIsMicrosoftLoading, "Microsoft");
 
   const handleResetPassword = async () => {
-    if (!resetEmail) { toast.error("Please enter your email address."); return; }
+    if (!resetEmail) { toast.error("Lütfen e-posta adresinizi girin."); return; }
     setResetSending(true);
     const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
       redirectTo: `${window.location.origin}/settings`,
     });
     setResetSending(false);
     if (error) toast.error("Reset failed: " + error.message);
-    else toast.success("Password reset email sent. Check your inbox.");
+    else toast.success("Şifre sıfırlama e-postası gönderildi. Gelen kutunuzu kontrol edin.");
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -93,9 +93,9 @@ export default function Auth() {
     setIsSubmitting(true);
     try {
       await signIn(loginEmail, loginPassword);
-      toast.success("Welcome back!");
+      toast.success("Tekrar hoş geldiniz!");
     } catch (error: any) {
-      toast.error("Login failed: " + error.message);
+      toast.error("Giriş başarısız: " + error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -104,13 +104,13 @@ export default function Auth() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (signupPassword.length < 6) {
-      toast.error("Password too short: Minimum 6 characters");
+      toast.error("Şifre çok kısa: En az 6 karakter");
       return;
     }
     setIsSubmitting(true);
     try {
       await signUp(signupEmail, signupPassword, signupName);
-      toast.success("Account created! -- Check your email to confirm your account.");
+      toast.success("Hesap oluşturuldu! — Hesabınızı doğrulamak için e-postanızı kontrol edin.");
     } catch (error: any) {
       toast.error("Signup failed: " + error.message);
     } finally {
@@ -133,18 +133,18 @@ export default function Auth() {
         <div className="relative max-w-md space-y-8">
           <div>
             <h2 className="text-[30px] font-semibold leading-[1.12] tracking-tight text-sidebar-accent-foreground">
-              Where your company's<br />work actually lives.
+              Şirketinizin işlerinin<br />gerçekten yaşadığı yer.
             </h2>
             <p className="mt-3 text-[14.5px] leading-relaxed text-sidebar-foreground">
-              Projects, CRM, Finance, Goals — one workspace, one Chief of Staff AI.
+              Projeler, CRM, Finans, Hedefler — tek çalışma alanı, tek AI asistan.
             </p>
           </div>
 
           <ul className="space-y-3">
             {[
-              { icon: Target, label: "Goals & OKRs rolled up automatically" },
-              { icon: Sparkles, label: "Domain-expert AI in every module" },
-              { icon: BarChart3, label: "Cash, burn, runway — live from your data" },
+              { icon: Target, label: "Hedefler ve OKR'ler otomatik toplanır" },
+              { icon: Sparkles, label: "Her modülde alan uzmanı AI" },
+              { icon: BarChart3, label: "Nakit, burn, runway — verilerinizden canlı" },
             ].map(item => (
               <li key={item.label} className="flex items-start gap-3">
                 <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md bg-primary/20 text-primary">
@@ -157,7 +157,7 @@ export default function Auth() {
         </div>
 
         <div className="relative flex items-center gap-4 text-[12px] text-sidebar-foreground">
-          {["Free to start", "No credit card", "2-minute setup"].map(t => (
+          {["Ücretsiz başla", "Kredi kartı gerekmez", "2 dakikada kurulum"].map(t => (
             <span key={t} className="inline-flex items-center gap-1.5">
               <CheckCircle2 className="h-3.5 w-3.5 text-success" />
               {t}
@@ -174,8 +174,8 @@ export default function Auth() {
           </Link>
 
           <div>
-            <h1 className="text-[22px] font-semibold tracking-tight text-foreground">Welcome</h1>
-            <p className="mt-1 text-[13px] text-muted-foreground">Sign in or create your workspace to continue.</p>
+            <h1 className="text-[22px] font-semibold tracking-tight text-foreground">Hoş Geldiniz</h1>
+            <p className="mt-1 text-[13px] text-muted-foreground">Devam etmek için giriş yapın veya çalışma alanı oluşturun.</p>
           </div>
 
           <Button
@@ -194,7 +194,7 @@ export default function Auth() {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
             )}
-            Continue with Google
+            Google ile devam et
           </Button>
 
           <div className="grid grid-cols-2 gap-2">
@@ -234,34 +234,34 @@ export default function Auth() {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-[11px] uppercase tracking-wider">
-              <span className="bg-background px-2 text-muted-foreground">or</span>
+              <span className="bg-background px-2 text-muted-foreground">veya</span>
             </div>
           </div>
 
           <Tabs defaultValue="login">
             <TabsList className="grid w-full grid-cols-2 h-9">
-              <TabsTrigger value="login" className="text-[12px]">Sign in</TabsTrigger>
-              <TabsTrigger value="signup" className="text-[12px]">Sign up</TabsTrigger>
+              <TabsTrigger value="login" className="text-[12px]">Giriş Yap</TabsTrigger>
+              <TabsTrigger value="signup" className="text-[12px]">Kayıt Ol</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login" className="mt-5">
               <form onSubmit={handleLogin} className="space-y-3.5">
                 <div className="space-y-1.5">
-                  <Label className="text-[12px]">Email</Label>
+                  <Label className="text-[12px]">E-posta</Label>
                   <Input type="email" placeholder="you@company.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required className="h-9 text-[13px]" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-[12px]">Password</Label>
+                  <Label className="text-[12px]">Şifre</Label>
                   <Input type="password" placeholder="••••••••" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required className="h-9 text-[13px]" />
                 </div>
                 <Button type="submit" className="w-full h-9 text-[13px] font-medium" disabled={isSubmitting}>
                   {isSubmitting && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
-                  Sign in
+                  Giriş Yap
                 </Button>
               </form>
               <details className="mt-3">
                 <summary className="text-[12px] text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
-                  Forgot password?
+                  Şifremi unuttum?
                 </summary>
                 <div className="mt-2 space-y-2">
                   <Input
@@ -280,7 +280,7 @@ export default function Auth() {
                     onClick={handleResetPassword}
                   >
                     {resetSending && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
-                    Send reset link
+                    Sıfırlama linki gönder
                   </Button>
                 </div>
               </details>
@@ -289,27 +289,27 @@ export default function Auth() {
             <TabsContent value="signup" className="mt-5">
               <form onSubmit={handleSignup} className="space-y-3.5">
                 <div className="space-y-1.5">
-                  <Label className="text-[12px]">Full name</Label>
+                  <Label className="text-[12px]">Ad Soyad</Label>
                   <Input type="text" placeholder="Jane Doe" value={signupName} onChange={(e) => setSignupName(e.target.value)} required className="h-9 text-[13px]" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-[12px]">Work email</Label>
+                  <Label className="text-[12px]">İş e-postası</Label>
                   <Input type="email" placeholder="you@company.com" value={signupEmail} onChange={(e) => setSignupEmail(e.target.value)} required className="h-9 text-[13px]" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-[12px]">Password</Label>
-                  <Input type="password" placeholder="Min 6 characters" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} required minLength={6} className="h-9 text-[13px]" />
+                  <Label className="text-[12px]">Şifre</Label>
+                  <Input type="password" placeholder="En az 6 karakter" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} required minLength={6} className="h-9 text-[13px]" />
                 </div>
                 <Button type="submit" className="w-full h-9 text-[13px] font-medium" disabled={isSubmitting}>
                   {isSubmitting && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
-                  Create workspace
+                  Çalışma alanı oluştur
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
 
           <p className="text-[11px] text-muted-foreground text-center pt-2">
-            By continuing you agree to our Terms and Privacy Policy.
+            Devam ederek Kullanım Koşullarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz.
           </p>
         </div>
       </div>

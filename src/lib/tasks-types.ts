@@ -57,7 +57,7 @@ export interface TaskComment {
 }
 
 export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
-  backlog: 'Backlog',
+  backlog: 'Beklemede',
   todo: 'Yapılacak',
   in_progress: 'Devam Ediyor',
   review: 'İncelemede',

@@ -2,12 +2,12 @@ import { cn } from "@/lib/utils";
 import type { Enums } from "@/integrations/supabase/types";
 
 const statusConfig: Record<Enums<"bug_status">, { label: string; dotClass: string; text: string }> = {
-  new:         { label: "New",         dotClass: "bg-info",                            text: "text-info" },
-  assigned:    { label: "Assigned",    dotClass: "bg-primary",                         text: "text-primary" },
-  in_progress: { label: "In Progress", dotClass: "bg-[hsl(var(--status-in-progress))]", text: "text-[hsl(var(--status-in-progress))]" },
-  testing:     { label: "Testing",     dotClass: "bg-[hsl(var(--status-review))]",     text: "text-[hsl(var(--status-review))]" },
-  resolved:    { label: "Resolved",    dotClass: "bg-[hsl(var(--status-done))]",       text: "text-[hsl(var(--status-done))]" },
-  closed:      { label: "Closed",      dotClass: "bg-[hsl(var(--status-canceled))]",   text: "text-muted-foreground" },
+  new:         { label: "Yeni",          dotClass: "bg-info",                            text: "text-info" },
+  assigned:    { label: "Atandı",       dotClass: "bg-primary",                         text: "text-primary" },
+  in_progress: { label: "Devam Ediyor", dotClass: "bg-[hsl(var(--status-in-progress))]", text: "text-[hsl(var(--status-in-progress))]" },
+  testing:     { label: "Test Ediliyor",dotClass: "bg-[hsl(var(--status-review))]",     text: "text-[hsl(var(--status-review))]" },
+  resolved:    { label: "Çözüldü",     dotClass: "bg-[hsl(var(--status-done))]",       text: "text-[hsl(var(--status-done))]" },
+  closed:      { label: "Kapatıldı",   dotClass: "bg-[hsl(var(--status-canceled))]",   text: "text-muted-foreground" },
 };
 
 export function StatusBadge({ status }: { status: Enums<"bug_status"> }) {

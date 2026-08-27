@@ -232,7 +232,7 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
         <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="overview"><LayoutDashboard className="h-3.5 w-3.5 mr-1" />Genel</TabsTrigger>
           <TabsTrigger value="list"><List className="h-3.5 w-3.5 mr-1" />Liste</TabsTrigger>
-          <TabsTrigger value="board"><KanbanSquare className="h-3.5 w-3.5 mr-1" />Board</TabsTrigger>
+          <TabsTrigger value="board"><KanbanSquare className="h-3.5 w-3.5 mr-1" />Pano</TabsTrigger>
           <TabsTrigger value="timeline"><GanttChart className="h-3.5 w-3.5 mr-1" />Zaman</TabsTrigger>
           <TabsTrigger value="calendar"><CalendarDays className="h-3.5 w-3.5 mr-1" />Takvim</TabsTrigger>
           <TabsTrigger value="dashboard"><LayoutDashboard className="h-3.5 w-3.5 mr-1" />Panel</TabsTrigger>
@@ -331,7 +331,7 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
                 <Avatar className="h-9 w-9"><AvatarFallback>{m.profile?.name?.[0] ?? '?'}</AvatarFallback></Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{m.profile?.name ?? 'Kullanıcı'}</p>
-                  <p className="text-xs text-muted-foreground">{m.role}</p>
+                  <p className="text-xs text-muted-foreground">{({owner:"Sahip",admin:"Yönetici",manager:"Müdür",member:"Üye",viewer:"İzleyici",guest:"Misafir"} as Record<string,string>)[m.role] ?? m.role}</p>
                 </div>
                 {canManage && m.role !== 'owner' && (
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeMember.mutate({ id: m.id, project_id: projectId })}>

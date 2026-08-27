@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/EmptyState";
 import { supabase } from "@/integrations/supabase/client";
 import { format, subDays, parseISO, startOfDay } from "date-fns";
+import { tr } from "date-fns/locale";
 import type { Tables } from "@/integrations/supabase/types";
 import { useNeonCharts } from "@/hooks/use-neon-charts";
 import { NeonPatternDefs, neonPatternId } from "@/components/NeonPatternDefs";
@@ -73,8 +74,8 @@ export default function Analytics() {
 
   const trendData = useMemo(() => {
     const days: Record<string, number> = {};
-    for (let i = 29; i >= 0; i--) days[format(subDays(new Date(), i), "MMM dd")] = 0;
-    bugs.forEach(b => { const key = format(parseISO(b.created_at), "MMM dd"); if (key in days) days[key]++; });
+    for (let i = 29; i >= 0; i--) days[format(subDays(new Date(), i), "dd MMM", { locale: tr })] = 0;
+    bugs.forEach(b => { const key = format(parseISO(b.created_at), "dd MMM", { locale: tr }); if (key in days) days[key]++; });
     return Object.entries(days).map(([date, count]) => ({ date, count }));
   }, [bugs]);
   const trendChartConfig: ChartConfig = { count: { label: "Oluşturulan Buglar", color: "hsl(234, 55%, 60%)" } };
@@ -86,7 +87,7 @@ export default function Analytics() {
       const day = startOfDay(subDays(new Date(), i));
       let open = 0, resolved = 0;
       bugs.forEach(b => { if (parseISO(b.created_at) <= day) { if (resolvedStatuses.has(b.status)) resolved++; else open++; } });
-      result.push({ date: format(day, "MMM dd"), open, resolved });
+      result.push({ date: format(day, "dd MMM", { locale: tr }), open, resolved });
     }
     return result;
   }, [bugs]);

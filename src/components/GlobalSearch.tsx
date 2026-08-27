@@ -128,13 +128,13 @@ function useGlobalSearch(term: string) {
 }
 
 const HIT_GROUPS: { key: keyof SearchResults; heading: string; icon: React.ElementType; kind: RecentKind }[] = [
-  { key: "tasks",     heading: "Issues",       icon: CheckSquare,  kind: "task" },
-  { key: "projects",  heading: "Projects",     icon: FolderKanban, kind: "project" },
-  { key: "bugs",      heading: "Bugs",         icon: Bug,          kind: "bug" },
-  { key: "decisions", heading: "Decisions",    icon: ScrollText,   kind: "decision" },
-  { key: "approvals", heading: "Approvals",    icon: Inbox,        kind: "approval" },
-  { key: "companies", heading: "CRM Companies",icon: Building2,    kind: "company" },
-  { key: "docs",      heading: "Docs",         icon: BookOpen,     kind: "doc" },
+  { key: "tasks",     heading: "Görevler",       icon: CheckSquare,  kind: "task" },
+  { key: "projects",  heading: "Projeler",       icon: FolderKanban, kind: "project" },
+  { key: "bugs",      heading: "Hatalar",        icon: Bug,          kind: "bug" },
+  { key: "decisions", heading: "Kararlar",       icon: ScrollText,   kind: "decision" },
+  { key: "approvals", heading: "Onaylar",        icon: Inbox,        kind: "approval" },
+  { key: "companies", heading: "CRM Şirketleri", icon: Building2,    kind: "company" },
+  { key: "docs",      heading: "Dokümanlar",     icon: BookOpen,     kind: "doc" },
 ];
 
 const RECENT_ICON: Record<RecentKind, React.ElementType> = {
@@ -143,43 +143,43 @@ const RECENT_ICON: Record<RecentKind, React.ElementType> = {
 };
 
 const QUICK_ACTIONS = [
-  { label: "New issue",    icon: Plus,          to: "/tasks?new=1",    hint: "C" },
-  { label: "New project",  icon: FolderKanban,  to: "/projects/new",   hint: "P" },
-  { label: "New bug",      icon: Bug,           to: "/bugs/new",       hint: "B" },
-  { label: "New approval", icon: Inbox,         to: "/inbox?new=1",    hint: "A" },
-  { label: "New asset",    icon: Package,       to: "/assets/new",     hint: "S" },
+  { label: "Yeni görev",   icon: Plus,          to: "/tasks?new=1",    hint: "C" },
+  { label: "Yeni proje",   icon: FolderKanban,  to: "/projects/new",   hint: "P" },
+  { label: "Yeni hata",    icon: Bug,           to: "/bugs/new",       hint: "B" },
+  { label: "Yeni onay",    icon: Inbox,         to: "/inbox?new=1",    hint: "A" },
+  { label: "Yeni varlık",  icon: Package,       to: "/assets/new",     hint: "S" },
 ];
 
 const NAV_JUMPS = [
-  { label: "Home",           icon: Home,          to: "/home",     hint: "G H" },
-  { label: "Inbox",          icon: Inbox,         to: "/inbox",    hint: "G I" },
-  { label: "My issues",      icon: CheckSquare,   to: "/tasks",    hint: "G M" },
-  { label: "Issues",         icon: Layers,        to: "/issues",   hint: "G T" },
-  { label: "Cycles",         icon: RefreshCw,     to: "/cycles",   hint: "G C" },
-  { label: "Workload",       icon: BarChart3,     to: "/workload" },
-  { label: "Teams",          icon: Users,         to: "/teams" },
-  { label: "Projects",       icon: FolderKanban,  to: "/projects", hint: "G P" },
-  { label: "Bugs",           icon: Bug,           to: "/bugs" },
+  { label: "Ana Sayfa",       icon: Home,          to: "/home",     hint: "G H" },
+  { label: "Gelen Kutusu",   icon: Inbox,         to: "/inbox",    hint: "G I" },
+  { label: "Görevlerim",     icon: CheckSquare,   to: "/tasks",    hint: "G M" },
+  { label: "Görevler",       icon: Layers,        to: "/issues",   hint: "G T" },
+  { label: "Döngüler",       icon: RefreshCw,     to: "/cycles",   hint: "G C" },
+  { label: "İş Yükü",        icon: BarChart3,     to: "/workload" },
+  { label: "Ekipler",        icon: Users,         to: "/teams" },
+  { label: "Projeler",       icon: FolderKanban,  to: "/projects", hint: "G P" },
+  { label: "Hatalar",        icon: Bug,           to: "/bugs" },
   { label: "CRM",            icon: Building2,     to: "/crm" },
-  { label: "Finance",        icon: DollarSign,    to: "/finance" },
-  { label: "Goals",          icon: Target,        to: "/goals" },
-  { label: "Decisions",      icon: ScrollText,    to: "/decisions" },
+  { label: "Finans",         icon: DollarSign,    to: "/finance" },
+  { label: "Hedefler",       icon: Target,        to: "/goals" },
+  { label: "Kararlar",       icon: ScrollText,    to: "/decisions" },
   { label: "Chief of Staff", icon: Sparkles,      to: "/ai-chat",  hint: "G A" },
-  { label: "Docs",           icon: BookOpen,      to: "/docs",     hint: "G D" },
-  { label: "Chat",           icon: MessageSquare, to: "/chat" },
+  { label: "Dokümanlar",     icon: BookOpen,      to: "/docs",     hint: "G D" },
+  { label: "Sohbet",         icon: MessageSquare, to: "/chat" },
   { label: "Otomasyonlar",   icon: Zap,           to: "/automations" },
-  { label: "Service Desk",   icon: Headphones,    to: "/desk" },
-  { label: "Audit log",      icon: Shield,        to: "/audit" },
+  { label: "Servis Masası",  icon: Headphones,    to: "/desk" },
+  { label: "Denetim Kaydı",  icon: Shield,        to: "/audit" },
   { label: "Görünümler",     icon: Bookmark,      to: "/views" },
-  { label: "API tokens",     icon: KeyRound,      to: "/api-tokens" },
+  { label: "API Anahtarları",icon: KeyRound,      to: "/api-tokens" },
   { label: "Müşteri portalları", icon: UserRound, to: "/portals" },
   { label: "Bildirim ayarları", icon: Settings,  to: "/notification-settings" },
   { label: "Skor tablosu",   icon: Sparkles,      to: "/leaderboard" },
-  { label: "Import",         icon: Plus,          to: "/import" },
-  { label: "Timesheet",      icon: Settings,      to: "/timesheet" },
-  { label: "Workflow states",icon: Settings,      to: "/workflow-states" },
-  { label: "Custom fields",  icon: Settings,      to: "/custom-fields" },
-  { label: "Settings",       icon: Settings,      to: "/settings" },
+  { label: "İçe Aktar",      icon: Plus,          to: "/import" },
+  { label: "Zaman Çizelgesi",icon: Settings,      to: "/timesheet" },
+  { label: "İş Akışı Durumları",icon: Settings,   to: "/workflow-states" },
+  { label: "Özel Alanlar",   icon: Settings,      to: "/custom-fields" },
+  { label: "Ayarlar",        icon: Settings,      to: "/settings" },
 ];
 
 export function GlobalSearch({ open, onOpenChange }: {
@@ -215,7 +215,7 @@ export function GlobalSearch({ open, onOpenChange }: {
           className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.08em] [&_[cmdk-group-heading]]:text-muted-foreground/70 [&_[cmdk-group]]:px-1 [&_[cmdk-input-wrapper]_svg]:h-4 [&_[cmdk-input-wrapper]_svg]:w-4 [&_[cmdk-input]]:h-11 [&_[cmdk-item]]:h-9 [&_[cmdk-item]]:px-2.5 [&_[cmdk-item]]:rounded-md [&_[cmdk-item]]:text-[13px]"
         >
           <CommandInput
-            placeholder="Type a command or search…"
+            placeholder="Komut yazın veya arayın…"
             value={term}
             onValueChange={setTerm}
           />
@@ -224,7 +224,7 @@ export function GlobalSearch({ open, onOpenChange }: {
               <>
                 {recents.length > 0 && (
                   <>
-                    <CommandGroup heading="Recents">
+                    <CommandGroup heading="Son Kullanılanlar">
                       {recents.map((r) => {
                         const Icon = RECENT_ICON[r.kind] ?? Clock;
                         return (
@@ -247,7 +247,7 @@ export function GlobalSearch({ open, onOpenChange }: {
                     <CommandSeparator />
                   </>
                 )}
-                <CommandGroup heading="Create">
+                <CommandGroup heading="Oluştur">
                   {QUICK_ACTIONS.map((a) => (
                     <CommandItem key={a.to} value={`create ${a.label}`} onSelect={() => go(a.to)}>
                       <a.icon className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
@@ -257,7 +257,7 @@ export function GlobalSearch({ open, onOpenChange }: {
                   ))}
                 </CommandGroup>
                 <CommandSeparator />
-                <CommandGroup heading="Jump to">
+                <CommandGroup heading="Git">
                   {NAV_JUMPS.map((n) => (
                     <CommandItem key={n.to} value={`jump ${n.label}`} onSelect={() => go(n.to)}>
                       <n.icon className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
@@ -301,9 +301,9 @@ export function GlobalSearch({ open, onOpenChange }: {
           </CommandList>
           <div className="flex items-center justify-between border-t border-border bg-secondary/30 px-3 py-1.5 text-[10.5px] text-muted-foreground">
             <div className="flex items-center gap-2">
-              <span><kbd className="kbd">↑↓</kbd> navigate</span>
-              <span><kbd className="kbd">↵</kbd> select</span>
-              <span><kbd className="kbd">esc</kbd> close</span>
+              <span><kbd className="kbd">↑↓</kbd> gezin</span>
+              <span><kbd className="kbd">↵</kbd> seç</span>
+              <span><kbd className="kbd">esc</kbd> kapat</span>
             </div>
             <span>Spark WorkHub</span>
           </div>

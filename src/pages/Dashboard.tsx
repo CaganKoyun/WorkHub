@@ -110,7 +110,7 @@ function RecentActivityList() {
           <li key={`${item.type}-${item.id}`} className="flex items-center gap-3 py-2.5 px-1">
             <Icon className={cn("h-3.5 w-3.5 shrink-0", cfg.color)} />
             <span className="text-[13px] truncate flex-1">{item.title}</span>
-            <Badge variant="outline" className="text-[10px] shrink-0">{item.status}</Badge>
+            <Badge variant="outline" className="text-[10px] shrink-0">{({backlog:"Beklemede",todo:"Yapılacak",in_progress:"Devam Ediyor",review:"İncelemede",done:"Tamamlandı",new:"Yeni",assigned:"Atandı",testing:"Test Ediliyor",resolved:"Çözüldü",closed:"Kapatıldı",open:"Açık",planned:"Planlı",active:"Aktif",completed:"Tamamlandı",paused:"Duraklatıldı",cancelled:"İptal"} as Record<string,string>)[item.status] ?? item.status}</Badge>
             <span className="text-[11px] text-muted-foreground shrink-0">
               {formatDistanceToNow(new Date(item.updated_at), { addSuffix: true, locale: tr })}
             </span>
@@ -288,7 +288,7 @@ export default function Dashboard() {
                                     )}
                                     <div className="flex items-center gap-2 mt-2">
                                       <Badge variant="outline" className="text-[10px]">
-                                        {p.status}
+                                        {({planned:"Planlı",active:"Aktif",completed:"Tamamlandı",paused:"Duraklatıldı",cancelled:"İptal"} as Record<string,string>)[p.status] ?? p.status}
                                       </Badge>
                                     </div>
                                   </div>

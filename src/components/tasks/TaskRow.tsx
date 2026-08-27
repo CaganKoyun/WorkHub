@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { format, differenceInDays, startOfDay } from "date-fns";
+import { tr } from "date-fns/locale";
 import { Repeat, Ban, AlertTriangle } from "lucide-react";
 import { TaskStatusIcon, TaskPriorityIcon } from "./TaskStatusIcon";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -20,15 +21,15 @@ interface TaskRowProps {
 }
 
 function dueDateStyle(due: string, status: string): { className: string; label: string } {
-  if (status === "done") return { className: "text-muted-foreground", label: format(new Date(due), "MMM d") };
+  if (status === "done") return { className: "text-muted-foreground", label: format(new Date(due), "d MMM", { locale: tr }) };
   const today = startOfDay(new Date());
   const dueDate = startOfDay(new Date(due));
   const diff = differenceInDays(dueDate, today);
   if (diff < 0) return { className: "text-red-400 font-medium", label: `${Math.abs(diff)}g gecikmiş` };
   if (diff === 0) return { className: "text-amber-400 font-medium", label: "Bugün" };
   if (diff === 1) return { className: "text-amber-400/80", label: "Yarın" };
-  if (diff <= 3) return { className: "text-amber-400/60", label: format(new Date(due), "MMM d") };
-  return { className: "text-muted-foreground", label: format(new Date(due), "MMM d") };
+  if (diff <= 3) return { className: "text-amber-400/60", label: format(new Date(due), "d MMM", { locale: tr }) };
+  return { className: "text-muted-foreground", label: format(new Date(due), "d MMM", { locale: tr }) };
 }
 
 export function TaskRow({

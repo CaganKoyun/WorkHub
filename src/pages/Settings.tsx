@@ -283,7 +283,7 @@ function TeamTab() {
                 <div className="flex items-center gap-2">
                   <Mail className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className="text-[13px]">{inv.email}</span>
-                  <Badge variant="outline" className="text-[10px] h-4 px-1">{inv.role}</Badge>
+                  <Badge variant="outline" className="text-[10px] h-4 px-1">{({owner:"Sahip",admin:"Yönetici",manager:"Müdür",member:"Üye",viewer:"İzleyici",guest:"Misafir"} as Record<string,string>)[inv.role] ?? inv.role}</Badge>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => handleRevoke(inv.id)} className="h-6 w-6 p-0">
                   <Trash2 className="h-3 w-3" />
@@ -314,7 +314,7 @@ function TeamTab() {
                 <div className="flex items-center gap-1.5">
                   {isSelf ? (
                     <Badge variant="outline" className="text-[10px] h-4 px-1 gap-0.5">
-                      <Shield className="h-2.5 w-2.5" />{m.role}
+                      <Shield className="h-2.5 w-2.5" />{({owner:"Sahip",admin:"Yönetici",manager:"Müdür",member:"Üye",viewer:"İzleyici",guest:"Misafir"} as Record<string,string>)[m.role] ?? m.role}
                     </Badge>
                   ) : (
                     <>
