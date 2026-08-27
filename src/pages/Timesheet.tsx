@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { useMyTimeEntries, useDeleteTimeEntry, useAddManualEntry, formatHMS, formatSeconds } from '@/lib/time-tracking-hooks';
 import { useWorkspaceIssues } from '@/lib/tasks-hooks';
@@ -377,6 +378,10 @@ function ManualEntryDialog({ open, onOpenChange, tasks, onSubmit, isPending }: M
     if (!taskId || !date || !startTime || !endTime) return;
     const started_at = new Date(`${date}T${startTime}:00`).toISOString();
     const ended_at = new Date(`${date}T${endTime}:00`).toISOString();
+    if (ended_at <= started_at) {
+      toast.error("Bitiş saati başlangıçtan sonra olmalıdır.");
+      return;
+    }
     onSubmit({ task_id: taskId, started_at, ended_at, note: note || undefined });
   };
 

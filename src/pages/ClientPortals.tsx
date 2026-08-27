@@ -64,7 +64,7 @@ function CreateDialog({ open, onOpenChange }: {
         <form onSubmit={submit} className="space-y-3">
           <div className="grid gap-1.5">
             <Label>Portal adı</Label>
-            <Input value={name} onChange={e => setName(e.target.value)} placeholder="Örn: Acme Corp — Q1 proje" autoFocus />
+            <Input value={name} onChange={e => setName(e.target.value)} placeholder="Örn: ABC Yazılım — Q1 proje" autoFocus />
           </div>
           <div className="grid gap-1.5">
             <Label>Müşteri e-postası</Label>
