@@ -211,10 +211,10 @@ export function RichTextEditor({
   return (
     <div className={cn('rounded-md border border-border/60 bg-background overflow-hidden relative', className)}>
       <div className="flex items-center gap-0.5 border-b border-border/60 bg-secondary/30 px-1.5 py-1">
-        <Btn title="Undo (⌘Z)" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()}>
+        <Btn title="Geri al (⌘Z)" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()}>
           <Undo className="h-3 w-3" />
         </Btn>
-        <Btn title="Redo (⌘⇧Z)" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()}>
+        <Btn title="Yinele (⌘⇧Z)" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()}>
           <Redo className="h-3 w-3" />
         </Btn>
         <span className="h-4 w-px bg-border mx-1" />
@@ -224,30 +224,30 @@ export function RichTextEditor({
         <Btn title="H2" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })}>
           <Heading2 className="h-3 w-3" />
         </Btn>
-        <Btn title="Bold (⌘B)" onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')}>
+        <Btn title="Kalın (⌘B)" onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')}>
           <Bold className="h-3 w-3" />
         </Btn>
-        <Btn title="Italic (⌘I)" onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')}>
+        <Btn title="İtalik (⌘I)" onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')}>
           <Italic className="h-3 w-3" />
         </Btn>
-        <Btn title="Strike" onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')}>
+        <Btn title="Üstü çizili" onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')}>
           <Strikethrough className="h-3 w-3" />
         </Btn>
         <span className="h-4 w-px bg-border mx-1" />
-        <Btn title="Bullet list" onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')}>
+        <Btn title="Madde listesi" onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')}>
           <List className="h-3 w-3" />
         </Btn>
-        <Btn title="Ordered list" onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')}>
+        <Btn title="Numaralı liste" onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')}>
           <ListOrdered className="h-3 w-3" />
         </Btn>
-        <Btn title="Quote" onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')}>
+        <Btn title="Alıntı" onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')}>
           <Quote className="h-3 w-3" />
         </Btn>
-        <Btn title="Code" onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')}>
+        <Btn title="Kod" onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')}>
           <Code className="h-3 w-3" />
         </Btn>
         <Btn
-          title="Link"
+          title="Bağlantı"
           active={editor.isActive('link')}
           onClick={() => {
             const prev = editor.getAttributes('link').href as string | undefined;

@@ -99,7 +99,7 @@ function NewCompanyDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
   );
 
   async function submit() {
-    if (!name.trim()) { toast.error("Isim gerekli"); return; }
+    if (!name.trim()) { toast.error("İsim gerekli"); return; }
     try {
       await create.mutateAsync({
         name: name.trim(),
@@ -111,7 +111,7 @@ function NewCompanyDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
         annual_revenue: revenue ? Number(revenue) : null,
         description: description || null,
       });
-      toast.success("Sirket olusturuldu");
+      toast.success("Şirket oluşturuldu");
       onOpenChange(false);
       setName(''); setDomain(''); setIndustry(''); setCountry(''); setRevenue(''); setDescription('');
     } catch (err: unknown) {

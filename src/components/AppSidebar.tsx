@@ -74,12 +74,12 @@ function SearchTrigger({ onOpen }: { onOpen: () => void }) {
     <button
       type="button"
       onClick={onOpen}
-      aria-label="Search"
+      aria-label="Ara"
       className={cn(
         "grid h-8 w-8 place-items-center rounded-md border border-sidebar-border/70 bg-sidebar-accent/50",
         "text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       )}
-      title="Search (⌘K)"
+      title="Ara (⌘K)"
     >
       <Search className="h-3.5 w-3.5" />
     </button>

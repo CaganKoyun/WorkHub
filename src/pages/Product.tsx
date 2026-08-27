@@ -121,7 +121,7 @@ function DeleteButton({ onConfirm, isPending }: { onConfirm: () => void; isPendi
           <AlertDialogDescription>Bu islem geri alinamaz.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Iptal</AlertDialogCancel>
+          <AlertDialogCancel>İptal</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={isPending}>Sil</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -168,7 +168,7 @@ function ProductsTab() {
   const openEdit = (p: AnyRow) => { setEditItem(p); setForm({ name: p.name ?? "", description: p.description ?? "", status: p.status ?? "active", project_id: p.project_id ?? "" }); setOpen(true); };
 
   const submit = async () => {
-    if (!form.name.trim()) return toast.error("Isim gerekli");
+    if (!form.name.trim()) return toast.error("İsim gerekli");
     try {
       const payload: AnyRow = { ...form, project_id: form.project_id || null };
       if (editItem) payload.id = editItem.id;
@@ -190,9 +190,9 @@ function ProductsTab() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Urun</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Urun Duzenle" : "Yeni Urun"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Urun Düzenle" : "Yeni Urun"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Isim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
+              <div><Label>İsim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
               <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
               <div><Label>Proje Baglantisi</Label>
                 <Select value={form.project_id} onValueChange={v => setForm({ ...form, project_id: v })}>
@@ -205,8 +205,8 @@ function ProductsTab() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button>
-              <Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button>
+              <Button variant="outline" onClick={() => setOpen(false)}>İptal</Button>
+              <Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -227,7 +227,7 @@ function ProductsTab() {
               {detailItem.created_at && <div><span className="font-medium">Oluşturulma:</span> {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>
@@ -288,7 +288,7 @@ function FeaturesTab() {
   };
 
   const submit = async () => {
-    if (!form.title.trim()) return toast.error("Baslik gerekli");
+    if (!form.title.trim()) return toast.error("Başlık gerekli");
     try {
       const payload: AnyRow = {
         title: form.title, description: form.description, status: form.status,
@@ -365,9 +365,9 @@ function FeaturesTab() {
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Feature</Button></DialogTrigger>
             <DialogContent className="sm:max-w-xl">
-              <DialogHeader><DialogTitle>{editItem ? "Feature Duzenle" : "Yeni Feature"}</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>{editItem ? "Feature Düzenle" : "Yeni Feature"}</DialogTitle></DialogHeader>
               <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
-                <div><Label>Baslik</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
+                <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
                 <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
                 <div className="grid grid-cols-2 gap-3">
                   <div><Label>Urun</Label>
@@ -429,7 +429,7 @@ function FeaturesTab() {
                   </div>
                 </div>
               </div>
-              <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button></DialogFooter>
+              <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>İptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button></DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
@@ -459,7 +459,7 @@ function FeaturesTab() {
               {detailItem.created_at && <div className="text-xs text-muted-foreground">Oluşturulma: {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>
@@ -523,7 +523,7 @@ function FeedbackTab() {
   const openEdit = (f: AnyRow) => { setEditItem(f); setForm({ title: f.title ?? "", body: f.body ?? "", category: f.category ?? "feature_request", status: f.status ?? "new", submitter_name: f.submitter_name ?? "", submitter_email: f.submitter_email ?? "", votes: f.votes ?? 0 }); setOpen(true); };
 
   const submit = async () => {
-    if (!form.title.trim()) return toast.error("Baslik gerekli");
+    if (!form.title.trim()) return toast.error("Başlık gerekli");
     try {
       const payload: AnyRow = { ...form };
       if (editItem) payload.id = editItem.id;
@@ -547,9 +547,9 @@ function FeedbackTab() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Feedback</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Feedback Duzenle" : "Yeni Feedback"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Feedback Düzenle" : "Yeni Feedback"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Baslik</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
+              <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
               <div><Label>Icerik</Label><Textarea value={form.body} onChange={e => setForm({ ...form, body: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Gonderen</Label><Input value={form.submitter_name} onChange={e => setForm({ ...form, submitter_name: e.target.value })} /></div>
@@ -570,7 +570,7 @@ function FeedbackTab() {
                 </div>
               </div>
             </div>
-            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button></DialogFooter>
+            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>İptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -595,14 +595,14 @@ function FeedbackTab() {
               {detailItem.created_at && <div className="text-xs text-muted-foreground">Oluşturulma: {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !data?.length
-        ? <EmptyState icon={MessageSquare} title="Feedback yok" desc="Musteri geri bildirimlerini toplayin, kategorize edin ve feature'lara baglayin." onNew={openCreate} />
+        ? <EmptyState icon={MessageSquare} title="Feedback yok" desc="Müşteri geri bildirimlerini toplayin, kategorize edin ve feature'lara baglayin." onNew={openCreate} />
         : <div className="space-y-2">
             {data.map(f => (
               <Card key={f.id} className="cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all" onClick={() => setDetailItem(f)}>
@@ -669,11 +669,11 @@ function ReleasesTab() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Release</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Release Duzenle" : "Yeni Release"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Release Düzenle" : "Yeni Release"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Versiyon</Label><Input placeholder="v1.2.0" value={form.version} onChange={e => setForm({ ...form, version: e.target.value })} /></div>
-                <div><Label>Isim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
+                <div><Label>İsim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div><Label>Urun</Label>
@@ -692,7 +692,7 @@ function ReleasesTab() {
               </div>
               <div><Label>Notlar</Label><Textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} /></div>
             </div>
-            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button></DialogFooter>
+            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>İptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -712,7 +712,7 @@ function ReleasesTab() {
               {detailItem.created_at && <div className="text-xs text-muted-foreground">Oluşturulma: {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>
@@ -759,7 +759,7 @@ function IncidentsTab() {
   const openEdit = (i: AnyRow) => { setEditItem(i); setForm({ title: i.title ?? "", summary: i.summary ?? "", severity: i.severity ?? "sev3", status: i.status ?? "investigating", impact: i.impact ?? "" }); setOpen(true); };
 
   const submit = async () => {
-    if (!form.title.trim()) return toast.error("Baslik gerekli");
+    if (!form.title.trim()) return toast.error("Başlık gerekli");
     try {
       const payload: AnyRow = { ...form };
       if (editItem) payload.id = editItem.id;
@@ -779,9 +779,9 @@ function IncidentsTab() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Incident</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Incident Duzenle" : "Yeni Incident"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Incident Düzenle" : "Yeni Incident"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Baslik</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
+              <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
               <div><Label>Ozet</Label><Textarea value={form.summary} onChange={e => setForm({ ...form, summary: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Siddet</Label>
@@ -799,7 +799,7 @@ function IncidentsTab() {
               </div>
               <div><Label>Etki</Label><Input value={form.impact} onChange={e => setForm({ ...form, impact: e.target.value })} /></div>
             </div>
-            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button></DialogFooter>
+            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>İptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -820,7 +820,7 @@ function IncidentsTab() {
               {detailItem.resolved_at && <div><span className="font-medium">Çözüm:</span> {format(new Date(detailItem.resolved_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>

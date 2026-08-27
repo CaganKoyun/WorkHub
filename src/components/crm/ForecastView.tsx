@@ -15,7 +15,7 @@ export function ForecastView() {
     <div className="space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Tile label="Açık Pipeline" value={formatMoney(summary?.openPipeline ?? 0, 'USD')} sub={`${summary?.openOppCount ?? 0} fırsat`} />
-        <Tile label="Commit" value={formatMoney(summary?.commit ?? 0, 'USD')} />
+        <Tile label="Kesin" value={formatMoney(summary?.commit ?? 0, 'USD')} />
         <Tile label="Kazanılan" value={formatMoney(summary?.closedWon ?? 0, 'USD')} />
         <Tile label="MRR" value={formatMoney(summary?.totalMRR ?? 0, 'USD')} />
         <Tile label="ARR" value={formatMoney(summary?.totalARR ?? 0, 'USD')} />
@@ -42,11 +42,11 @@ export function ForecastView() {
                 <YAxis fontSize={11} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(v: number) => formatMoney(v, 'USD')} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="closed_won" stackId="a" fill="hsl(var(--success))" name="Closed Won" />
-                <Bar dataKey="commit" stackId="a" fill="hsl(var(--warning))" name="Commit" />
-                <Bar dataKey="best_case" stackId="a" fill="hsl(var(--info))" name="Best Case" />
+                <Bar dataKey="closed_won" stackId="a" fill="hsl(var(--success))" name="Kazanılan" />
+                <Bar dataKey="commit" stackId="a" fill="hsl(var(--warning))" name="Kesin" />
+                <Bar dataKey="best_case" stackId="a" fill="hsl(var(--info))" name="En İyi Senaryo" />
                 <Bar dataKey="pipeline" stackId="a" fill="hsl(var(--muted-foreground))" name="Pipeline" />
-                <Bar dataKey="closed_lost" stackId="a" fill="hsl(var(--destructive))" name="Closed Lost" />
+                <Bar dataKey="closed_lost" stackId="a" fill="hsl(var(--destructive))" name="Kaybedilen" />
               </BarChart>
             </ResponsiveContainer>
           )}

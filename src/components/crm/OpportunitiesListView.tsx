@@ -35,8 +35,8 @@ export function OpportunitiesListView() {
             <TableRow>
               <TableHead>Fırsat</TableHead>
               <TableHead>Şirket</TableHead>
-              <TableHead>Stage</TableHead>
-              <TableHead>Forecast</TableHead>
+              <TableHead>Aşama</TableHead>
+              <TableHead>Tahmin</TableHead>
               <TableHead>Tutar</TableHead>
               <TableHead>Kapanış</TableHead>
               <TableHead>Durum</TableHead>

@@ -59,8 +59,8 @@ function EmployeeProfileSheet({ employee, open, onOpenChange }: {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>Profil Detayi</SheetTitle>
-          <SheetDescription className="sr-only">Calisan profil detaylari</SheetDescription>
+          <SheetTitle>Profil Detayı</SheetTitle>
+          <SheetDescription className="sr-only">Çalışan profil detayları</SheetDescription>
         </SheetHeader>
 
         <div className="mt-6 flex flex-col items-center gap-3">
@@ -116,9 +116,9 @@ function EmployeeProfileSheet({ employee, open, onOpenChange }: {
 
           {/* Assigned assets placeholder */}
           <div>
-            <h3 className="text-sm font-semibold mb-2">Zimmetli Varliklar</h3>
+            <h3 className="text-sm font-semibold mb-2">Zimmetli Varlıklar</h3>
             <p className="text-sm text-muted-foreground">
-              Zimmetli varlik bilgisi varlik yonetimi sayfasindan goruntulenebilir.
+              Zimmetli varlık bilgisi varlık yönetimi sayfasından görüntülenebilir.
             </p>
           </div>
         </div>
@@ -197,36 +197,36 @@ export function EmployeesListView() {
   const handleExport = () => {
     const rows = (employees ?? []).map(e => [e.name, e.department ?? '', e.email ?? '']);
     exportToCsv('employees.csv', ['name', 'department', 'email'], rows);
-    toast.success('Calisanlar disari aktarildi');
+    toast.success('Çalışanlar dışarı aktarıldı');
   };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try { setImportRows(await parseCsvFile(file)); setImportDialogOpen(true); }
-    catch { toast.error('CSV dosyasi islenemedi'); }
+    catch { toast.error('CSV dosyası işlenemedi'); }
     e.target.value = '';
   };
 
   const handleImportConfirm = async () => {
     const mapped = importRows.filter(r => r.name).map(r => ({ name: r.name, department: r.department || null, email: r.email || null }));
-    if (mapped.length === 0) { toast.error('Gecerli satir yok. Gerekli: name'); return; }
-    try { await bulkCreate.mutateAsync(mapped); toast.success(`${mapped.length} calisan ice aktarildi`); setImportDialogOpen(false); setImportRows([]); }
-    catch { toast.error('Calisanlar ice aktarilamadi'); }
+    if (mapped.length === 0) { toast.error('Geçerli satır yok. Gerekli: name'); return; }
+    try { await bulkCreate.mutateAsync(mapped); toast.success(`${mapped.length} çalışan içe aktarıldı`); setImportDialogOpen(false); setImportRows([]); }
+    catch { toast.error('Çalışanlar içe aktarılamadı'); }
   };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await createEmployee.mutateAsync({ name, department: department || null, email: email || null });
-      toast.success('Calisan eklendi');
+      toast.success('Çalışan eklendi');
       setDialogOpen(false); setName(''); setDepartment(''); setEmail('');
-    } catch { toast.error('Calisan eklenemedi'); }
+    } catch { toast.error('Çalışan eklenemedi'); }
   };
 
   const handleDelete = async (id: string) => {
-    try { await deleteEmployee.mutateAsync(id); toast.success('Calisan silindi'); }
-    catch { toast.error('Calisan silinemedi'); }
+    try { await deleteEmployee.mutateAsync(id); toast.success('Çalışan silindi'); }
+    catch { toast.error('Çalışan silinemedi'); }
   };
 
   const openEdit = (emp: { id: string; name: string; department: string | null; email: string | null }) => {
@@ -238,8 +238,8 @@ export function EmployeesListView() {
     e.preventDefault();
     try {
       await updateEmployee.mutateAsync({ id: editId, name: editName, department: editDepartment || null, email: editEmail || null });
-      toast.success('Calisan guncellendi'); setEditDialogOpen(false);
-    } catch { toast.error('Calisan guncellenemedi'); }
+      toast.success('Çalışan güncellendi'); setEditDialogOpen(false);
+    } catch { toast.error('Çalışan güncellenemedi'); }
   };
 
   const openProfile = (emp: { id: string; name: string; department: string | null; email: string | null; created_at: string }) => {
@@ -251,26 +251,26 @@ export function EmployeesListView() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h1 className="text-xl sm:text-2xl font-bold">Calisanlar</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Çalışanlar</h1>
         <div className="grid grid-cols-3 sm:flex gap-2">
           <Button size="sm" variant="outline" onClick={handleExport} disabled={!employees?.length}>
-            <Download className="mr-1 h-4 w-4" />Disa Aktar
+            <Download className="mr-1 h-4 w-4" />Dışa Aktar
           </Button>
           <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()}>
-            <Upload className="mr-1 h-4 w-4" />Ice Aktar
+            <Upload className="mr-1 h-4 w-4" />İçe Aktar
           </Button>
           <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleFileSelect} />
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button size="sm"><Plus className="mr-1 h-4 w-4" />Yeni Calisan</Button>
+              <Button size="sm"><Plus className="mr-1 h-4 w-4" />Yeni Çalışan</Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
-              <DialogHeader><DialogTitle>Yeni Calisan Ekle</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>Yeni Çalışan Ekle</DialogTitle></DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4">
-                <div className="space-y-2"><Label>Isim *</Label><Input value={name} onChange={e => setName(e.target.value)} required placeholder="Ahmet Yilmaz" /></div>
-                <div className="space-y-2"><Label>Departman</Label><Input value={department} onChange={e => setDepartment(e.target.value)} placeholder="Muhendislik" /></div>
-                <div className="space-y-2"><Label>E-posta</Label><Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="ahmet@sirket.com" /></div>
-                <Button type="submit" className="w-full" disabled={createEmployee.isPending}>{createEmployee.isPending ? 'Ekleniyor...' : 'Calisan Ekle'}</Button>
+                <div className="space-y-2"><Label>İsim *</Label><Input value={name} onChange={e => setName(e.target.value)} required placeholder="Ahmet Yılmaz" /></div>
+                <div className="space-y-2"><Label>Departman</Label><Input value={department} onChange={e => setDepartment(e.target.value)} placeholder="Mühendislik" /></div>
+                <div className="space-y-2"><Label>E-posta</Label><Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="ahmet@şirket.com" /></div>
+                <Button type="submit" className="w-full" disabled={createEmployee.isPending}>{createEmployee.isPending ? 'Ekleniyor...' : 'Çalışan Ekle'}</Button>
               </form>
             </DialogContent>
           </Dialog>
@@ -287,7 +287,7 @@ export function EmployeesListView() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.total}</p>
-                <p className="text-xs text-muted-foreground">Toplam Calisan</p>
+                <p className="text-xs text-muted-foreground">Toplam Çalışan</p>
               </div>
             </CardContent>
           </Card>
@@ -322,7 +322,7 @@ export function EmployeesListView() {
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Isim veya e-posta ara..."
+              placeholder="İsim veya e-posta ara..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="pl-9"
@@ -407,11 +407,11 @@ export function EmployeesListView() {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Calisan silinsin mi?</AlertDialogTitle>
-                        <AlertDialogDescription>Bu islem zimmet gecmisini de silecektir.</AlertDialogDescription>
+                        <AlertDialogTitle>Çalışan silinsin mi?</AlertDialogTitle>
+                        <AlertDialogDescription>Bu işlem zimmet geçmişini de silecektir.</AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Iptal</AlertDialogCancel>
+                        <AlertDialogCancel>İptal</AlertDialogCancel>
                         <AlertDialogAction onClick={() => handleDelete(emp.id)}>Sil</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -427,7 +427,7 @@ export function EmployeesListView() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Isim</TableHead>
+                <TableHead>İsim</TableHead>
                 <TableHead className="hidden sm:table-cell">Departman</TableHead>
                 <TableHead className="hidden md:table-cell">E-posta</TableHead>
                 <TableHead className="w-28" />
@@ -460,11 +460,11 @@ export function EmployeesListView() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Calisan silinsin mi?</AlertDialogTitle>
-                            <AlertDialogDescription>Bu islem zimmet gecmisini de silecektir.</AlertDialogDescription>
+                            <AlertDialogTitle>Çalışan silinsin mi?</AlertDialogTitle>
+                            <AlertDialogDescription>Bu işlem zimmet geçmişini de silecektir.</AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Iptal</AlertDialogCancel>
+                            <AlertDialogCancel>İptal</AlertDialogCancel>
                             <AlertDialogAction onClick={() => handleDelete(emp.id)}>Sil</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -481,12 +481,12 @@ export function EmployeesListView() {
       {/* Edit dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Calisani Duzenle</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Çalışanı Düzenle</DialogTitle></DialogHeader>
           <form onSubmit={handleUpdate} className="space-y-4">
-            <div className="space-y-2"><Label>Isim *</Label><Input value={editName} onChange={e => setEditName(e.target.value)} required /></div>
+            <div className="space-y-2"><Label>İsim *</Label><Input value={editName} onChange={e => setEditName(e.target.value)} required /></div>
             <div className="space-y-2"><Label>Departman</Label><Input value={editDepartment} onChange={e => setEditDepartment(e.target.value)} /></div>
             <div className="space-y-2"><Label>E-posta</Label><Input type="email" value={editEmail} onChange={e => setEditEmail(e.target.value)} /></div>
-            <Button type="submit" className="w-full" disabled={updateEmployee.isPending}>{updateEmployee.isPending ? 'Kaydediliyor...' : 'Degisiklikleri Kaydet'}</Button>
+            <Button type="submit" className="w-full" disabled={updateEmployee.isPending}>{updateEmployee.isPending ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}</Button>
           </form>
         </DialogContent>
       </Dialog>
@@ -494,13 +494,13 @@ export function EmployeesListView() {
       {/* Import dialog */}
       <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Calisanlari Ice Aktar</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Çalışanları İçe Aktar</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              {importRows.length} satir bulundu. Gerekli: <strong>name</strong>. Opsiyonel: department, email.
+              {importRows.length} satır bulundu. Gerekli: <strong>name</strong>. Opsiyonel: department, email.
             </p>
             <Button onClick={handleImportConfirm} disabled={bulkCreate.isPending} className="w-full">
-              {bulkCreate.isPending ? 'Ice aktariliyor...' : `${importRows.length} calisan ice aktar`}
+              {bulkCreate.isPending ? 'İçe aktarılıyor...' : `${importRows.length} çalışan içe aktar`}
             </Button>
           </div>
         </DialogContent>

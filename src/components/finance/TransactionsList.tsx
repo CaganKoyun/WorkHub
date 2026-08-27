@@ -48,7 +48,7 @@ export function TransactionsList() {
               <SelectItem value="all">Tümü</SelectItem>
               <SelectItem value="income">Gelir</SelectItem>
               <SelectItem value="expense">Gider</SelectItem>
-              <SelectItem value="transfer">Transfer</SelectItem>
+              <SelectItem value="transfer">Havale</SelectItem>
             </SelectContent>
           </Select>
           <AccountsButton openDialog={openNewAcc} setOpenDialog={setOpenNewAcc} />
@@ -117,7 +117,7 @@ function AccountsButton({ openDialog, setOpenDialog }: { openDialog: boolean; se
   const [opening, setOpening] = useState('0');
 
   async function submit() {
-    if (!name.trim()) { toast.error("Isim gerekli"); return; }
+    if (!name.trim()) { toast.error("İsim gerekli"); return; }
     try {
       await create.mutateAsync({ name: name.trim(), type, currency, opening_balance: Number(opening) || 0 });
       toast.success("Hesap eklendi");
@@ -194,7 +194,7 @@ function NewTransactionDialog({ open, onOpenChange }: { open: boolean; onOpenCha
 
   async function submit() {
     if (!description.trim() || !amount) {
-      toast.error("Aciklama ve tutar gerekli"); return;
+      toast.error("Açıklama ve tutar gerekli"); return;
     }
     try {
       await create.mutateAsync({
@@ -232,7 +232,7 @@ function NewTransactionDialog({ open, onOpenChange }: { open: boolean; onOpenCha
                 <SelectContent>
                   <SelectItem value="expense">Gider</SelectItem>
                   <SelectItem value="income">Gelir</SelectItem>
-                  <SelectItem value="transfer">Transfer</SelectItem>
+                  <SelectItem value="transfer">Havale</SelectItem>
                 </SelectContent>
               </Select>
             </div>

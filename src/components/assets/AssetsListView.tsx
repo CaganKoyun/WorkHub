@@ -23,10 +23,10 @@ import {
 import { toast } from 'sonner';
 
 const CONDITION_LABELS_TR: Record<AssetCondition, string> = {
-  excellent: 'Mukemmel',
-  good: 'Iyi',
+  excellent: 'Mükemmel',
+  good: 'İyi',
   fair: 'Orta',
-  poor: 'Kotu',
+  poor: 'Kötü',
   retired: 'Emekli',
 };
 
@@ -97,7 +97,7 @@ export function AssetsListView() {
       a.useful_life_years, a.residual_value_percent, a.notes ?? '',
     ]);
     exportToCsv('assets.csv', ['name','category','serial_number','purchase_date','purchase_cost','condition','location','useful_life_years','residual_value_percent','notes'], rows);
-    toast.success('Varliklar disa aktarildi');
+    toast.success('Varlıklar dışa aktarıldı');
   };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +107,7 @@ export function AssetsListView() {
       const rows = await parseCsvFile(file);
       setImportRows(rows);
       setImportDialogOpen(true);
-    } catch { toast.error('CSV dosyasi okunamadi'); }
+    } catch { toast.error('CSV dosyası okunamadı'); }
     e.target.value = '';
   };
 
@@ -132,12 +132,12 @@ export function AssetsListView() {
           residual_value_percent: Number(r.residual_value_percent) || Number(cat?.residual_value_percent ?? 0),
         };
       });
-    if (mapped.length === 0) { toast.error('Gecerli satir yok. Gerekli: name, purchase_date, purchase_cost'); return; }
+    if (mapped.length === 0) { toast.error('Geçerli satır yok. Gerekli: name, purchase_date, purchase_cost'); return; }
     try {
       await bulkCreate.mutateAsync(mapped);
       toast.success(`${mapped.length} varlik ice aktarildi`);
       setImportDialogOpen(false); setImportRows([]);
-    } catch { toast.error('Varliklar ice aktarilamadi'); }
+    } catch { toast.error('Varlıklar içe aktarılamadı'); }
   };
 
   const assetsWithDep = useMemo(() => (assets ?? []).map(a => ({
@@ -207,9 +207,9 @@ export function AssetsListView() {
       for (const assetId of selected) {
         await assignAsset.mutateAsync({ asset_id: assetId, employee_id: bulkEmployee });
       }
-      toast.success(`${selected.size} varlik atandi`);
+      toast.success(`${selected.size} varlık atandı`);
       setSelected(new Set()); setBulkDialogOpen(false); setBulkEmployee('');
-    } catch { toast.error('Bazi varliklar atanamadi'); }
+    } catch { toast.error('Bazı varlıklar atanamadı'); }
     finally { setBulkAssigning(false); }
   };
 
@@ -219,7 +219,7 @@ export function AssetsListView() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h1 className="text-xl sm:text-2xl font-bold">Varliklar</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Varlıklar</h1>
         <div className="grid grid-cols-3 sm:flex gap-2">
           <Button size="sm" variant="outline" onClick={handleExport} disabled={!assets?.length}>
             <Download className="mr-1 h-4 w-4" />Disa Aktar
@@ -229,7 +229,7 @@ export function AssetsListView() {
           </Button>
           <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleFileSelect} />
           <Link to="/assets/new">
-            <Button size="sm" className="w-full"><Plus className="mr-1 h-4 w-4" />Varlik Ekle</Button>
+            <Button size="sm" className="w-full"><Plus className="mr-1 h-4 w-4" />Varlık Ekle</Button>
           </Link>
         </div>
       </div>
@@ -287,7 +287,7 @@ export function AssetsListView() {
       <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
         <div className="relative w-full sm:max-w-sm sm:flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Varlik ara..." value={search} onChange={e => { setSearch(e.target.value); setPage(0); }} className="pl-9" />
+          <Input placeholder="Varlık ara..." value={search} onChange={e => { setSearch(e.target.value); setPage(0); }} className="pl-9" />
         </div>
         <Select value={filterCategory} onValueChange={v => { setFilterCategory(v); setPage(0); }}>
           <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="Kategori" /></SelectTrigger>
@@ -321,7 +321,7 @@ export function AssetsListView() {
         <div className="space-y-2">{[1,2,3].map(i => <Skeleton key={i} className="h-12 w-full" />)}</div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="text-muted-foreground">Varlik bulunamadi</p>
+          <p className="text-muted-foreground">Varlık bulunamadı</p>
           <Link to="/assets/new" className="mt-2">
             <Button variant="outline" size="sm">Ilk varligini ekle</Button>
           </Link>
@@ -399,12 +399,12 @@ export function AssetsListView() {
 
       <Dialog open={bulkDialogOpen} onOpenChange={setBulkDialogOpen}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>{selected.size} varlik ata</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{selected.size} varlık ata</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Calisan</Label>
+              <Label>Çalışan</Label>
               <Select value={bulkEmployee} onValueChange={setBulkEmployee}>
-                <SelectTrigger><SelectValue placeholder="Calisan sec" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder="Çalışan seç" /></SelectTrigger>
                 <SelectContent>
                   {(employees ?? []).map(e => (
                     <SelectItem key={e.id} value={e.id}>{e.name}{e.department ? ` — ${e.department}` : ''}</SelectItem>
@@ -421,7 +421,7 @@ export function AssetsListView() {
 
       <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Varlik Ice Aktar</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Varlık İçe Aktar</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
               {importRows.length} satir bulundu. Gerekli: <strong>name, purchase_date, purchase_cost</strong>.

@@ -55,7 +55,7 @@ export function PublicDashboardManager() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["public-dashboards"] });
-      toast.success("Dashboard linki olusturuldu");
+      toast.success("Dashboard linki oluşturuldu");
       setNewTitle("Company Dashboard");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -85,7 +85,7 @@ export function PublicDashboardManager() {
   const copyLink = (token: string) => {
     const url = `${window.location.origin}/pub/${token}`;
     void navigator.clipboard.writeText(url);
-    toast.success("Link kopyalandi");
+    toast.success("Link kopyalandı");
   };
 
   return (

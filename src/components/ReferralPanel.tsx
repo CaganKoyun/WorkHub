@@ -43,7 +43,7 @@ export function ReferralPanel() {
       setEmail('');
       const link = `${window.location.origin}/auth?ref=${ref.code}`;
       void navigator.clipboard.writeText(link);
-      toast.success('Referral linki olusturuldu ve kopyalandi');
+      toast.success('Referral linki oluşturuldu ve kopyalandı');
     } catch (e: any) {
       toast.error(e.message);
     }
@@ -52,7 +52,7 @@ export function ReferralPanel() {
   const copyLink = (code: string) => {
     const link = `${window.location.origin}/auth?ref=${code}`;
     void navigator.clipboard.writeText(link);
-    toast.success('Link kopyalandi');
+    toast.success('Link kopyalandı');
   };
 
   return (

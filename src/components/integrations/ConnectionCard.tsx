@@ -58,15 +58,15 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
       });
       setOpen(false);
       if (res?.probe?.ok) {
-        toast.success(`${entry.name} connected -- ${res.probe.tools?.length ?? 0} tools available.`);
+        toast.success(`${entry.name} bağlandı — ${res.probe.tools?.length ?? 0} araç kullanılabilir.`);
       } else if (res?.probe?.authUrl) {
         toast("Oturum açma gerekli — Açılır pencerede OAuth'u tamamlayın — sayfa otomatik yenilenecek.");
         oauth.open(res.probe.authUrl);
       } else {
-        toast.error("Connection failed: " + (res?.probe?.error || "Unknown error"));
+        toast.error("Bağlantı başarısız: " + (res?.probe?.error || "Bilinmeyen hata"));
       }
     } catch (e: any) {
-      toast.error("Connect failed: " + e.message);
+      toast.error("Bağlantı hatası: " + e.message);
     }
   };
 

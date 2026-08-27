@@ -33,7 +33,7 @@ export function ContractsListView() {
   async function setStatus(id: string, status: CrmContractStatus) {
     try {
       await update.mutateAsync({ id, status });
-      toast.success("Sozlesme guncellendi");
+      toast.success("Sözleşme güncellendi");
     } catch (err: unknown) {
       toast.error((err as Error)?.message ?? "Hata");
     }
@@ -79,7 +79,7 @@ export function ContractsListView() {
                 </TableCell>
                 <TableCell className="text-xs">
                   {c.renewal_date ? new Date(c.renewal_date).toLocaleDateString('tr-TR') : '—'}
-                  {c.auto_renew && <Badge variant="outline" className="ml-1 text-[9px]">Auto</Badge>}
+                  {c.auto_renew && <Badge variant="outline" className="ml-1 text-[9px]">Otomatik</Badge>}
                 </TableCell>
                 <TableCell>
                   <Select value={c.status} onValueChange={v => setStatus(c.id, v as CrmContractStatus)}>
@@ -117,7 +117,7 @@ function NewContractDialog({ open, onOpenChange }: { open: boolean; onOpenChange
   const [fileUrl, setFileUrl] = useState('');
 
   async function submit() {
-    if (!title.trim()) { toast.error("Baslik gerekli"); return; }
+    if (!title.trim()) { toast.error("Başlık gerekli"); return; }
     try {
       await create.mutateAsync({
         title: title.trim(),
@@ -131,7 +131,7 @@ function NewContractDialog({ open, onOpenChange }: { open: boolean; onOpenChange
         risky_clauses: risky || null,
         file_url: fileUrl || null,
       });
-      toast.success("Sozlesme olusturuldu");
+      toast.success("Sözleşme oluşturuldu");
       onOpenChange(false);
       setTitle(''); setCompanyId(''); setValue(''); setStart(''); setEnd(''); setRenewal(''); setRisky(''); setFileUrl('');
     } catch (err: unknown) {

@@ -50,15 +50,15 @@ function saveCompanyInfo(info: CompanyInfo) {
 
 export default function Company() {
   return (
-    <DomainWorkspace domain="company" title="Sirket Yapisi">
+    <DomainWorkspace domain="company" title="Şirket Yapısı">
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="flex flex-wrap h-auto">
-          <TabsTrigger value="overview"><LayoutDashboard className="h-3.5 w-3.5 mr-1.5" />Genel Bakis</TabsTrigger>
+          <TabsTrigger value="overview"><LayoutDashboard className="h-3.5 w-3.5 mr-1.5" />Genel Bakış</TabsTrigger>
           <TabsTrigger value="departments"><Building2 className="h-3.5 w-3.5 mr-1.5" />Departmanlar</TabsTrigger>
-          <TabsTrigger value="teams"><Users className="h-3.5 w-3.5 mr-1.5" />Takimlar</TabsTrigger>
-          <TabsTrigger value="titles"><Briefcase className="h-3.5 w-3.5 mr-1.5" />Unvanlar</TabsTrigger>
-          <TabsTrigger value="entities"><Scale className="h-3.5 w-3.5 mr-1.5" />Tuzel Kisilikler</TabsTrigger>
-          <TabsTrigger value="modules"><Layers className="h-3.5 w-3.5 mr-1.5" />Modul Sahipligi</TabsTrigger>
+          <TabsTrigger value="teams"><Users className="h-3.5 w-3.5 mr-1.5" />Takımlar</TabsTrigger>
+          <TabsTrigger value="titles"><Briefcase className="h-3.5 w-3.5 mr-1.5" />Ünvanlar</TabsTrigger>
+          <TabsTrigger value="entities"><Scale className="h-3.5 w-3.5 mr-1.5" />Tüzel Kişilikler</TabsTrigger>
+          <TabsTrigger value="modules"><Layers className="h-3.5 w-3.5 mr-1.5" />Modül Sahipliği</TabsTrigger>
           <TabsTrigger value="permissions"><ShieldCheck className="h-3.5 w-3.5 mr-1.5" />Yetki Paketleri</TabsTrigger>
         </TabsList>
 
@@ -90,7 +90,7 @@ function OverviewTab() {
     saveCompanyInfo(infoForm);
     setCompanyInfo(infoForm);
     setEditingInfo(false);
-    toast.success("Sirket bilgileri kaydedildi");
+    toast.success("Şirket bilgileri kaydedildi");
   };
 
   // build department tree
@@ -118,9 +118,9 @@ function OverviewTab() {
 
   const stats = [
     { label: "Departman", value: departments.length, icon: Building2, color: "text-blue-600 dark:text-blue-400" },
-    { label: "Takim", value: teams.length, icon: Users, color: "text-emerald-600 dark:text-emerald-400" },
-    { label: "Calisan", value: employees.length, icon: UserCheck, color: "text-violet-600 dark:text-violet-400" },
-    { label: "Tuzel Kisilik", value: entities.length, icon: Scale, color: "text-amber-600 dark:text-amber-400" },
+    { label: "Takım", value: teams.length, icon: Users, color: "text-emerald-600 dark:text-emerald-400" },
+    { label: "Çalışan", value: employees.length, icon: UserCheck, color: "text-violet-600 dark:text-violet-400" },
+    { label: "Tüzel Kişilik", value: entities.length, icon: Scale, color: "text-amber-600 dark:text-amber-400" },
   ];
 
   const renderDeptNode = (deptId: string, depth: number): React.ReactNode => {

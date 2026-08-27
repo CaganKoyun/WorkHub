@@ -134,10 +134,10 @@ export function PipelineBoard() {
         probability: stage.probability,
         forecast_category: stage.forecast_category,
       });
-      if (stage.is_won) toast.success("Kazanildi!");
+      if (stage.is_won) toast.success("Kazanıldı!");
       else if (stage.is_lost) toast.success("Kaybedildi");
     } catch (err: unknown) {
-      toast.error((err as Error)?.message ?? "Tasinamadi");
+      toast.error((err as Error)?.message ?? "Taşınamadı");
     }
   }
 
@@ -148,7 +148,7 @@ export function PipelineBoard() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Select value={activePipelineId} onValueChange={setPipelineId}>
-            <SelectTrigger className="w-56"><SelectValue placeholder="Pipeline" /></SelectTrigger>
+            <SelectTrigger className="w-56"><SelectValue placeholder="Pipeline seçin" /></SelectTrigger>
             <SelectContent>
               {(pipelines ?? []).map(p => (
                 <SelectItem key={p.id} value={p.id}>{p.name}{p.is_default ? ' (varsayılan)' : ''}</SelectItem>
@@ -207,7 +207,7 @@ function NewOpportunityDialog({ open, onOpenChange, pipelineId, stages }: {
 
   async function submit() {
     if (!pipelineId || !stageId || !name.trim()) {
-      toast.error("Isim, pipeline ve stage gerekli");
+      toast.error("İsim, pipeline ve aşama gerekli");
       return;
     }
     const stage = stages.find(s => s.id === stageId);
@@ -224,7 +224,7 @@ function NewOpportunityDialog({ open, onOpenChange, pipelineId, stages }: {
         expected_close_date: expectedClose || null,
         description: description || null,
       });
-      toast.success("Firsat olusturuldu");
+      toast.success("Fırsat oluşturuldu");
       onOpenChange(false);
       setName(''); setCompanyId(''); setAmount('0'); setDescription(''); setExpectedClose('');
     } catch (err: unknown) {
@@ -250,7 +250,7 @@ function NewOpportunityDialog({ open, onOpenChange, pipelineId, stages }: {
               </Select>
             </div>
             <div>
-              <Label>Stage *</Label>
+              <Label>Aşama *</Label>
               <Select value={stageId} onValueChange={setStageId}>
                 <SelectTrigger><SelectValue placeholder="Seç" /></SelectTrigger>
                 <SelectContent>

@@ -64,22 +64,22 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
     if (!selectedEmployee) return;
     try {
       await assignAsset.mutateAsync({ asset_id: assetId, employee_id: selectedEmployee, notes: assignNotes || null });
-      toast.success('Asset assigned');
+      toast.success('Varlık atandı');
       setAssignDialogOpen(false); setSelectedEmployee(''); setAssignNotes('');
-    } catch { toast.error('Failed to assign asset'); }
+    } catch { toast.error('Varlık atanamadı'); }
   };
 
   const handleUnassign = async () => {
     if (!currentAssignment) return;
     try {
       await unassignAsset.mutateAsync({ assignmentId: currentAssignment.id, assetId });
-      toast.success('Asset unassigned');
-    } catch { toast.error('Failed to unassign asset'); }
+      toast.success('Atama kaldırıldı');
+    } catch { toast.error('Atama kaldırılamadı'); }
   };
 
   const handleArchive = async () => {
-    try { await archiveAsset.mutateAsync(assetId); toast.success('Asset archived'); navigate('/assets'); }
-    catch { toast.error('Failed to archive asset'); }
+    try { await archiveAsset.mutateAsync(assetId); toast.success('Varlık arşivlendi'); navigate('/assets'); }
+    catch { toast.error('Varlık arşivlenemedi'); }
   };
 
   return (
@@ -92,7 +92,7 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
         </div>
         <div className="flex items-center gap-2">
           <Link to={`/assets/${assetId}/edit`}>
-            <Button variant="outline" size="sm"><Pencil className="mr-1 h-4 w-4" />Edit</Button>
+            <Button variant="outline" size="sm"><Pencil className="mr-1 h-4 w-4" />Düzenle</Button>
           </Link>
           <Badge className={`border ${CONDITION_COLORS[asset.condition]}`}>{CONDITION_LABELS[asset.condition]}</Badge>
         </div>
@@ -100,15 +100,15 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle className="text-base">Details</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">Detaylar</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            <InfoRow icon={<DollarSign className="h-4 w-4" />} label="Purchase cost" value={`$${Number(asset.purchase_cost).toLocaleString()}`} />
-            <InfoRow icon={<Calendar className="h-4 w-4" />} label="Purchase date" value={format(new Date(asset.purchase_date), 'MMM d, yyyy')} />
-            <InfoRow icon={<MapPin className="h-4 w-4" />} label="Location" value={asset.location ?? '—'} />
-            <InfoRow icon={<Hash className="h-4 w-4" />} label="Category" value={asset.asset_categories?.name ?? '—'} />
+            <InfoRow icon={<DollarSign className="h-4 w-4" />} label="Satın alma maliyeti" value={`$${Number(asset.purchase_cost).toLocaleString()}`} />
+            <InfoRow icon={<Calendar className="h-4 w-4" />} label="Satın alma tarihi" value={format(new Date(asset.purchase_date), 'MMM d, yyyy')} />
+            <InfoRow icon={<MapPin className="h-4 w-4" />} label="Konum" value={asset.location ?? '—'} />
+            <InfoRow icon={<Hash className="h-4 w-4" />} label="Kategori" value={asset.asset_categories?.name ?? '—'} />
             {asset.notes && (
               <div className="pt-2 border-t">
-                <p className="text-xs text-muted-foreground mb-1">Notes</p>
+                <p className="text-xs text-muted-foreground mb-1">Notlar</p>
                 <p className="text-sm">{asset.notes}</p>
               </div>
             )}
@@ -116,15 +116,15 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
         </Card>
 
         <Card>
-          <CardHeader><CardTitle className="text-base">Depreciation</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">Amortisman</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs text-muted-foreground">Current value</p>
+                <p className="text-xs text-muted-foreground">Güncel değer</p>
                 <p className="text-xl font-bold font-mono">${dep.currentValue.toLocaleString()}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Depreciation</p>
+                <p className="text-xs text-muted-foreground">Amortisman</p>
                 <p className="text-xl font-bold font-mono text-destructive">${dep.totalDepreciation.toLocaleString()}</p>
               </div>
             </div>
@@ -132,8 +132,8 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
               <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${100 - dep.percentDepreciated}%` }} />
             </div>
             <p className="text-xs text-muted-foreground">
-              {dep.percentDepreciated}% depreciated · {asset.useful_life_years} year useful life
-              {dep.isFullyDepreciated && ' · Fully depreciated'}
+              %{dep.percentDepreciated} amortisman · {asset.useful_life_years} yıl faydalı ömür
+              {dep.isFullyDepreciated && ' · Tamamen amortize edildi'}
             </p>
             <div className="h-40 w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -141,7 +141,7 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis dataKey="date" tick={{ fontSize: 10 }} interval={2} />
                   <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`} />
-                  <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, 'Value']} />
+                  <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, 'Değer']} />
                   <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
@@ -152,22 +152,22 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
 
       <Card>
         <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <CardTitle className="text-base">Assignment</CardTitle>
+          <CardTitle className="text-base">Atama</CardTitle>
           <div className="flex gap-2">
             {currentAssignment ? (
               <Button variant="outline" size="sm" onClick={handleUnassign} disabled={unassignAsset.isPending}>
-                <UserMinus className="mr-1 h-4 w-4" />Unassign
+                <UserMinus className="mr-1 h-4 w-4" />Atamayı kaldır
               </Button>
             ) : (
               <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
-                <DialogTrigger asChild><Button size="sm"><UserPlus className="mr-1 h-4 w-4" />Assign</Button></DialogTrigger>
+                <DialogTrigger asChild><Button size="sm"><UserPlus className="mr-1 h-4 w-4" />Ata</Button></DialogTrigger>
                 <DialogContent className="max-w-md">
-                  <DialogHeader><DialogTitle>Assign asset</DialogTitle></DialogHeader>
+                  <DialogHeader><DialogTitle>Varlık ata</DialogTitle></DialogHeader>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>Employee</Label>
+                      <Label>Çalışan</Label>
                       <Select value={selectedEmployee} onValueChange={setSelectedEmployee}>
-                        <SelectTrigger><SelectValue placeholder="Select employee" /></SelectTrigger>
+                        <SelectTrigger><SelectValue placeholder="Çalışan seçin" /></SelectTrigger>
                         <SelectContent>
                           {(employees ?? []).map(e => (
                             <SelectItem key={e.id} value={e.id}>{e.name}{e.department ? ` — ${e.department}` : ''}</SelectItem>
@@ -176,11 +176,11 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Notes (optional)</Label>
-                      <Input value={assignNotes} onChange={e => setAssignNotes(e.target.value)} placeholder="e.g. Onboarding" />
+                      <Label>Notlar (opsiyonel)</Label>
+                      <Input value={assignNotes} onChange={e => setAssignNotes(e.target.value)} placeholder="Örn. İşe alım" />
                     </div>
                     <Button onClick={handleAssign} disabled={!selectedEmployee || assignAsset.isPending} className="w-full">
-                      {assignAsset.isPending ? 'Assigning...' : 'Assign'}
+                      {assignAsset.isPending ? 'Atanıyor...' : 'Ata'}
                     </Button>
                   </div>
                 </DialogContent>
@@ -191,21 +191,21 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
         <CardContent>
           {currentAssignment ? (
             <div className="rounded-md bg-accent p-3">
-              <p className="text-sm font-medium">Currently assigned to <span className="text-primary">{currentAssignment.employees?.name}</span></p>
+              <p className="text-sm font-medium"><span className="text-primary">{currentAssignment.employees?.name}</span> kişisine atanmış</p>
               <p className="text-xs text-muted-foreground">
-                Since {format(new Date(currentAssignment.assigned_date), 'MMM d, yyyy')}
+                {format(new Date(currentAssignment.assigned_date), 'MMM d, yyyy')} tarihinden beri
                 {currentAssignment.notes && ` · ${currentAssignment.notes}`}
               </p>
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">Not currently assigned</p>
+            <p className="text-sm text-muted-foreground">Şu anda atanmamış</p>
           )}
         </CardContent>
       </Card>
 
       {(assignments ?? []).length > 0 && (
         <Card>
-          <CardHeader><CardTitle className="text-base">Assignment history</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">Atama geçmişi</CardTitle></CardHeader>
           <CardContent>
             <div className="space-y-3">
               {(assignments ?? []).map(a => (
@@ -216,7 +216,7 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
                       <span className="font-medium">{a.employees?.name}</span>{' '}
                       <span className="text-muted-foreground">
                         {format(new Date(a.assigned_date), 'MMM d, yyyy')}
-                        {a.returned_date ? ` → ${format(new Date(a.returned_date), 'MMM d, yyyy')}` : ' → Present'}
+                        {a.returned_date ? ` → ${format(new Date(a.returned_date), 'MMM d, yyyy')}` : ' → Devam ediyor'}
                       </span>
                     </p>
                     {a.notes && <p className="text-xs text-muted-foreground">{a.notes}</p>}
@@ -231,16 +231,16 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
       <div className="flex justify-end">
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="outline" size="sm" className="text-destructive"><Archive className="mr-1 h-4 w-4" />Archive asset</Button>
+            <Button variant="outline" size="sm" className="text-destructive"><Archive className="mr-1 h-4 w-4" />Varlığı arşivle</Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Archive this asset?</AlertDialogTitle>
-              <AlertDialogDescription>This will remove it from the active asset list.</AlertDialogDescription>
+              <AlertDialogTitle>Bu varlık arşivlensin mi?</AlertDialogTitle>
+              <AlertDialogDescription>Aktif varlık listesinden kaldırılacaktır.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleArchive}>Archive</AlertDialogAction>
+              <AlertDialogCancel>İptal</AlertDialogCancel>
+              <AlertDialogAction onClick={handleArchive}>Arşivle</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

@@ -39,15 +39,15 @@ export function CustomMcpDialog({ isAdmin, trigger }: { isAdmin: boolean; trigge
       setOpen(false);
       setName(""); setUrl(""); setBearer("");
       if (res?.probe?.ok) {
-        toast.success(`Custom MCP connected -- ${res.probe.tools?.length ?? 0} tools discovered.`);
+        toast.success(`Özel MCP bağlandı — ${res.probe.tools?.length ?? 0} araç keşfedildi.`);
       } else if (res?.probe?.authUrl) {
         oauth.open(res.probe.authUrl);
         toast("Oturum açma gerekli — Açılır pencerede OAuth'u tamamlayın — liste otomatik yenilenecek.");
       } else {
-        toast.error("Probe failed: " + (res?.probe?.error || "Server unreachable"));
+        toast.error("Test başarısız: " + (res?.probe?.error || "Sunucuya ulaşılamıyor"));
       }
     } catch (e: any) {
-      toast.error("Connect failed: " + e.message);
+      toast.error("Bağlantı hatası: " + e.message);
     }
   };
 

@@ -52,7 +52,7 @@ export function CashFlowView() {
             <TableHead>Açılış</TableHead>
             <TableHead>Beklenen Gelir</TableHead>
             <TableHead>Beklenen Gider</TableHead>
-            <TableHead>Net</TableHead>
+            <TableHead>Net Fark</TableHead>
             <TableHead>Kapanış</TableHead>
           </TableRow></TableHeader>
           <TableBody>

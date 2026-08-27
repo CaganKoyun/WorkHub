@@ -44,10 +44,10 @@ const STATUS_TONE: Record<GoalStatus, string> = {
 };
 
 const PERIOD_LABELS: Record<GoalPeriod, string> = {
-  monthly: "Aylik",
-  quarterly: "Ceyreklik",
-  yearly: "Yillik",
-  custom: "Ozel",
+  monthly: "Aylık",
+  quarterly: "Çeyreklik",
+  yearly: "Yıllık",
+  custom: "Özel",
 };
 
 const EMPTY_FORM = {
@@ -71,7 +71,7 @@ function RelatedObjects({ goalId }: { goalId: string }) {
         from_type: "goal", from_id: goalId,
         to_type: linkForm.to_type, to_id: linkForm.to_id,
       });
-      toast.success("Baglanti eklendi");
+      toast.success("Bağlantı eklendi");
       setAdding(false);
       setLinkForm({ to_type: "project", to_id: "" });
     } catch (e) {
@@ -82,15 +82,15 @@ function RelatedObjects({ goalId }: { goalId: string }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-medium">Iliskili Nesneler</h4>
+        <h4 className="text-sm font-medium">İlişkili Nesneler</h4>
         <Button variant="ghost" size="sm" onClick={() => setAdding(!adding)}>
-          <Link2 className="h-3.5 w-3.5 mr-1" />Bagla
+          <Link2 className="h-3.5 w-3.5 mr-1" />Bağla
         </Button>
       </div>
       {adding && (
         <div className="flex gap-2 items-end">
           <div className="flex-1">
-            <Label className="text-xs">Tur</Label>
+            <Label className="text-xs">Tür</Label>
             <Select value={linkForm.to_type} onValueChange={v => setLinkForm({ ...linkForm, to_type: v as LinkableType })}>
               <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -112,7 +112,7 @@ function RelatedObjects({ goalId }: { goalId: string }) {
       {isLoading ? (
         <Skeleton className="h-8" />
       ) : !links?.length ? (
-        <p className="text-xs text-muted-foreground">Henuz baglanti yok</p>
+        <p className="text-xs text-muted-foreground">Henüz bağlantı yok</p>
       ) : (
         <div className="space-y-1">
           {links.map(l => {
@@ -143,8 +143,8 @@ function GoalForm({ form, setForm, goals, editingId }: {
 
   return (
     <div className="space-y-3">
-      <div><Label>Baslik</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
-      <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
+      <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
+      <div><Label>Açıklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
       <div className="grid grid-cols-2 gap-3">
         <div>
           <Label>Durum</Label>
@@ -156,26 +156,26 @@ function GoalForm({ form, setForm, goals, editingId }: {
           </Select>
         </div>
         <div>
-          <Label>Donem</Label>
+          <Label>Dönem</Label>
           <Select value={form.period} onValueChange={v => setForm({ ...form, period: v as GoalPeriod })}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="monthly">Aylik</SelectItem>
-              <SelectItem value="quarterly">Ceyreklik</SelectItem>
-              <SelectItem value="yearly">Yillik</SelectItem>
-              <SelectItem value="custom">Ozel</SelectItem>
+              <SelectItem value="monthly">Aylık</SelectItem>
+              <SelectItem value="quarterly">Çeyreklik</SelectItem>
+              <SelectItem value="yearly">Yıllık</SelectItem>
+              <SelectItem value="custom">Özel</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
       <div>
-        <Label>Ilerleme (%)</Label>
+        <Label>İlerleme (%)</Label>
         <Input type="number" min={0} max={100} value={form.progress}
           onChange={e => setForm({ ...form, progress: Number(e.target.value) })} />
       </div>
       <div className="grid grid-cols-3 gap-3">
         <div>
-          <Label>Hedef Degeri</Label>
+          <Label>Hedef Değeri</Label>
           <Input type="number" value={form.target_value}
             onChange={e => setForm({ ...form, target_value: e.target.value })}
             placeholder="orn. 1000000" />
@@ -490,7 +490,7 @@ export default function Goals() {
                 {(detailGoal.target_value != null || detailGoal.current_value != null) && (
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <Label className="text-xs text-muted-foreground">Hedef Degeri</Label>
+                      <Label className="text-xs text-muted-foreground">Hedef Değeri</Label>
                       <div className="text-sm">{detailGoal.target_value ?? "-"}</div>
                     </div>
                     <div>
