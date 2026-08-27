@@ -96,7 +96,7 @@ export default function Roadmap() {
         <EmptyState
           icon={FolderKanban}
           title="Henuz proje yok"
-          description="Roadmap'i doldurmak icin ilk projenizi olusturun."
+          description="Roadmap'i doldurmak için ilk projenizi oluşturun."
           action={{ label: "Yeni proje", onClick: () => window.location.assign("/projects/new") }}
         />
       ) : (

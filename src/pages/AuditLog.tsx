@@ -70,7 +70,7 @@ function LogRow({ row, membersById }: { row: AuditRow; membersById: Map<string, 
           </div>
           <div className="text-[11px] text-muted-foreground">
             {actor?.full_name ?? 'sistem'} · {new Date(row.created_at).toLocaleString('tr-TR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-            {row.changed_keys.length > 0 && ` · ${row.changed_keys.length} alan degisti`}
+            {row.changed_keys.length > 0 && ` · ${row.changed_keys.length} alan değişti`}
           </div>
         </div>
         {hasDetail && (open ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />)}
@@ -256,7 +256,7 @@ export default function AuditLog() {
             className="h-7 w-[130px] text-[12px]"
             value={fromDate}
             onChange={e => { setFromDate(e.target.value); setOffset(0); }}
-            placeholder="Baslangic"
+            placeholder="Başlangıç"
           />
           <span className="text-[11px] text-muted-foreground">—</span>
           <Input
@@ -264,7 +264,7 @@ export default function AuditLog() {
             className="h-7 w-[130px] text-[12px]"
             value={toDate}
             onChange={e => { setToDate(e.target.value); setOffset(0); }}
-            placeholder="Bitis"
+            placeholder="Bitiş"
           />
         </div>
         {hasActiveFilters && (
@@ -289,7 +289,7 @@ export default function AuditLog() {
       <div className="flex items-center justify-between">
         <div className="text-[11px] text-muted-foreground">
           {rows.length > 0 ? `${offset + 1}–${offset + rows.length}` : '0'} sonuc
-          {isFetching && ' · yukleniyor…'}
+          {isFetching && ' · yükleniyor…'}
         </div>
         <div className="flex gap-2">
           <Button size="sm" variant="ghost" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - 50))}>← Onceki</Button>

@@ -22,11 +22,11 @@ const KIND_ICON: Record<string, React.ElementType> = {
 const KIND_LABEL: Record<string, string> = {
   approval_created: "Yeni onay talebi",
   approval_overdue: "Geciken onay",
-  decision_review_due: "Karar gozden gecirme",
-  task_assigned: "Gorev atandi",
+  decision_review_due: "Karar gözden geçirme",
+  task_assigned: "Görev atandı",
   mention_in_comment: "Bahsedildin",
-  signal_scan_detected: "Sinyal algilandi",
-  review_reminder: "Gozden gecirme hatirlatmasi",
+  signal_scan_detected: "Sinyal algılandı",
+  review_reminder: "Gözden geçirme hatırlatması",
 };
 
 function timeAgo(iso: string): string {
@@ -84,7 +84,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
               <Bell className="h-10 w-10 text-muted-foreground/40" />
               <p className="text-sm font-medium">Bildirim yok</p>
               <p className="max-w-[260px] text-xs text-muted-foreground">
-                Onay talepleri, karar gozden gecirmeleri ve gorev atamalari burada gorunur.
+                Onay talepleri, karar gözden geçirmeleri ve görev atamaları burada görünür.
               </p>
             </div>
           ) : (

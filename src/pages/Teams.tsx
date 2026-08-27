@@ -272,7 +272,7 @@ export default function Teams() {
           <EmptyState
             icon={UsersIcon}
             title="Henuz ekip yok"
-            description="Ekipleri organize etmek icin ilk ekibinizi olusturun."
+            description="Ekipleri organize etmek için ilk ekibinizi oluşturun."
             action={{ label: "Yeni ekip", onClick: () => setTeamOpen(true) }}
           />
         ) : (

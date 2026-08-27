@@ -438,10 +438,10 @@ function initSparkHQ(root: HTMLElement) {
      room("design","Design Studio",[0,36,44,30],"ok",{mission:"Sarj akisi v3 testte",pct:80,note:"Test Persembe",wrong:[],mile:["Usability test","2 gun"],
        members:[m("Zeynep Tan","Product Designer",4,0),m("Arda Koc","UI Designer",3,0)],
        tasks:[t("Sarj akisi v3 prototip","Zeynep T.","Persembe"),t("Token temizliği","Arda K.","Bitti",false,true)]}),
-     room("qa","QA Lab",[56,36,44,30],"ok",{mission:"Tam regresyon",pct:60,note:"%60 tamam",wrong:[],mile:["Regresyon bitisi","3 gun"],
+     room("qa","QA Lab",[56,36,44,30],"ok",{mission:"Tam regresyon",pct:60,note:"%60 tamam",wrong:[],mile:["Regresyon bitişi","3 gun"],
        members:[m("Baran Ozturk","QA Engineer",5,0)],
        tasks:[t("Regresyon kosusu","Baran O.","Persembe")]}),
-     room("platform","Platform",[0,72,100,28],"ahead",{mission:"Altyapi maliyeti -%15",pct:90,note:"Hedefin onunde",wrong:[],mile:["CDN gecisi","tamamlandi"],
+     room("platform","Platform",[0,72,100,28],"ahead",{mission:"Altyapi maliyeti -%15",pct:90,note:"Hedefin onunde",wrong:[],mile:["CDN gecisi","tamamlandı"],
        members:[m("Efe Duran","DevOps",4,0)],
        tasks:[t("Monitoring alarmlari","Efe D.","Cuma"),t("CDN gecisi","Efe D.","Bitti",false,true)]}),
    ]},
@@ -450,7 +450,7 @@ function initSparkHQ(root: HTMLElement) {
        wrong:["Kreatif uretimi launch filmine bagimli"],mile:["Kampanya seti","3 gun"],
        members:[m("Sevval Beyhan","Growth Lead",5,0),m("Emre Gur","Performance",6,1)],
        tasks:[t("Meta kampanya kurulumu","Emre G.","Persembe"),t("Kreatif brief revizyonu","Sevval B.","Yarin",true)]}),
-     room("product-room","Product",[56,0,44,30],"ahead",{mission:"Launch feature set",pct:84,note:"Planin onunde",wrong:[],mile:["Feature freeze","tamamlandi"],
+     room("product-room","Product",[56,0,44,30],"ahead",{mission:"Launch feature set",pct:84,note:"Planin onunde",wrong:[],mile:["Feature freeze","tamamlandı"],
        members:[m("Ela Sarp","PM",6,0),m("Ozan Kaya","APM",4,0)],
        tasks:[t("Launch feature QA","Ela S.","Cuma")]}),
      room("content","Content & PR",[0,36,44,30],"ok",{mission:"Basin kiti + video",pct:66,note:"Son revizyonda",
@@ -518,12 +518,12 @@ function initSparkHQ(root: HTMLElement) {
    "Bugun · Gecikme 4 güne çıktı; kreatifler bekledigi icin Growth Marketing de RiSKTE."];
 
   const PDETAIL: Record<string,{st:string;today:string;working:string[];waiting:[string,string][];goals:[string,number][];recent:string[]}>={
-   "Cagan Koyun":{st:"warn",today:"3 toplanti · 6 gorev · 2 onay",
+   "Cagan Koyun":{st:"warn",today:"3 toplanti · 6 görev · 2 onay",
      working:["Launch filmi onayi","Yatirimci sunumu","is Bankasi partnership"],
      waiting:[["Launch filmini onayla","risk"],["Growth butcesini onayla","risk"],["Fleet sozlesmesini imzala","warn"]],
      goals:[["Launch Spark",68],["is Bankasi'ni kapat",45]],
      recent:["Kanal butcesini onayladi","Basin kitine yorum yapti"]},
-   "Burak Cavdur":{st:"risk",today:"1 toplanti · 8 gorev · 3 gecikmis",
+   "Burak Cavdur":{st:"risk",today:"1 toplanti · 8 görev · 3 gecikmis",
      working:["Android build final","SPK-231 crash","Store metadata"],
      waiting:[["Backend refactor'in bitmesi","risk"]],
      goals:[["v2.4 Store'da",72]],
@@ -603,7 +603,7 @@ function initSparkHQ(root: HTMLElement) {
     member:{label:"Uye (Burak)",person:"Burak Cavdur",homeFloor:"urun",homeRoom:"mobile",
       greeting:"Gunaydin Burak.",roleSub:"Mobile Squad masanda oturuyorsun.",
       briefing:["🔴 Dikkatini bekleyen: Android build final — yarin, launch'i blokluyor",
-        "Bugun: 3 gorev · 1 toplanti","Seni bekleyenler: Backend refactor (Diren)",
+        "Bugun: 3 görev · 1 toplanti","Seni bekleyenler: Backend refactor (Diren)",
         "Ekibin: Mobile Squad · YOLUNDA · v2.4 %72"],
       floorAccess:{growth:"pulse",satis:"pulse",finans:"shape",lobi:"pulse"},ownRooms:["mobile"],
       avatar:{skin:"#D4A574",hair:"#1a1a1a",hairStyle:"curly",acc:"headset",accColor:"var(--accent)",shirt:"#065f46",badge:"💻"}},
@@ -620,7 +620,7 @@ function initSparkHQ(root: HTMLElement) {
   function pdOf(mm: Member) {
     if(PDETAIL[mm.name])return PDETAIL[mm.name];
     return{st:mm.late>=3?"risk":mm.late>=1?"warn":"ok",
-      today:`${mm.g} gorev`+(mm.late?` · ${mm.late} gecikmis`:""),
+      today:`${mm.g} görev`+(mm.late?` · ${mm.late} gecikmis`:""),
       working:[] as string[],waiting:[] as [string,string][],goals:[] as [string,number][],recent:[] as string[]};
   }
 
@@ -1058,7 +1058,7 @@ function initSparkHQ(root: HTMLElement) {
       if(state.floor === fid) goHQ();
       else renderHQ();
       fakeAct(`"${f.name}" kati silindi`);
-    }, {note: `<b>${f.name}</b> kati ve icindeki tum odalar kalici olarak silinecek. Bu islem geri alinamaz.`, okLabel:"Kati Sil", danger: true});
+    }, {note: `<b>${f.name}</b> kati ve icindeki tum odalar kalici olarak silinecek. Bu işlem geri alınamaz.`, okLabel:"Kati Sil", danger: true});
   }
 
   function addRoom() {
@@ -1415,13 +1415,13 @@ function initSparkHQ(root: HTMLElement) {
         ${pd.waiting.length?`<div class="sh-sec"><h6>Bekleyenler</h6>${pd.waiting.map(([w,k])=>`<div class="li"><span class="ldot" style="background:var(--${k})"></span>${w}</div>`).join("")}</div>`:""}
         ${pd.goals.length?`<div class="sh-sec"><h6>Hedefler</h6>${pd.goals.map(([g,p])=>`<div class="goalline">${g}<span class="gbar" style="max-width:100px"><i style="width:${p}%"></i></span><span class="gp" style="font-variant-numeric:tabular-nums">%${p}</span></div>`).join("")}</div>`:""}
         ${pd.recent.length?`<div class="sh-sec"><h6>Son hareketler</h6>${pd.recent.map(x=>`<div class="li"><span class="ldot" style="background:var(--hover)"></span><span style="color:var(--muted)">${x}</span></div>`).join("")}</div>`:""}
-        <div class="sh-sec"><h6>Gorevleri</h6>
+        <div class="sh-sec"><h6>Görevleri</h6>
           ${(r.tasks||[]).filter(tk=>tk.who.startsWith(mm.name.split(" ")[0])).map(tk=>`
             <div class="li"><span class="ldot" style="background:${tk.done?"var(--ok)":tk.urgent?"var(--risk)":"var(--accent)"}"></span>
-            <span>${tk.tt}<div class="lmeta">${tk.day}${tk.urgent?" · acil":""}</div></span></div>`).join("")||`<div style="font-size:12px;color:var(--dim)">Listelenen gorev yok.</div>`}
+            <span>${tk.tt}<div class="lmeta">${tk.day}${tk.urgent?" · acil":""}</div></span></div>`).join("")||`<div style="font-size:12px;color:var(--dim)">Listelenen görev yok.</div>`}
         </div>`;
       acts.innerHTML=`<button class="btn-lime" data-act="msg">Mesaj</button>
-        <button class="btn-ghost" data-act="assign">Gorev Ata</button>
+        <button class="btn-ghost" data-act="assign">Görev Ata</button>
         <button class="btn-ghost" data-act="week">Haftasini Gor</button>
         ${state.role==="owner"?`<button class="btn-ghost" data-act="empathy" style="font-size:11px">👁 Gözünden Gör</button>`:""}`;
       acts.querySelectorAll("[data-act]").forEach(b=>{
@@ -1606,21 +1606,21 @@ function initSparkHQ(root: HTMLElement) {
        ["Dünden beri ne değişti?","Growth Marketing de RiSKTE'ye düştü; gecikme 3'ten 4 güne çıktı. Kaynak ayni: Android release."]],
    growth:[["Growth neden riskte?","Kritik yol: Android release gecikti → Launch Ops 4 gun geride → kreatifler launch filmini bekledigi icin Growth Marketing de kaydi."],
        ["Launch'i kim blokluyor?","iki kisi uzerinde dugumleniyor: Burak (Android build final, yarin) ve sen (launch filmi onayi + Growth butcesi)."]],
-   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gosteriyor."],
+   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gösteriyor."],
        ["Kim yardima ihtiyac duyuyor?","Kirmizi halkali kisiler gecikmis isi olanlar."]]};
   const ASK_QA_MEMBER: Record<string,[string,string][]>={
-   hq:[["Şirket bugün nasıl?","Urun kati yolunda; senin kritik isin Android build (yarin). Sirket genelinde Growth kati kirmizi gorunuyor — detayi kat liderinde."],
-       ["Benim gunum nasil?","3 gorev, 1 toplanti. Android build final yarin bitirilmeli — launch'i blokluyor."],
+   hq:[["Şirket bugün nasıl?","Ürün katı yolunda; senin kritik isin Android build (yarin). Sirket genelinde Growth kati kirmizi gorunuyor — detayi kat liderinde."],
+       ["Benim gunum nasil?","3 görev, 1 toplanti. Android build final yarin bitirilmeli — launch'i blokluyor."],
        ["Finans nasıl?","Bu alana erişimin yok. istersen Onur'a soru iletebilirim ya da erişim istegi açabilirim."]],
    room:[["Ekibim nasil?","Mobile Squad yolunda — v2.4 %72'de. Android build yarin bitirilmeli."],
        ["Kime sormaliyim?","Backend refactor icin Diren'e, store metadata icin ipek'e sor."]]};
   const ASK_QA_LEAD: Record<string,[string,string][]>={
-   hq:[["Şirket bugün nasıl?","Growth katin riskte — 4 gun gecikme. Urun yolunda, Satış yolunda. Finans detayına erişimin yok."],
+   hq:[["Şirket bugün nasıl?","Growth katin riskte — 4 gun gecikme. Ürün yolunda, Satış yolunda. Finans detayına erişimin yok."],
        ["Katim nasil?","2 ekip riskte (Growth Marketing, Launch Ops), 1 ileride (Product), 3 yolunda. Kritik yol: Android release."],
        ["Dünden beri ne değişti?","Gecikme 3'ten 4 güne çıktı. Growth Marketing de RiSKTE'ye düştü."]],
    growth:[["Launch'i kim blokluyor?","Burak (Android build final) ve Cagan (launch filmi onayi + butce). ikisi de yarin/bugun cozulebilir."],
        ["Kreatifler ne zaman hazir?","Launch filmi onayina bagli — Cagan'dan geldiginde kreatif uretimi baslar. Tahmini: 2-3 gun."]],
-   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gosteriyor."],
+   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gösteriyor."],
        ["Kim yardima ihtiyac duyuyor?","Kirmizi halkali kisiler gecikmis isi olanlar."]]};
   function askQA(){
     const r=state.role;

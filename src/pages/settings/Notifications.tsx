@@ -12,11 +12,11 @@ import {
 
 const TRIGGERS: { key: keyof NotificationPreferences; label: string; description: string }[] = [
   { key: "approval_created", label: "Yeni onay talebi", description: "Sana atanan onay talepleri" },
-  { key: "approval_overdue", label: "Geciken onay", description: "48 saati asan bekleyen onaylar" },
-  { key: "decision_review_due", label: "Karar gozden gecirme", description: "90 gunu dolan kararlar" },
-  { key: "task_assigned", label: "Gorev atamasi", description: "Sana atanan yeni gorevler" },
+  { key: "approval_overdue", label: "Geciken onay", description: "48 saati aşan bekleyen onaylar" },
+  { key: "decision_review_due", label: "Karar gözden geçirme", description: "90 günü dolan kararlar" },
+  { key: "task_assigned", label: "Görev ataması", description: "Sana atanan yeni görevler" },
   { key: "mention_in_comment", label: "Bahsetme", description: "Yorumlarda @bahsedilme" },
-  { key: "signal_scan_detected", label: "Sinyal algilama", description: "AI sinyal taramasi sonuclari" },
+  { key: "signal_scan_detected", label: "Sinyal algılama", description: "AI sinyal taraması sonuçları" },
 ];
 
 export default function NotificationSettings() {

@@ -62,17 +62,17 @@ export function ReferralPanel() {
         <StatCard title="Gonderilen" value={stats.totalSent} icon={Users} />
         <StatCard title="Kayit olan" value={stats.signedUp} icon={UserCheck} />
         <StatCard title="Aktif" value={stats.activated} icon={TrendingUp} />
-        <StatCard title="Donusum" value={`${stats.conversionRate}%`} icon={Gift} />
+        <StatCard title="Dönüşüm" value={`${stats.conversionRate}%`} icon={Gift} />
       </div>
 
       {/* Create referral */}
       <div className="rounded-md border border-border/60 bg-card p-4">
-        <h3 className="text-[13px] font-semibold mb-3">Yeni referral olustur</h3>
+        <h3 className="text-[13px] font-semibold mb-3">Yeni referral oluştur</h3>
         <div className="flex items-end gap-3">
           <div className="flex-1">
             <Input
               type="email"
-              placeholder="Email (opsiyonel — bos birakabilirsin)"
+              placeholder="Email (opsiyonel — boş bırakabilirsin)"
               value={email}
               onChange={e => setEmail(e.target.value)}
               className="h-9 text-[13px]"
@@ -80,20 +80,20 @@ export function ReferralPanel() {
           </div>
           <Button onClick={handleCreate} disabled={createReferral.isPending} className="h-9 gap-1.5">
             {createReferral.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-            Olustur ve kopyala
+            Oluştur ve kopyala
           </Button>
         </div>
         <p className="text-[11px] text-muted-foreground mt-2">
-          Link otomatik olarak panoya kopyalanir. Email belirtirsen, davet icin takip edilir.
+          Link otomatik olarak panoya kopyalanır. Email belirtirsen, davet için takip edilir.
         </p>
       </div>
 
       {/* Referral list */}
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Yukleniyor...</p>
+        <p className="text-sm text-muted-foreground">Yükleniyor...</p>
       ) : (referrals ?? []).length === 0 ? (
         <div className="rounded-md border border-dashed border-border/60 py-10 text-center text-[13px] text-muted-foreground">
-          Henuz referral yok. Yukardaki form ile ilk davet linkini olustur.
+          Henüz referral yok. Yukarıdaki form ile ilk davet linkini oluştur.
         </div>
       ) : (
         <div className="rounded-md border border-border/60 overflow-hidden divide-y divide-border/40">

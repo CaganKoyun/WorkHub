@@ -225,7 +225,7 @@ function RecentActivityFeed() {
   if (!items || items.length === 0) return null;
 
   const typeConfig = {
-    task: { icon: CheckSquare, label: "Gorev", color: "text-info" },
+    task: { icon: CheckSquare, label: "Görev", color: "text-info" },
     bug: { icon: Bug, label: "Bug", color: "text-destructive" },
     decision: { icon: Gavel, label: "Karar", color: "text-warning" },
   };

@@ -236,9 +236,9 @@ export default function Timesheet() {
       ) : weekTotal === 0 ? (
         <div className="rounded-md border border-border/60 py-16 text-center">
           <Timer className="mx-auto mb-3 h-8 w-8 text-muted-foreground/40" />
-          <p className="text-[13px] font-medium text-muted-foreground">Bu hafta henuz kayit yok</p>
+          <p className="text-[13px] font-medium text-muted-foreground">Bu hafta henüz kayıt yok</p>
           <p className="mt-1 text-[12px] text-muted-foreground/70">
-            Bir goreve gidip zamanlayici baslatin veya asagidaki butonu kullanarak manuel kayit ekleyin.
+            Bir göreve gidip zamanlayıcı başlatın veya aşağıdaki butonu kullanarak manuel kayit ekleyin.
           </p>
           <Button size="sm" variant="outline" onClick={() => setAddOpen(true)} className="mt-4 h-7 text-[12px]">
             <Plus className="mr-1 h-3 w-3" /> Manuel Kayit Ekle
@@ -304,7 +304,7 @@ export default function Timesheet() {
                                     {task.title}
                                   </Link>
                                 ) : (
-                                  <span className="flex-1 truncate text-muted-foreground">(silinmis gorev)</span>
+                                  <span className="flex-1 truncate text-muted-foreground">(silinmiş görev)</span>
                                 )}
                                 {e.billable && (
                                   <Badge variant="default" className="shrink-0 text-[9.5px] px-1.5 py-0">
@@ -397,14 +397,14 @@ function ManualEntryDialog({ open, onOpenChange, tasks, onSubmit, isPending }: M
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) resetForm(); }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Manuel Sure Kaydi</DialogTitle>
+          <DialogTitle>Manuel Süre Kaydı</DialogTitle>
         </DialogHeader>
         <div className="space-y-3 pt-2">
           <div className="space-y-1">
-            <Label className="text-[12px]">Gorev</Label>
+            <Label className="text-[12px]">Görev</Label>
             <Select value={taskId} onValueChange={setTaskId}>
               <SelectTrigger className="h-8 text-[12.5px]">
-                <SelectValue placeholder="Gorev secin..." />
+                <SelectValue placeholder="Görev seçin..." />
               </SelectTrigger>
               <SelectContent>
                 {tasks.map(t => (
@@ -424,11 +424,11 @@ function ManualEntryDialog({ open, onOpenChange, tasks, onSubmit, isPending }: M
 
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
-              <Label className="text-[12px]">Baslangic Saati</Label>
+              <Label className="text-[12px]">Başlangıç Saati</Label>
               <Input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} className="h-8 text-[12.5px]" />
             </div>
             <div className="space-y-1">
-              <Label className="text-[12px]">Bitis Saati</Label>
+              <Label className="text-[12px]">Bitiş Saati</Label>
               <Input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} className="h-8 text-[12.5px]" />
             </div>
           </div>

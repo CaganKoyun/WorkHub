@@ -224,7 +224,7 @@ export default function Onboarding() {
       setStep(3);
       await refresh();
     } catch (e: any) {
-      toast.error(e.message ?? "Workspace olusturulamadi");
+      toast.error(e.message ?? "Workspace oluşturulamadı");
     } finally { setSaving(false); }
   };
 
@@ -287,7 +287,7 @@ export default function Onboarding() {
         }
         await supabase.from("goals").insert({
           title: tpl.seedGoal,
-          description: "Ornek hedef — ceyreklik hedefinizle degistirin.",
+          description: "Örnek hedef — çeyreklik hedefinizle değiştirin.",
           status: "on_track", period: "quarterly", progress: 15,
           workspace_id: wsId, owner_id: user!.id, created_by: user!.id,
         });

@@ -68,7 +68,7 @@ function CreateDialog({ open, onOpenChange }: {
           </div>
           <div className="grid gap-1.5">
             <Label>Müşteri e-postası</Label>
-            <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="musteri@ornek.com" />
+            <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="müşteri@örnek.com" />
           </div>
           <div className="grid gap-1.5">
             <Label>Erişilebilir projeler</Label>

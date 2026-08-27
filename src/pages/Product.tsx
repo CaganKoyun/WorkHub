@@ -118,7 +118,7 @@ function DeleteButton({ onConfirm, isPending }: { onConfirm: () => void; isPendi
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Silmek istediginize emin misiniz?</AlertDialogTitle>
-          <AlertDialogDescription>Bu islem geri alinamaz.</AlertDialogDescription>
+          <AlertDialogDescription>Bu işlem geri alınamaz.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>İptal</AlertDialogCancel>
@@ -179,7 +179,7 @@ function ProductsTab() {
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Urun silindi"); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Ürün silindi"); } catch (e: any) { toast.error(e.message); }
   };
 
   const linkedProjects = (productId: string) => projects?.filter((pr: AnyRow) => pr.id === (data?.find(p => p.id === productId)?.project_id)) ?? [];
@@ -188,12 +188,12 @@ function ProductsTab() {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Urun</Button></DialogTrigger>
+          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Ürün</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Urun Düzenle" : "Yeni Urun"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Ürün Düzenle" : "Yeni Ürün"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>İsim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
-              <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
+              <div><Label>Açıklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
               <div><Label>Proje Baglantisi</Label>
                 <Select value={form.project_id} onValueChange={v => setForm({ ...form, project_id: v })}>
                   <SelectTrigger><SelectValue placeholder="-- Proje sec --" /></SelectTrigger>
@@ -218,12 +218,12 @@ function ProductsTab() {
           {detailItem && <>
             <SheetHeader>
               <SheetTitle>{detailItem.name}</SheetTitle>
-              <SheetDescription>Urun Detayi</SheetDescription>
+              <SheetDescription>Ürün Detayı</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-3 text-sm">
               <div><span className="font-medium">Durum:</span> <Badge className={tone[detailItem.status] ?? ""}>{detailItem.status}</Badge></div>
-              {detailItem.description && <div><span className="font-medium">Aciklama:</span><p className="text-muted-foreground mt-1">{detailItem.description}</p></div>}
-              {detailItem.project_id && <div><span className="font-medium">Bagli Proje:</span> {projects?.find((pr: AnyRow) => pr.id === detailItem.project_id)?.name ?? detailItem.project_id}</div>}
+              {detailItem.description && <div><span className="font-medium">Açıklama:</span><p className="text-muted-foreground mt-1">{detailItem.description}</p></div>}
+              {detailItem.project_id && <div><span className="font-medium">Bağlı Proje:</span> {projects?.find((pr: AnyRow) => pr.id === detailItem.project_id)?.name ?? detailItem.project_id}</div>}
               {detailItem.created_at && <div><span className="font-medium">Oluşturulma:</span> {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
@@ -234,7 +234,7 @@ function ProductsTab() {
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !data?.length
-        ? <EmptyState icon={Package} title="Henuz urun yok" desc="Sirketinizin urunlerini tanimlayin; feature, feedback, release ve incident kayitlari bu urunlere baglanir." onNew={openCreate} />
+        ? <EmptyState icon={Package} title="Henüz ürün yok" desc="Şirketinizin ürünlerini tanımlayın; özellik, geri bildirim, sürüm ve olay kayıtları bu ürünlere bağlanır." onNew={openCreate} />
         : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.map(p => (
             <Card key={p.id} className="cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all" onClick={() => setDetailItem(p)}>
@@ -309,7 +309,7 @@ function FeaturesTab() {
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Feature silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Özellik silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
   };
 
   const handleVote = async (f: AnyRow, delta: number) => {
@@ -363,14 +363,14 @@ function FeaturesTab() {
         </div>
         <div className="ml-auto">
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Feature</Button></DialogTrigger>
+            <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Özellik</Button></DialogTrigger>
             <DialogContent className="sm:max-w-xl">
-              <DialogHeader><DialogTitle>{editItem ? "Feature Düzenle" : "Yeni Feature"}</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>{editItem ? "Özellik Düzenle" : "Yeni Özellik"}</DialogTitle></DialogHeader>
               <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
                 <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
-                <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
+                <div><Label>Açıklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div><Label>Urun</Label>
+                  <div><Label>Ürün</Label>
                     <Select value={form.product_id} onValueChange={v => setForm({ ...form, product_id: v })}>
                       <SelectTrigger><SelectValue placeholder="--" /></SelectTrigger>
                       <SelectContent>{products?.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
@@ -449,7 +449,7 @@ function FeaturesTab() {
                 <Badge className={tone[detailItem.priority]}>{({low:"Düşük",medium:"Orta",high:"Yüksek",urgent:"Acil"} as Record<string,string>)[detailItem.priority] ?? detailItem.priority}</Badge>
                 {detailItem.moscow && <Badge className={tone[detailItem.moscow]}>{MOSCOW_LABELS[detailItem.moscow] ?? detailItem.moscow}</Badge>}
               </div>
-              {detailItem.description && <div><span className="font-medium">Aciklama:</span><p className="text-muted-foreground mt-1 whitespace-pre-wrap">{detailItem.description}</p></div>}
+              {detailItem.description && <div><span className="font-medium">Açıklama:</span><p className="text-muted-foreground mt-1 whitespace-pre-wrap">{detailItem.description}</p></div>}
               {detailItem.owner_id && <div><span className="font-medium">Sahip:</span> {getOwnerName(detailItem.owner_id) ?? detailItem.owner_id}</div>}
               {detailItem.blocked_by && <div><span className="font-medium">Engelleniyor:</span> {getBlockedByTitle(detailItem.blocked_by) ?? detailItem.blocked_by}</div>}
               <div className="flex gap-3">
@@ -466,7 +466,7 @@ function FeaturesTab() {
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !filtered.length
-        ? (data?.length ? <Card><CardContent className="p-8 text-center text-muted-foreground">Filtreye uyan feature bulunamadi.</CardContent></Card> : <EmptyState icon={Lightbulb} title="Henuz feature yok" desc="Roadmap'inizi olusturmak icin ozellik fikirlerinizi ekleyin, onceliklendirin ve release'lere baglayin." onNew={openCreate} />)
+        ? (data?.length ? <Card><CardContent className="p-8 text-center text-muted-foreground">Filtreye uyan özellik bulunamadı.</CardContent></Card> : <EmptyState icon={Lightbulb} title="Henüz özellik yok" desc="Roadmap'inizi oluşturmak için özellik fikirlerinizi ekleyin, önceliklendirin ve sürümlere bağlayın." onNew={openCreate} />)
         : <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {filtered.map(f => {
               const rice = computeFeatureRice(f);
@@ -534,7 +534,7 @@ function FeedbackTab() {
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Feedback silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Geri bildirim silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
   };
 
   const handleVote = async (f: AnyRow, delta: number) => {
@@ -545,9 +545,9 @@ function FeedbackTab() {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Feedback</Button></DialogTrigger>
+          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Geri Bildirim</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Feedback Düzenle" : "Yeni Feedback"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Geri Bildirim Düzenle" : "Yeni Geri Bildirim"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
               <div><Label>Icerik</Label><Textarea value={form.body} onChange={e => setForm({ ...form, body: e.target.value })} /></div>
@@ -602,7 +602,7 @@ function FeedbackTab() {
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !data?.length
-        ? <EmptyState icon={MessageSquare} title="Feedback yok" desc="Müşteri geri bildirimlerini toplayin, kategorize edin ve feature'lara baglayin." onNew={openCreate} />
+        ? <EmptyState icon={MessageSquare} title="Geri bildirim yok" desc="Müşteri geri bildirimlerini toplayın, kategorize edin ve özelliklere bağlayın." onNew={openCreate} />
         : <div className="space-y-2">
             {data.map(f => (
               <Card key={f.id} className="cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all" onClick={() => setDetailItem(f)}>
@@ -660,23 +660,23 @@ function ReleasesTab() {
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Release silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Sürüm silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
   };
 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Release</Button></DialogTrigger>
+          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Sürüm</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Release Düzenle" : "Yeni Release"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Sürüm Düzenle" : "Yeni Sürüm"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Versiyon</Label><Input placeholder="v1.2.0" value={form.version} onChange={e => setForm({ ...form, version: e.target.value })} /></div>
                 <div><Label>İsim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
               </div>
               <div className="grid grid-cols-3 gap-3">
-                <div><Label>Urun</Label>
+                <div><Label>Ürün</Label>
                   <Select value={form.product_id} onValueChange={v => setForm({ ...form, product_id: v })}>
                     <SelectTrigger><SelectValue placeholder="--" /></SelectTrigger>
                     <SelectContent>{products?.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
@@ -719,7 +719,7 @@ function ReleasesTab() {
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !data?.length
-        ? <EmptyState icon={Rocket} title="Release yok" desc="Surum planlayin, changelog tutun ve feature'lari release'lere baglayin." onNew={openCreate} />
+        ? <EmptyState icon={Rocket} title="Sürüm yok" desc="Sürüm planlayın, changelog tutun ve özellikleri sürümlere bağlayın." onNew={openCreate} />
         : <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {data.map(r => (
               <Card key={r.id} className="cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all" onClick={() => setDetailItem(r)}>
@@ -770,19 +770,19 @@ function IncidentsTab() {
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Incident silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Olay silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
   };
 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Incident</Button></DialogTrigger>
+          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Olay</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Incident Düzenle" : "Yeni Incident"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Olay Düzenle" : "Yeni Olay"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
-              <div><Label>Ozet</Label><Textarea value={form.summary} onChange={e => setForm({ ...form, summary: e.target.value })} /></div>
+              <div><Label>Özet</Label><Textarea value={form.summary} onChange={e => setForm({ ...form, summary: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Siddet</Label>
                   <Select value={form.severity} onValueChange={v => setForm({ ...form, severity: v })}>
@@ -810,7 +810,7 @@ function IncidentsTab() {
           {detailItem && <>
             <SheetHeader>
               <SheetTitle>{detailItem.title}</SheetTitle>
-              <SheetDescription>Incident Detayi</SheetDescription>
+              <SheetDescription>Olay Detayı</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-3 text-sm">
               <div className="flex gap-2"><Badge className={tone[detailItem.severity]}>{detailItem.severity}</Badge><Badge className={tone[detailItem.status]}>{detailItem.status}</Badge></div>
@@ -827,7 +827,7 @@ function IncidentsTab() {
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !data?.length
-        ? <EmptyState icon={AlertOctagon} title="Incident yok" desc="Uretim olaylarini siddet, zaman cizelgesi ve postmortem ile takip edin." onNew={openCreate} />
+        ? <EmptyState icon={AlertOctagon} title="Olay yok" desc="Üretim olaylarını şiddet, zaman çizelgesi ve postmortem ile takip edin." onNew={openCreate} />
         : <div className="space-y-2">
             {data.map(i => (
               <Card key={i.id} className="cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all" onClick={() => setDetailItem(i)}>

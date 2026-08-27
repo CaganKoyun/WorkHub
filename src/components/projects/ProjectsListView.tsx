@@ -169,7 +169,7 @@ export function ProjectsListView() {
           </SelectContent>
         </Select>
         <Select value={filterPriority} onValueChange={v => setFilterPriority(v as 'all' | ProjectPriority)}>
-          <SelectTrigger className="w-full sm:w-36"><SelectValue placeholder="Oncelik" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-36"><SelectValue placeholder="Öncelik" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Tum oncelikler</SelectItem>
             {(Object.keys(PRIORITY_LABELS) as ProjectPriority[]).map(p => (
@@ -186,10 +186,10 @@ export function ProjectsListView() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="text-muted-foreground">Henuz proje yok</p>
+          <p className="text-muted-foreground">Henüz proje yok</p>
           {canCreate && (
             <Link to="/projects/new" className="mt-3">
-              <Button variant="outline" size="sm">Ilk projeni olustur</Button>
+              <Button variant="outline" size="sm">İlk projeni oluştur</Button>
             </Link>
           )}
         </div>
@@ -254,13 +254,13 @@ function ProjectCard({
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <ClipboardList className="h-3 w-3" />
-              {total} gorev
+              {total} görev
             </span>
             <span>{progress}%</span>
           </div>
           <Progress value={progress} className="h-1.5" />
           {total > 0 && (
-            <p className="text-xs text-muted-foreground">{done} / {total} tamamlandi</p>
+            <p className="text-xs text-muted-foreground">{done} / {total} tamamlandı</p>
           )}
         </div>
 
@@ -315,11 +315,11 @@ function ProjectTable({
           <TableRow>
             <TableHead>Proje</TableHead>
             <TableHead>Durum</TableHead>
-            <TableHead>Oncelik</TableHead>
-            <TableHead>Gorevler</TableHead>
-            <TableHead>Ilerleme</TableHead>
-            <TableHead>Bitis</TableHead>
-            <TableHead>Son guncelleme</TableHead>
+            <TableHead>Öncelik</TableHead>
+            <TableHead>Görevler</TableHead>
+            <TableHead>İlerleme</TableHead>
+            <TableHead>Bitiş</TableHead>
+            <TableHead>Son güncelleme</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

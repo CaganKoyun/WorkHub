@@ -336,12 +336,12 @@ export default function Import() {
             <Skeleton className="h-8" />
           ) : (projects?.length ?? 0) === 0 ? (
             <p className="text-[13px] text-muted-foreground">
-              Henuz proje yok. Once bir proje olustur, sonra tekrar don.
+              Henüz proje yok. Önce bir proje oluştur, sonra tekrar dön.
               <Button variant="link" className="px-1 h-auto" onClick={() => nav('/projects/new')}>Yeni proje →</Button>
             </p>
           ) : (
             <Select value={projectId} onValueChange={setProjectId}>
-              <SelectTrigger><SelectValue placeholder="Proje sec" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Proje seç" /></SelectTrigger>
               <SelectContent>
                 {(projects ?? []).map(p => (
                   <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
@@ -460,7 +460,7 @@ export default function Import() {
           </div>
           {summary.errors.length > 0 && (
             <details className="mt-3">
-              <summary className="text-[12px] text-muted-foreground cursor-pointer">Hatalari goster</summary>
+              <summary className="text-[12px] text-muted-foreground cursor-pointer">Hataları göster</summary>
               <ul className="mt-2 space-y-1 text-[11.5px] font-mono">
                 {summary.errors.map((e, i) => <li key={i} className="text-destructive">{e}</li>)}
               </ul>
@@ -468,7 +468,7 @@ export default function Import() {
           )}
           {summary.imported > 0 && entityType === 'tasks' && (
             <Button size="sm" variant="link" className="mt-3 h-auto p-0" onClick={() => nav(`/projects/${projectId}`)}>
-              Projeyi ac →
+              Projeyi aç →
             </Button>
           )}
           {summary.imported > 0 && entityType === 'projects' && (
