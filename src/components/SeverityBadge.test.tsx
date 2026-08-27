@@ -11,9 +11,13 @@ import type { Enums } from '@/integrations/supabase/types';
 const severities: Enums<'bug_severity'>[] = ['low', 'medium', 'high', 'critical'];
 
 describe('SeverityBadge', () => {
+  const sevLabels: Record<Enums<'bug_severity'>, string> = {
+    low: 'Düşük', medium: 'Orta', high: 'Yüksek', critical: 'Kritik',
+  };
+
   it.each(severities)('renders label for %s', (sev) => {
     render(<SeverityBadge severity={sev} />);
-    expect(screen.getByText(new RegExp(sev, 'i'))).toBeInTheDocument();
+    expect(screen.getByText(sevLabels[sev])).toBeInTheDocument();
   });
 
   it('critical fills bars 2 and 3 (bar 1 is low-only)', () => {
