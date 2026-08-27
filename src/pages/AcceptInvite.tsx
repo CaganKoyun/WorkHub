@@ -32,28 +32,28 @@ export default function AcceptInvite() {
       const { error } = await supabase.rpc("accept_workspace_invitation", { _token: token! });
       if (error) throw error;
       await refresh();
-      toast.success("Welcome to the team!");
+      toast.success("Ekibe hoş geldiniz!");
       nav("/home");
     } catch (e: any) { toast.error(e.message); } finally { setBusy(false); }
   };
 
   if (loading || authLoading) return <div className="min-h-screen grid place-items-center"><Loader2 className="h-5 w-5 animate-spin" /></div>;
-  if (!invite) return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Invitation not found or expired.</div>;
+  if (!invite) return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Davet bulunamadı veya süresi dolmuş.</div>;
 
   return (
     <div className="min-h-screen grid place-items-center px-4">
       <Card className="p-6 max-w-md w-full space-y-4">
         <div>
-          <div className="text-xs text-muted-foreground">You've been invited to join</div>
+          <div className="text-xs text-muted-foreground">Katılmaya davet edildiniz</div>
           <h1 className="text-xl font-semibold mt-1">{invite.workspaces?.name}</h1>
-          <div className="text-xs text-muted-foreground mt-1">as <span className="font-medium capitalize">{invite.role}</span></div>
+          <div className="text-xs text-muted-foreground mt-1"><span className="font-medium capitalize">{({owner:"Sahip",admin:"Yönetici",manager:"Müdür",member:"Üye",viewer:"İzleyici",guest:"Misafir"} as Record<string,string>)[invite.role] ?? invite.role}</span> olarak</div>
         </div>
         {invite.status !== "pending" ? (
-          <div className="text-sm text-muted-foreground">This invitation is no longer valid ({invite.status}).</div>
+          <div className="text-sm text-muted-foreground">Bu davet artık geçerli değil ({invite.status}).</div>
         ) : (
           <Button className="w-full" onClick={accept} disabled={busy}>
             {busy && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            {user ? "Accept invitation" : "Sign in to accept"}
+            {user ? "Daveti kabul et" : "Kabul etmek için giriş yap"}
           </Button>
         )}
       </Card>

@@ -32,7 +32,7 @@ export function IntegrationsPanel({ domain, compact = false, title }: Props) {
   if (loadingCatalog || loadingConns) {
     return (
       <div className="flex items-center justify-center py-6 text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin mr-2" /> Loading integrations…
+        <Loader2 className="h-4 w-4 animate-spin mr-2" /> Entegrasyonlar yükleniyor…
       </div>
     );
   }
@@ -45,14 +45,14 @@ export function IntegrationsPanel({ domain, compact = false, title }: Props) {
           <div className="flex items-center gap-2">
             <Plug className="h-3.5 w-3.5 text-primary" />
             <h3 className="text-[12px] font-semibold text-foreground">
-              {title ?? "Integrations"}
+              {title ?? "Entegrasyonlar"}
             </h3>
             <span className="text-[11px] text-muted-foreground">
-              {filtered.filter(e => connByKey.has(e.key)).length}/{filtered.length} connected
+              {filtered.filter(e => connByKey.has(e.key)).length}/{filtered.length} bağlı
             </span>
           </div>
           <Button size="sm" variant="ghost" className="h-6 text-[11px] gap-1" asChild>
-            <Link to="/integrations">Manage <ArrowRight className="h-3 w-3" /></Link>
+            <Link to="/integrations">Yönet <ArrowRight className="h-3 w-3" /></Link>
           </Button>
         </div>
         <div className="flex gap-2 overflow-x-auto scrollbar-thin pb-1">

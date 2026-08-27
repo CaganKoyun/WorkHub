@@ -52,8 +52,8 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
   if (isLoading) return <div className="space-y-4"><Skeleton className="h-8 w-48" /><Skeleton className="h-64 w-full" /></div>;
   if (!asset) return (
     <div className="text-center py-16">
-      <p className="text-muted-foreground">Asset not found</p>
-      <Link to="/assets"><Button variant="outline" className="mt-4">Back to assets</Button></Link>
+      <p className="text-muted-foreground">Varlık bulunamadı</p>
+      <Link to="/assets"><Button variant="outline" className="mt-4">Varlıklara dön</Button></Link>
     </div>
   );
 

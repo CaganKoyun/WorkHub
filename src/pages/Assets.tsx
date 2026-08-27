@@ -5,7 +5,7 @@ export default function Assets() {
   return (
     <DomainWorkspace
       domain="assets"
-      title="Assets"
+      title="Varlıklar"
       subtitle="Operasyon çalışma alanı: zimmet, lisans, bakım ve yenileme."
     >
       <AssetsListView />

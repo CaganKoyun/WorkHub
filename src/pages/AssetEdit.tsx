@@ -18,7 +18,7 @@ export default function AssetEdit() {
           </div>
         ) : !asset ? (
           <div className="text-center py-16">
-            <p className="text-muted-foreground">Asset not found</p>
+            <p className="text-muted-foreground">Varlık bulunamadı</p>
           </div>
         ) : (
           <AssetFormView

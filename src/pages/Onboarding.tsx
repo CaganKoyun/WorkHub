@@ -18,12 +18,12 @@ import { toast } from "sonner";
 import { parseCsv } from "@/lib/csv";
 
 const MODULES = [
-  { key: "work", label: "Work Management", desc: "Projects, tasks, bugs" },
-  { key: "crm", label: "CRM & Revenue", desc: "Pipeline, quotes, contracts" },
-  { key: "finance", label: "Finance", desc: "Cash, budgets, runway" },
-  { key: "people", label: "People & HR", desc: "Employees, roles" },
-  { key: "goals", label: "Goals & Risks", desc: "OKRs and governance" },
-  { key: "assets", label: "Assets & Ops", desc: "Inventory & procurement" },
+  { key: "work", label: "İş Yönetimi", desc: "Projeler, görevler, hatalar" },
+  { key: "crm", label: "CRM & Gelir", desc: "Pipeline, teklifler, sözleşmeler" },
+  { key: "finance", label: "Finans", desc: "Kasa, bütçeler, pist" },
+  { key: "people", label: "İnsan & İK", desc: "Çalışanlar, roller" },
+  { key: "goals", label: "Hedefler & Riskler", desc: "OKR'ler ve yönetişim" },
+  { key: "assets", label: "Varlıklar & Operasyon", desc: "Envanter & tedarik" },
 ];
 
 interface WorkspaceTemplate {
@@ -42,67 +42,67 @@ const TEMPLATES: WorkspaceTemplate[] = [
   {
     key: "saas",
     label: "SaaS Startup",
-    desc: "Product development, customer tracking, runway management",
+    desc: "Ürün geliştirme, müşteri takibi, pist yönetimi",
     icon: Rocket,
     modules: ["work", "crm", "finance", "goals"],
     industry: "SaaS",
-    seedProject: "Product Launch",
-    seedTasks: ["Set up issue tracking workflow", "Define pricing tiers", "Create onboarding flow"],
-    seedGoal: "Launch MVP and acquire first 100 users",
+    seedProject: "Ürün Lansmanı",
+    seedTasks: ["Sorun takip iş akışını kur", "Fiyatlandırma katmanlarını belirle", "İşe alım akışını oluştur"],
+    seedGoal: "MVP'yi lansmanla ve ilk 100 kullanıcıyı edin",
   },
   {
     key: "agency",
-    label: "Agency / Studio",
-    desc: "Client projects, team workload, time tracking",
+    label: "Ajans / Stüdyo",
+    desc: "Müşteri projeleri, ekip iş yükü, zaman takibi",
     icon: Palette,
     modules: ["work", "crm", "people", "assets"],
     industry: "Agency",
-    seedProject: "Client Onboarding Template",
-    seedTasks: ["Create client brief template", "Set up project milestones", "Configure time tracking"],
-    seedGoal: "Deliver 3 client projects on time this quarter",
+    seedProject: "Müşteri İşe Başlatma Şablonu",
+    seedTasks: ["Müşteri brifing şablonu oluştur", "Proje kilometre taşlarını belirle", "Zaman takibini yapılandır"],
+    seedGoal: "Bu çeyrekte 3 müşteri projesini zamanında teslim et",
   },
   {
     key: "ecommerce",
-    label: "E-commerce",
-    desc: "Inventory, orders, finance, customer pipeline",
+    label: "E-ticaret",
+    desc: "Envanter, siparişler, finans, müşteri pipeline'ı",
     icon: ShoppingCart,
     modules: ["work", "crm", "finance", "assets"],
     industry: "E-commerce",
-    seedProject: "Store Operations",
-    seedTasks: ["Set up product catalog", "Configure order workflow", "Track supplier contracts"],
-    seedGoal: "Reach $50K monthly revenue",
+    seedProject: "Mağaza Operasyonları",
+    seedTasks: ["Ürün kataloğunu kur", "Sipariş iş akışını yapılandır", "Tedarikçi sözleşmelerini takip et"],
+    seedGoal: "Aylık 50.000$ gelire ulaş",
   },
   {
     key: "consulting",
-    label: "Consulting / Services",
-    desc: "Engagements, people, goals, knowledge base",
+    label: "Danışmanlık / Hizmetler",
+    desc: "Anlaşmalar, insanlar, hedefler, bilgi bankası",
     icon: Briefcase,
     modules: ["work", "crm", "people", "goals"],
     industry: "Consulting",
-    seedProject: "Engagement Pipeline",
-    seedTasks: ["Create proposal template", "Set up client portal", "Define service offerings"],
-    seedGoal: "Close 5 new engagements this quarter",
+    seedProject: "Anlaşma Pipeline'ı",
+    seedTasks: ["Teklif şablonu oluştur", "Müşteri portalini kur", "Hizmet tekliflerini tanımla"],
+    seedGoal: "Bu çeyrekte 5 yeni anlaşma kapat",
   },
   {
     key: "custom",
-    label: "Custom Setup",
-    desc: "Pick your own modules and configure everything",
+    label: "Özel Kurulum",
+    desc: "Kendi modüllerini seç ve her şeyi yapılandır",
     icon: Settings2,
     modules: ["work", "crm", "finance", "people", "goals"],
     industry: "",
-    seedProject: "Getting Started",
-    seedTasks: ["Invite your team", "Add your first CRM company", "Record opening cash balance"],
-    seedGoal: "Reach product-market fit",
+    seedProject: "Başlangıç",
+    seedTasks: ["Ekibinizi davet edin", "İlk CRM şirketinizi ekleyin", "Açılış kasa bakiyesini kaydedin"],
+    seedGoal: "Ürün-pazar uyumuna ulaşın",
   },
 ];
 
 const STEPS = [
-  { id: 0, label: "Welcome",  icon: Sparkles },
-  { id: 1, label: "Template", icon: Rocket },
-  { id: 2, label: "Company",  icon: Building2 },
-  { id: 3, label: "Modules",  icon: LayoutGrid },
-  { id: 4, label: "Invite",   icon: Users },
-  { id: 5, label: "Ready",    icon: Check },
+  { id: 0, label: "Hoş Geldiniz",  icon: Sparkles },
+  { id: 1, label: "Şablon", icon: Rocket },
+  { id: 2, label: "Şirket",  icon: Building2 },
+  { id: 3, label: "Modüller",  icon: LayoutGrid },
+  { id: 4, label: "Davet",   icon: Users },
+  { id: 5, label: "Hazır",    icon: Check },
 ];
 
 const TOTAL_STEPS = 5;
@@ -214,7 +214,7 @@ export default function Onboarding() {
   };
 
   const submitStep2 = async () => {
-    if (!name.trim()) return toast.error("Company name is required");
+    if (!name.trim()) return toast.error("Şirket adı zorunludur");
     setSaving(true);
     try {
       const id = await createWorkspace({ name: name.trim(), industry, size, country, currency });
@@ -224,7 +224,7 @@ export default function Onboarding() {
       setStep(3);
       await refresh();
     } catch (e: any) {
-      toast.error(e.message ?? "Failed to create workspace");
+      toast.error(e.message ?? "Workspace olusturulamadi");
     } finally { setSaving(false); }
   };
 
@@ -259,7 +259,7 @@ export default function Onboarding() {
       setStep(5);
       await refresh();
     } catch (e: any) {
-      toast.error(e.message ?? "Invite failed");
+      toast.error(e.message ?? "Davet gonderilemedi");
     } finally { setSaving(false); }
   };
 
@@ -271,7 +271,7 @@ export default function Onboarding() {
       if (seed) {
         const { data: proj } = await supabase.from("projects").insert({
           name: tpl.seedProject,
-          description: `Template: ${tpl.label} — feel free to rename or delete.`,
+          description: `Sablon: ${tpl.label} — dilediginiz gibi yeniden adlandirin veya silin.`,
           status: "active", priority: "medium",
           workspace_id: wsId, owner_id: user!.id, created_by: user!.id,
         }).select().single();
@@ -287,7 +287,7 @@ export default function Onboarding() {
         }
         await supabase.from("goals").insert({
           title: tpl.seedGoal,
-          description: "Sample goal — replace with your quarterly objective.",
+          description: "Ornek hedef — ceyreklik hedefinizle degistirin.",
           status: "on_track", period: "quarterly", progress: 15,
           workspace_id: wsId, owner_id: user!.id, created_by: user!.id,
         });
@@ -306,10 +306,10 @@ export default function Onboarding() {
         .update({ sample_data_seeded: seed, finished_at: new Date().toISOString() })
         .eq("workspace_id", wsId);
       await refresh();
-      toast.success("Workspace hazir!");
+      toast.success("Workspace hazır!");
       nav(decisionSeeded ? "/decisions" : "/home");
     } catch (e: any) {
-      toast.error(e.message ?? "Failed to finish onboarding");
+      toast.error(e.message ?? "Kurulum tamamlanamadı");
     } finally { setSaving(false); }
   };
 
@@ -324,14 +324,14 @@ export default function Onboarding() {
               <SparkLogo size={28} />
             </div>
             <div className="space-y-2">
-              <h1 className="text-3xl font-semibold tracking-tight">Welcome to Spark WorkHub</h1>
+              <h1 className="text-3xl font-semibold tracking-tight">Spark WorkHub'a Hoş Geldiniz</h1>
               <p className="text-[13.5px] text-muted-foreground">
-                Bir isletim sistemi: task, karar, musteri ve nakit tek yerde.
-                5 dakika icinde workspace'in hazir.
+                Bir işletim sistemi: task, karar, müşteri ve nakit tek yerde.
+                5 dakika içinde workspace'in hazır.
               </p>
             </div>
             <Button size="lg" onClick={() => setStep(1)} className="min-w-[200px]">
-              Get started <ArrowRight className="h-4 w-4 ml-1.5" />
+              Başla <ArrowRight className="h-4 w-4 ml-1.5" />
             </Button>
             {workspaces.length > 0 && !forceNew && (
               <button
@@ -348,21 +348,21 @@ export default function Onboarding() {
             <div className="text-center space-y-2">
               <div className="inline-flex h-8 items-center rounded-full border border-border/70 bg-secondary/40 px-3 text-[10.5px] font-medium uppercase tracking-wider text-muted-foreground">
                 <current.icon className="h-3 w-3 mr-1.5" />
-                Step {step} of {TOTAL_STEPS} · {current.label}
+                Adım {step} / {TOTAL_STEPS} · {current.label}
               </div>
               <h1 className="text-[22px] font-semibold tracking-tight">
-                {step === 1 && "Nasil bir is yapiyorsun?"}
-                {step === 2 && "Sirketini tanit"}
-                {step === 3 && "Modullerini sec"}
+                {step === 1 && "Nasıl bir iş yapıyorsun?"}
+                {step === 2 && "Şirketini tanıt"}
+                {step === 3 && "Modüllerini seç"}
                 {step === 4 && "Ekibini davet et"}
-                {step === 5 && "Son bir dokunus"}
+                {step === 5 && "Son bir dokunuş"}
               </h1>
               <p className="text-[13px] text-muted-foreground">
-                {step === 1 && "Bir sablon sec — modulleri ve ornek veriyi sana gore hazirlayalim."}
-                {step === 2 && "Bu bilgiler workspace'in kimligi olur."}
-                {step === 3 && "Ihtiyacin olmayanlar arayuzu kalabaliklasstirmaz."}
-                {step === 4 && "Simdi ekle veya sonra Teams sayfasindan davet gonder."}
-                {step === 5 && "Bos bir workspace'e giris yapmayin diye ornek veri acayim mi?"}
+                {step === 1 && "Bir şablon seç — modülleri ve örnek veriyi sana göre hazırlayalım."}
+                {step === 2 && "Bu bilgiler workspace'in kimliği olur."}
+                {step === 3 && "İhtiyacın olmayanlar arayüzü kalabalıklaştırmaz."}
+                {step === 4 && "Şimdi ekle veya sonra Teams sayfasından davet gönder."}
+                {step === 5 && "Boş bir workspace'e giriş yapmayın diye örnek veri açayım mı?"}
               </p>
             </div>
 
@@ -414,19 +414,19 @@ export default function Onboarding() {
 
               {step === 2 && (
                 <div className="space-y-4">
-                  <div><Label>Company name *</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Acme Inc." /></div>
+                  <div><Label>Şirket adı *</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Örnek A.Ş." /></div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div><Label>Industry</Label><Input value={industry} onChange={e => setIndustry(e.target.value)} placeholder="SaaS" /></div>
+                    <div><Label>Sektör</Label><Input value={industry} onChange={e => setIndustry(e.target.value)} placeholder="SaaS" /></div>
                     <div>
-                      <Label>Team size</Label>
+                      <Label>Ekip büyüklüğü</Label>
                       <select value={size} onChange={e => setSize(e.target.value)}
                         className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm">
                         <option>1-10</option><option>11-50</option><option>51-200</option><option>201+</option>
                       </select>
                     </div>
-                    <div><Label>Country</Label><Input value={country} onChange={e => setCountry(e.target.value)} placeholder="Turkey" /></div>
+                    <div><Label>Ülke</Label><Input value={country} onChange={e => setCountry(e.target.value)} placeholder="Türkiye" /></div>
                     <div>
-                      <Label>Default currency</Label>
+                      <Label>Varsayılan para birimi</Label>
                       <select value={currency} onChange={e => setCurrency(e.target.value)}
                         className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm">
                         <option>USD</option><option>EUR</option><option>TRY</option><option>GBP</option>
@@ -434,9 +434,9 @@ export default function Onboarding() {
                     </div>
                   </div>
                   <div className="flex justify-between pt-2">
-                    <Button variant="ghost" onClick={() => setStep(1)}>Back</Button>
+                    <Button variant="ghost" onClick={() => setStep(1)}>Geri</Button>
                     <Button onClick={submitStep2} disabled={saving}>
-                      {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Continue <ArrowRight className="h-4 w-4 ml-1" />
+                      {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Devam <ArrowRight className="h-4 w-4 ml-1" />
                     </Button>
                   </div>
                 </div>
@@ -446,8 +446,8 @@ export default function Onboarding() {
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     {template && template.key !== "custom"
-                      ? `${template.label} sablonu icin onerildi. Istersen degistir.`
-                      : "Pick the modules you want to enable. You can always add more later."}
+                      ? `${template.label} şablonu için önerildi. İstersen değiştir.`
+                      : "Etkinleştirmek istediğiniz modülleri seçin. Daha sonra istediğiniz zaman ekleyebilirsiniz."}
                   </p>
                   <div className="grid grid-cols-2 gap-3">
                     {MODULES.map(m => {
@@ -469,15 +469,15 @@ export default function Onboarding() {
                     })}
                   </div>
                   <div className="flex justify-between pt-2">
-                    <Button variant="ghost" onClick={() => setStep(2)}>Back</Button>
-                    <Button onClick={submitStep3} disabled={saving}>Continue <ArrowRight className="h-4 w-4 ml-1" /></Button>
+                    <Button variant="ghost" onClick={() => setStep(2)}>Geri</Button>
+                    <Button onClick={submitStep3} disabled={saving}>Devam <ArrowRight className="h-4 w-4 ml-1" /></Button>
                   </div>
                 </div>
               )}
 
               {step === 4 && (
                 <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">Tek tek gir ya da tum ekibi CSV ile yukle (email + role sutunlari).</p>
+                  <p className="text-sm text-muted-foreground">Tek tek gir ya da tüm ekibi CSV ile yükle (email + role sütunları).</p>
 
                   <label
                     htmlFor="team-csv"
@@ -485,7 +485,7 @@ export default function Onboarding() {
                   >
                     <span className="inline-flex items-center gap-2 text-muted-foreground">
                       {csvFileName ? <FileText className="h-3.5 w-3.5 text-primary" /> : <Upload className="h-3.5 w-3.5" />}
-                      {csvFileName || "CSV yukle (email, role baslikli)"}
+                      {csvFileName || "CSV yükle (email, role başlıklı)"}
                     </span>
                     {csvFileName && (
                       <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10.5px] font-medium text-primary">
@@ -513,8 +513,8 @@ export default function Onboarding() {
                         <select value={inv.role}
                           onChange={e => setInvites(invites.map((x, idx) => idx === i ? { ...x, role: e.target.value } : x))}
                           className="h-10 rounded-md border border-input bg-background px-2 text-sm">
-                          <option value="admin">Admin</option><option value="manager">Manager</option>
-                          <option value="member">Member</option><option value="viewer">Viewer</option>
+                          <option value="admin">Yönetici</option><option value="manager">Müdür</option>
+                          <option value="member">Üye</option><option value="viewer">İzleyici</option>
                         </select>
                         <Button variant="ghost" size="icon" onClick={() => setInvites(invites.filter((_, idx) => idx !== i))}>
                           <X className="h-4 w-4" />
@@ -522,15 +522,15 @@ export default function Onboarding() {
                       </div>
                     ))}
                     <Button variant="outline" size="sm" onClick={() => setInvites([...invites, { email: "", role: "member" }])}>
-                      <Plus className="h-3.5 w-3.5 mr-1" /> Add another
+                      <Plus className="h-3.5 w-3.5 mr-1" /> Bir tane daha ekle
                     </Button>
                   </div>
                   <div className="flex justify-between pt-2">
-                    <Button variant="ghost" onClick={() => setStep(3)}>Back</Button>
+                    <Button variant="ghost" onClick={() => setStep(3)}>Geri</Button>
                     <div className="flex gap-2">
-                      <Button variant="outline" onClick={() => { setInvites([]); submitStep4(); }}>Skip</Button>
+                      <Button variant="outline" onClick={() => { setInvites([]); submitStep4(); }}>Atla</Button>
                       <Button onClick={submitStep4} disabled={saving}>
-                        {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Send &amp; continue
+                        {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Gönder ve devam et
                       </Button>
                     </div>
                   </div>
@@ -544,7 +544,7 @@ export default function Onboarding() {
                       <div className="flex items-center gap-2 text-sm">
                         <template.icon className="h-4 w-4 text-primary" />
                         <span className="font-medium">{template.label}</span>
-                        <span className="text-muted-foreground">sablonu uygulanacak</span>
+                        <span className="text-muted-foreground">şablonu uygulanacak</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">
                         Proje: {template.seedProject} · Hedef: {template.seedGoal}
@@ -555,28 +555,28 @@ export default function Onboarding() {
                     <Checkbox checked={seed} onCheckedChange={(v) => setSeed(!!v)} id="seed" />
                     <Label htmlFor="seed" className="cursor-pointer">
                       {template && template.key !== "custom"
-                        ? `${template.label} ornek verisi olustur`
-                        : "Create a starter project with sample tasks and a goal"}
+                        ? `${template.label} örnek verisi oluştur`
+                        : "Örnek görevler ve hedefle bir başlangıç projesi oluştur"}
                     </Label>
                   </div>
                   <div className="space-y-1.5 border rounded-lg p-3">
                     <Label htmlFor="seed-decision">
-                      Su an vermeye calistigin en buyuk karar ne? <span className="text-muted-foreground font-normal">(opsiyonel)</span>
+                      Şu an vermeye çalıştığın en büyük karar ne? <span className="text-muted-foreground font-normal">(opsiyonel)</span>
                     </Label>
                     <Input
                       id="seed-decision"
                       value={seedDecision}
                       onChange={(e) => setSeedDecision(e.target.value)}
-                      placeholder="Orn: ABD pazarina simdi mi girmeliyiz?"
+                      placeholder="Örn: ABD pazarına şimdi mi girmeliyiz?"
                     />
                     <p className="text-xs text-muted-foreground">
-                      Bos birakabilirsin. Yazarsan karar defterine taslak olarak duser.
+                      Boş bırakabilirsin. Yazarsan karar defterine taslak olarak düşer.
                     </p>
                   </div>
                   <div className="flex justify-between pt-2">
-                    <Button variant="ghost" onClick={() => setStep(4)}>Back</Button>
+                    <Button variant="ghost" onClick={() => setStep(4)}>Geri</Button>
                     <Button onClick={submitStep5} disabled={saving}>
-                      {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Finish setup
+                      {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Kurulumu tamamla
                     </Button>
                   </div>
                 </div>

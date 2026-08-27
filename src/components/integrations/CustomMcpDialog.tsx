@@ -24,7 +24,7 @@ export function CustomMcpDialog({ isAdmin, trigger }: { isAdmin: boolean; trigge
 
   const submit = async () => {
     if (!name.trim() || !url.trim()) {
-      toast.error("Missing fields: Name and URL required.");
+      toast.error("Ad ve URL alanları zorunludur.");
       return;
     }
     try {
@@ -42,7 +42,7 @@ export function CustomMcpDialog({ isAdmin, trigger }: { isAdmin: boolean; trigge
         toast.success(`Custom MCP connected -- ${res.probe.tools?.length ?? 0} tools discovered.`);
       } else if (res?.probe?.authUrl) {
         oauth.open(res.probe.authUrl);
-        toast("Sign in required -- Complete OAuth in the popup -- the list will refresh automatically.");
+        toast("Oturum açma gerekli — Açılır pencerede OAuth'u tamamlayın — liste otomatik yenilenecek.");
       } else {
         toast.error("Probe failed: " + (res?.probe?.error || "Server unreachable"));
       }
@@ -56,28 +56,28 @@ export function CustomMcpDialog({ isAdmin, trigger }: { isAdmin: boolean; trigge
       <DialogTrigger asChild>
         {trigger ?? (
           <Button variant="outline" className="gap-2">
-            <Plug className="h-4 w-4" /> Add custom MCP
+            <Plug className="h-4 w-4" /> Özel MCP ekle
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Custom MCP server</DialogTitle>
+          <DialogTitle>Özel MCP sunucusu</DialogTitle>
           <DialogDescription>
             Herhangi bir Model Context Protocol sunucusunu bağla. URL'yi girdiğinde araçları otomatik keşfederiz.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2">
           <div className="space-y-1.5">
-            <Label>Name</Label>
-            <Input value={name} onChange={e => setName(e.target.value)} placeholder="My internal MCP" />
+            <Label>Ad</Label>
+            <Input value={name} onChange={e => setName(e.target.value)} placeholder="Dahili MCP sunucum" />
           </div>
           <div className="space-y-1.5">
-            <Label>Server URL</Label>
+            <Label>Sunucu URL</Label>
             <Input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://mcp.example.com/mcp" />
           </div>
           <div className="space-y-1.5">
-            <Label>Transport</Label>
+            <Label>Aktarım</Label>
             <RadioGroup value={transport} onValueChange={(v) => setTransport(v as any)} className="flex gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
                 <RadioGroupItem value="http" /><span className="text-[13px]">Streamable HTTP</span>
@@ -88,27 +88,27 @@ export function CustomMcpDialog({ isAdmin, trigger }: { isAdmin: boolean; trigge
             </RadioGroup>
           </div>
           <div className="space-y-1.5">
-            <Label>Scope</Label>
+            <Label>Kapsam</Label>
             <RadioGroup value={scope} onValueChange={(v) => setScope(v as any)} className="flex gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
-                <RadioGroupItem value="personal" /><span className="text-[13px]">Personal</span>
+                <RadioGroupItem value="personal" /><span className="text-[13px]">Kişisel</span>
               </label>
               <label className={`flex items-center gap-2 ${isAdmin ? "cursor-pointer" : "opacity-40 cursor-not-allowed"}`}>
                 <RadioGroupItem value="workspace" disabled={!isAdmin} />
-                <span className="text-[13px]">Workspace{!isAdmin && " · admin only"}</span>
+                <span className="text-[13px]">Çalışma Alanı{!isAdmin && " · sadece yönetici"}</span>
               </label>
             </RadioGroup>
           </div>
           <div className="space-y-1.5">
-            <Label>Bearer token <span className="text-muted-foreground text-[11px]">(optional)</span></Label>
-            <Input type="password" value={bearer} onChange={e => setBearer(e.target.value)} placeholder="Static token, if required" />
+            <Label>Bearer token <span className="text-muted-foreground text-[11px]">(opsiyonel)</span></Label>
+            <Input type="password" value={bearer} onChange={e => setBearer(e.target.value)} placeholder="Gerekiyorsa statik token" />
           </div>
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button variant="ghost" onClick={() => setOpen(false)}>İptal</Button>
           <Button onClick={submit} disabled={connect.isPending}>
             {connect.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />}
-            Test & save
+            Test et ve kaydet
           </Button>
         </DialogFooter>
       </DialogContent>

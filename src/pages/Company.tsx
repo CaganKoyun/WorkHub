@@ -494,7 +494,7 @@ function TeamsTab() {
           <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>{editItem ? "Takim Duzenle" : "Yeni Takim"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Growth" /></div>
+              <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Büyüme" /></div>
               <div>
                 <Label>Departman</Label>
                 <Select value={form.department_id || "none"} onValueChange={v => setForm(f => ({ ...f, department_id: v === "none" ? "" : v }))}>

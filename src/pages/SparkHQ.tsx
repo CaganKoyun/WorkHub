@@ -1314,7 +1314,7 @@ function initSparkHQ(root: HTMLElement) {
       </div>
       <div class="pop-foot">
         <button class="btn-lime" data-act="enter-room">Gir</button>
-        <button class="btn-ghost" data-act="ask-ai">Ask AI</button>
+        <button class="btn-ghost" data-act="ask-ai">AI'a Sor</button>
       </div>`;
     pop.querySelector("[data-act=close-popup]")?.addEventListener("click",closePopup);
     pop.querySelectorAll(".pop-av").forEach(el=>el.addEventListener("click",ev=>{
@@ -1463,7 +1463,7 @@ function initSparkHQ(root: HTMLElement) {
           <button class="btn-ghost" style="padding:4px 10px;font-size:11px" data-act="approve">Onayla</button></div>`).join("")}</div>`:""}`;
     acts.innerHTML=`<button class="btn-lime" data-act="work-list">isleri Gor</button>
       <button class="btn-ghost" data-act="meeting">Toplanti</button>
-      <button class="btn-ghost" data-act="ask-sheet">Ask AI</button>`;
+      <button class="btn-ghost" data-act="ask-sheet">AI'a Sor</button>`;
     body.querySelectorAll("[data-person]").forEach(el=>el.addEventListener("click",()=>{
       state.person=(el as HTMLElement).dataset.person!;renderSheet();renderCrumbs();
     }));
@@ -1997,9 +1997,9 @@ export default function SparkHQ() {
           </aside>
           <div id="shqReplay"></div>
           <div id="shqReplayNote"></div>
-          <button id="shqAskBtn">Ask HQ <kbd>&#8984;K</kbd></button>
+          <button id="shqAskBtn">HQ'ya Sor <kbd>&#8984;K</kbd></button>
           <div id="shqAskPanel">
-            <div className="ask-head"><b>Ask HQ</b><div className="ask-ctx" id="shqAskCtx"></div></div>
+            <div className="ask-head"><b>HQ'ya Sor</b><div className="ask-ctx" id="shqAskCtx"></div></div>
             <div className="ask-thread" id="shqAskThread"></div>
             <div className="ask-sugs" id="shqAskSugs"></div>
             <div className="ask-input"><input id="shqAskInput" placeholder="Sor ya da bir yere git..." /></div>

@@ -100,7 +100,7 @@ export default function BugList() {
 
   if (isLoading) {
     return (
-      <DomainWorkspace domain="bugs" title="Bugs" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
+      <DomainWorkspace domain="bugs" title="Hatalar" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
         <div className="flex items-center justify-center h-full">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
@@ -110,7 +110,7 @@ export default function BugList() {
 
   if (isError) {
     return (
-      <DomainWorkspace domain="bugs" title="Bugs" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
+      <DomainWorkspace domain="bugs" title="Hatalar" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
         <div className="p-6">
           <EmptyState
             icon={AlertTriangle}
@@ -124,7 +124,7 @@ export default function BugList() {
   }
 
   return (
-    <DomainWorkspace domain="bugs" title="Bugs" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
+    <DomainWorkspace domain="bugs" title="Hatalar" subtitle="Kalite çalışma alanı: açık bug, önem, atama.">
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="flex items-center justify-between px-4 md:px-6 h-11 border-b border-border shrink-0">
