@@ -524,7 +524,7 @@ export default function Crm() {
   return (
     <DomainWorkspace
       domain="crm"
-      title="CRM & Revenue"
+      title="CRM & Gelir"
       subtitle="Lead'den müşteriye tüm satış ve gelir döngüsü."
     >
       <div className="mb-4"><IntegrationsPanel domain="crm" compact /></div>

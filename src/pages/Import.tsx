@@ -269,8 +269,8 @@ export default function Import() {
       <div>
         <h1 className="text-[20px] font-semibold tracking-tight">İçe Aktarma Sihirbazı</h1>
         <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-          Linear, Asana, Jira, Trello, ClickUp, Monday veya Notion'dan CSV export'unuzu ice aktarin.
-          Kolonlari otomatik eslestirmeye calisiyorum; onaylayip import'a baslatin.
+          Linear, Asana, Jira, Trello, ClickUp, Monday veya Notion'dan CSV export'unuzu içe aktarın.
+          Kolonları otomatik eşleştirmeye çalışıyorum; onaylayıp import'a başlatın.
         </p>
       </div>
 
@@ -365,9 +365,9 @@ export default function Import() {
                 variant="outline"
                 className="h-7 text-[12px]"
                 onClick={() => applyLinearPreset()}
-                title="Linear'in CSV export basliklarini otomatik eslestir"
+                title="Linear'ın CSV export başlıklarını otomatik eşleştir"
               >
-                Linear preset
+                Linear şablonu
               </Button>
             )}
           </div>

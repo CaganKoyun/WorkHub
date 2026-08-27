@@ -127,27 +127,27 @@ export default function WorkspaceSettings() {
     <AppLayout>
       <div className="p-6 max-w-6xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Calisma Alani Ayarlari</h1>
-          <p className="text-sm text-muted-foreground">Sirket, uyeler, davetler ve izinleri yonetin.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Çalışma Alanı Ayarları</h1>
+          <p className="text-sm text-muted-foreground">Şirket, üyeler, davetler ve izinleri yönetin.</p>
         </div>
 
         <Tabs defaultValue="general">
           <TabsList>
             <TabsTrigger value="general">Genel</TabsTrigger>
-            <TabsTrigger value="members">Uyeler</TabsTrigger>
+            <TabsTrigger value="members">Üyeler</TabsTrigger>
             <TabsTrigger value="invitations">Davetler</TabsTrigger>
-            <TabsTrigger value="permissions">Izinler</TabsTrigger>
+            <TabsTrigger value="permissions">İzinler</TabsTrigger>
             <TabsTrigger value="signals">Sinyaller</TabsTrigger>
-            <TabsTrigger value="dashboards">Herkese Acik Panolar</TabsTrigger>
+            <TabsTrigger value="dashboards">Herkese Açık Panolar</TabsTrigger>
             <TabsTrigger value="referrals">Davet Et Kazan</TabsTrigger>
           </TabsList>
 
           <TabsContent value="general" className="mt-4">
             <Card className="p-6 space-y-4 max-w-xl">
-              <div><Label>Calisma alani adi</Label><Input value={name} onChange={e=>setName(e.target.value)} disabled={!canAdmin} /></div>
+              <div><Label>Çalışma alanı adı</Label><Input value={name} onChange={e=>setName(e.target.value)} disabled={!canAdmin} /></div>
               <div><Label>Plan</Label><div className="text-sm mt-1"><Badge variant="secondary">{currentWorkspace.plan}</Badge></div></div>
-              <div><Label>Varsayilan para birimi</Label><div className="text-sm mt-1">{currentWorkspace.default_currency}</div></div>
-              {canAdmin && <Button onClick={saveName}>Degisiklikleri kaydet</Button>}
+              <div><Label>Varsayılan para birimi</Label><div className="text-sm mt-1">{currentWorkspace.default_currency}</div></div>
+              {canAdmin && <Button onClick={saveName}>Değişiklikleri kaydet</Button>}
             </Card>
           </TabsContent>
 

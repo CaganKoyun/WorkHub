@@ -39,7 +39,7 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o:
         category,
         color,
       });
-      toast.success('Workflow state eklendi');
+      toast.success('İş akışı durumu eklendi');
       setName('');
       onOpenChange(false);
     } catch (err: any) {
@@ -50,11 +50,11 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o:
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
-        <DialogHeader><DialogTitle>Yeni workflow state</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>Yeni iş akışı durumu</DialogTitle></DialogHeader>
         <form onSubmit={submit} className="space-y-3">
           <div className="space-y-1.5">
             <Label>Ad</Label>
-            <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Waiting on QA" autoFocus />
+            <Input value={name} onChange={e => setName(e.target.value)} placeholder="Örn: QA Bekliyor" autoFocus />
           </div>
           <div className="space-y-1.5">
             <Label>Kategori</Label>
@@ -139,7 +139,7 @@ function StateRow({
             {CATEGORY_LABELS[state.category]}
           </span>
           {state.is_default && (
-            <span className="text-[10px] text-muted-foreground/60">default</span>
+            <span className="text-[10px] text-muted-foreground/60">varsayılan</span>
           )}
           <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button variant="ghost" size="icon" className="h-6 w-6" disabled={!canMoveUp} onClick={() => onMove(-1)}>
@@ -195,7 +195,7 @@ export default function WorkflowStates() {
       showAgent={false}
       headerActions={
         <Button size="sm" onClick={() => setOpen(true)} className="h-8 gap-1.5">
-          <Plus className="h-3.5 w-3.5" /> Yeni state
+          <Plus className="h-3.5 w-3.5" /> Yeni durum
         </Button>
       }
     >
