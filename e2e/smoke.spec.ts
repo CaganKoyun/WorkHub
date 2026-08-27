@@ -20,8 +20,8 @@ test("auth sayfası login formunu gösteriyor", async ({ page }) => {
   const errors = collectPageErrors(page);
   await page.goto("/auth");
   await expect(page.getByRole("heading", { name: "Welcome" })).toBeVisible();
-  await expect(page.locator('input[type="email"]').first()).toBeVisible();
-  await expect(page.locator('input[type="password"]').first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /sign in with auth0/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /create a new account/i })).toBeVisible();
   expect(errors).toEqual([]);
 });
 

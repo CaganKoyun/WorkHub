@@ -29,39 +29,22 @@ test.describe('Landing', () => {
 });
 
 test.describe('Auth', () => {
-  test('sign-in / sign-up tabs swap correctly', async ({ page }) => {
+  test('auth page shows Auth0 sign-in and sign-up buttons', async ({ page }) => {
     await page.goto('/auth');
-    // Sign-in is default: name field must not exist.
-    await expect(page.getByPlaceholder('you@company.com').first()).toBeVisible();
-    await expect(page.getByPlaceholder('Jane Doe')).toHaveCount(0);
-
-    await page.getByRole('tab', { name: 'Sign up' }).click();
-    await expect(page.getByPlaceholder('Jane Doe')).toBeVisible();
-
-    await page.getByRole('tab', { name: 'Sign in' }).click();
-    await expect(page.getByPlaceholder('Jane Doe')).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Welcome' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /sign in with auth0/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /create a new account/i })).toBeVisible();
   });
 
-  test('sign-in form flags empty fields as required', async ({ page }) => {
+  test('auth page shows brand panel on wide viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/auth');
-    const submit = page.getByRole('button', { name: 'Sign in', exact: true });
-    await submit.click();
-    // Browser-native validity kicks in — email input must fail validity.
-    const email = page.locator('input[type="email"]').first();
-    const valid = await email.evaluate((el: HTMLInputElement) => el.checkValidity());
-    expect(valid).toBe(false);
-    // Still on /auth — no navigation happened.
-    await expect(page).toHaveURL(/\/auth$/);
+    await expect(page.getByText(/where your company/i)).toBeVisible();
   });
 
-  test('typing invalid email surfaces browser validity error', async ({ page }) => {
+  test('auth page shows terms notice', async ({ page }) => {
     await page.goto('/auth');
-    const email = page.locator('input[type="email"]').first();
-    await email.fill('not-an-email');
-    await page.locator('input[type="password"]').first().fill('whatever');
-    await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-    const valid = await email.evaluate((el: HTMLInputElement) => el.checkValidity());
-    expect(valid).toBe(false);
+    await expect(page.getByText(/terms and privacy/i)).toBeVisible();
   });
 });
 
