@@ -20,11 +20,13 @@ CREATE INDEX IF NOT EXISTS idx_public_dashboards_token ON public.public_dashboar
 ALTER TABLE public.public_dashboards ENABLE ROW LEVEL SECURITY;
 
 -- Workspace members can manage dashboards
+DROP POLICY IF EXISTS "Members can view public_dashboards" ON public.public_dashboards;
 CREATE POLICY "Members can view public_dashboards" ON public.public_dashboards
   FOR SELECT USING (
     workspace_id IN (SELECT workspace_id FROM public.workspace_members WHERE user_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Admins can insert public_dashboards" ON public.public_dashboards;
 CREATE POLICY "Admins can insert public_dashboards" ON public.public_dashboards
   FOR INSERT WITH CHECK (
     workspace_id IN (
@@ -33,6 +35,7 @@ CREATE POLICY "Admins can insert public_dashboards" ON public.public_dashboards
     )
   );
 
+DROP POLICY IF EXISTS "Admins can update public_dashboards" ON public.public_dashboards;
 CREATE POLICY "Admins can update public_dashboards" ON public.public_dashboards
   FOR UPDATE USING (
     workspace_id IN (
@@ -41,6 +44,7 @@ CREATE POLICY "Admins can update public_dashboards" ON public.public_dashboards
     )
   );
 
+DROP POLICY IF EXISTS "Admins can delete public_dashboards" ON public.public_dashboards;
 CREATE POLICY "Admins can delete public_dashboards" ON public.public_dashboards
   FOR DELETE USING (
     workspace_id IN (

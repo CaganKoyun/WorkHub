@@ -20,6 +20,7 @@ create index if not exists idx_referrals_referrer on public.referrals(referrer_i
 
 alter table public.referrals enable row level security;
 
+drop policy if exists "Members can view own workspace referrals" on public.referrals;
 create policy "Members can view own workspace referrals"
   on public.referrals for select
   using (
@@ -29,10 +30,12 @@ create policy "Members can view own workspace referrals"
     )
   );
 
+drop policy if exists "Authenticated users can create referrals" on public.referrals;
 create policy "Authenticated users can create referrals"
   on public.referrals for insert
   with check (referrer_id = auth.uid());
 
+drop policy if exists "Referrer can update own referrals" on public.referrals;
 create policy "Referrer can update own referrals"
   on public.referrals for update
   using (referrer_id = auth.uid());
