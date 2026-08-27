@@ -203,20 +203,45 @@ function downloadCsv(content: string, filename: string) {
 
 export default function Insights() {
   const [rangeKey, setRangeKey] = useState<RangeKey>('90');
+  const [projectFilter, setProjectFilter] = useState<string>('all');
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('all');
   const days = rangeKey === 'custom' ? 90 : Number(rangeKey);
 
   const { currentWorkspace } = useWorkspace();
-  const { data: tasks, isLoading, isError } = useInsights(currentWorkspace?.id, days);
+  const { data: rawTasks, isLoading, isError } = useInsights(currentWorkspace?.id, days);
   const { data: cycle } = useActiveCycle();
   const { data: profiles } = useAllProfiles();
   const { data: projects } = useProjects();
   const { data: goals } = useGoals();
   const { data: pulse } = useCompanyPulse();
-  const { data: bugs } = useBugInsights(days);
+  const { data: rawBugs } = useBugInsights(days);
+
+  const tasks = useMemo(() => {
+    let r = rawTasks ?? [];
+    if (projectFilter !== 'all') r = r.filter(t => t.project_id === projectFilter);
+    if (assigneeFilter !== 'all') r = r.filter(t => t.assignee_id === assigneeFilter);
+    return r;
+  }, [rawTasks, projectFilter, assigneeFilter]);
+
+  const bugs = useMemo(() => {
+    let r = rawBugs ?? [];
+    if (projectFilter !== 'all') r = r.filter(b => b.project_id === projectFilter);
+    return r;
+  }, [rawBugs, projectFilter]);
+
+  const nameMap = useMemo(
+    () => new Map((profiles ?? []).map(p => [p.user_id, p.full_name ?? 'Kullanıcı'])),
+    [profiles],
+  );
+
+  const uniqueAssignees = useMemo(() => {
+    const ids = new Set((rawTasks ?? []).map(t => t.assignee_id).filter(Boolean) as string[]);
+    return Array.from(ids).map(id => ({ id, name: nameMap.get(id) ?? 'Kullanıcı' })).sort((a, b) => a.name.localeCompare(b.name));
+  }, [rawTasks, nameMap]);
 
   /* ── computed data ── */
 
-  const completedTasks = useMemo(() => tasks?.filter(t => t.status === 'done') ?? [], [tasks]);
+  const completedTasks = useMemo(() => tasks.filter(t => t.status === 'done'), [tasks]);
 
   const avgCompletionDays = useMemo(() => {
     const done = completedTasks.filter(t => t.completed_at);
@@ -423,7 +448,7 @@ export default function Insights() {
 
   /* ── loading / error states ── */
 
-  if (isLoading || (!isError && !tasks)) {
+  if (isLoading || (!isError && !rawTasks)) {
     return (
       <div className="p-6">
         <Skeleton className="h-8 w-40" />
@@ -459,15 +484,37 @@ export default function Insights() {
             Son {days} gundeki is akisi sagligi ve yonetici ozeti.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Select value={projectFilter} onValueChange={setProjectFilter}>
+            <SelectTrigger className="h-8 w-[140px] text-xs">
+              <SelectValue placeholder="Proje" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tüm projeler</SelectItem>
+              {(projects ?? []).map(p => (
+                <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={assigneeFilter} onValueChange={setAssigneeFilter}>
+            <SelectTrigger className="h-8 w-[140px] text-xs">
+              <SelectValue placeholder="Kişi" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tüm kişiler</SelectItem>
+              {uniqueAssignees.map(a => (
+                <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={rangeKey} onValueChange={(v) => setRangeKey(v as RangeKey)}>
             <SelectTrigger className="h-8 w-[140px] text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="30">Son 30 gun</SelectItem>
-              <SelectItem value="60">Son 60 gun</SelectItem>
-              <SelectItem value="90">Son 90 gun</SelectItem>
+              <SelectItem value="30">Son 30 gün</SelectItem>
+              <SelectItem value="60">Son 60 gün</SelectItem>
+              <SelectItem value="90">Son 90 gün</SelectItem>
             </SelectContent>
           </Select>
           <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" onClick={handleExport}>
