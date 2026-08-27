@@ -309,7 +309,7 @@ export default function Issues() {
   return (
     <div className="mx-auto max-w-5xl space-y-4 p-6">
       <div className="flex items-baseline justify-between">
-        <h1 className="text-[20px] font-semibold tracking-tight">Issues</h1>
+        <h1 className="text-[20px] font-semibold tracking-tight">Görevler</h1>
         <div className="flex items-center gap-3">
           {overdueCounts.overdue > 0 && (
             <span className="text-[11.5px] font-medium text-red-400 tabular-nums">
@@ -361,7 +361,7 @@ export default function Issues() {
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
-            {s === 'active' ? 'Active' : s === 'backlog' ? 'Backlog' : 'Tümü'}
+            {s === 'active' ? 'Aktif' : s === 'backlog' ? 'Bekleyen' : 'Tümü'}
             <span className="font-mono text-[11px] tabular-nums text-muted-foreground/70">
               {counts[s]}
             </span>
@@ -470,14 +470,14 @@ export default function Issues() {
               className={cn('h-6 px-2 rounded text-[11px] font-medium transition-colors inline-flex items-center gap-1',
                 view === 'list' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground')}
               title="Liste görünümü"
-            ><LayoutList className="h-3 w-3" /> List</button>
+            ><LayoutList className="h-3 w-3" /> Liste</button>
             <button
               type="button"
               onClick={() => setView('board')}
               className={cn('h-6 px-2 rounded text-[11px] font-medium transition-colors inline-flex items-center gap-1',
                 view === 'board' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground')}
               title="Kanban görünümü"
-            ><LayoutGrid className="h-3 w-3" /> Board</button>
+            ><LayoutGrid className="h-3 w-3" /> Pano</button>
           </div>
           {view === 'list' && (
             <div className="flex items-center gap-1 rounded-md border border-border p-0.5">

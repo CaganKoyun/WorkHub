@@ -825,7 +825,7 @@ export default function Cycles() {
     <div className="mx-auto max-w-6xl p-6">
       <div className="flex items-baseline justify-between mb-6">
         <div>
-          <h1 className="text-[20px] font-semibold tracking-tight">Cycles</h1>
+          <h1 className="text-[20px] font-semibold tracking-tight">Döngüler</h1>
           <p className="mt-0.5 text-[12.5px] text-muted-foreground">
             Zaman-kutulu is dilimleri. Bir cycle ekiplerin bir hafta / iki hafta boyunca odaklandigi seydir.
           </p>
