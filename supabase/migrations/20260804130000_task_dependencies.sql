@@ -23,10 +23,12 @@ CREATE INDEX IF NOT EXISTS idx_task_dependencies_workspace
 ALTER TABLE public.task_dependencies ENABLE ROW LEVEL SECURITY;
 
 -- Workspace members can read + write dependencies inside their workspace.
+DROP POLICY IF EXISTS "task_dependencies workspace read" ON public.task_dependencies;
 CREATE POLICY "task_dependencies workspace read"
   ON public.task_dependencies FOR SELECT TO authenticated
   USING (public.is_workspace_member(workspace_id, auth.uid()));
 
+DROP POLICY IF EXISTS "task_dependencies workspace write" ON public.task_dependencies;
 CREATE POLICY "task_dependencies workspace write"
   ON public.task_dependencies FOR INSERT TO authenticated
   WITH CHECK (
@@ -41,6 +43,7 @@ CREATE POLICY "task_dependencies workspace write"
     )
   );
 
+DROP POLICY IF EXISTS "task_dependencies workspace delete" ON public.task_dependencies;
 CREATE POLICY "task_dependencies workspace delete"
   ON public.task_dependencies FOR DELETE TO authenticated
   USING (public.is_workspace_member(workspace_id, auth.uid()));
