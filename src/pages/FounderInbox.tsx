@@ -125,10 +125,10 @@ export default function FounderInbox() {
                               {APPROVAL_KIND_LABELS[a.kind]}
                             </Badge>
                             <Badge className={APPROVAL_PRIORITY_COLORS[a.priority]}>
-                              {a.priority}
+                              {{low:"Düşük",normal:"Normal",high:"Yüksek",urgent:"Acil"}[a.priority] ?? a.priority}
                             </Badge>
                             {a.status !== "pending" && (
-                              <Badge variant="secondary" className="text-xs">{a.status}</Badge>
+                              <Badge variant="secondary" className="text-xs">{({approved:"Onaylandı",rejected:"Reddedildi",snoozed:"Ertelendi",delegated:"Devredildi",pending:"Bekliyor"} as Record<string,string>)[a.status] ?? a.status}</Badge>
                             )}
                           </div>
                           <h3 className="text-sm font-semibold mt-2">{a.title}</h3>
@@ -146,7 +146,7 @@ export default function FounderInbox() {
                               {formatDistanceToNow(new Date(a.created_at), { addSuffix: true, locale: tr })}
                             </span>
                             {a.due_at && (
-                              <span>Deadline: {new Date(a.due_at).toLocaleDateString("tr-TR")}</span>
+                              <span>Son tarih: {new Date(a.due_at).toLocaleDateString("tr-TR")}</span>
                             )}
                             {a.decision_note && (
                               <span className="italic">Not: {a.decision_note}</span>
@@ -341,7 +341,7 @@ function DelegateDialog({ approval, members, onClose, onSubmit }: {
           </Select>
           {members.length <= 1 && (
             <p className="text-xs text-muted-foreground">
-              Devredecek başka üye yok — önce Settings → Members'tan davet gönder.
+              Devredecek başka üye yok — önce Ayarlar → Üyeler'tan davet gönder.
             </p>
           )}
         </div>

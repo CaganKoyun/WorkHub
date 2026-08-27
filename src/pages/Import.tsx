@@ -35,9 +35,9 @@ interface ImportSummary {
 }
 
 const ENTITY_TYPES: { key: EntityType; label: string; desc: string }[] = [
-  { key: 'tasks',    label: 'Tasks',        desc: 'Gorev, issue, bug' },
-  { key: 'projects', label: 'Projects',     desc: 'Proje kayitlari' },
-  { key: 'contacts', label: 'CRM Contacts', desc: 'Musteri kontaklari' },
+  { key: 'tasks',    label: 'Görevler',     desc: 'Görev, issue, bug' },
+  { key: 'projects', label: 'Projeler',     desc: 'Proje kayıtları' },
+  { key: 'contacts', label: 'CRM Kişileri', desc: 'Müşteri kontakları' },
 ];
 
 function fieldsFor(et: EntityType): ImportFieldDef[] {
@@ -176,7 +176,7 @@ export default function Import() {
     if (!csv) { toast.error('Dosya sec'); return; }
     if (entityType === 'tasks' && !projectId) { toast.error('Hedef proje sec'); return; }
     if (colMap[rKey] === NONE || !colMap[rKey]) {
-      toast.error(`${rKey === 'full_name' ? 'Full name' : rKey === 'name' ? 'Name' : 'Title'} kolonu eslestirilmeli`);
+      toast.error(`${rKey === 'full_name' ? 'Ad Soyad' : rKey === 'name' ? 'Ad' : 'Başlık'} kolonu eşleştirilmeli`);
       return;
     }
 
@@ -252,13 +252,13 @@ export default function Import() {
         }
       } catch (e: any) {
         failed++;
-        if (errors.length < 8) errors.push(`Satir ${r + 2}: ${e.message ?? 'unknown error'}`);
+        if (errors.length < 8) errors.push(`Satir ${r + 2}: ${e.message ?? 'bilinmeyen hata'}`);
       }
     }
 
     setRunning(false);
     setSummary({ imported, skipped, failed, errors });
-    toast.success(`${imported} ${entityType === 'tasks' ? 'task' : entityType === 'projects' ? 'proje' : 'kontak'} ice alindi`);
+    toast.success(`${imported} ${entityType === 'tasks' ? 'görev' : entityType === 'projects' ? 'proje' : 'kişi'} içe alındı`);
   };
 
   const needsProject = entityType === 'tasks';
@@ -267,7 +267,7 @@ export default function Import() {
     <AppLayout>
     <div className="mx-auto max-w-3xl space-y-6 p-6">
       <div>
-        <h1 className="text-[20px] font-semibold tracking-tight">Import Wizard</h1>
+        <h1 className="text-[20px] font-semibold tracking-tight">İçe Aktarma Sihirbazı</h1>
         <p className="mt-0.5 text-[12.5px] text-muted-foreground">
           Linear, Asana, Jira, Trello, ClickUp, Monday veya Notion'dan CSV export'unuzu ice aktarin.
           Kolonlari otomatik eslestirmeye calisiyorum; onaylayip import'a baslatin.
@@ -436,7 +436,7 @@ export default function Import() {
             >
               {running
                 ? <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Ice aktariliyor…</>
-                : `${csv.rows.length} satiri import et`
+                : `${csv.rows.length} satırı içe aktar`
               }
             </Button>
           </div>
@@ -451,12 +451,12 @@ export default function Import() {
         )}>
           <div className="flex items-center gap-2 mb-2">
             {summary.failed > 0 ? <AlertTriangle className="h-4 w-4 text-destructive" /> : <CheckCircle2 className="h-4 w-4 text-[hsl(var(--status-done))]" />}
-            <h3 className="text-[14px] font-semibold">Import ozet</h3>
+            <h3 className="text-[14px] font-semibold">İçe aktarma özeti</h3>
           </div>
           <div className="grid grid-cols-3 gap-4 text-[13px]">
-            <div><span className="text-muted-foreground">Import edilen:</span> <span className="font-mono font-semibold text-[hsl(var(--status-done))]">{summary.imported}</span></div>
+            <div><span className="text-muted-foreground">İçe alınan:</span> <span className="font-mono font-semibold text-[hsl(var(--status-done))]">{summary.imported}</span></div>
             <div><span className="text-muted-foreground">Atlanan:</span> <span className="font-mono">{summary.skipped}</span></div>
-            <div><span className="text-muted-foreground">Hatali:</span> <span className="font-mono text-destructive">{summary.failed}</span></div>
+            <div><span className="text-muted-foreground">Hatalı:</span> <span className="font-mono text-destructive">{summary.failed}</span></div>
           </div>
           {summary.errors.length > 0 && (
             <details className="mt-3">

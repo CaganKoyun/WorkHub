@@ -467,8 +467,8 @@ export default function Insights() {
       <div className="flex items-center justify-center p-12">
         <div className="text-center space-y-3">
           <AlertTriangle className="mx-auto h-10 w-10 text-muted-foreground/40" />
-          <p className="text-sm font-medium">Could not load insights</p>
-          <p className="text-xs text-muted-foreground">Please try refreshing the page.</p>
+          <p className="text-sm font-medium">İçgörüler yüklenemedi</p>
+          <p className="text-xs text-muted-foreground">Lütfen sayfayı yenileyin.</p>
         </div>
       </div>
     );
@@ -479,7 +479,7 @@ export default function Insights() {
       {/* ── header row ── */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-semibold tracking-tight">Insights</h1>
+          <h1 className="text-[22px] font-semibold tracking-tight">İçgörüler</h1>
           <p className="mt-1 text-[13px] text-muted-foreground">
             Son {days} gundeki is akisi sagligi ve yonetici ozeti.
           </p>
@@ -522,7 +522,7 @@ export default function Insights() {
             CSV
           </Button>
           <span className="rounded-full border border-border bg-secondary px-2.5 py-1 font-mono text-[11px] tabular-nums text-muted-foreground">
-            {tasks.length} task
+            {tasks.length} görev
           </span>
         </div>
       </div>
@@ -530,9 +530,9 @@ export default function Insights() {
       {/* ── stat cards ── */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="Tamamlanan Task"
+          title="Tamamlanan Görev"
           value={completedTasks.length}
-          subtitle={`Toplam ${tasks.length} task`}
+          subtitle={`Toplam ${tasks.length} görev`}
           icon={CheckCircle2}
         />
         <StatCard
@@ -558,7 +558,7 @@ export default function Insights() {
       {/* ── chart grid ── */}
       <div className="grid gap-4 lg:grid-cols-2">
         {/* 1. Weekly throughput */}
-        <Tile title={`Haftalik throughput (${throughput.length} hafta)`} icon={Activity}>
+        <Tile title={`Haftalık iş tamamlama (${throughput.length} hafta)`} icon={Activity}>
           {throughput.length === 0 ? (
             <InlineEmpty text="Yeterli veri yok." />
           ) : (
@@ -592,9 +592,9 @@ export default function Insights() {
         </Tile>
 
         {/* 3. Burndown */}
-        <Tile title={cycle ? `Aktif cycle burndown -- ${cycle.name}` : 'Aktif cycle burndown'} icon={Target}>
+        <Tile title={cycle ? `Aktif sprint yakması — ${cycle.name}` : 'Aktif sprint yakması'} icon={Target}>
           {burndown.length === 0 ? (
-            <InlineEmpty text={cycle ? 'Bu cycle icin task yok.' : 'Aktif cycle bulunmuyor.'} />
+            <InlineEmpty text={cycle ? 'Bu sprint için görev yok.' : 'Aktif sprint bulunmuyor.'} />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={burndown}>
@@ -627,7 +627,7 @@ export default function Insights() {
         </Tile>
 
         {/* 5. Bug trend */}
-        <Tile title="Bug trendi -- acilan vs kapanan" icon={Bug}>
+        <Tile title="Bug trendi — açılan ve kapanan" icon={Bug}>
           {bugTrend.length === 0 ? (
             <InlineEmpty text="Bug verisi yok." />
           ) : (

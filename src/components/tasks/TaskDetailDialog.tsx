@@ -450,7 +450,7 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
                     otherTracking={edge.other?.tracking_id}
                     otherStatus={edge.other?.status}
                     otherProjectId={edge.other?.project_id}
-                    onRemove={() => removeDep.mutate({ id: edge.id, blocked_task_id: task.id, blocking_task_id: task.id })}
+                    onRemove={() => removeDep.mutate({ id: edge.id, blocked_task_id: edge.other?.id ?? '', blocking_task_id: task.id })}
                   />
                 ))}
                 {(deps?.blocking.length ?? 0) === 0 && (
@@ -479,7 +479,7 @@ export function TaskDetailDialog({ task, onOpenChange, members }: Props) {
                     otherTracking={edge.other?.tracking_id}
                     otherStatus={edge.other?.status}
                     otherProjectId={edge.other?.project_id}
-                    onRemove={() => removeDep.mutate({ id: edge.id, blocked_task_id: task.id, blocking_task_id: task.id })}
+                    onRemove={() => removeDep.mutate({ id: edge.id, blocked_task_id: task.id, blocking_task_id: edge.other?.id ?? '' })}
                   />
                 ))}
                 {(deps?.blockedBy.length ?? 0) === 0 && (

@@ -35,6 +35,7 @@ import {
   CircleDollarSign,
 } from 'lucide-react';
 import { format, startOfWeek, endOfWeek, addWeeks, isSameDay } from 'date-fns';
+import { tr } from 'date-fns/locale';
 import type { TimeEntry } from '@/lib/time-tracking-hooks';
 
 const DAY_LABELS = ['Pzt', 'Sal', 'Car', 'Per', 'Cum', 'Cmt', 'Paz'];
@@ -141,7 +142,7 @@ export default function Timesheet() {
           <ChevronRight className="mr-1 h-3 w-3 rotate-180" /> Onceki hafta
         </Button>
         <div className="text-[13px] font-medium">
-          {format(rangeStart, 'MMM d')} &ndash; {format(rangeEnd, 'MMM d, yyyy')}
+          {format(rangeStart, 'd MMM', { locale: tr })} &ndash; {format(rangeEnd, 'd MMM yyyy', { locale: tr })}
           <span className="ml-2 font-mono tabular-nums text-muted-foreground">{formatSeconds(weekTotal)}</span>
         </div>
         <Button size="sm" variant="ghost" onClick={() => setWeekOffset(w => w + 1)} className="h-7 text-[12px]" disabled={weekOffset >= 0}>
@@ -281,7 +282,7 @@ export default function Timesheet() {
                         <div key={d.date.toISOString()}>
                           <div className="flex items-center justify-between border-b border-border/40 bg-secondary/20 px-3 py-1">
                             <span className="text-[11px] text-muted-foreground">
-                              {format(d.date, 'EEEE, MMM d')}
+                              {format(d.date, 'EEEE, d MMM', { locale: tr })}
                             </span>
                             <span className="font-mono text-[10.5px] tabular-nums text-muted-foreground">
                               {formatSeconds(dayTotal)}

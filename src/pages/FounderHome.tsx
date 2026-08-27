@@ -298,9 +298,9 @@ export default function FounderHome() {
         {isError && (
           <EmptyState
             icon={AlertTriangle}
-            title="Could not load workspace data"
-            description="There was a problem fetching your workspace metrics. Please try refreshing."
-            action={{ label: "Refresh", onClick: () => window.location.reload() }}
+            title="Çalışma alanı verileri yüklenemedi"
+            description="Metrikler alınırken bir sorun oluştu. Lütfen sayfayı yenileyin."
+            action={{ label: "Yenile", onClick: () => window.location.reload() }}
             compact
           />
         )}
@@ -311,11 +311,11 @@ export default function FounderHome() {
         {/* Weekly Velocity */}
         <WeeklyVelocity trends={trends} />
 
-        {/* Company Pulse */}
+        {/* Şirket Nabzı */}
         <section>
           <div className="flex items-center gap-2 mb-3">
             <Zap className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold uppercase tracking-wide">Company Pulse</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-wide">Şirket Nabzı</h2>
           </div>
           {isLoading ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -368,7 +368,7 @@ export default function FounderHome() {
                 provenance={prov("Spark WorkHub Risks")}
               />
               <MetricCard
-                title="Company Health" value={healthScore(pulse) + "%"}
+                title="Şirket Sağlığı" value={healthScore(pulse) + "%"}
                 subtitle="hesaplanmis" icon={AlertTriangle}
                 tone={healthScore(pulse) < 60 ? "danger" : healthScore(pulse) < 80 ? "warning" : "success"}
                 provenance="Pulse metriklerinden turetildi"
@@ -395,12 +395,12 @@ export default function FounderHome() {
         {/* Recent Activity Feed */}
         <RecentActivityFeed />
 
-        {/* Attention Required */}
+        {/* Dikkat Gerekli */}
         <section>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-warning" />
-              <h2 className="text-sm font-semibold uppercase tracking-wide">Attention Required</h2>
+              <h2 className="text-sm font-semibold uppercase tracking-wide">Dikkat Gerekli</h2>
             </div>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/inbox">

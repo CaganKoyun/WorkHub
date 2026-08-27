@@ -103,18 +103,18 @@ function ProfileTab() {
             <input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploadingAvatar} />
           </div>
           <div>
-            <p className="text-[13px] font-medium">{fullName || "Your Name"}</p>
+            <p className="text-[13px] font-medium">{fullName || "İsimsiz"}</p>
             <p className="text-[12px] text-muted-foreground">{user?.email}</p>
           </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 max-w-lg">
           <div className="space-y-1">
             <Label className="text-[12px]">Ad Soyad</Label>
-            <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Doe" className="h-8 text-[13px]" />
+            <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Ahmet Yılmaz" className="h-8 text-[13px]" />
           </div>
           <div className="space-y-1">
             <Label className="text-[12px]">Unvan</Label>
-            <Input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="Software Engineer" className="h-8 text-[13px]" />
+            <Input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="Yazılım Mühendisi" className="h-8 text-[13px]" />
           </div>
         </div>
         <Button onClick={handleSaveProfile} disabled={saving} size="sm" className="h-7 text-[12px] mt-3">
@@ -175,14 +175,14 @@ function CompanyTab() {
     <div className="px-4 md:px-6 py-4">
       <p className="text-[12px] text-muted-foreground font-medium mb-3">Sirket Bilgileri</p>
       <div className="grid gap-3 sm:grid-cols-2 max-w-lg">
-        <div className="space-y-1"><Label className="text-[12px]">Sirket Adi</Label><Input value={form.company_name} onChange={(e) => update("company_name", e.target.value)} placeholder="Acme Inc." className="h-8 text-[13px]" /></div>
+        <div className="space-y-1"><Label className="text-[12px]">Sirket Adi</Label><Input value={form.company_name} onChange={(e) => update("company_name", e.target.value)} placeholder="Örnek A.Ş." className="h-8 text-[13px]" /></div>
         <div className="space-y-1"><Label className="text-[12px]">Web Sitesi</Label><Input value={form.company_website} onChange={(e) => update("company_website", e.target.value)} placeholder="https://acme.com" className="h-8 text-[13px]" /></div>
         <div className="space-y-1"><Label className="text-[12px]">Sektor</Label>
-          <Select value={form.industry} onValueChange={(v) => update("industry", v)}><SelectTrigger className="h-8 text-[13px]"><SelectValue placeholder="Secin" /></SelectTrigger><SelectContent>{["Technology","Healthcare","Finance","Education","Retail","Manufacturing","Other"].map(i => <SelectItem key={i} value={i.toLowerCase()}>{i}</SelectItem>)}</SelectContent></Select></div>
+          <Select value={form.industry} onValueChange={(v) => update("industry", v)}><SelectTrigger className="h-8 text-[13px]"><SelectValue placeholder="Secin" /></SelectTrigger><SelectContent>{[{v:"technology",l:"Teknoloji"},{v:"healthcare",l:"Sağlık"},{v:"finance",l:"Finans"},{v:"education",l:"Eğitim"},{v:"retail",l:"Perakende"},{v:"manufacturing",l:"Üretim"},{v:"other",l:"Diğer"}].map(i => <SelectItem key={i.v} value={i.v}>{i.l}</SelectItem>)}</SelectContent></Select></div>
         <div className="space-y-1"><Label className="text-[12px]">Sirket Buyuklugu</Label>
           <Select value={form.company_size} onValueChange={(v) => update("company_size", v)}><SelectTrigger className="h-8 text-[13px]"><SelectValue placeholder="Secin" /></SelectTrigger><SelectContent>{["1-10","11-50","51-200","201-500","501-1000","1000+"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
-        <div className="space-y-1 sm:col-span-2"><Label className="text-[12px]">Adres</Label><Input value={form.address} onChange={(e) => update("address", e.target.value)} placeholder="123 Main St" className="h-8 text-[13px]" /></div>
-        <div className="space-y-1"><Label className="text-[12px]">Telefon</Label><Input value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+1 (555) 000-0000" className="h-8 text-[13px]" /></div>
+        <div className="space-y-1 sm:col-span-2"><Label className="text-[12px]">Adres</Label><Input value={form.address} onChange={(e) => update("address", e.target.value)} placeholder="Örnek Mah. No: 1" className="h-8 text-[13px]" /></div>
+        <div className="space-y-1"><Label className="text-[12px]">Telefon</Label><Input value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+90 (5XX) 000 0000" className="h-8 text-[13px]" /></div>
       </div>
       <Button onClick={handleSave} disabled={saving} size="sm" className="h-7 text-[12px] mt-3">
         {saving && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />} Kaydet
@@ -263,7 +263,7 @@ function TeamTab() {
       <div className="px-4 md:px-6 py-4">
         <p className="text-[12px] text-muted-foreground font-medium mb-3">Takim Uyesi Davet Et</p>
         <div className="flex gap-2 max-w-lg">
-          <Input placeholder="colleague@company.com" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} className="h-8 text-[13px] flex-1" />
+          <Input placeholder="ekip.arkadasi@sirket.com" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} className="h-8 text-[13px] flex-1" />
           <Select value={inviteRole} onValueChange={setInviteRole}>
             <SelectTrigger className="w-[100px] h-8 text-[12px]"><SelectValue /></SelectTrigger>
             <SelectContent><SelectItem value="member">Uye</SelectItem><SelectItem value="manager">Yonetici</SelectItem><SelectItem value="admin">Admin</SelectItem></SelectContent>
@@ -307,7 +307,7 @@ function TeamTab() {
                     <AvatarImage src={m.avatar_url || ""} />
                     <AvatarFallback className="text-2xs">{initials}</AvatarFallback>
                   </Avatar>
-                  <span className="text-[13px] font-medium">{m.full_name || "Unnamed"}</span>
+                  <span className="text-[13px] font-medium">{m.full_name || "İsimsiz"}</span>
                   <span className="text-[12px] text-muted-foreground">{m.job_title || ""}</span>
                   {isSelf && <Badge variant="secondary" className="text-[10px] h-4 px-1">Sen</Badge>}
                 </div>

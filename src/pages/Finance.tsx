@@ -29,7 +29,7 @@ export default function Finance() {
     return (
       <DomainWorkspace
         domain="finance"
-        title="Finance"
+        title="Finans"
         subtitle="Nakit, burn, runway, bütçe ve proje karlılığı."
       >
         <div className="space-y-3">
@@ -43,7 +43,7 @@ export default function Finance() {
     return (
       <DomainWorkspace
         domain="finance"
-        title="Finance"
+        title="Finans"
         subtitle="Nakit, burn, runway, bütçe ve proje karlılığı."
       >
         <Card>
@@ -52,7 +52,7 @@ export default function Finance() {
             <p className="font-medium">Finans modülüne erişimin yok</p>
             <p className="max-w-sm text-sm text-muted-foreground">
               Finansal veriler varsayılan olarak kilitlidir. Erişim gerekiyorsa
-              workspace sahibinden Ayarlar → Permissions üzerinden finans
+              workspace sahibinden Ayarlar → İzinler üzerinden finans
               yetkisi vermesini iste.
             </p>
           </CardContent>
@@ -64,7 +64,7 @@ export default function Finance() {
   return (
     <DomainWorkspace
       domain="finance"
-      title="Finance"
+      title="Finans"
       subtitle="Nakit, burn, runway, bütçe ve proje karlılığı — hepsi Company Graph üzerinden bağlı."
     >
       <div className="mb-4"><IntegrationsPanel domain="finance" compact /></div>
@@ -73,7 +73,7 @@ export default function Finance() {
         <TabsList className="flex flex-wrap h-auto">
           {TABS.map(t => <TabsTrigger key={t.id} value={t.id}>{t.label}</TabsTrigger>)}
         </TabsList>
-        <TabsContent value="overview" className="mt-4"><CashFlowView /></TabsContent>
+        <TabsContent value="overview" className="mt-4"><TransactionsList /></TabsContent>
         <TabsContent value="transactions" className="mt-4"><TransactionsList /></TabsContent>
         <TabsContent value="budgets" className="mt-4"><BudgetsList /></TabsContent>
         <TabsContent value="cashflow" className="mt-4"><CashFlowView /></TabsContent>

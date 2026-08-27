@@ -199,7 +199,7 @@ export function MyTasksView() {
           Toplam
         </div>
         <span className="text-2xl font-bold">{stats.total}</span>
-        <span className="text-xs text-muted-foreground ml-1">task</span>
+        <span className="text-xs text-muted-foreground ml-1">gorev</span>
       </div>
       <div className="rounded-lg border border-border/60 bg-card p-3">
         <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
@@ -436,7 +436,7 @@ export function MyTasksView() {
             )}
             onClick={() => setViewMode('mine')}
           >
-            Benim Tasklerim
+            Benim Gorevlerim
           </button>
           <button
             className={cn(
@@ -445,7 +445,7 @@ export function MyTasksView() {
             )}
             onClick={() => setViewMode('all')}
           >
-            Tüm Taskler
+            Tum Gorevler
           </button>
         </div>
 

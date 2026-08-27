@@ -26,15 +26,15 @@ const STATUS_COLORS: Record<string, string> = {
   resolved: "hsl(142, 70%, 40%)", closed: "hsl(0, 0%, 50%)",
 };
 const STATUS_LABELS: Record<string, string> = {
-  new: "New", assigned: "Assigned", in_progress: "In Progress",
-  testing: "Testing", resolved: "Resolved", closed: "Closed",
+  new: "Yeni", assigned: "Atandı", in_progress: "Devam Ediyor",
+  testing: "Test Ediliyor", resolved: "Çözüldü", closed: "Kapatıldı",
 };
 const SEVERITY_COLORS: Record<string, string> = {
   critical: "hsl(0, 72%, 51%)", high: "hsl(25, 95%, 53%)",
   medium: "hsl(38, 92%, 50%)", low: "hsl(142, 70%, 40%)",
 };
 const SEVERITY_LABELS: Record<string, string> = {
-  critical: "Critical", high: "High", medium: "Medium", low: "Low",
+  critical: "Kritik", high: "Yüksek", medium: "Orta", low: "Düşük",
 };
 
 export default function Analytics() {
@@ -77,7 +77,7 @@ export default function Analytics() {
     bugs.forEach(b => { const key = format(parseISO(b.created_at), "MMM dd"); if (key in days) days[key]++; });
     return Object.entries(days).map(([date, count]) => ({ date, count }));
   }, [bugs]);
-  const trendChartConfig: ChartConfig = { count: { label: "Bugs Created", color: "hsl(234, 55%, 60%)" } };
+  const trendChartConfig: ChartConfig = { count: { label: "Oluşturulan Buglar", color: "hsl(234, 55%, 60%)" } };
 
   const areaData = useMemo(() => {
     const resolvedStatuses = new Set(["resolved", "closed"]);
@@ -90,7 +90,7 @@ export default function Analytics() {
     }
     return result;
   }, [bugs]);
-  const areaChartConfig: ChartConfig = { open: { label: "Open", color: "hsl(38, 92%, 50%)" }, resolved: { label: "Resolved", color: "hsl(142, 70%, 40%)" } };
+  const areaChartConfig: ChartConfig = { open: { label: "Açık", color: "hsl(38, 92%, 50%)" }, resolved: { label: "Çözülmüş", color: "hsl(142, 70%, 40%)" } };
 
   const stackedData = useMemo(() => {
     return Object.entries(STATUS_LABELS).map(([statusKey, statusLabel]) => {
@@ -103,7 +103,7 @@ export default function Analytics() {
 
   if (loading) {
     return (
-      <DomainWorkspace domain="analytics" title="Analytics" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
+      <DomainWorkspace domain="analytics" title="Analitik" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
         <div className="flex flex-col h-full">
           <div className="px-4 md:px-6 h-11 border-b border-border flex items-center">
             <Skeleton className="h-4 w-20" />
@@ -120,13 +120,13 @@ export default function Analytics() {
 
   if (isError) {
     return (
-      <DomainWorkspace domain="analytics" title="Analytics" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
+      <DomainWorkspace domain="analytics" title="Analitik" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
         <div className="p-6">
           <EmptyState
             icon={AlertTriangle}
-            title="Could not load analytics"
-            description="There was a problem fetching bug data. Please try refreshing the page."
-            action={{ label: "Refresh", onClick: () => window.location.reload() }}
+            title="Analitik verileri yüklenemedi"
+            description="Bug verileri çekilirken bir sorun oluştu. Lütfen sayfayı yenileyin."
+            action={{ label: "Yenile", onClick: () => window.location.reload() }}
           />
         </div>
       </DomainWorkspace>
@@ -135,12 +135,12 @@ export default function Analytics() {
 
   if (bugs.length === 0) {
     return (
-      <DomainWorkspace domain="analytics" title="Analytics" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
+      <DomainWorkspace domain="analytics" title="Analitik" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
         <div className="p-6">
           <EmptyState
             icon={Bug}
-            title="No bug data yet"
-            description="Analytics will populate once bugs are reported. Start by logging your first bug."
+            title="Henüz bug verisi yok"
+            description="Buglar raporlandıkça analitik veriler oluşacaktır. İlk bugınızı kaydederek başlayın."
           />
         </div>
       </DomainWorkspace>
@@ -148,10 +148,10 @@ export default function Analytics() {
   }
 
   return (
-    <DomainWorkspace domain="analytics" title="Analytics" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
+    <DomainWorkspace domain="analytics" title="Analitik" subtitle="Bug ve kalite metrikleri — trendler, dağılımlar, çözüm süreleri.">
       <div className="flex flex-col h-full">
         <div className="px-4 md:px-6 h-11 border-b border-border flex items-center shrink-0">
-          <h1 className="text-[13px] font-medium">Analytics</h1>
+          <h1 className="text-[13px] font-medium">Analitik</h1>
         </div>
 
         <div className="flex-1 overflow-auto">
@@ -160,10 +160,10 @@ export default function Analytics() {
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-border rounded-md overflow-hidden">
               {[
-                { label: "Total bugs", value: stats.total },
-                { label: "Resolution rate", value: `${stats.resolutionRate}%` },
-                { label: "Avg bugs/day", value: stats.avgPerDay },
-                { label: "Critical bugs", value: stats.critical },
+                { label: "Toplam bug", value: stats.total },
+                { label: "Çözüm oranı", value: `${stats.resolutionRate}%` },
+                { label: "Ort. bug/gün", value: stats.avgPerDay },
+                { label: "Kritik buglar", value: stats.critical },
               ].map((stat) => (
                 <div key={stat.label} className="bg-background p-4">
                   <p className="text-[12px] text-muted-foreground">{stat.label}</p>
@@ -176,8 +176,8 @@ export default function Analytics() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-border rounded-md overflow-hidden">
               {/* Status Bar */}
               <div className="bg-background p-4">
-                <p className="text-[13px] font-medium mb-1">Bugs by status</p>
-                <p className="text-[12px] text-muted-foreground mb-4">Distribution across workflow stages</p>
+                <p className="text-[13px] font-medium mb-1">Duruma göre buglar</p>
+                <p className="text-[12px] text-muted-foreground mb-4">İş akışı aşamalarına göre dağılım</p>
                 <ChartContainer config={statusChartConfig} className="h-[220px] w-full">
                   <BarChart data={statusData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -193,8 +193,8 @@ export default function Analytics() {
 
               {/* Severity Pie */}
               <div className="bg-background p-4">
-                <p className="text-[13px] font-medium mb-1">Severity distribution</p>
-                <p className="text-[12px] text-muted-foreground mb-4">Breakdown by severity level</p>
+                <p className="text-[13px] font-medium mb-1">Önem dağılımı</p>
+                <p className="text-[12px] text-muted-foreground mb-4">Önem seviyesine göre ayrım</p>
                 <ChartContainer config={severityChartConfig} className="h-[220px] w-full">
                   <PieChart>
                     <ChartTooltip content={<ChartTooltipContent />} />
@@ -207,8 +207,8 @@ export default function Analytics() {
 
               {/* Trend Line */}
               <div className="bg-background p-4">
-                <p className="text-[13px] font-medium mb-1">Bug creation trend</p>
-                <p className="text-[12px] text-muted-foreground mb-4">New bugs reported per day (last 30 days)</p>
+                <p className="text-[13px] font-medium mb-1">Bug oluşturma trendi</p>
+                <p className="text-[12px] text-muted-foreground mb-4">Günlük raporlanan yeni buglar (son 30 gün)</p>
                 <ChartContainer config={trendChartConfig} className="h-[220px] w-full">
                   <LineChart data={trendData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -222,8 +222,8 @@ export default function Analytics() {
 
               {/* Open vs Resolved */}
               <div className="bg-background p-4">
-                <p className="text-[13px] font-medium mb-1">Open vs resolved</p>
-                <p className="text-[12px] text-muted-foreground mb-4">Cumulative counts over the last 30 days</p>
+                <p className="text-[13px] font-medium mb-1">Açık ve çözülmüş</p>
+                <p className="text-[12px] text-muted-foreground mb-4">Son 30 güne ait kümülatif sayılar</p>
                 <ChartContainer config={areaChartConfig} className="h-[220px] w-full">
                   <AreaChart data={areaData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -238,8 +238,8 @@ export default function Analytics() {
 
               {/* Severity by Status */}
               <div className="bg-background p-4 lg:col-span-2">
-                <p className="text-[13px] font-medium mb-1">Severity by status</p>
-                <p className="text-[12px] text-muted-foreground mb-4">How severity levels distribute across each status</p>
+                <p className="text-[13px] font-medium mb-1">Duruma göre önem</p>
+                <p className="text-[12px] text-muted-foreground mb-4">Önem seviyelerinin durumlara göre dağılımı</p>
                 <ChartContainer config={stackedChartConfig} className="h-[220px] w-full">
                   <BarChart data={stackedData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />

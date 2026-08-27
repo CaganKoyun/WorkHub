@@ -63,7 +63,7 @@ const TABS = [
   { id: 'customers', label: 'Müşteriler' },
   { id: 'quotes', label: 'Teklifler' },
   { id: 'contracts', label: 'Sözleşmeler' },
-  { id: 'forecast', label: 'Forecast' },
+  { id: 'forecast', label: 'Tahmin' },
   { id: 'revenue', label: 'Gelir Analizi' },
   { id: 'import', label: 'Ice Aktar' },
 ] as const;
@@ -255,7 +255,7 @@ function RevenueAnalytics() {
                                 : 'secondary'
                           }
                         >
-                          {c.health}
+                          {({healthy:"Sağlıklı",at_risk:"Riskli",critical:"Kritik",churned:"Kayıp"} as Record<string,string>)[c.health] ?? c.health}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">{fmt(Number(c.mrr ?? 0))}</TableCell>

@@ -38,14 +38,13 @@ import { format } from "date-fns";
 
 const FEATURE_STATUS = ["proposed", "in_progress", "shipped", "deprecated"] as const;
 const FEATURE_STATUS_LABELS: Record<string, string> = {
-  proposed: "Proposed", in_progress: "In Progress", shipped: "Shipped", deprecated: "Deprecated",
-  // legacy values from old data
-  idea: "Idea", planned: "Planned", cancelled: "Cancelled",
+  proposed: "Önerildi", in_progress: "Devam Ediyor", shipped: "Yayınlandı", deprecated: "Kullanımdan Kalktı",
+  idea: "Fikir", planned: "Planlandı", cancelled: "İptal Edildi",
 };
 
 const MOSCOW = ["must_have", "should_have", "could_have", "wont_have"] as const;
 const MOSCOW_LABELS: Record<string, string> = {
-  must_have: "Must Have", should_have: "Should Have", could_have: "Could Have", wont_have: "Won't Have",
+  must_have: "Olmazsa Olmaz", should_have: "Olmalı", could_have: "Olsa İyi", wont_have: "Olmayacak",
 };
 
 const PRIORITIES = ["low", "medium", "high", "urgent"] as const;
@@ -396,7 +395,7 @@ function FeaturesTab() {
                   <div><Label>Oncelik</Label>
                     <Select value={form.priority} onValueChange={v => setForm({ ...form, priority: v })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>{PRIORITIES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                      <SelectContent>{PRIORITIES.map(s => <SelectItem key={s} value={s}>{{low:"Düşük",medium:"Orta",high:"Yüksek",urgent:"Acil"}[s] ?? s}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
                   <div><Label>MoSCoW</Label>
@@ -409,7 +408,7 @@ function FeaturesTab() {
                     </Select>
                   </div>
                 </div>
-                <div><Label>Bagimlilk (Blocked By)</Label>
+                <div><Label>Bağımlılık (Engelleyen)</Label>
                   <Select value={form.blocked_by} onValueChange={v => setForm({ ...form, blocked_by: v })}>
                     <SelectTrigger><SelectValue placeholder="-- Yok --" /></SelectTrigger>
                     <SelectContent>
@@ -441,17 +440,17 @@ function FeaturesTab() {
           {detailItem && <>
             <SheetHeader>
               <SheetTitle>{detailItem.title}</SheetTitle>
-              <SheetDescription>Feature Detayi</SheetDescription>
+              <SheetDescription>Özellik Detayı</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-3 text-sm">
               <div className="flex flex-wrap gap-2">
                 <Badge className={tone[detailItem.status]}>{FEATURE_STATUS_LABELS[detailItem.status] ?? detailItem.status}</Badge>
-                <Badge className={tone[detailItem.priority]}>{detailItem.priority}</Badge>
+                <Badge className={tone[detailItem.priority]}>{({low:"Düşük",medium:"Orta",high:"Yüksek",urgent:"Acil"} as Record<string,string>)[detailItem.priority] ?? detailItem.priority}</Badge>
                 {detailItem.moscow && <Badge className={tone[detailItem.moscow]}>{MOSCOW_LABELS[detailItem.moscow] ?? detailItem.moscow}</Badge>}
               </div>
               {detailItem.description && <div><span className="font-medium">Aciklama:</span><p className="text-muted-foreground mt-1 whitespace-pre-wrap">{detailItem.description}</p></div>}
               {detailItem.owner_id && <div><span className="font-medium">Sahip:</span> {getOwnerName(detailItem.owner_id) ?? detailItem.owner_id}</div>}
-              {detailItem.blocked_by && <div><span className="font-medium">Blocked By:</span> {getBlockedByTitle(detailItem.blocked_by) ?? detailItem.blocked_by}</div>}
+              {detailItem.blocked_by && <div><span className="font-medium">Engelleniyor:</span> {getBlockedByTitle(detailItem.blocked_by) ?? detailItem.blocked_by}</div>}
               <div className="flex gap-3">
                 <ScoreBadge rice={computeFeatureRice(detailItem)} ice={computeFeatureIce(detailItem)} />
               </div>
@@ -482,7 +481,7 @@ function FeaturesTab() {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      <Badge className={tone[f.priority]}>{f.priority}</Badge>
+                      <Badge className={tone[f.priority]}>{({low:"Düşük",medium:"Orta",high:"Yüksek",urgent:"Acil"} as Record<string,string>)[f.priority] ?? f.priority}</Badge>
                       <Badge className={tone[f.status]}>{FEATURE_STATUS_LABELS[f.status] ?? f.status}</Badge>
                       {f.moscow && <Badge className={tone[f.moscow]}>{MOSCOW_LABELS[f.moscow] ?? f.moscow}</Badge>}
                     </div>
@@ -495,7 +494,7 @@ function FeaturesTab() {
                           <Button variant="ghost" size="icon" className="h-5 w-5" onClick={e => { e.stopPropagation(); handleVote(f, -1); }}><ThumbsDown className="h-3 w-3" /></Button>
                         </span>
                         {f.owner_id && <span>{getOwnerName(f.owner_id) ?? "Sahip"}</span>}
-                        {f.blocked_by && <span className="text-amber-400">Blocked</span>}
+                        {f.blocked_by && <span className="text-amber-400">Engelli</span>}
                       </div>
                       <ScoreBadge rice={rice} ice={ice} />
                     </div>
@@ -559,13 +558,13 @@ function FeedbackTab() {
                 <div><Label>Kategori</Label>
                   <Select value={form.category} onValueChange={v => setForm({ ...form, category: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{FEEDBACK_CATEGORY.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{FEEDBACK_CATEGORY.map(s => <SelectItem key={s} value={s}>{{ bug: "Hata", feature_request: "Özellik İsteği", praise: "Övgü", question: "Soru", complaint: "Şikayet" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div><Label>Durum</Label>
                   <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{FEEDBACK_STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{FEEDBACK_STATUS.map(s => <SelectItem key={s} value={s}>{{ new: "Yeni", triaged: "Sınıflandırıldı", planned: "Planlandı", done: "Tamamlandı", wont_do: "Yapılmayacak" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
               </div>
@@ -685,7 +684,7 @@ function ReleasesTab() {
                 <div><Label>Durum</Label>
                   <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{RELEASE_STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{RELEASE_STATUS.map(s => <SelectItem key={s} value={s}>{{ planned: "Planlandı", in_progress: "Devam Ediyor", released: "Yayınlandı", cancelled: "İptal Edildi" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div><Label>Tarih</Label><Input type="date" value={form.release_date} onChange={e => setForm({ ...form, release_date: e.target.value })} /></div>
@@ -787,13 +786,13 @@ function IncidentsTab() {
                 <div><Label>Siddet</Label>
                   <Select value={form.severity} onValueChange={v => setForm({ ...form, severity: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{SEVERITY.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{SEVERITY.map(s => <SelectItem key={s} value={s}>{{ sev1: "SEV1 — Kritik", sev2: "SEV2 — Yüksek", sev3: "SEV3 — Orta", sev4: "SEV4 — Düşük" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div><Label>Durum</Label>
                   <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{INCIDENT_STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{INCIDENT_STATUS.map(s => <SelectItem key={s} value={s}>{{ investigating: "Araştırılıyor", identified: "Tanımlandı", monitoring: "İzleniyor", resolved: "Çözüldü", postmortem: "Postmortem" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
               </div>
@@ -857,7 +856,7 @@ function IncidentsTab() {
 /* ========================== Main Page ========================== */
 export default function Product() {
   return (
-    <DomainWorkspace domain="product" title="Product" subtitle="Urun, feature, feedback, release ve incident tek yerde.">
+    <DomainWorkspace domain="product" title="Ürün" subtitle="Ürün, özellik, geri bildirim, sürüm ve olay yönetimi tek yerde.">
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-semibold">Urun & Muhendislik</h1>
@@ -867,9 +866,9 @@ export default function Product() {
         <Tabs defaultValue="features">
           <TabsList>
             <TabsTrigger value="features">Roadmap</TabsTrigger>
-            <TabsTrigger value="feedback">Feedback</TabsTrigger>
-            <TabsTrigger value="releases">Releases</TabsTrigger>
-            <TabsTrigger value="incidents">Incidents</TabsTrigger>
+            <TabsTrigger value="feedback">Geri Bildirim</TabsTrigger>
+            <TabsTrigger value="releases">Sürümler</TabsTrigger>
+            <TabsTrigger value="incidents">Olaylar</TabsTrigger>
             <TabsTrigger value="products">Urunler</TabsTrigger>
           </TabsList>
           <TabsContent value="features" className="mt-4"><FeaturesTab /></TabsContent>

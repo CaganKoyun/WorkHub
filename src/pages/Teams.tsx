@@ -23,6 +23,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { Plus, Users as UsersIcon, Mail, X, UserMinus, Crown } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { tr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { DomainWorkspace } from "@/components/DomainWorkspace";
 
@@ -52,7 +53,7 @@ function TeamCreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-2">
             <Label>Ad</Label>
-            <Input value={name} onChange={e => setName(e.target.value)} placeholder="Engineering, Design, Sales…" autoFocus />
+            <Input value={name} onChange={e => setName(e.target.value)} placeholder="Mühendislik, Tasarım, Satış…" autoFocus />
           </div>
           <div className="space-y-2">
             <Label>Açıklama</Label>
@@ -302,7 +303,7 @@ export default function Teams() {
       {/* Members */}
       <section>
         <h2 className="mb-2 flex items-center justify-between text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
-          <span>Workspace üyeleri</span>
+          <span>Çalışma alanı üyeleri</span>
           <span className="font-mono normal-case tabular-nums text-muted-foreground/70">{members?.length ?? 0}</span>
         </h2>
         <div className="rounded-md border border-border/60 overflow-hidden">
@@ -332,7 +333,7 @@ export default function Teams() {
                   "border-border bg-secondary/40 text-muted-foreground",
                 )}>{ROLE_LABELS[inv.role]}</span>
                 <span className="text-[11px] text-muted-foreground tabular-nums">
-                  {format(new Date(inv.expires_at), 'MMM d')} sona erer
+                  {format(new Date(inv.expires_at), 'd MMM', { locale: tr })} sona erer
                 </span>
                 <Button
                   variant="ghost" size="icon" className="h-6 w-6 opacity-60 hover:opacity-100"

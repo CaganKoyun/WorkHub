@@ -144,8 +144,8 @@ function PortalRow({ p }: { p: ClientPortal }) {
           {p.can_comment
             ? <MessageCircle className="h-3 w-3 text-primary" />
             : <MessageCircleOff className="h-3 w-3 text-muted-foreground" />}
-          {revoked && <span className="chip bad">Revoked</span>}
-          {expired && !revoked && <span className="chip warn">Expired</span>}
+          {revoked && <span className="chip bad">Iptal Edildi</span>}
+          {expired && !revoked && <span className="chip warn">Suresi Doldu</span>}
         </div>
         <div className="text-[11.5px] text-muted-foreground truncate">
           {p.client_email} · {p.project_ids.length} proje

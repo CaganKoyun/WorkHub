@@ -176,11 +176,11 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Cycle</Label>
+              <Label>Sprint</Label>
               <Select value={cycleId} onValueChange={setCycleId}>
                 <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">Cycle yok</SelectItem>
+                  <SelectItem value="none">Sprint yok</SelectItem>
                   {(cycles ?? []).map(c => (
                     <SelectItem key={c.id} value={c.id}>
                       <span className="font-mono text-[11px] text-muted-foreground mr-1.5">#{c.number}</span>
@@ -191,7 +191,7 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Story points</Label>
+              <Label>Puan</Label>
               <Input type="number" step="0.5" min="0" value={points} onChange={e => setPoints(e.target.value)} placeholder="3" />
             </div>
           </div>
@@ -226,7 +226,7 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
             )}
             {recurrenceOn && (
               <p className="text-[11px] text-muted-foreground pt-1">
-                Task "Tamamlandı" olarak işaretlendiğinde bir sonraki tekrarı otomatik oluşur.
+                Görev "Tamamlandı" olarak işaretlendiğinde bir sonraki tekrarı otomatik oluşur.
               </p>
             )}
           </div>
