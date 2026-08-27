@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useCycles, useCreateCycle, useUpdateCycle, useCycleProgress } from '@/lib/cycles-hooks';
 import { useCycleTasks } from '@/lib/tasks-hooks';
+import { useAllProfiles } from '@/lib/projects-hooks';
 import { CYCLE_STATUS_LABELS, type Cycle, type CycleStatus } from '@/lib/cycles-types';
 import {
   TASK_STATUS_LABELS,
@@ -33,15 +34,19 @@ import {
   Loader2,
   Eye,
   AlertCircle,
+  Users,
 } from 'lucide-react';
 import { format, formatDistanceToNowStrict, differenceInDays, eachDayOfInterval, isBefore, isAfter, parseISO } from 'date-fns';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import {
   AreaChart,
   Area,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   ResponsiveContainer,
   CartesianGrid,
   ReferenceLine,
@@ -232,7 +237,7 @@ function BurndownChart({ cycle, tasks }: { cycle: Cycle; tasks: Task[] }) {
           className="text-muted-foreground"
           allowDecimals={false}
         />
-        <Tooltip
+        <RechartsTooltip
           contentStyle={{
             backgroundColor: 'hsl(var(--card))',
             border: '1px solid hsl(var(--border))',
@@ -267,7 +272,7 @@ function BurndownChart({ cycle, tasks }: { cycle: Cycle; tasks: Task[] }) {
 /*  Task List (grouped by status)                                     */
 /* ------------------------------------------------------------------ */
 
-function CycleTaskList({ tasks, isLoading }: { tasks: Task[]; isLoading: boolean }) {
+function CycleTaskList({ tasks, isLoading, profileMap }: { tasks: Task[]; isLoading: boolean; profileMap: Map<string, string | null> }) {
   const [collapsedStatuses, setCollapsedStatuses] = useState<Set<TaskStatus>>(new Set());
 
   const grouped = useMemo(() => {
@@ -328,31 +333,56 @@ function CycleTaskList({ tasks, isLoading }: { tasks: Task[]; isLoading: boolean
             </button>
             {!isCollapsed && (
               <div className="ml-5 space-y-0.5">
-                {list.map(task => (
-                  <div
-                    key={task.id}
-                    className="flex items-center gap-3 rounded-md px-2.5 py-1.5 hover:bg-accent/40 transition-colors group/task"
-                  >
-                    <Icon className={`h-3.5 w-3.5 shrink-0 ${TASK_STATUS_COLOR[status]}`} />
-                    <span className="font-mono text-[10px] text-muted-foreground/50 shrink-0">
-                      {task.tracking_id}
-                    </span>
-                    <span className="text-[13px] text-foreground truncate flex-1">{task.title}</span>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {task.priority && (
-                        <span className="flex items-center gap-1 text-[10.5px] text-muted-foreground">
-                          <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_DOT[task.priority] ?? ''}`} />
-                          {TASK_PRIORITY_LABELS[task.priority]}
-                        </span>
-                      )}
-                      {task.story_points != null && (
-                        <span className="font-mono text-[10px] tabular-nums text-muted-foreground/60 bg-muted/60 rounded px-1 py-0.5">
-                          {task.story_points}p
-                        </span>
-                      )}
+                {list.map(task => {
+                  const assigneeName = task.assignee_id ? profileMap.get(task.assignee_id) : null;
+                  const initials = assigneeName
+                    ? assigneeName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+                    : '';
+                  const isOverdue = task.due_date && task.status !== 'done' &&
+                    new Date(task.due_date) < new Date();
+                  return (
+                    <div
+                      key={task.id}
+                      className="flex items-center gap-3 rounded-md px-2.5 py-1.5 hover:bg-accent/40 transition-colors group/task"
+                    >
+                      <Icon className={`h-3.5 w-3.5 shrink-0 ${TASK_STATUS_COLOR[status]}`} />
+                      <span className="font-mono text-[10px] text-muted-foreground/50 shrink-0">
+                        {task.tracking_id}
+                      </span>
+                      <span className="text-[13px] text-foreground truncate flex-1">{task.title}</span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {task.priority && (
+                          <span className="flex items-center gap-1 text-[10.5px] text-muted-foreground">
+                            <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_DOT[task.priority] ?? ''}`} />
+                            {TASK_PRIORITY_LABELS[task.priority]}
+                          </span>
+                        )}
+                        {task.story_points != null && (
+                          <span className="font-mono text-[10px] tabular-nums text-muted-foreground/60 bg-muted/60 rounded px-1 py-0.5">
+                            {task.story_points}p
+                          </span>
+                        )}
+                        {task.due_date && (
+                          <span className={`text-[10.5px] tabular-nums ${isOverdue ? 'text-red-400 font-medium' : 'text-muted-foreground'}`}>
+                            {format(new Date(task.due_date), 'MMM d')}
+                          </span>
+                        )}
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Avatar className="h-5 w-5">
+                              <AvatarFallback className="bg-sidebar-accent text-[8px] font-semibold text-sidebar-accent-foreground">
+                                {initials || '·'}
+                              </AvatarFallback>
+                            </Avatar>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-[11px]">
+                            {assigneeName ?? 'Atanmamış'}
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -369,7 +399,29 @@ function CycleTaskList({ tasks, isLoading }: { tasks: Task[]; isLoading: boolean
 function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
   const { data: progress } = useCycleProgress(cycle.id);
   const { data: tasks = [], isLoading: tasksLoading } = useCycleTasks(cycle.id);
+  const { data: profiles } = useAllProfiles();
   const [editOpen, setEditOpen] = useState(false);
+
+  const profileMap = useMemo(
+    () => new Map((profiles ?? []).map(p => [p.user_id, p.full_name])),
+    [profiles],
+  );
+
+  const memberBreakdown = useMemo(() => {
+    const map = new Map<string, { name: string; total: number; done: number; overdue: number; inProgress: number }>();
+    const today = new Date();
+    tasks.forEach(t => {
+      const key = t.assignee_id ?? '__unassigned__';
+      const name = t.assignee_id ? (profileMap.get(t.assignee_id) ?? 'Kullanıcı') : 'Atanmamış';
+      const entry = map.get(key) ?? { name, total: 0, done: 0, overdue: 0, inProgress: 0 };
+      entry.total++;
+      if (t.status === 'done') entry.done++;
+      if (t.status === 'in_progress' || t.status === 'review') entry.inProgress++;
+      if (t.due_date && t.status !== 'done' && new Date(t.due_date) < today) entry.overdue++;
+      map.set(key, entry);
+    });
+    return Array.from(map.values()).sort((a, b) => b.overdue - a.overdue || b.total - a.total);
+  }, [tasks, profileMap]);
 
   const meta = STATUS_META[cycle.status];
   const total = progress?.total_tasks ?? 0;
@@ -518,6 +570,54 @@ function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
         </div>
       </div>
 
+      {/* Member breakdown - who's behind */}
+      {memberBreakdown.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="h-4 w-4 text-muted-foreground/60" />
+            <h3 className="text-[13px] font-semibold text-foreground">Kişi bazlı ilerleme</h3>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {memberBreakdown.map(m => {
+              const pctDone = m.total === 0 ? 0 : Math.round((m.done / m.total) * 100);
+              const initials = m.name === 'Atanmamış' ? '?' : m.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+              return (
+                <div
+                  key={m.name}
+                  className={cn(
+                    "rounded-lg border p-3 transition-colors",
+                    m.overdue > 0
+                      ? "border-red-500/30 bg-red-500/5"
+                      : "border-border/40 bg-card"
+                  )}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Avatar className="h-6 w-6">
+                      <AvatarFallback className={cn(
+                        "text-[9px] font-semibold",
+                        m.name === 'Atanmamış' ? "bg-amber-500/20 text-warning" : "bg-sidebar-accent text-sidebar-accent-foreground"
+                      )}>
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-[13px] font-medium truncate">{m.name}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground mb-1.5">
+                    <span className="tabular-nums">{m.done}/{m.total} tamamlandı</span>
+                    {m.inProgress > 0 && <span className="text-blue-400 tabular-nums">{m.inProgress} devam eden</span>}
+                    {m.overdue > 0 && <span className="text-red-400 font-medium tabular-nums">{m.overdue} gecikmiş</span>}
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary/60">
+                    <div className="h-full rounded-full bg-emerald-500/70 transition-all" style={{ width: `${pctDone}%` }} />
+                  </div>
+                  <div className="mt-1 text-right text-[10px] tabular-nums text-muted-foreground/60">%{pctDone}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Task list */}
       <div>
         <div className="flex items-center justify-between mb-3">
@@ -525,7 +625,7 @@ function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
           <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{tasks.length} gorev</span>
         </div>
         <div className="rounded-lg border border-border/40 bg-card p-4">
-          <CycleTaskList tasks={tasks} isLoading={tasksLoading} />
+          <CycleTaskList tasks={tasks} isLoading={tasksLoading} profileMap={profileMap} />
         </div>
       </div>
 
