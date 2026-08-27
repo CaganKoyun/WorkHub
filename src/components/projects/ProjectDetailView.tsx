@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   DndContext, DragEndEvent, DragOverlay, DragStartEvent,
   PointerSensor, useSensor, useSensors, closestCenter,
@@ -124,6 +124,18 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
   const [memberDialogOpen, setMemberDialogOpen] = useState(false);
   const [newMemberId, setNewMemberId] = useState('');
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const taskId = searchParams.get('task');
+    if (taskId && tasks) {
+      const found = tasks.find(t => t.id === taskId);
+      if (found) {
+        setOpenTask(found);
+        setSearchParams(prev => { prev.delete('task'); return prev; }, { replace: true });
+      }
+    }
+  }, [searchParams, tasks, setSearchParams]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
