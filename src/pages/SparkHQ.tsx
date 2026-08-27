@@ -1467,15 +1467,15 @@ function initSparkHQ(root: HTMLElement) {
     body.querySelectorAll("[data-person]").forEach(el=>el.addEventListener("click",()=>{
       state.person=(el as HTMLElement).dataset.person!;renderSheet();renderCrumbs();
     }));
-    body.querySelectorAll("[data-act=approve]").forEach(b=>b.addEventListener("click",()=>fakeAct("Onaylandi")));
-    acts.querySelector("[data-act=work-list]")?.addEventListener("click",()=>fakeAct("is listesi"));
-    acts.querySelector("[data-act=meeting]")?.addEventListener("click",()=>fakeAct("Toplanti baslatildi"));
+    body.querySelectorAll("[data-act=approve]").forEach(b=>b.addEventListener("click",()=>fakeAct("Onaylandı")));
+    acts.querySelector("[data-act=work-list]")?.addEventListener("click",()=>fakeAct("İş listesi"));
+    acts.querySelector("[data-act=meeting]")?.addEventListener("click",()=>fakeAct("Toplantı başlatıldı"));
     acts.querySelector("[data-act=ask-sheet]")?.addEventListener("click",openAsk);
   }
 
   function fakeAct(msg: string){
     const n=$("#shqReplayNote");if(!n)return;
-    n.textContent=msg+" — prototipte temsili";n.classList.add("show");
+    n.textContent=msg+" — yakında aktif olacak";n.classList.add("show");
     clearTimeout((n as any)._t);(n as any)._t=setTimeout(()=>{n.classList.remove("show");renderReplayNote()},1600);
   }
 
