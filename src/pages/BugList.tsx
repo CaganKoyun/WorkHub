@@ -12,6 +12,7 @@ import { AlertTriangle, Plus, Search, Loader2, ArrowUpDown, ArrowUp, ArrowDown }
 import { EmptyState } from "@/components/EmptyState";
 import { Constants } from "@/integrations/supabase/types";
 import { formatDistanceToNow, differenceInDays, startOfDay } from "date-fns";
+import { tr } from "date-fns/locale";
 import { useWorkspacePermission } from "@/hooks/useWorkspacePermission";
 import { useBugs } from "@/lib/bugs-hooks";
 import { useAllProfiles, useProjects } from "@/lib/projects-hooks";
@@ -24,6 +25,22 @@ const SEVERITY_RANK: Record<string, number> = {
   critical: 4, high: 3, medium: 2, low: 1,
 };
 
+const BUG_STATUS_LABELS: Record<string, string> = {
+  new: "Yeni",
+  assigned: "Atandı",
+  in_progress: "Devam Ediyor",
+  testing: "Test Ediliyor",
+  resolved: "Çözüldü",
+  closed: "Kapatıldı",
+};
+
+const BUG_SEVERITY_LABELS: Record<string, string> = {
+  critical: "Kritik",
+  high: "Yüksek",
+  medium: "Orta",
+  low: "Düşük",
+};
+
 export default function BugList() {
   const navigate = useNavigate();
   const { data: bugs = [], isLoading, isError } = useBugs();
@@ -32,6 +49,8 @@ export default function BugList() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [severityFilter, setSeverityFilter] = useState<string>("all");
+  const [assigneeFilter, setAssigneeFilter] = useState<string>("all");
+  const [projectFilter, setProjectFilter] = useState<string>("all");
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const canCreate = useWorkspacePermission("bugs", "create");
@@ -52,7 +71,11 @@ export default function BugList() {
         b.tracking_id.toLowerCase().includes(search.toLowerCase());
       const matchesStatus = statusFilter === "all" || b.status === statusFilter;
       const matchesSeverity = severityFilter === "all" || b.severity === severityFilter;
-      return matchesSearch && matchesStatus && matchesSeverity;
+      const matchesAssignee = assigneeFilter === "all" ||
+        (assigneeFilter === "__none__" ? !b.assignee_id : b.assignee_id === assigneeFilter);
+      const matchesProject = projectFilter === "all" ||
+        (projectFilter === "__none__" ? !b.project_id : b.project_id === projectFilter);
+      return matchesSearch && matchesStatus && matchesSeverity && matchesAssignee && matchesProject;
     });
 
     const dir = sortDir === 'asc' ? 1 : -1;
@@ -67,7 +90,7 @@ export default function BugList() {
     });
 
     return result;
-  }, [bugs, search, statusFilter, severityFilter, sortField, sortDir]);
+  }, [bugs, search, statusFilter, severityFilter, assigneeFilter, projectFilter, sortField, sortDir]);
 
   const summary = useMemo(() => {
     const open = bugs.filter(b => b.status === 'new' || b.status === 'assigned' || b.status === 'in_progress').length;
@@ -144,7 +167,7 @@ export default function BugList() {
               <SelectItem value="all">Tüm durumlar</SelectItem>
               {Constants.public.Enums.bug_status.map((s) => (
                 <SelectItem key={s} value={s}>
-                  {s.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+                  {BUG_STATUS_LABELS[s] ?? s}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -157,7 +180,35 @@ export default function BugList() {
               <SelectItem value="all">Tüm önemler</SelectItem>
               {Constants.public.Enums.bug_severity.map((s) => (
                 <SelectItem key={s} value={s}>
-                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                  {BUG_SEVERITY_LABELS[s] ?? s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={assigneeFilter} onValueChange={setAssigneeFilter}>
+            <SelectTrigger className="w-[130px] h-7 text-[12px]">
+              <SelectValue placeholder="Kişi" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tüm kişiler</SelectItem>
+              <SelectItem value="__none__">Atanmamış</SelectItem>
+              {(profiles ?? []).map(p => (
+                <SelectItem key={p.user_id} value={p.user_id}>
+                  {p.full_name ?? 'Kullanıcı'}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={projectFilter} onValueChange={setProjectFilter}>
+            <SelectTrigger className="w-[130px] h-7 text-[12px]">
+              <SelectValue placeholder="Proje" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tüm projeler</SelectItem>
+              <SelectItem value="__none__">Projesi yok</SelectItem>
+              {(projects ?? []).map(p => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -255,7 +306,7 @@ export default function BugList() {
                         </Tooltip>
                       </td>
                       <td className="px-3 py-2 text-muted-foreground text-[12px] whitespace-nowrap">
-                        {formatDistanceToNow(new Date(bug.created_at), { addSuffix: true })}
+                        {formatDistanceToNow(new Date(bug.created_at), { addSuffix: true, locale: tr })}
                       </td>
                     </tr>
                   );

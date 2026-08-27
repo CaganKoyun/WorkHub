@@ -24,10 +24,10 @@ import type { Task, TaskStatus } from "@/lib/tasks-types";
 
 function TasksByStatus({ tasks }: { tasks: Task[] }) {
   const statusGroups: { key: TaskStatus; label: string; color: string }[] = [
-    { key: "todo", label: "To Do", color: "bg-muted-foreground" },
-    { key: "in_progress", label: "In Progress", color: "bg-warning" },
-    { key: "review", label: "In Review", color: "bg-info" },
-    { key: "done", label: "Done", color: "bg-success" },
+    { key: "todo", label: "Yapılacak", color: "bg-muted-foreground" },
+    { key: "in_progress", label: "Devam Eden", color: "bg-warning" },
+    { key: "review", label: "İncelemede", color: "bg-info" },
+    { key: "done", label: "Tamamlandı", color: "bg-success" },
   ];
   const total = tasks.length || 1;
   return (
@@ -58,7 +58,7 @@ function UpcomingDeadlines({ tasks }: { tasks: Task[] }) {
   if (upcoming.length === 0) {
     return (
       <p className="text-sm text-muted-foreground text-center py-6">
-        No upcoming deadlines
+        Yaklaşan son tarih yok
       </p>
     );
   }
@@ -96,7 +96,7 @@ function RecentActivityList() {
   if (!items || items.length === 0) {
     return (
       <p className="text-sm text-muted-foreground text-center py-6">
-        No recent activity yet
+        Henüz aktivite yok
       </p>
     );
   }
@@ -147,7 +147,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between px-4 md:px-6 h-12 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
             <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-            <h1 className="text-sm font-semibold">Dashboard</h1>
+            <h1 className="text-sm font-semibold">Kontrol Paneli</h1>
           </div>
         </div>
 
@@ -160,59 +160,59 @@ export default function Dashboard() {
             ) : pulseError ? (
               <EmptyState
                 icon={AlertTriangle}
-                title="Could not load dashboard data"
-                description="There was a problem fetching your workspace metrics. Please try refreshing the page."
-                action={{ label: "Refresh", onClick: () => window.location.reload() }}
+                title="Veriler yüklenemedi"
+                description="Çalışma alanı metrikleri alınırken bir sorun oluştu. Lütfen sayfayı yenileyin."
+                action={{ label: "Yenile", onClick: () => window.location.reload() }}
               />
             ) : (
               <>
                 {/* Key Metrics */}
                 <section>
-                  <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Overview</h2>
+                  <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Genel Bakış</h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <StatCard
-                      title="Active Tasks" value={activeTasks.length}
-                      subtitle={overdueTasks.length > 0 ? `${overdueTasks.length} overdue` : "No overdue tasks"}
+                      title="Aktif Görevler" value={activeTasks.length}
+                      subtitle={overdueTasks.length > 0 ? `${overdueTasks.length} gecikmiş` : "Gecikmiş görev yok"}
                       tone={overdueTasks.length > 0 ? "warning" : "default"}
                       icon={CheckSquare} to="/issues"
                     />
                     <StatCard
-                      title="Projects" value={activeProjects.length}
-                      subtitle={`${(projects ?? []).length} total`}
+                      title="Projeler" value={activeProjects.length}
+                      subtitle={`${(projects ?? []).length} toplam`}
                       icon={FolderKanban} to="/projects"
                     />
                     <StatCard
-                      title="Active Cycles" value={activeCycles.length}
-                      subtitle={activeCycles[0]?.name ?? "No active cycle"}
+                      title="Aktif Döngüler" value={activeCycles.length}
+                      subtitle={activeCycles[0]?.name ?? "Aktif döngü yok"}
                       icon={Calendar} to="/cycles"
                     />
                     <StatCard
-                      title="Goals" value={activeGoals.length}
-                      subtitle={`${activeGoals.filter(g => g.status === "on_track").length} on track`}
+                      title="Hedefler" value={activeGoals.length}
+                      subtitle={`${activeGoals.filter(g => g.status === "on_track").length} yolunda`}
                       tone={activeGoals.some(g => g.status === "off_track") ? "danger" : "success"}
                       icon={Target} to="/goals"
                     />
                     {pulse && (
                       <>
                         <StatCard
-                          title="Open Bugs" value={pulse.openBugs}
-                          subtitle={pulse.criticalBugs > 0 ? `${pulse.criticalBugs} critical` : "No critical bugs"}
+                          title="Açık Buglar" value={pulse.openBugs}
+                          subtitle={pulse.criticalBugs > 0 ? `${pulse.criticalBugs} kritik` : "Kritik bug yok"}
                           tone={pulse.criticalBugs > 0 ? "danger" : "default"}
                           icon={Bug} to="/bugs"
                         />
                         <StatCard
-                          title="Team Members" value={pulse.totalEmployees}
+                          title="Ekip Üyeleri" value={pulse.totalEmployees}
                           icon={Users} to="/employees"
                         />
                         <StatCard
-                          title="Pending Approvals" value={pulse.pendingApprovals}
-                          subtitle={pulse.urgentApprovals > 0 ? `${pulse.urgentApprovals} urgent` : "Inbox clear"}
+                          title="Bekleyen Onaylar" value={pulse.pendingApprovals}
+                          subtitle={pulse.urgentApprovals > 0 ? `${pulse.urgentApprovals} acil` : "Kutu boş"}
                           tone={pulse.urgentApprovals > 0 ? "warning" : "default"}
                           icon={Layers} to="/inbox"
                         />
                         <StatCard
-                          title="Open Risks" value={pulse.openRisks}
-                          subtitle={pulse.criticalRisks > 0 ? `${pulse.criticalRisks} critical` : "No critical risks"}
+                          title="Açık Riskler" value={pulse.openRisks}
+                          subtitle={pulse.criticalRisks > 0 ? `${pulse.criticalRisks} kritik` : "Kritik risk yok"}
                           tone={pulse.criticalRisks > 0 ? "danger" : "default"}
                           icon={AlertTriangle} to="/risks"
                         />
@@ -226,16 +226,16 @@ export default function Dashboard() {
                   <Card>
                     <CardContent className="p-5">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-semibold">Task Distribution</h3>
+                        <h3 className="text-sm font-semibold">Görev Dağılımı</h3>
                         <Button variant="ghost" size="sm" asChild>
                           <Link to="/issues" className="text-xs">
-                            View all <ArrowRight className="h-3 w-3 ml-1" />
+                            Tümünü gör <ArrowRight className="h-3 w-3 ml-1" />
                           </Link>
                         </Button>
                       </div>
                       {allTasks.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-6">
-                          No tasks created yet. Start by creating your first issue.
+                          Henüz görev oluşturulmadı. İlk görevinizi oluşturarak başlayın.
                         </p>
                       ) : (
                         <TasksByStatus tasks={allTasks} />
@@ -246,10 +246,10 @@ export default function Dashboard() {
                   <Card>
                     <CardContent className="p-5">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-semibold">Upcoming Deadlines</h3>
+                        <h3 className="text-sm font-semibold">Yaklaşan Son Tarihler</h3>
                         <Button variant="ghost" size="sm" asChild>
                           <Link to="/tasks" className="text-xs">
-                            My tasks <ArrowRight className="h-3 w-3 ml-1" />
+                            Görevlerim <ArrowRight className="h-3 w-3 ml-1" />
                           </Link>
                         </Button>
                       </div>
@@ -262,16 +262,16 @@ export default function Dashboard() {
                 <Card>
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-sm font-semibold">Active Projects</h3>
+                      <h3 className="text-sm font-semibold">Aktif Projeler</h3>
                       <Button variant="ghost" size="sm" asChild>
                         <Link to="/projects" className="text-xs">
-                          All projects <ArrowRight className="h-3 w-3 ml-1" />
+                          Tüm projeler <ArrowRight className="h-3 w-3 ml-1" />
                         </Link>
                       </Button>
                     </div>
                     {activeProjects.length === 0 ? (
                       <p className="text-sm text-muted-foreground text-center py-6">
-                        No active projects. Create a project to start tracking work.
+                        Aktif proje yok. İş takibine başlamak için bir proje oluşturun.
                       </p>
                     ) : (
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -306,7 +306,7 @@ export default function Dashboard() {
                 <Card>
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-sm font-semibold">Recent Activity</h3>
+                      <h3 className="text-sm font-semibold">Son Aktiviteler</h3>
                     </div>
                     <RecentActivityList />
                   </CardContent>
@@ -314,13 +314,13 @@ export default function Dashboard() {
 
                 {/* Quick Actions */}
                 <section>
-                  <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Quick Actions</h2>
+                  <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Hızlı İşlemler</h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {[
-                      { to: "/issues", label: "Create Issue", icon: CheckSquare },
-                      { to: "/projects/new", label: "New Project", icon: FolderKanban },
-                      { to: "/bugs/new", label: "Report Bug", icon: Bug },
-                      { to: "/insights", label: "View Insights", icon: BarChart3 },
+                      { to: "/issues", label: "Görev Oluştur", icon: CheckSquare },
+                      { to: "/projects/new", label: "Yeni Proje", icon: FolderKanban },
+                      { to: "/bugs/new", label: "Bug Bildir", icon: Bug },
+                      { to: "/insights", label: "Analizler", icon: BarChart3 },
                     ].map(q => (
                       <Link key={q.to} to={q.to}>
                         <Card className="hover:border-primary/50 transition-colors">
