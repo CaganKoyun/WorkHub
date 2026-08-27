@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { Auth0Provider } from "@auth0/auth0-react";
 import "./index.css";
 import { registerServiceWorker } from "./lib/pwa";
 
@@ -80,7 +81,24 @@ if (!url || !key) {
 } else {
   // Lazy import so nothing that touches the Supabase client runs on the
   // missing-env code path.
+  const domain = import.meta.env.VITE_AUTH0_DOMAIN;
+  const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
+  const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
+
   void import("./App").then(({ default: App }) => {
-    createRoot(root).render(<App />);
+    createRoot(root).render(
+      <Auth0Provider
+        domain={domain}
+        clientId={clientId}
+        cacheLocation="localstorage"
+        useRefreshTokens
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+          ...(audience ? { audience } : {}),
+        }}
+      >
+        <App />
+      </Auth0Provider>,
+    );
   });
 }

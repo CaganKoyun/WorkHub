@@ -1,27 +1,13 @@
-import { useState } from "react";
 import { Navigate, Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, CheckCircle2, Sparkles, Target, BarChart3, Linkedin } from "lucide-react";
+import { Loader2, CheckCircle2, Sparkles, Target, BarChart3 } from "lucide-react";
 import { SparkLogo } from "@/components/SparkLogo";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 
 export default function Auth() {
-  const { user, loading, signIn, signUp } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [isLinkedInLoading, setIsLinkedInLoading] = useState(false);
-  const [isMicrosoftLoading, setIsMicrosoftLoading] = useState(false);
-
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [signupName, setSignupName] = useState("");
-  const [signupEmail, setSignupEmail] = useState("");
-  const [signupPassword, setSignupPassword] = useState("");
+  const { user, loading } = useAuth();
+  const { loginWithRedirect } = useAuth0();
 
   if (loading) {
     return (
@@ -33,75 +19,9 @@ export default function Auth() {
 
   if (user) return <Navigate to="/" replace />;
 
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
-      if (error) toast.error("Google sign-in failed: " + error.message);
-    } catch (error: any) {
-      toast.error("Google sign-in failed: " + error.message);
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
-  // Both providers must be enabled in Supabase Dashboard → Authentication →
-  // Providers, with Client ID / Secret + the callback URL
-  // https://<PROJECT>.supabase.co/auth/v1/callback registered on the
-  // provider's side. See docs/SSO.md.
-  const oauth = async (
-    provider: "linkedin_oidc" | "azure",
-    setLoading: (v: boolean) => void,
-    label: string,
-  ) => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: window.location.origin,
-          scopes: provider === "azure" ? "email openid profile" : undefined,
-        },
-      });
-      if (error) toast.error(`${label} sign-in failed: ${error.message}`);
-    } catch (error: any) {
-      toast.error(`${label} sign-in failed: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handleLinkedInSignIn  = () => oauth("linkedin_oidc", setIsLinkedInLoading, "LinkedIn");
-  const handleMicrosoftSignIn = () => oauth("azure",         setIsMicrosoftLoading, "Microsoft");
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      await signIn(loginEmail, loginPassword);
-      toast.success("Welcome back!");
-    } catch (error: any) {
-      toast.error("Login failed: " + error.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (signupPassword.length < 6) {
-      toast.error("Password too short: Minimum 6 characters");
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      await signUp(signupEmail, signupPassword, signupName);
-      toast.success("Account created! -- Check your email to confirm your account.");
-    } catch (error: any) {
-      toast.error("Signup failed: " + error.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const handleSignIn = () => loginWithRedirect();
+  const handleSignUp = () =>
+    loginWithRedirect({ authorizationParams: { screen_hint: "signup" } });
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background">
@@ -160,113 +80,23 @@ export default function Auth() {
 
           <div>
             <h1 className="text-[22px] font-semibold tracking-tight text-foreground">Welcome</h1>
-            <p className="mt-1 text-[13px] text-muted-foreground">Sign in or create your workspace to continue.</p>
+            <p className="mt-1 text-[13px] text-muted-foreground">
+              Sign in with Auth0 to access your workspace.
+            </p>
           </div>
 
-          <Button
-            variant="outline"
-            className="w-full h-10 gap-2 text-[13px]"
-            onClick={handleGoogleSignIn}
-            disabled={isGoogleLoading}
-          >
-            {isGoogleLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <svg className="h-4 w-4" viewBox="0 0 24 24">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-              </svg>
-            )}
-            Continue with Google
-          </Button>
-
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              variant="outline"
-              className="h-10 gap-2 text-[13px]"
-              onClick={handleLinkedInSignIn}
-              disabled={isLinkedInLoading}
-            >
-              {isLinkedInLoading
-                ? <Loader2 className="h-4 w-4 animate-spin" />
-                : <Linkedin className="h-4 w-4" />}
-              LinkedIn
+          <div className="space-y-3">
+            <Button onClick={handleSignIn} className="w-full h-10 text-[13px] font-medium">
+              Sign in with Auth0
             </Button>
             <Button
+              onClick={handleSignUp}
               variant="outline"
-              className="h-10 gap-2 text-[13px]"
-              onClick={handleMicrosoftSignIn}
-              disabled={isMicrosoftLoading}
+              className="w-full h-10 text-[13px] font-medium"
             >
-              {isMicrosoftLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
-                  <rect x="1"  y="1"  width="10" height="10" fill="currentColor" />
-                  <rect x="13" y="1"  width="10" height="10" fill="currentColor" opacity="0.75" />
-                  <rect x="1"  y="13" width="10" height="10" fill="currentColor" opacity="0.5" />
-                  <rect x="13" y="13" width="10" height="10" fill="currentColor" opacity="0.35" />
-                </svg>
-              )}
-              Microsoft
+              Create a new account
             </Button>
           </div>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-[11px] uppercase tracking-wider">
-              <span className="bg-background px-2 text-muted-foreground">or</span>
-            </div>
-          </div>
-
-          <Tabs defaultValue="login">
-            <TabsList className="grid w-full grid-cols-2 h-9">
-              <TabsTrigger value="login" className="text-[12px]">Sign in</TabsTrigger>
-              <TabsTrigger value="signup" className="text-[12px]">Sign up</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="login" className="mt-5">
-              <form onSubmit={handleLogin} className="space-y-3.5">
-                <div className="space-y-1.5">
-                  <Label className="text-[12px]">Email</Label>
-                  <Input type="email" placeholder="you@company.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required className="h-9 text-[13px]" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-[12px]">Password</Label>
-                  <Input type="password" placeholder="••••••••" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required className="h-9 text-[13px]" />
-                </div>
-                <Button type="submit" className="w-full h-9 text-[13px] font-medium" disabled={isSubmitting}>
-                  {isSubmitting && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
-                  Sign in
-                </Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="signup" className="mt-5">
-              <form onSubmit={handleSignup} className="space-y-3.5">
-                <div className="space-y-1.5">
-                  <Label className="text-[12px]">Full name</Label>
-                  <Input type="text" placeholder="Jane Doe" value={signupName} onChange={(e) => setSignupName(e.target.value)} required className="h-9 text-[13px]" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-[12px]">Work email</Label>
-                  <Input type="email" placeholder="you@company.com" value={signupEmail} onChange={(e) => setSignupEmail(e.target.value)} required className="h-9 text-[13px]" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-[12px]">Password</Label>
-                  <Input type="password" placeholder="Min 6 characters" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} required minLength={6} className="h-9 text-[13px]" />
-                </div>
-                <Button type="submit" className="w-full h-9 text-[13px] font-medium" disabled={isSubmitting}>
-                  {isSubmitting && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
-                  Create workspace
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
 
           <p className="text-[11px] text-muted-foreground text-center pt-2">
             By continuing you agree to our Terms and Privacy Policy.
