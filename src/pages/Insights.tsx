@@ -174,7 +174,7 @@ function buildCsv(
     const avg = completed.reduce((s, t) => {
       return s + (new Date(t.completed_at!).getTime() - new Date(t.created_at).getTime());
     }, 0) / completed.length / 86_400_000;
-    rows.push(['Ort. Tamamlanma Suresi (gun)', avg.toFixed(1)]);
+    rows.push(['Ort. Tamamlanma Süresi (gün)', avg.toFixed(1)]);
   }
   if (pulse) {
     rows.push(['Aktif Projeler', String(pulse.activeProjects)]);
@@ -182,7 +182,7 @@ function buildCsv(
     rows.push(['Kritik Buglar', String(pulse.criticalBugs)]);
   }
   rows.push([]);
-  rows.push(['Bug ID', 'Durum', 'Ciddiyet', 'Olusturulma']);
+  rows.push(['Bug ID', 'Durum', 'Ciddiyet', 'Oluşturulma']);
   for (const b of bugs) {
     rows.push([b.id, b.status, b.severity, b.created_at.slice(0, 10)]);
   }
@@ -313,10 +313,10 @@ export default function Insights() {
     const open = tasks.filter(t => t.status !== 'done' && t.status !== 'canceled');
     const counts = new Map<string | null, number>();
     for (const t of open) counts.set(t.assignee_id, (counts.get(t.assignee_id) ?? 0) + 1);
-    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'Isimsiz']));
+    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'İsimsiz']));
     return [...counts.entries()]
       .map(([id, count]) => ({
-        name: id ? (byId.get(id) ?? 'Bilinmiyor') : 'Atanmadi',
+        name: id ? (byId.get(id) ?? 'Bilinmiyor') : 'Atanmadı',
         count,
       }))
       .sort((a, b) => b.count - a.count)
@@ -374,7 +374,7 @@ export default function Insights() {
       const d = new Date(now); d.setDate(d.getDate() - i * 7);
       bucketKeys.push(isoWeekBucket(d));
     }
-    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'Isimsiz']));
+    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'İsimsiz']));
     // count completed per assignee per week
     const counts = new Map<string, Map<string, number>>();
     for (const t of tasks) {
@@ -425,10 +425,10 @@ export default function Insights() {
   // Department / assignee comparison
   const departmentComparison = useMemo(() => {
     if (!tasks) return [];
-    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'Isimsiz']));
+    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'İsimsiz']));
     const map = new Map<string, { total: number; done: number }>();
     for (const t of tasks) {
-      const name = t.assignee_id ? (byId.get(t.assignee_id) ?? 'Bilinmiyor') : 'Atanmadi';
+      const name = t.assignee_id ? (byId.get(t.assignee_id) ?? 'Bilinmiyor') : 'Atanmadı';
       if (!map.has(name)) map.set(name, { total: 0, done: 0 });
       const e = map.get(name)!;
       e.total++;
@@ -481,7 +481,7 @@ export default function Insights() {
         <div>
           <h1 className="text-[22px] font-semibold tracking-tight">İçgörüler</h1>
           <p className="mt-1 text-[13px] text-muted-foreground">
-            Son {days} gundeki is akisi sagligi ve yonetici ozeti.
+            Son {days} gündeki iş akışı sağlığı ve yönetici özeti.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -537,8 +537,8 @@ export default function Insights() {
         />
         <StatCard
           title="Ort. Tamamlanma"
-          value={avgCompletionDays ? `${avgCompletionDays} gun` : '-'}
-          subtitle="Olusturmadan tamamlanmaya"
+          value={avgCompletionDays ? `${avgCompletionDays} gün` : '-'}
+          subtitle="Oluşturmadan tamamlanmaya"
           icon={Clock}
         />
         <StatCard
@@ -548,7 +548,7 @@ export default function Insights() {
           icon={FolderOpen}
         />
         <StatCard
-          title="Acik Buglar"
+          title="Açık Buglar"
           value={pulse?.openBugs ?? '-'}
           subtitle={`${pulse?.criticalBugs ?? 0} kritik`}
           icon={Bug}
@@ -575,9 +575,9 @@ export default function Insights() {
         </Tile>
 
         {/* 2. Priority mix */}
-        <Tile title="Acik is -- oncelik dagilimi" icon={Flame}>
+        <Tile title="Açık iş -- öncelik dağılımı" icon={Flame}>
           {priorityMix.length === 0 ? (
-            <InlineEmpty text="Acik is yok." />
+            <InlineEmpty text="Açık iş yok." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -610,9 +610,9 @@ export default function Insights() {
         </Tile>
 
         {/* 4. Workload by assignee */}
-        <Tile title="Yuk -- atanan basina acik is" icon={Users}>
+        <Tile title="Yük -- atanan başına açık iş" icon={Users}>
           {workload.length === 0 ? (
-            <InlineEmpty text="Acik is yok." />
+            <InlineEmpty text="Açık iş yok." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={workload} layout="vertical" margin={{ left: 8 }}>
@@ -620,7 +620,7 @@ export default function Insights() {
                 <XAxis type="number" tick={AXIS_TICK} tickLine={false} axisLine={false} />
                 <YAxis type="category" dataKey="name" tick={AXIS_TICK} tickLine={false} axisLine={false} width={110} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} name="Acik" />
+                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} name="Açık" />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -637,7 +637,7 @@ export default function Insights() {
                 <XAxis dataKey="week" tick={AXIS_TICK} tickLine={false} axisLine={false} />
                 <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} width={28} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Line type="monotone" dataKey="opened" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} name="Acilan" />
+                <Line type="monotone" dataKey="opened" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} name="Açılan" />
                 <Line type="monotone" dataKey="closed" stroke="hsl(var(--success))" strokeWidth={2} dot={false} name="Kapanan" />
                 <Legend iconType="line" wrapperStyle={{ fontSize: 11 }} />
               </LineChart>
@@ -670,7 +670,7 @@ export default function Insights() {
         </Tile>
 
         {/* 7. Team velocity */}
-        <Tile title="Takim hizi -- haftalik tamamlanan" icon={TrendingUp} className="lg:col-span-2">
+        <Tile title="Takım hızı -- haftalık tamamlanan" icon={TrendingUp} className="lg:col-span-2">
           {teamVelocity.data.length === 0 || teamVelocity.assignees.length === 0 ? (
             <InlineEmpty text="Yeterli veri yok." />
           ) : (
@@ -690,7 +690,7 @@ export default function Insights() {
         </Tile>
 
         {/* 8. Department workload comparison */}
-        <Tile title="Atanan bazinda is karsilastirmasi" icon={BarChart3}>
+        <Tile title="Atanan bazında iş karşılaştırması" icon={BarChart3}>
           {departmentComparison.length === 0 ? (
             <InlineEmpty text="Veri yok." />
           ) : (
@@ -702,14 +702,14 @@ export default function Insights() {
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
                 <Legend iconType="square" wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="done" fill="hsl(var(--success))" radius={[0, 2, 2, 0]} stackId="dept" name="Tamamlanan" />
-                <Bar dataKey="open" fill="hsl(var(--primary))" radius={[0, 2, 2, 0]} stackId="dept" name="Acik" />
+                <Bar dataKey="open" fill="hsl(var(--primary))" radius={[0, 2, 2, 0]} stackId="dept" name="Açık" />
               </BarChart>
             </ResponsiveContainer>
           )}
         </Tile>
 
         {/* 9. Project health heatmap */}
-        <Tile title="Proje sagligi haritasi" icon={Activity}>
+        <Tile title="Proje sağlığı haritası" icon={Activity}>
           {projectHealth.length === 0 ? (
             <InlineEmpty text="Aktif proje yok." />
           ) : (
@@ -719,7 +719,7 @@ export default function Insights() {
                   <tr className="text-muted-foreground">
                     <th className="text-left font-semibold py-1.5 pr-3">Proje</th>
                     <th className="text-center font-semibold py-1.5 px-2">Tamamlanma %</th>
-                    <th className="text-center font-semibold py-1.5 px-2">Acik %</th>
+                    <th className="text-center font-semibold py-1.5 px-2">Açık %</th>
                     <th className="text-center font-semibold py-1.5 px-2">Bug</th>
                   </tr>
                 </thead>

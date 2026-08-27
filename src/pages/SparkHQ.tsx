@@ -470,9 +470,9 @@ function initSparkHQ(root: HTMLElement) {
        members:[m("Kaan Erol","Data Analyst",4,0)],
        tasks:[t("Funnel dashboard","Kaan E.","Cuma")]}),
    ]},
-   {id:"satis",name:"Satis",sub:"₺680K pipeline",rooms:[
+   {id:"satis",name:"Satış",sub:"₺680K pipeline",rooms:[
      room("enterprise","Enterprise Sales",[0,0,44,44],"ok",{mission:"Q3 hedefi ₺2.4M",pct:55,note:"Fleet A.S. imzada",
-       wrong:["Sozlesme onayi lobide bekliyor"],mile:["Fleet A.S. imza","bu hafta"],
+       wrong:["Sözleşme onayı lobide bekliyor"],mile:["Fleet A.S. imza","bu hafta"],
        members:[m("Kerem Vural","Sales Lead",6,0),m("Asli Nur","AE",5,0)],
        tasks:[t("Fleet A.S. takibi","Kerem V.","Yarin",true),t("Marina Otopark demo","Asli N.","Yarin 14:00")]}),
      room("cs","Customer Success",[56,0,44,44],"ok",{mission:"Onboarding < 7 gun",pct:70,note:"Yildiz Enerji 3/7",wrong:[],mile:["Yildiz canli","4 gun"],
@@ -490,7 +490,7 @@ function initSparkHQ(root: HTMLElement) {
      room("muhasebe","Muhasebe",[56,0,44,44],"ok",{mission:"Temmuz kapanisi",pct:60,note:"Mutabakatlar tamam",wrong:[],mile:["Ay kapanisi","4 gun"],
        members:[m("Nazli Ekin","Muhasebe Uzmani",4,0)],
        tasks:[t("Temmuz kapanisi","Nazli E.","15 Agu")]}),
-     room("procurement","Satin Alma & Legal",[0,50,100,50],"warn",{mission:"Sozlesme yenilemeleri",pct:50,note:"AWS onay bekliyor",
+     room("procurement","Satın Alma & Legal",[0,50,100,50],"warn",{mission:"Sözleşme yenilemeleri",pct:50,note:"AWS onay bekliyor",
        wrong:["Onay gecikirse kesinti riski"],mile:["AWS yenileme","3 gun"],
        members:[m("Cem Tok","Operations",3,1)],
        tasks:[t("AWS faturasi onayi","Cem T.","Yarin",true)]}),
@@ -1601,7 +1601,7 @@ function initSparkHQ(root: HTMLElement) {
   }
 
   const ASK_QA_OWNER: Record<string,[string,string][]>={
-   hq:[["Sirket bugun nasil?","Bir kirmizi zincir var: Backend refactor → Android release → Launch Ops, launch 4 gun geride. Onun disinda Satis ve Finans yolunda; lobide 5 karar seni bekliyor."],
+   hq:[["Sirket bugun nasil?","Bir kirmizi zincir var: Backend refactor → Android release → Launch Ops, launch 4 gun geride. Onun disinda Satış ve Finans yolunda; lobide 5 karar seni bekliyor."],
        ["En acil ne?","Growth butce onayi — 3 gundur bekliyor ve launch kreatiflerini blokluyor. 2 dakikanizi alir."],
        ["Dunden beri ne degisti?","Growth Marketing de RiSKTE'ye dustu; gecikme 3'ten 4 gune cikti. Kaynak ayni: Android release."]],
    growth:[["Growth neden riskte?","Kritik yol: Android release gecikti → Launch Ops 4 gun geride → kreatifler launch filmini bekledigi icin Growth Marketing de kaydi."],
@@ -1615,7 +1615,7 @@ function initSparkHQ(root: HTMLElement) {
    room:[["Ekibim nasil?","Mobile Squad yolunda — v2.4 %72'de. Android build yarin bitirilmeli."],
        ["Kime sormaliyim?","Backend refactor icin Diren'e, store metadata icin ipek'e sor."]]};
   const ASK_QA_LEAD: Record<string,[string,string][]>={
-   hq:[["Sirket bugun nasil?","Growth katin riskte — 4 gun gecikme. Urun yolunda, Satis yolunda. Finans detayina erisimin yok."],
+   hq:[["Sirket bugun nasil?","Growth katin riskte — 4 gun gecikme. Urun yolunda, Satış yolunda. Finans detayina erisimin yok."],
        ["Katim nasil?","2 ekip riskte (Growth Marketing, Launch Ops), 1 ileride (Product), 3 yolunda. Kritik yol: Android release."],
        ["Dunden beri ne degisti?","Gecikme 3'ten 4 gune cikti. Growth Marketing de RiSKTE'ye dustu."]],
    growth:[["Launch'i kim blokluyor?","Burak (Android build final) ve Cagan (launch filmi onayi + butce). ikisi de yarin/bugun cozulebilir."],

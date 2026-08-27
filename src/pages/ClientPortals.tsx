@@ -144,8 +144,8 @@ function PortalRow({ p }: { p: ClientPortal }) {
           {p.can_comment
             ? <MessageCircle className="h-3 w-3 text-primary" />
             : <MessageCircleOff className="h-3 w-3 text-muted-foreground" />}
-          {revoked && <span className="chip bad">Iptal Edildi</span>}
-          {expired && !revoked && <span className="chip warn">Suresi Doldu</span>}
+          {revoked && <span className="chip bad">İptal Edildi</span>}
+          {expired && !revoked && <span className="chip warn">Süresi Doldu</span>}
         </div>
         <div className="text-[11.5px] text-muted-foreground truncate">
           {p.client_email} · {p.project_ids.length} proje
@@ -214,7 +214,7 @@ export default function ClientPortals() {
           )}
           {inactive.length > 0 && (
             <section>
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">İptal / süresi geçmiş ({inactive.length})</div>
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">İptal / Süresi Geçmiş ({inactive.length})</div>
               <div className="rounded-md border border-border/60 bg-secondary/10 overflow-hidden">
                 {inactive.map(p => <PortalRow key={p.id} p={p} />)}
               </div>

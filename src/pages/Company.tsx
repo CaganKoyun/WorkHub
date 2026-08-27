@@ -136,7 +136,7 @@ function OverviewTab() {
           <span className="text-sm font-medium">{dept.name}</span>
           {dept.code && <Badge variant="outline" className="text-[10px]">{dept.code}</Badge>}
           {empByDept[dept.id] && (
-            <Badge variant="secondary" className="text-[10px]">{empByDept[dept.id]} kisi</Badge>
+            <Badge variant="secondary" className="text-[10px]">{empByDept[dept.id]} kişi</Badge>
           )}
         </div>
         {deptTeams.map(t => (
@@ -172,18 +172,18 @@ function OverviewTab() {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <Building2 className="h-4 w-4" />
-            Sirket Bilgileri
+            Şirket Bilgileri
           </h3>
           <Button variant="ghost" size="sm" onClick={() => { setInfoForm(companyInfo); setEditingInfo(!editingInfo); }}>
-            <Pencil className="h-3.5 w-3.5 mr-1" />{editingInfo ? "Iptal" : "Duzenle"}
+            <Pencil className="h-3.5 w-3.5 mr-1" />{editingInfo ? "İptal" : "Düzenle"}
           </Button>
         </div>
         {editingInfo ? (
           <div className="space-y-3">
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <Label className="flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5" />Sirket Adi</Label>
-                <Input value={infoForm.name} onChange={e => setInfoForm(f => ({ ...f, name: e.target.value }))} placeholder="Sirket A.S." />
+                <Label className="flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5" />Şirket Adı</Label>
+                <Input value={infoForm.name} onChange={e => setInfoForm(f => ({ ...f, name: e.target.value }))} placeholder="Şirket A.Ş." />
               </div>
               <div>
                 <Label className="flex items-center gap-1.5"><Globe className="h-3.5 w-3.5" />Web Sitesi</Label>
@@ -191,10 +191,10 @@ function OverviewTab() {
               </div>
               <div>
                 <Label className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />Adres</Label>
-                <Input value={infoForm.address} onChange={e => setInfoForm(f => ({ ...f, address: e.target.value }))} placeholder="Istanbul, Turkiye" />
+                <Input value={infoForm.address} onChange={e => setInfoForm(f => ({ ...f, address: e.target.value }))} placeholder="İstanbul, Türkiye" />
               </div>
               <div>
-                <Label className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />Kurulus Tarihi</Label>
+                <Label className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />Kuruluş Tarihi</Label>
                 <Input type="date" value={infoForm.foundingDate} onChange={e => setInfoForm(f => ({ ...f, foundingDate: e.target.value }))} />
               </div>
             </div>
@@ -205,8 +205,8 @@ function OverviewTab() {
             <div className="flex items-center gap-2">
               <Image className="h-8 w-8 rounded bg-muted p-1.5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium">{companyInfo.name || "Henuz belirtilmedi"}</p>
-                <p className="text-[11px] text-muted-foreground">Sirket Adi</p>
+                <p className="text-sm font-medium">{companyInfo.name || "Henüz belirtilmedi"}</p>
+                <p className="text-[11px] text-muted-foreground">Şirket Adı</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -227,7 +227,7 @@ function OverviewTab() {
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <div>
                 <p className="text-sm">{companyInfo.foundingDate || "-"}</p>
-                <p className="text-[11px] text-muted-foreground">Kurulus Tarihi</p>
+                <p className="text-[11px] text-muted-foreground">Kuruluş Tarihi</p>
               </div>
             </div>
           </div>
@@ -239,10 +239,10 @@ function OverviewTab() {
         <Card className="p-5">
           <h3 className="text-sm font-semibold flex items-center gap-2 mb-3">
             <FolderTree className="h-4 w-4" />
-            Organizasyon Hiyerarsisi
+            Organizasyon Hiyerarşisi
           </h3>
           {departments.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Henuz departman eklenmedi.</p>
+            <p className="text-sm text-muted-foreground">Henüz departman eklenmedi.</p>
           ) : (
             <div className="space-y-0.5">
               {deptTree.roots.map(d => renderDeptNode(d.id, 0))}
@@ -255,7 +255,7 @@ function OverviewTab() {
         <Card className="p-5">
           <h3 className="text-sm font-semibold flex items-center gap-2 mb-3">
             <Network className="h-4 w-4" />
-            Modul Sahiplik Haritasi
+            Modül Sahiplik Haritası
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {FOUNDEROS_MODULES.map(mod => {
@@ -344,7 +344,7 @@ function DepartmentsTab() {
         description: form.description || null,
         parent_id: form.parent_id || null,
       } as any);
-      toast.success(editItem ? "Departman guncellendi" : "Departman eklendi");
+      toast.success(editItem ? "Departman güncellendi" : "Departman eklendi");
       setOpen(false);
       setEditItem(null);
       setForm({ name: "", code: "", description: "", parent_id: "" });
@@ -361,12 +361,12 @@ function DepartmentsTab() {
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Departman</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Departman Duzenle" : "Yeni Departman"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Departman Düzenle" : "Yeni Departman"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Finans" /></div>
+              <div><Label>İsim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Finans" /></div>
               <div><Label>Kod</Label><Input value={form.code} onChange={e => setForm(f => ({ ...f, code: e.target.value }))} placeholder="FIN" /></div>
               <div>
-                <Label>Ust Departman</Label>
+                <Label>Üst Departman</Label>
                 <Select value={form.parent_id || "none"} onValueChange={v => setForm(f => ({ ...f, parent_id: v === "none" ? "" : v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -375,15 +375,15 @@ function DepartmentsTab() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
+              <div><Label>Açıklama</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
             </div>
             <DialogFooter><Button onClick={save} disabled={upsert.isPending}>Kaydet</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">Yukleniyor...</p> :
-        filtered.length === 0 ? <EmptyState label={search ? "Sonuc bulunamadi." : "Henuz departman yok."} /> :
+      {isLoading ? <p className="text-sm text-muted-foreground">Yükleniyor...</p> :
+        filtered.length === 0 ? <EmptyState label={search ? "Sonuç bulunamadı." : "Henüz departman yok."} /> :
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(d => (
             <Card key={d.id} className="p-4 space-y-2">
@@ -399,7 +399,7 @@ function DepartmentsTab() {
                     </div>
                     {d.parent_id && (() => {
                       const parent = departments.find(p => p.id === d.parent_id);
-                      return parent ? <p className="text-[11px] text-muted-foreground">Ust: {parent.name}</p> : null;
+                      return parent ? <p className="text-[11px] text-muted-foreground">Üst: {parent.name}</p> : null;
                     })()}
                   </div>
                 </div>
@@ -411,7 +411,7 @@ function DepartmentsTab() {
               {d.description && <p className="text-xs text-muted-foreground line-clamp-2">{d.description}</p>}
               <div className="flex items-center gap-3 pt-1 border-t border-border/50">
                 <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                  <UserCheck className="h-3 w-3" />{empByDept[d.id] || 0} calisan
+                  <UserCheck className="h-3 w-3" />{empByDept[d.id] || 0} çalışan
                 </span>
               </div>
             </Card>
@@ -476,7 +476,7 @@ function TeamsTab() {
         department_id: form.department_id || null,
         description: form.description || null,
       } as any);
-      toast.success(editItem ? "Takim guncellendi" : "Takim eklendi");
+      toast.success(editItem ? "Takım güncellendi" : "Takım eklendi");
       setOpen(false); setEditItem(null);
       setForm({ name: "", department_id: "", description: "" });
     } catch (e: any) { toast.error(e.message); }
@@ -488,13 +488,13 @@ function TeamsTab() {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap justify-between items-center gap-2">
-        <SearchBar value={search} onChange={setSearch} placeholder="Takim ara..." />
+        <SearchBar value={search} onChange={setSearch} placeholder="Takım ara..." />
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Takim</Button></DialogTrigger>
+          <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Takım</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Takim Duzenle" : "Yeni Takim"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Takım Düzenle" : "Yeni Takım"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Büyüme" /></div>
+              <div><Label>İsim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Büyüme" /></div>
               <div>
                 <Label>Departman</Label>
                 <Select value={form.department_id || "none"} onValueChange={v => setForm(f => ({ ...f, department_id: v === "none" ? "" : v }))}>
@@ -505,15 +505,15 @@ function TeamsTab() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
+              <div><Label>Açıklama</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
             </div>
             <DialogFooter><Button onClick={save} disabled={upsert.isPending}>Kaydet</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">Yukleniyor...</p> :
-        filtered.length === 0 ? <EmptyState label={search ? "Sonuc bulunamadi." : "Henuz takim yok."} /> :
+      {isLoading ? <p className="text-sm text-muted-foreground">Yükleniyor...</p> :
+        filtered.length === 0 ? <EmptyState label={search ? "Sonuç bulunamadı." : "Henüz takım yok."} /> :
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(t => {
             const dep = departments.find(d => d.id === t.department_id);
@@ -537,7 +537,7 @@ function TeamsTab() {
                 {t.description && <p className="text-xs text-muted-foreground line-clamp-2">{t.description}</p>}
                 <div className="flex items-center gap-3 pt-1 border-t border-border/50">
                   <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                    <UserCheck className="h-3 w-3" />~{empByTeam[t.id] || 0} calisan
+                    <UserCheck className="h-3 w-3" />~{empByTeam[t.id] || 0} çalışan
                   </span>
                 </div>
               </Card>
@@ -585,7 +585,7 @@ function TitlesTab() {
         department_id: form.department_id || null,
         level: form.level || null,
       } as any);
-      toast.success(editItem ? "Unvan guncellendi" : "Unvan eklendi");
+      toast.success(editItem ? "Ünvan güncellendi" : "Ünvan eklendi");
       setOpen(false); setEditItem(null);
       setForm({ name: "", department_id: "", level: "" });
     } catch (e: any) { toast.error(e.message); }
@@ -597,13 +597,13 @@ function TitlesTab() {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap justify-between items-center gap-2">
-        <SearchBar value={search} onChange={setSearch} placeholder="Unvan ara..." />
+        <SearchBar value={search} onChange={setSearch} placeholder="Ünvan ara..." />
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Unvan</Button></DialogTrigger>
+          <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Ünvan</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Unvan Duzenle" : "Yeni Unvan"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Ünvan Düzenle" : "Yeni Ünvan"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Finance Manager" /></div>
+              <div><Label>İsim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Finance Manager" /></div>
               <div>
                 <Label>Departman</Label>
                 <Select value={form.department_id || "none"} onValueChange={v => setForm(f => ({ ...f, department_id: v === "none" ? "" : v }))}>
@@ -635,8 +635,8 @@ function TitlesTab() {
         </Dialog>
       </div>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">Yukleniyor...</p> :
-        filtered.length === 0 ? <EmptyState label={search ? "Sonuc bulunamadi." : "Henuz unvan yok."} /> :
+      {isLoading ? <p className="text-sm text-muted-foreground">Yükleniyor...</p> :
+        filtered.length === 0 ? <EmptyState label={search ? "Sonuç bulunamadı." : "Henüz ünvan yok."} /> :
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(t => {
             const dep = departments.find(d => d.id === t.department_id);
@@ -709,7 +709,7 @@ function EntitiesTab() {
         ...(editItem ? { id: editItem } : {}),
         ...form,
       } as any);
-      toast.success(editItem ? "Tuzel kisilik guncellendi" : "Tuzel kisilik eklendi");
+      toast.success(editItem ? "Tüzel kişilik güncellendi" : "Tüzel kişilik eklendi");
       setOpen(false); setEditItem(null);
       setForm({ name: "", legal_name: "", country: "", currency: "USD", tax_id: "", is_primary: false });
     } catch (e: any) { toast.error(e.message); }
@@ -721,16 +721,16 @@ function EntitiesTab() {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap justify-between items-center gap-2">
-        <SearchBar value={search} onChange={setSearch} placeholder="Tuzel kisilik ara..." />
+        <SearchBar value={search} onChange={setSearch} placeholder="Tüzel kişilik ara..." />
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Tuzel Kisilik</Button></DialogTrigger>
+          <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Tüzel Kişilik</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Tuzel Kisilik Duzenle" : "Yeni Tuzel Kisilik"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Tüzel Kişilik Düzenle" : "Yeni Tüzel Kişilik"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
-              <div><Label>Yasal Unvan</Label><Input value={form.legal_name} onChange={e => setForm(f => ({ ...f, legal_name: e.target.value }))} /></div>
+              <div><Label>İsim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
+              <div><Label>Yasal Ünvan</Label><Input value={form.legal_name} onChange={e => setForm(f => ({ ...f, legal_name: e.target.value }))} /></div>
               <div className="grid grid-cols-2 gap-2">
-                <div><Label>Ulke</Label><Input value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} placeholder="TR" /></div>
+                <div><Label>Ülke</Label><Input value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} placeholder="TR" /></div>
                 <div><Label>Para Birimi</Label><Input value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))} /></div>
               </div>
               <div><Label>Vergi No</Label><Input value={form.tax_id} onChange={e => setForm(f => ({ ...f, tax_id: e.target.value }))} /></div>
@@ -740,8 +740,8 @@ function EntitiesTab() {
         </Dialog>
       </div>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">Yukleniyor...</p> :
-        filtered.length === 0 ? <EmptyState label={search ? "Sonuc bulunamadi." : "Henuz tuzel kisilik yok."} /> :
+      {isLoading ? <p className="text-sm text-muted-foreground">Yükleniyor...</p> :
+        filtered.length === 0 ? <EmptyState label={search ? "Sonuç bulunamadı." : "Henüz tüzel kişilik yok."} /> :
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(e => (
             <Card key={e.id} className="p-4">
@@ -792,7 +792,7 @@ function ModuleOwnershipTab() {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap justify-between items-center gap-2">
-        <SearchBar value={search} onChange={setSearch} placeholder="Modul ara..." />
+        <SearchBar value={search} onChange={setSearch} placeholder="Modül ara..." />
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map(mod => {
@@ -860,7 +860,7 @@ function PermissionSetsTab() {
         permission_map: {},
         scope: {},
       } as any);
-      toast.success(editItem ? "Yetki paketi guncellendi" : "Yetki paketi olusturuldu");
+      toast.success(editItem ? "Yetki paketi güncellendi" : "Yetki paketi oluşturuldu");
       setOpen(false); setEditItem(null);
       setForm({ name: "", description: "" });
     } catch (e: any) { toast.error(e.message); }
@@ -876,18 +876,18 @@ function PermissionSetsTab() {
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild><Button size="sm" onClick={openCreate}><Plus className="h-4 w-4 mr-1" />Paket</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Yetki Paketi Duzenle" : "Yeni Yetki Paketi"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Yetki Paketi Düzenle" : "Yeni Yetki Paketi"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Isim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="External Accountant" /></div>
-              <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
+              <div><Label>İsim *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="External Accountant" /></div>
+              <div><Label>Açıklama</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
             </div>
             <DialogFooter><Button onClick={save} disabled={upsert.isPending}>Kaydet</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">Yukleniyor...</p> :
-        filtered.length === 0 ? <EmptyState label={search ? "Sonuc bulunamadi." : "Henuz yetki paketi yok."} /> :
+      {isLoading ? <p className="text-sm text-muted-foreground">Yükleniyor...</p> :
+        filtered.length === 0 ? <EmptyState label={search ? "Sonuç bulunamadı." : "Henüz yetki paketi yok."} /> :
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(s => (
             <Card key={s.id} className="p-4">

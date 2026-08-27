@@ -87,7 +87,7 @@ function NewContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
 
   async function submit() {
     if (!firstName.trim() && !lastName.trim() && !email.trim()) {
-      toast.error("Isim veya e-posta gerekli"); return;
+      toast.error("İsim veya e-posta gerekli"); return;
     }
     try {
       await create.mutateAsync({
@@ -99,7 +99,7 @@ function NewContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
         company_id: companyId || null,
         lifecycle,
       });
-      toast.success("Kisi eklendi");
+      toast.success("Kişi eklendi");
       onOpenChange(false);
       setFirstName(''); setLastName(''); setEmail(''); setPhone(''); setTitle(''); setCompanyId('');
     } catch (err: unknown) {

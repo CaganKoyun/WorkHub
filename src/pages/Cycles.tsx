@@ -141,7 +141,7 @@ function CycleCard({ cycle, isSelected, onSelect }: { cycle: Cycle; isSelected: 
         </span>
         {cycle.status === 'active' && daysLeft > 0 && (
           <span className="text-[hsl(var(--status-in-progress))]">
-            {daysLeft} gun kaldi
+            {daysLeft} gün kaldı
           </span>
         )}
         {cycle.status === 'planned' && (
@@ -152,7 +152,7 @@ function CycleCard({ cycle, isSelected, onSelect }: { cycle: Cycle; isSelected: 
       <div className="mt-3">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[11px] text-muted-foreground">
-            {total} gorev
+            {total} görev
           </span>
           <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
             {done}/{total} <span className="opacity-60">({pct}%)</span>
@@ -217,7 +217,7 @@ function BurndownChart({ cycle, tasks }: { cycle: Cycle; tasks: Task[] }) {
   if (chartData.length === 0) {
     return (
       <div className="flex items-center justify-center h-48 text-[12px] text-muted-foreground">
-        Burndown icin yeterli veri yok
+        Burndown için yeterli veri yok
       </div>
     );
   }
@@ -301,7 +301,7 @@ function CycleTaskList({ tasks, isLoading, profileMap }: { tasks: Task[]; isLoad
     return (
       <div className="rounded-md border border-border/40 py-12 text-center">
         <AlertCircle className="mx-auto h-6 w-6 text-muted-foreground/30 mb-2" />
-        <p className="text-[12.5px] text-muted-foreground">Bu cycle'da henuz gorev yok.</p>
+        <p className="text-[12.5px] text-muted-foreground">Bu cycle'da henüz görev yok.</p>
       </div>
     );
   }
@@ -480,29 +480,29 @@ function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
               <Calendar className="h-3 w-3" />
               {format(start, 'MMM d, yyyy')} &rarr; {format(end, 'MMM d, yyyy')}
               <span className="text-muted-foreground/50 mx-1">&middot;</span>
-              {totalDays} gun
+              {totalDays} gün
             </p>
           </div>
         </div>
         <Button size="sm" variant="outline" className="h-8 gap-1.5" onClick={() => setEditOpen(true)}>
-          <Pencil className="h-3 w-3" /> Duzenle
+          <Pencil className="h-3 w-3" /> Düzenle
         </Button>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard title="Ilerleme" value={`${pct}%`} subtitle={`${done}/${total} gorev`} icon={Target} />
-        <StatCard title="Kalan gun" value={cycle.status === 'completed' ? '-' : String(daysLeft)} subtitle={`${elapsedDays}/${totalDays} gecti`} icon={Calendar} />
+        <StatCard title="İlerleme" value={`${pct}%`} subtitle={`${done}/${total} görev`} icon={Target} />
+        <StatCard title="Kalan gün" value={cycle.status === 'completed' ? '-' : String(daysLeft)} subtitle={`${elapsedDays}/${totalDays} geçti`} icon={Calendar} />
         <StatCard
           title="Hiz"
           value={velocity > 0 ? `${velocity}` : '-'}
-          subtitle="gorev/gun"
+          subtitle="görev/gün"
           icon={TrendingUp}
         />
         <StatCard
           title="Devam eden"
           value={String(inProgressCount)}
-          subtitle={`${statusDistribution.in_progress} is + ${statusDistribution.review} inceleme`}
+          subtitle={`${statusDistribution.in_progress} iş + ${statusDistribution.review} inceleme`}
           icon={Play}
         />
       </div>
@@ -621,8 +621,8 @@ function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
       {/* Task list */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[13px] font-semibold text-foreground">Gorevler</h3>
-          <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{tasks.length} gorev</span>
+          <h3 className="text-[13px] font-semibold text-foreground">Görevler</h3>
+          <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{tasks.length} görev</span>
         </div>
         <div className="rounded-lg border border-border/40 bg-card p-4">
           <CycleTaskList tasks={tasks} isLoading={tasksLoading} profileMap={profileMap} />
@@ -669,7 +669,7 @@ function EditCycleDialog({ cycle, open, onOpenChange }: { cycle: Cycle; open: bo
         goal: goal.trim() || null,
         status,
       });
-      toast.success('Cycle guncellendi');
+      toast.success('Cycle güncellendi');
       onOpenChange(false);
     } catch (err: any) {
       toast.error(err.message);
@@ -679,7 +679,7 @@ function EditCycleDialog({ cycle, open, onOpenChange }: { cycle: Cycle; open: bo
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
-        <DialogHeader><DialogTitle>Cycle duzenle</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>Cycle düzenle</DialogTitle></DialogHeader>
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-2">
             <Label>Ad</Label>
@@ -687,17 +687,17 @@ function EditCycleDialog({ cycle, open, onOpenChange }: { cycle: Cycle; open: bo
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Baslangic</Label>
+              <Label>Başlangıç</Label>
               <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
             </div>
             <div className="space-y-2">
-              <Label>Bitis</Label>
+              <Label>Bitiş</Label>
               <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
             </div>
           </div>
           <div className="space-y-2">
             <Label>Hedef (opsiyonel)</Label>
-            <Input value={goal} onChange={e => setGoal(e.target.value)} placeholder="Bu cycle'da ne basaracagiz?" />
+            <Input value={goal} onChange={e => setGoal(e.target.value)} placeholder="Bu cycle'da ne başaracağız?" />
           </div>
           <div className="space-y-2">
             <Label>Durum</Label>
@@ -713,7 +713,7 @@ function EditCycleDialog({ cycle, open, onOpenChange }: { cycle: Cycle; open: bo
           </div>
           <div className="flex gap-2 pt-2">
             <Button type="submit" disabled={update.isPending}>Kaydet</Button>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Iptal</Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>İptal</Button>
           </div>
         </form>
       </DialogContent>
@@ -750,7 +750,7 @@ function CreateCycleDialog({ open, onOpenChange, nextNumber }: {
         goal: goal.trim() || null,
         number: nextNumber,
       });
-      toast.success('Cycle olusturuldu');
+      toast.success('Cycle oluşturuldu');
       setName(''); setGoal('');
       onOpenChange(false);
     } catch (err: any) {
@@ -769,21 +769,21 @@ function CreateCycleDialog({ open, onOpenChange, nextNumber }: {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Baslangic</Label>
+              <Label>Başlangıç</Label>
               <Input type="date" value={start} onChange={e => setStart(e.target.value)} required />
             </div>
             <div className="space-y-2">
-              <Label>Bitis</Label>
+              <Label>Bitiş</Label>
               <Input type="date" value={end} onChange={e => setEnd(e.target.value)} required />
             </div>
           </div>
           <div className="space-y-2">
             <Label>Hedef (opsiyonel)</Label>
-            <Input value={goal} onChange={e => setGoal(e.target.value)} placeholder="Bu cycle'da ne basaracagiz?" />
+            <Input value={goal} onChange={e => setGoal(e.target.value)} placeholder="Bu cycle'da ne başaracağız?" />
           </div>
           <div className="flex gap-2 pt-2">
-            <Button type="submit" disabled={create.isPending}>Olustur</Button>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Iptal</Button>
+            <Button type="submit" disabled={create.isPending}>Oluştur</Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>İptal</Button>
           </div>
         </form>
       </DialogContent>
@@ -827,7 +827,7 @@ export default function Cycles() {
         <div>
           <h1 className="text-[20px] font-semibold tracking-tight">Döngüler</h1>
           <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-            Zaman-kutulu is dilimleri. Bir cycle ekiplerin bir hafta / iki hafta boyunca odaklandigi seydir.
+            Zaman-kutulu iş dilimleri. Bir cycle ekiplerin bir hafta / iki hafta boyunca odaklandığı şeydir.
           </p>
         </div>
         <Button size="sm" onClick={() => setCreateOpen(true)} className="h-8 gap-1.5">
@@ -840,9 +840,9 @@ export default function Cycles() {
       ) : (cycles?.length ?? 0) === 0 ? (
         <EmptyState
           icon={Clock}
-          title="Henuz cycle yok"
-          description="Ilk cycle'i olustur, ekip odagini baslat."
-          action={{ label: "Ilk cycle'i olustur", onClick: () => setCreateOpen(true) }}
+          title="Henüz cycle yok"
+          description="İlk cycle'ı oluştur, ekip odağını başlat."
+          action={{ label: "İlk cycle'ı oluştur", onClick: () => setCreateOpen(true) }}
         />
       ) : selectedCycle ? (
         <CycleDetail

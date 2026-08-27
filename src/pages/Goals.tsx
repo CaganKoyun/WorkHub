@@ -178,34 +178,34 @@ function GoalForm({ form, setForm, goals, editingId }: {
           <Label>Hedef Değeri</Label>
           <Input type="number" value={form.target_value}
             onChange={e => setForm({ ...form, target_value: e.target.value })}
-            placeholder="orn. 1000000" />
+            placeholder="örn. 1000000" />
         </div>
         <div>
-          <Label>Mevcut Deger</Label>
+          <Label>Mevcut Değer</Label>
           <Input type="number" value={form.current_value}
             onChange={e => setForm({ ...form, current_value: e.target.value })}
-            placeholder="orn. 750000" />
+            placeholder="örn. 750000" />
         </div>
         <div>
           <Label>Birim</Label>
           <Input value={form.unit} onChange={e => setForm({ ...form, unit: e.target.value })}
-            placeholder="orn. TRY, adet" />
+            placeholder="örn. TRY, adet" />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <Label>Baslangic Tarihi</Label>
+          <Label>Başlangıç Tarihi</Label>
           <Input type="date" value={form.start_date}
             onChange={e => setForm({ ...form, start_date: e.target.value })} />
         </div>
         <div>
-          <Label>Bitis Tarihi</Label>
+          <Label>Bitiş Tarihi</Label>
           <Input type="date" value={form.end_date}
             onChange={e => setForm({ ...form, end_date: e.target.value })} />
         </div>
       </div>
       <div>
-        <Label>Ust Hedef</Label>
+        <Label>Üst Hedef</Label>
         <Select value={form.parent_goal_id || "__none__"} onValueChange={v => setForm({ ...form, parent_goal_id: v === "__none__" ? "" : v })}>
           <SelectTrigger><SelectValue placeholder="Yok" /></SelectTrigger>
           <SelectContent>
@@ -276,22 +276,22 @@ export default function Goals() {
   });
 
   const submitCreate = async () => {
-    if (!form.title.trim()) return toast.error("Baslik gerekli");
+    if (!form.title.trim()) return toast.error("Başlık gerekli");
     try {
       await create.mutateAsync(formToPayload(form));
-      toast.success("Hedef olusturuldu");
+      toast.success("Hedef oluşturuldu");
       setCreateOpen(false);
       resetForm();
     } catch (e) {
-      toast.error("Olusturulamadi: " + (e instanceof Error ? e.message : ""));
+      toast.error("Oluşturulamadı: " + (e instanceof Error ? e.message : ""));
     }
   };
 
   const submitEdit = async () => {
-    if (!editingGoal || !form.title.trim()) return toast.error("Baslik gerekli");
+    if (!editingGoal || !form.title.trim()) return toast.error("Başlık gerekli");
     try {
       await update.mutateAsync({ id: editingGoal.id, ...formToPayload(form) });
-      toast.success("Hedef guncellendi");
+      toast.success("Hedef güncellendi");
       setEditOpen(false);
       setEditingGoal(null);
       resetForm();
@@ -300,7 +300,7 @@ export default function Goals() {
         setDetailGoal({ ...editingGoal, ...formToPayload(form) } as Goal);
       }
     } catch (e) {
-      toast.error("Guncellenemedi: " + (e instanceof Error ? e.message : ""));
+      toast.error("Güncellenemedi: " + (e instanceof Error ? e.message : ""));
     }
   };
 
@@ -329,7 +329,7 @@ export default function Goals() {
     <DomainWorkspace
       domain="goals"
       title="Hedefler"
-      subtitle="Sirket, ekip ve bireysel OKR'lari tek yerden takip edin."
+      subtitle="Şirket, ekip ve bireysel OKR'ları tek yerden takip edin."
       headerActions={
         <Dialog open={createOpen} onOpenChange={o => { setCreateOpen(o); if (!o) resetForm(); }}>
           <DialogTrigger asChild>
@@ -339,8 +339,8 @@ export default function Goals() {
             <DialogHeader><DialogTitle>Yeni Hedef</DialogTitle></DialogHeader>
             <GoalForm form={form} setForm={setForm} goals={goals} />
             <DialogFooter>
-              <Button onClick={submitCreate} disabled={create.isPending}>Olustur</Button>
-              <Button variant="outline" onClick={() => setCreateOpen(false)}>Iptal</Button>
+              <Button onClick={submitCreate} disabled={create.isPending}>Oluştur</Button>
+              <Button variant="outline" onClick={() => setCreateOpen(false)}>İptal</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -352,18 +352,18 @@ export default function Goals() {
         <Select value={statusFilter} onValueChange={v => setStatusFilter(v as GoalStatus | "all")}>
           <SelectTrigger className="w-[160px] h-8 text-sm"><SelectValue placeholder="Durum" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tum Durumlar</SelectItem>
+            <SelectItem value="all">Tüm Durumlar</SelectItem>
             {Object.entries(GOAL_STATUS_LABELS).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={periodFilter} onValueChange={v => setPeriodFilter(v as GoalPeriod | "all")}>
-          <SelectTrigger className="w-[160px] h-8 text-sm"><SelectValue placeholder="Donem" /></SelectTrigger>
+          <SelectTrigger className="w-[160px] h-8 text-sm"><SelectValue placeholder="Dönem" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tumu</SelectItem>
-            <SelectItem value="monthly">Aylik</SelectItem>
-            <SelectItem value="quarterly">Ceyreklik</SelectItem>
-            <SelectItem value="yearly">Yillik</SelectItem>
-            <SelectItem value="custom">Ozel</SelectItem>
+            <SelectItem value="all">Tümü</SelectItem>
+            <SelectItem value="monthly">Aylık</SelectItem>
+            <SelectItem value="quarterly">Çeyreklik</SelectItem>
+            <SelectItem value="yearly">Yıllık</SelectItem>
+            <SelectItem value="custom">Özel</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -376,13 +376,13 @@ export default function Goals() {
         <Card><CardContent className="p-10 text-center space-y-3">
           <Target className="h-10 w-10 mx-auto text-muted-foreground" />
           <div className="text-lg font-medium">
-            {goals?.length ? "Filtreye uyan hedef yok" : "Henuz hedef yok"}
+            {goals?.length ? "Filtreye uyan hedef yok" : "Henüz hedef yok"}
           </div>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Sirket hedeflerini tanimlayin ve projeler, kararlar, ekipler ile iliskilendirerek Company Graph uzerinden takip edin.
+            Şirket hedeflerini tanımlayın ve projeler, kararlar, ekipler ile ilişkilendirerek Company Graph üzerinden takip edin.
           </p>
           {!goals?.length && (
-            <Button onClick={() => setCreateOpen(true)}><Plus className="h-4 w-4 mr-2" />Ilk hedefi olustur</Button>
+            <Button onClick={() => setCreateOpen(true)}><Plus className="h-4 w-4 mr-2" />İlk hedefi oluştur</Button>
           )}
         </CardContent></Card>
       ) : (
@@ -434,7 +434,7 @@ export default function Goals() {
                 {/* Actions */}
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={() => openEdit(detailGoal)}>
-                    <Pencil className="h-3.5 w-3.5 mr-1" />Duzenle
+                    <Pencil className="h-3.5 w-3.5 mr-1" />Düzenle
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -446,11 +446,11 @@ export default function Goals() {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Hedefi sil</AlertDialogTitle>
                         <AlertDialogDescription>
-                          &quot;{detailGoal.title}&quot; hedefi kalici olarak silinecek. Bu islem geri alinamaz.
+                          &quot;{detailGoal.title}&quot; hedefi kalıcı olarak silinecek. Bu işlem geri alınamaz.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Iptal</AlertDialogCancel>
+                        <AlertDialogCancel>İptal</AlertDialogCancel>
                         <AlertDialogAction onClick={() => handleDelete(detailGoal.id)}>Sil</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -464,7 +464,7 @@ export default function Goals() {
                     <div><Badge className={STATUS_TONE[detailGoal.status]}>{GOAL_STATUS_LABELS[detailGoal.status]}</Badge></div>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Donem</Label>
+                    <Label className="text-xs text-muted-foreground">Dönem</Label>
                     <div className="text-sm">{PERIOD_LABELS[detailGoal.period]}</div>
                   </div>
                 </div>
@@ -472,14 +472,14 @@ export default function Goals() {
                 {/* Description */}
                 {detailGoal.description && (
                   <div>
-                    <Label className="text-xs text-muted-foreground">Aciklama</Label>
+                    <Label className="text-xs text-muted-foreground">Açıklama</Label>
                     <p className="text-sm mt-1 whitespace-pre-wrap">{detailGoal.description}</p>
                   </div>
                 )}
 
                 {/* Progress */}
                 <div>
-                  <Label className="text-xs text-muted-foreground">Ilerleme</Label>
+                  <Label className="text-xs text-muted-foreground">İlerleme</Label>
                   <div className="flex items-center gap-3 mt-1">
                     <Progress value={detailGoal.progress} className="flex-1" />
                     <span className="text-sm font-medium">{detailGoal.progress}%</span>
@@ -494,7 +494,7 @@ export default function Goals() {
                       <div className="text-sm">{detailGoal.target_value ?? "-"}</div>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground">Mevcut Deger</Label>
+                      <Label className="text-xs text-muted-foreground">Mevcut Değer</Label>
                       <div className="text-sm">{detailGoal.current_value ?? "-"}</div>
                     </div>
                     <div>
@@ -507,11 +507,11 @@ export default function Goals() {
                 {/* Dates */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-xs text-muted-foreground">Baslangic Tarihi</Label>
+                    <Label className="text-xs text-muted-foreground">Başlangıç Tarihi</Label>
                     <div className="text-sm">{detailGoal.start_date ?? "-"}</div>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Bitis Tarihi</Label>
+                    <Label className="text-xs text-muted-foreground">Bitiş Tarihi</Label>
                     <div className="text-sm">{detailGoal.end_date ?? "-"}</div>
                   </div>
                 </div>
@@ -519,7 +519,7 @@ export default function Goals() {
                 {/* Parent Goal */}
                 {detailGoal.parent_goal_id && parentName(detailGoal.parent_goal_id) && (
                   <div>
-                    <Label className="text-xs text-muted-foreground">Ust Hedef</Label>
+                    <Label className="text-xs text-muted-foreground">Üst Hedef</Label>
                     <div className="flex items-center gap-1 text-sm mt-1">
                       <ChevronUp className="h-3.5 w-3.5" />
                       {parentName(detailGoal.parent_goal_id)}
@@ -534,15 +534,15 @@ export default function Goals() {
                     <div>{detailGoal.owner_id ?? "-"}</div>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Olusturan</Label>
+                    <Label className="text-xs text-muted-foreground">Oluşturan</Label>
                     <div>{detailGoal.created_by ?? "-"}</div>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Olusturma</Label>
+                    <Label className="text-xs text-muted-foreground">Oluşturma</Label>
                     <div>{new Date(detailGoal.created_at).toLocaleString("tr-TR")}</div>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Guncelleme</Label>
+                    <Label className="text-xs text-muted-foreground">Güncelleme</Label>
                     <div>{new Date(detailGoal.updated_at).toLocaleString("tr-TR")}</div>
                   </div>
                 </div>
@@ -560,11 +560,11 @@ export default function Goals() {
       {/* Edit Dialog */}
       <Dialog open={editOpen} onOpenChange={o => { setEditOpen(o); if (!o) { setEditingGoal(null); resetForm(); } }}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>Hedefi Duzenle</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Hedefi Düzenle</DialogTitle></DialogHeader>
           <GoalForm form={form} setForm={setForm} goals={goals} editingId={editingGoal?.id} />
           <DialogFooter>
             <Button onClick={submitEdit} disabled={update.isPending}>Kaydet</Button>
-            <Button variant="outline" onClick={() => setEditOpen(false)}>Iptal</Button>
+            <Button variant="outline" onClick={() => setEditOpen(false)}>İptal</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
