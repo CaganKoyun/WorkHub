@@ -49,7 +49,7 @@ export default function Integrations() {
               <h1 className="text-[22px] font-semibold tracking-tight text-foreground">Entegrasyonlar</h1>
             </div>
             <p className="text-[13px] text-muted-foreground max-w-xl">
-              MCP tabanlı entegrasyonlar. Hazır listeden seç ya da kendi MCP sunucunu bağla — bağlı araçları Chief of Staff otomatik keşfeder.
+              MCP tabanlı entegrasyonlar. Hazır listeden seç ya da kendi MCP sunucunu bağla — bağlı araçları Yapay Zekâ Asistanı otomatik keşfeder.
             </p>
           </div>
           <div className="flex items-center gap-2">

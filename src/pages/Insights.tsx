@@ -122,14 +122,16 @@ function useInsights(workspaceId: string | undefined, days: number) {
   });
 }
 
-function useBugInsights(days: number) {
+function useBugInsights(workspaceId: string | undefined, days: number) {
   return useQuery({
-    queryKey: ['bug-insights', days],
+    queryKey: ['bug-insights', workspaceId, days],
+    enabled: !!workspaceId,
     queryFn: async (): Promise<BugLite[]> => {
       const since = new Date(); since.setDate(since.getDate() - days);
       const { data, error } = await supabase
         .from('bugs')
         .select('id, status, severity, created_at, updated_at, project_id')
+        .eq('workspace_id', workspaceId!)
         .gte('created_at', since.toISOString())
         .limit(5000);
       if (error) throw error;
@@ -214,7 +216,7 @@ export default function Insights() {
   const { data: projects } = useProjects();
   const { data: goals } = useGoals();
   const { data: pulse } = useCompanyPulse();
-  const { data: rawBugs } = useBugInsights(days);
+  const { data: rawBugs } = useBugInsights(currentWorkspace?.id, days);
 
   const tasks = useMemo(() => {
     let r = rawTasks ?? [];

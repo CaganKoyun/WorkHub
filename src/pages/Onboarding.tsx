@@ -264,7 +264,7 @@ export default function Onboarding() {
   };
 
   const submitStep5 = async () => {
-    if (!wsId) return;
+    if (!wsId || !user) return;
     setSaving(true);
     try {
       const tpl = template ?? TEMPLATES[4];
@@ -273,13 +273,13 @@ export default function Onboarding() {
           name: tpl.seedProject,
           description: `Sablon: ${tpl.label} — dilediginiz gibi yeniden adlandirin veya silin.`,
           status: "active", priority: "medium",
-          workspace_id: wsId, owner_id: user!.id, created_by: user!.id,
+          workspace_id: wsId, owner_id: user.id, created_by: user.id,
         }).select().single();
         if (proj) {
           await supabase.from("tasks").insert(
             tpl.seedTasks.map((title, i) => ({
               title, project_id: proj.id, workspace_id: wsId,
-              reporter_id: user!.id, status: "todo" as const,
+              reporter_id: user.id, status: "todo" as const,
               priority: i === 0 ? "high" as const : "medium" as const,
               position: i + 1, tags: [],
             })),
@@ -289,7 +289,7 @@ export default function Onboarding() {
           title: tpl.seedGoal,
           description: "Örnek hedef — çeyreklik hedefinizle değiştirin.",
           status: "on_track", period: "quarterly", progress: 15,
-          workspace_id: wsId, owner_id: user!.id, created_by: user!.id,
+          workspace_id: wsId, owner_id: user.id, created_by: user.id,
         });
       }
       let decisionSeeded = false;
@@ -298,7 +298,7 @@ export default function Onboarding() {
           title: seedDecision.trim(),
           status: "proposed",
           workspace_id: wsId,
-          created_by: user!.id,
+          created_by: user.id,
         });
         decisionSeeded = !decErr;
       }

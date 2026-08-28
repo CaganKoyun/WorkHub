@@ -164,7 +164,7 @@ const NAV_JUMPS = [
   { label: "Finans",         icon: DollarSign,    to: "/finance" },
   { label: "Hedefler",       icon: Target,        to: "/goals" },
   { label: "Kararlar",       icon: ScrollText,    to: "/decisions" },
-  { label: "Chief of Staff", icon: Sparkles,      to: "/ai-chat",  hint: "G A" },
+  { label: "Yapay Zekâ Asistanı", icon: Sparkles, to: "/ai-chat",  hint: "G A" },
   { label: "Dokümanlar",     icon: BookOpen,      to: "/docs",     hint: "G D" },
   { label: "Sohbet",         icon: MessageSquare, to: "/chat" },
   { label: "Otomasyonlar",   icon: Zap,           to: "/automations" },

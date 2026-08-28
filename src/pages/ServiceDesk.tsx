@@ -87,7 +87,7 @@ function Inbox_({ status, onSelect, activeId }: {
             Bu filtrede talep yok.
           </div>
         ) : (
-          data!.map(t => {
+          (data ?? []).map(t => {
             const sla = slaBadge(t);
             return (
               <button

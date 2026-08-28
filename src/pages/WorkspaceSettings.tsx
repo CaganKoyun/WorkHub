@@ -17,8 +17,11 @@ import { PublicDashboardManager } from "@/components/PublicDashboardManager";
 import { ReferralPanel } from "@/components/ReferralPanel";
 
 const ROLES = ["manager","member","viewer","guest"] as const;
+const ROLE_LABELS: Record<string, string> = { manager: "Yönetici", member: "Üye", viewer: "İzleyici", guest: "Misafir" };
 const MODULES = ["work","crm","finance","people","assets","goals","risks","decisions","approvals","analytics","admin","ai"];
+const MODULE_LABELS: Record<string, string> = { work: "İş", crm: "CRM", finance: "Finans", people: "Kişiler", assets: "Varlıklar", goals: "Hedefler", risks: "Riskler", decisions: "Kararlar", approvals: "Onaylar", analytics: "Analitik", admin: "Yönetim", ai: "Yapay Zekâ" };
 const ACTIONS = ["view","create","update","delete"];
+const ACTION_LABELS: Record<string, string> = { view: "Görüntüle", create: "Oluştur", update: "Güncelle", delete: "Sil" };
 
 export default function WorkspaceSettings() {
   const { currentWorkspace, role, refresh } = useWorkspace();
@@ -63,8 +66,9 @@ export default function WorkspaceSettings() {
   };
 
   const revokeInvite = async (id: string) => {
-    await supabase.from("workspace_invitations").update({ status: "revoked" }).eq("id", id);
-    load();
+    const { error } = await supabase.from("workspace_invitations").update({ status: "revoked" }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Davet iptal edildi"); load();
   };
 
   const copyInviteLink = (token: string) => {
@@ -73,7 +77,8 @@ export default function WorkspaceSettings() {
   };
 
   const updateMemberRole = async (id: string, newRole: string) => {
-    await supabase.from("workspace_members").update({ role: newRole as any }).eq("id", id);
+    const { error } = await supabase.from("workspace_members").update({ role: newRole as any }).eq("id", id);
+    if (error) return toast.error(error.message);
     toast.success("Rol güncellendi"); load();
   };
 
@@ -92,20 +97,23 @@ export default function WorkspaceSettings() {
 
   const removeMember = async (id: string) => {
     if (!confirm("Bu üyeyi çalışma alanından çıkarmak istediğinize emin misiniz?")) return;
-    await supabase.from("workspace_members").delete().eq("id", id);
+    const { error } = await supabase.from("workspace_members").delete().eq("id", id);
+    if (error) return toast.error(error.message);
     toast.success("Üye çıkarıldı"); load();
   };
 
   const togglePerm = async (r: string, module: string, action: string, allowed: boolean) => {
     if (!currentWorkspace) return;
     const existing = perms.find(p => p.role === r && p.module === module && p.action === action);
+    let error;
     if (existing) {
-      await supabase.from("workspace_permissions").update({ allowed }).eq("id", existing.id);
+      ({ error } = await supabase.from("workspace_permissions").update({ allowed }).eq("id", existing.id));
     } else {
-      await supabase.from("workspace_permissions").insert({
+      ({ error } = await supabase.from("workspace_permissions").insert({
         workspace_id: currentWorkspace.id, role: r as any, module, action, allowed,
-      });
+      }));
     }
+    if (error) return toast.error(error.message);
     load();
   };
 
@@ -232,8 +240,8 @@ export default function WorkspaceSettings() {
                     <th className="text-left p-2">Modül</th>
                     {ROLES.flatMap(r => ACTIONS.map(a => (
                       <th key={r+a} className="text-center p-2 whitespace-nowrap">
-                        <div className="capitalize font-medium">{r}</div>
-                        <div className="text-muted-foreground">{a}</div>
+                        <div className="font-medium">{ROLE_LABELS[r] ?? r}</div>
+                        <div className="text-muted-foreground">{ACTION_LABELS[a] ?? a}</div>
                       </th>
                     )))}
                   </tr>
@@ -241,7 +249,7 @@ export default function WorkspaceSettings() {
                 <tbody>
                   {MODULES.map(m => (
                     <tr key={m} className="border-b">
-                      <td className="p-2 font-medium capitalize">{m}</td>
+                      <td className="p-2 font-medium">{MODULE_LABELS[m] ?? m}</td>
                       {ROLES.flatMap(r => ACTIONS.map(a => (
                         <td key={r+a+m} className="text-center p-2">
                           <Checkbox
@@ -266,7 +274,7 @@ export default function WorkspaceSettings() {
             {canAdmin ? (
               <PublicDashboardManager />
             ) : (
-              <p className="text-sm text-muted-foreground py-4">Public dashboard yonetimi icin admin yetkisi gerekli.</p>
+              <p className="text-sm text-muted-foreground py-4">Herkese açık pano yönetimi için admin yetkisi gerekli.</p>
             )}
           </TabsContent>
 

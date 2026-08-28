@@ -224,7 +224,7 @@ function RecentActivityFeed() {
   if (isLoading) return <Skeleton className="h-40" />;
   if (!items || items.length === 0) return null;
 
-  const typeConfig = {
+  const typeConfig: Record<string, { icon: React.ElementType; label: string; color: string }> = {
     task: { icon: CheckSquare, label: "Görev", color: "text-info" },
     bug: { icon: Bug, label: "Bug", color: "text-destructive" },
     decision: { icon: Gavel, label: "Karar", color: "text-warning" },
@@ -240,7 +240,7 @@ function RecentActivityFeed() {
         <CardContent className="p-0">
           <ul className="divide-y divide-border">
             {items.map(item => {
-              const cfg = typeConfig[item.type];
+              const cfg = typeConfig[item.type] ?? { icon: CheckSquare, label: item.type, color: "text-muted-foreground" };
               const Icon = cfg.icon;
               return (
                 <li key={`${item.type}-${item.id}`} className="flex items-center gap-3 px-4 py-2.5">

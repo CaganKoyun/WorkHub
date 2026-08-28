@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -131,6 +132,7 @@ function ChatInterface({
   const inputRef = useRef<HTMLInputElement>(null);
   const { allowed: financeAllowed } = useModuleAccess("finance", "view");
   const { user } = useAuth();
+  const { currentWorkspace } = useWorkspace();
   const [inboxBusy, setInboxBusy] = useState<number | null>(null);
 
   const sendToInbox = async (msgIndex: number, content: string) => {
@@ -142,6 +144,7 @@ function ChatInterface({
         summary: draft.summary,
         kind: "general",
         requested_by: user?.id ?? null,
+        workspace_id: currentWorkspace?.id ?? "",
       });
       if (error) throw error;
       toast.success("Öneri Founder Inbox'a onay talebi olarak eklendi");

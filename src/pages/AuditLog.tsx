@@ -146,7 +146,7 @@ export default function AuditLog() {
       <AppLayout>
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <AlertTriangle className="h-10 w-10 text-destructive/60" />
-          <p className="mt-3 text-[13px] text-muted-foreground">Audit log yuklenirken hata olustu.</p>
+          <p className="mt-3 text-[13px] text-muted-foreground">Denetim günlüğü yüklenirken hata oluştu.</p>
         </div>
       </AppLayout>
     );

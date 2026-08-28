@@ -84,7 +84,7 @@ function ProfileTab() {
   };
 
   const handleChangePassword = async () => {
-    if (!newPassword || newPassword.length < 6) { toast.error("Sifre en az 6 karakter olmali."); return; }
+    if (!newPassword || newPassword.length < 6) { toast.error("Şifre en az 6 karakter olmalı."); return; }
     setChangingPassword(true);
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     setChangingPassword(false);
@@ -405,7 +405,7 @@ function EmailTab() {
     <div className="divide-y divide-border">
       <div className="px-4 md:px-6 py-3 flex items-start gap-2 bg-muted/30">
         <AlertTriangle className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />
-        <p className="text-[12px] text-muted-foreground">E-posta teslimi henuz baglandi. Tercihler, e-posta saglayicisi yapilandirildiginda etkin olacaktir.</p>
+        <p className="text-[12px] text-muted-foreground">E-posta teslimi henüz bağlanmadı. Tercihler, e-posta sağlayıcısı yapılandırıldığında etkin olacaktır.</p>
       </div>
       <div className="px-4 md:px-6 py-4">
         <p className="text-[12px] text-muted-foreground font-medium mb-3">E-posta Bildirimleri</p>
@@ -442,24 +442,24 @@ function GeneralTab() {
   return (
     <div className="divide-y divide-border">
       <div className="px-4 md:px-6 py-4">
-        <p className="text-[12px] text-muted-foreground font-medium mb-3">Gorunum</p>
+        <p className="text-[12px] text-muted-foreground font-medium mb-3">Görünüm</p>
         <div className="flex items-center justify-between max-w-lg">
           <span className="text-[13px]">Tema</span>
           <Select value={theme} onValueChange={toggleTheme}>
             <SelectTrigger className="w-[100px] h-7 text-[12px]"><SelectValue /></SelectTrigger>
-            <SelectContent><SelectItem value="light">Acik</SelectItem><SelectItem value="dark">Koyu</SelectItem></SelectContent>
+            <SelectContent><SelectItem value="light">Açık</SelectItem><SelectItem value="dark">Koyu</SelectItem></SelectContent>
           </Select>
         </div>
       </div>
 
       <div className="px-4 md:px-6 py-4">
-        <p className="text-[12px] text-destructive font-medium mb-3">Tehlikeli Bolge</p>
+        <p className="text-[12px] text-destructive font-medium mb-3">Tehlikeli Bölge</p>
         <div className="flex items-center justify-between max-w-lg border border-destructive/20 rounded-md p-3">
           <div>
-            <p className="text-[13px] font-medium">Hesabi Sil</p>
-            <p className="text-[12px] text-muted-foreground">Hesabinizi ve tum verilerinizi kalici olarak silin.</p>
+            <p className="text-[13px] font-medium">Hesabı Sil</p>
+            <p className="text-[12px] text-muted-foreground">Hesabınızı ve tüm verilerinizi kalıcı olarak silin.</p>
           </div>
-          <Button variant="destructive" size="sm" disabled className="h-7 text-[12px]">Yakinda</Button>
+          <Button variant="destructive" size="sm" disabled className="h-7 text-[12px]">Yakında</Button>
         </div>
       </div>
     </div>

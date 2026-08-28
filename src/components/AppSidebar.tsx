@@ -62,7 +62,7 @@ function NewIssueButton() {
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate("/ai-chat")}>
-          Chief of Staff'a sor…
+          Yapay Zekâ Asistanı'na sor…
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -21,7 +21,7 @@ function ActiveTimerChip() {
         type="button"
         onClick={() => navigate('/timesheet')}
         className="font-mono tabular-nums text-[hsl(var(--status-in-progress))]"
-        title="Timesheet'e git"
+        title="Zaman çizelgesine git"
       >
         {formatHMS(elapsed)}
       </button>
@@ -29,7 +29,7 @@ function ActiveTimerChip() {
         type="button"
         onClick={() => stop.mutate()}
         className="h-4 w-4 grid place-items-center rounded-full hover:bg-[hsl(var(--status-in-progress))/20]"
-        title="Timer'ı durdur"
+        title="Zamanlayıcıyı durdur"
       >
         <Square className="h-2.5 w-2.5" fill="currentColor" />
       </button>

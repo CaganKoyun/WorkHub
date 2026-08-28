@@ -104,7 +104,7 @@ export default function Admin() {
               icon={Mail}
               label="Bekleyen e-posta"
               value={summary.email_queue_pending}
-              hint="Kuyrukta pending"
+              hint="Kuyrukta bekleyen"
               tone={summary.email_queue_pending > 20 ? 'warn' : 'neutral'}
             />
           </>

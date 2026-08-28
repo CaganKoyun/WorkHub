@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   ArrowRight, CheckCircle2, LayoutGrid, Users, Target, Sparkles,
-  BarChart3, Workflow, Plus, Search, Circle, CheckSquare, Play,
+  BarChart3, Workflow, Plus, Search, Circle, CheckSquare,
 } from "lucide-react";
 import { SparkLogo } from "@/components/SparkLogo";
 
@@ -126,10 +126,9 @@ const Landing = () => {
             </Link>
             <a
               href="#features"
-              className="glass-panel inline-flex h-11 items-center rounded-md px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary/70"
+              className="glass-panel inline-flex h-11 items-center gap-2 rounded-md px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary/70"
             >
-              <Play className="h-4 w-4" />
-              Demo izle
+              Özellikleri keşfet
             </a>
           </div>
 
@@ -186,7 +185,7 @@ const Landing = () => {
                   </div>
                 </div>
                 <div className="flex h-10 items-center gap-1 border-b border-border px-4">
-                  {["Genel Bakış", "Board", "Liste", "Zaman Çizelgesi", "Dashboard"].map((t, i) => (
+                  {["Genel Bakış", "Pano", "Liste", "Zaman Çizelgesi", "Kontrol Paneli"].map((t, i) => (
                     <span key={t} className="asana-tab !h-10 !px-2.5 !text-[12px]" data-active={i === 1}>
                       {t}
                     </span>

@@ -142,6 +142,7 @@ export default function Import() {
   const companyCache = useMemo(() => new Map<string, string>(), []);
 
   const resolveCompany = async (name: string): Promise<string | null> => {
+    if (!user) return null;
     if (!name || !currentWorkspace) return null;
     const key = name.toLowerCase().trim();
     if (companyCache.has(key)) return companyCache.get(key)!;
@@ -162,8 +163,8 @@ export default function Import() {
         workspace_id: currentWorkspace.id,
         name: name.trim(),
         lifecycle: 'lead' as any,
-        created_by: user!.id,
-        owner_id: user!.id,
+        created_by: user.id,
+        owner_id: user.id,
       } as any)
       .select('id')
       .single();
@@ -173,6 +174,7 @@ export default function Import() {
   };
 
   const runImport = async () => {
+    if (!user) return;
     if (!csv) { toast.error('Dosya sec'); return; }
     if (entityType === 'tasks' && !projectId) { toast.error('Hedef proje sec'); return; }
     if (colMap[rKey] === NONE || !colMap[rKey]) {

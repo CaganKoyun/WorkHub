@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { DomainWorkspace } from "@/components/DomainWorkspace";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -39,13 +40,17 @@ const SEVERITY_LABELS: Record<string, string> = {
 };
 
 export default function Analytics() {
+  const { currentWorkspace } = useWorkspace();
+  const wsId = currentWorkspace?.id;
   const { data: bugs = [], isLoading: loading, isError } = useQuery<BugRow[]>({
-    queryKey: ["analytics-bugs"],
+    queryKey: ["analytics-bugs", wsId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("bugs").select("*");
+      if (!wsId) return [];
+      const { data, error } = await supabase.from("bugs").select("*").eq("workspace_id", wsId);
       if (error) throw error;
       return data ?? [];
     },
+    enabled: !!wsId,
   });
   const { getFill } = useNeonCharts();
 
