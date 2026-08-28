@@ -182,8 +182,8 @@ function TokenRow({ t }: { t: ApiToken }) {
         <div className="flex items-center gap-2">
           <span className="text-[13px] font-medium truncate">{t.name}</span>
           {t.scopes.map(s => <span key={s} className="text-[10px] uppercase tracking-wider rounded border border-border bg-secondary/40 px-1.5 py-0.5 text-muted-foreground">{SCOPE_LABELS[s]}</span>)}
-          {revoked && <span className="text-[10px] uppercase tracking-wider rounded border border-destructive/40 bg-destructive/10 px-1.5 py-0.5 text-destructive">Revoked</span>}
-          {expired && !revoked && <span className="text-[10px] uppercase tracking-wider rounded border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-warning">Expired</span>}
+          {revoked && <span className="text-[10px] uppercase tracking-wider rounded border border-destructive/40 bg-destructive/10 px-1.5 py-0.5 text-destructive">İptal Edildi</span>}
+          {expired && !revoked && <span className="text-[10px] uppercase tracking-wider rounded border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-warning">Süresi Doldu</span>}
         </div>
         <div className="text-[11.5px] text-muted-foreground flex items-center gap-3 mt-0.5">
           <span className="font-mono text-muted-foreground/80">{t.token_prefix}…</span>

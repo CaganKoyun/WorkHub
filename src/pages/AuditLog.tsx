@@ -70,7 +70,7 @@ function LogRow({ row, membersById }: { row: AuditRow; membersById: Map<string, 
           </div>
           <div className="text-[11px] text-muted-foreground">
             {actor?.full_name ?? 'sistem'} · {new Date(row.created_at).toLocaleString('tr-TR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-            {row.changed_keys.length > 0 && ` · ${row.changed_keys.length} alan degisti`}
+            {row.changed_keys.length > 0 && ` · ${row.changed_keys.length} alan değişti`}
           </div>
         </div>
         {hasDetail && (open ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />)}
@@ -103,7 +103,7 @@ function LogRow({ row, membersById }: { row: AuditRow; membersById: Map<string, 
           )}
           {Object.keys(row.metadata).length > 0 && (
             <div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Metadata</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Ek Bilgi</div>
               <pre className="rounded bg-secondary/40 p-2 text-[11px] whitespace-pre-wrap font-mono overflow-x-auto">{JSON.stringify(row.metadata, null, 2)}</pre>
             </div>
           )}
@@ -146,7 +146,7 @@ export default function AuditLog() {
       <AppLayout>
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <AlertTriangle className="h-10 w-10 text-destructive/60" />
-          <p className="mt-3 text-[13px] text-muted-foreground">Audit log yuklenirken hata olustu.</p>
+          <p className="mt-3 text-[13px] text-muted-foreground">Denetim günlüğü yüklenirken hata oluştu.</p>
         </div>
       </AppLayout>
     );
@@ -170,9 +170,9 @@ export default function AuditLog() {
       a.download = `audit-log-${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success('Audit log CSV indirildi');
+      toast.success('Denetim kaydı CSV indirildi');
     } catch {
-      toast.error('Export basarisiz');
+      toast.error('Aktarım başarısız');
     } finally {
       setExporting(false);
     }
@@ -195,7 +195,7 @@ export default function AuditLog() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-[20px] font-semibold tracking-tight flex items-center gap-2">
-            <Shield className="h-5 w-5 text-muted-foreground" /> Audit log
+            <Shield className="h-5 w-5 text-muted-foreground" /> Denetim Kaydi
           </h1>
           <p className="mt-0.5 text-[12.5px] text-muted-foreground">
             Workspace'te olan biten her onemli olay. Sadece admin gorebilir.
@@ -209,7 +209,7 @@ export default function AuditLog() {
           disabled={exporting}
         >
           {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
-          CSV Export
+          CSV Aktar
         </Button>
       </div>
 
@@ -256,7 +256,7 @@ export default function AuditLog() {
             className="h-7 w-[130px] text-[12px]"
             value={fromDate}
             onChange={e => { setFromDate(e.target.value); setOffset(0); }}
-            placeholder="Baslangic"
+            placeholder="Başlangıç"
           />
           <span className="text-[11px] text-muted-foreground">—</span>
           <Input
@@ -264,7 +264,7 @@ export default function AuditLog() {
             className="h-7 w-[130px] text-[12px]"
             value={toDate}
             onChange={e => { setToDate(e.target.value); setOffset(0); }}
-            placeholder="Bitis"
+            placeholder="Bitiş"
           />
         </div>
         {hasActiveFilters && (
@@ -289,7 +289,7 @@ export default function AuditLog() {
       <div className="flex items-center justify-between">
         <div className="text-[11px] text-muted-foreground">
           {rows.length > 0 ? `${offset + 1}–${offset + rows.length}` : '0'} sonuc
-          {isFetching && ' · yukleniyor…'}
+          {isFetching && ' · yükleniyor…'}
         </div>
         <div className="flex gap-2">
           <Button size="sm" variant="ghost" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - 50))}>← Onceki</Button>

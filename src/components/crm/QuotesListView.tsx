@@ -96,7 +96,7 @@ function NewQuoteDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (
         valid_until: validUntil || null,
         notes: notes || null,
       });
-      toast.success("Teklif olusturuldu");
+      toast.success("Teklif oluşturuldu");
       onOpenChange(false);
       setOppId(''); setSubtotal('0'); setDiscountPct('0'); setTaxPct('0'); setValidUntil(''); setNotes('');
     } catch (err: unknown) {

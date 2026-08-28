@@ -33,19 +33,19 @@ import {
 import { IntegrationsPanel } from "@/components/integrations/IntegrationsPanel";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { tr } from "date-fns/locale";
 
 /* ------------------------------ Constants ------------------------------ */
 
 const FEATURE_STATUS = ["proposed", "in_progress", "shipped", "deprecated"] as const;
 const FEATURE_STATUS_LABELS: Record<string, string> = {
-  proposed: "Proposed", in_progress: "In Progress", shipped: "Shipped", deprecated: "Deprecated",
-  // legacy values from old data
-  idea: "Idea", planned: "Planned", cancelled: "Cancelled",
+  proposed: "Önerildi", in_progress: "Devam Ediyor", shipped: "Yayınlandı", deprecated: "Kullanımdan Kalktı",
+  idea: "Fikir", planned: "Planlandı", cancelled: "İptal Edildi",
 };
 
 const MOSCOW = ["must_have", "should_have", "could_have", "wont_have"] as const;
 const MOSCOW_LABELS: Record<string, string> = {
-  must_have: "Must Have", should_have: "Should Have", could_have: "Could Have", wont_have: "Won't Have",
+  must_have: "Olmazsa Olmaz", should_have: "Olmalı", could_have: "Olsa İyi", wont_have: "Olmayacak",
 };
 
 const PRIORITIES = ["low", "medium", "high", "urgent"] as const;
@@ -118,10 +118,10 @@ function DeleteButton({ onConfirm, isPending }: { onConfirm: () => void; isPendi
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Silmek istediginize emin misiniz?</AlertDialogTitle>
-          <AlertDialogDescription>Bu islem geri alinamaz.</AlertDialogDescription>
+          <AlertDialogDescription>Bu işlem geri alınamaz.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Iptal</AlertDialogCancel>
+          <AlertDialogCancel>İptal</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={isPending}>Sil</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -168,18 +168,18 @@ function ProductsTab() {
   const openEdit = (p: AnyRow) => { setEditItem(p); setForm({ name: p.name ?? "", description: p.description ?? "", status: p.status ?? "active", project_id: p.project_id ?? "" }); setOpen(true); };
 
   const submit = async () => {
-    if (!form.name.trim()) return toast.error("Isim gerekli");
+    if (!form.name.trim()) return toast.error("İsim gerekli");
     try {
       const payload: AnyRow = { ...form, project_id: form.project_id || null };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Urun guncellendi" : "Urun eklendi");
+      toast.success(editItem ? "Ürün güncellendi" : "Ürün eklendi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Urun silindi"); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Ürün silindi"); } catch (e: any) { toast.error(e.message); }
   };
 
   const linkedProjects = (productId: string) => projects?.filter((pr: AnyRow) => pr.id === (data?.find(p => p.id === productId)?.project_id)) ?? [];
@@ -188,12 +188,12 @@ function ProductsTab() {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Urun</Button></DialogTrigger>
+          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Ürün</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Urun Duzenle" : "Yeni Urun"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Ürün Düzenle" : "Yeni Ürün"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Isim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
-              <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
+              <div><Label>İsim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
+              <div><Label>Açıklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
               <div><Label>Proje Baglantisi</Label>
                 <Select value={form.project_id} onValueChange={v => setForm({ ...form, project_id: v })}>
                   <SelectTrigger><SelectValue placeholder="-- Proje sec --" /></SelectTrigger>
@@ -205,8 +205,8 @@ function ProductsTab() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button>
-              <Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button>
+              <Button variant="outline" onClick={() => setOpen(false)}>İptal</Button>
+              <Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -218,23 +218,23 @@ function ProductsTab() {
           {detailItem && <>
             <SheetHeader>
               <SheetTitle>{detailItem.name}</SheetTitle>
-              <SheetDescription>Urun Detayi</SheetDescription>
+              <SheetDescription>Ürün Detayı</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-3 text-sm">
               <div><span className="font-medium">Durum:</span> <Badge className={tone[detailItem.status] ?? ""}>{detailItem.status}</Badge></div>
-              {detailItem.description && <div><span className="font-medium">Aciklama:</span><p className="text-muted-foreground mt-1">{detailItem.description}</p></div>}
-              {detailItem.project_id && <div><span className="font-medium">Bagli Proje:</span> {projects?.find((pr: AnyRow) => pr.id === detailItem.project_id)?.name ?? detailItem.project_id}</div>}
-              {detailItem.created_at && <div><span className="font-medium">Olusturulma:</span> {format(new Date(detailItem.created_at), "PPp")}</div>}
+              {detailItem.description && <div><span className="font-medium">Açıklama:</span><p className="text-muted-foreground mt-1">{detailItem.description}</p></div>}
+              {detailItem.project_id && <div><span className="font-medium">Bağlı Proje:</span> {projects?.find((pr: AnyRow) => pr.id === detailItem.project_id)?.name ?? detailItem.project_id}</div>}
+              {detailItem.created_at && <div><span className="font-medium">Oluşturulma:</span> {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !data?.length
-        ? <EmptyState icon={Package} title="Henuz urun yok" desc="Sirketinizin urunlerini tanimlayin; feature, feedback, release ve incident kayitlari bu urunlere baglanir." onNew={openCreate} />
+        ? <EmptyState icon={Package} title="Henüz ürün yok" desc="Şirketinizin ürünlerini tanımlayın; özellik, geri bildirim, sürüm ve olay kayıtları bu ürünlere bağlanır." onNew={openCreate} />
         : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.map(p => (
             <Card key={p.id} className="cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all" onClick={() => setDetailItem(p)}>
@@ -288,7 +288,7 @@ function FeaturesTab() {
   };
 
   const submit = async () => {
-    if (!form.title.trim()) return toast.error("Baslik gerekli");
+    if (!form.title.trim()) return toast.error("Başlık gerekli");
     try {
       const payload: AnyRow = {
         title: form.title, description: form.description, status: form.status,
@@ -303,13 +303,13 @@ function FeaturesTab() {
       };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Feature guncellendi" : "Feature eklendi");
+      toast.success(editItem ? "Özellik güncellendi" : "Özellik eklendi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Feature silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Özellik silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
   };
 
   const handleVote = async (f: AnyRow, delta: number) => {
@@ -363,14 +363,14 @@ function FeaturesTab() {
         </div>
         <div className="ml-auto">
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Feature</Button></DialogTrigger>
+            <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Özellik</Button></DialogTrigger>
             <DialogContent className="sm:max-w-xl">
-              <DialogHeader><DialogTitle>{editItem ? "Feature Duzenle" : "Yeni Feature"}</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>{editItem ? "Özellik Düzenle" : "Yeni Özellik"}</DialogTitle></DialogHeader>
               <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
-                <div><Label>Baslik</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
-                <div><Label>Aciklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
+                <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
+                <div><Label>Açıklama</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div><Label>Urun</Label>
+                  <div><Label>Ürün</Label>
                     <Select value={form.product_id} onValueChange={v => setForm({ ...form, product_id: v })}>
                       <SelectTrigger><SelectValue placeholder="--" /></SelectTrigger>
                       <SelectContent>{products?.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
@@ -396,7 +396,7 @@ function FeaturesTab() {
                   <div><Label>Oncelik</Label>
                     <Select value={form.priority} onValueChange={v => setForm({ ...form, priority: v })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>{PRIORITIES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                      <SelectContent>{PRIORITIES.map(s => <SelectItem key={s} value={s}>{{low:"Düşük",medium:"Orta",high:"Yüksek",urgent:"Acil"}[s] ?? s}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
                   <div><Label>MoSCoW</Label>
@@ -409,7 +409,7 @@ function FeaturesTab() {
                     </Select>
                   </div>
                 </div>
-                <div><Label>Bagimlilk (Blocked By)</Label>
+                <div><Label>Bağımlılık (Engelleyen)</Label>
                   <Select value={form.blocked_by} onValueChange={v => setForm({ ...form, blocked_by: v })}>
                     <SelectTrigger><SelectValue placeholder="-- Yok --" /></SelectTrigger>
                     <SelectContent>
@@ -429,7 +429,7 @@ function FeaturesTab() {
                   </div>
                 </div>
               </div>
-              <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button></DialogFooter>
+              <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>İptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button></DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
@@ -441,32 +441,32 @@ function FeaturesTab() {
           {detailItem && <>
             <SheetHeader>
               <SheetTitle>{detailItem.title}</SheetTitle>
-              <SheetDescription>Feature Detayi</SheetDescription>
+              <SheetDescription>Özellik Detayı</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-3 text-sm">
               <div className="flex flex-wrap gap-2">
                 <Badge className={tone[detailItem.status]}>{FEATURE_STATUS_LABELS[detailItem.status] ?? detailItem.status}</Badge>
-                <Badge className={tone[detailItem.priority]}>{detailItem.priority}</Badge>
+                <Badge className={tone[detailItem.priority]}>{({low:"Düşük",medium:"Orta",high:"Yüksek",urgent:"Acil"} as Record<string,string>)[detailItem.priority] ?? detailItem.priority}</Badge>
                 {detailItem.moscow && <Badge className={tone[detailItem.moscow]}>{MOSCOW_LABELS[detailItem.moscow] ?? detailItem.moscow}</Badge>}
               </div>
-              {detailItem.description && <div><span className="font-medium">Aciklama:</span><p className="text-muted-foreground mt-1 whitespace-pre-wrap">{detailItem.description}</p></div>}
+              {detailItem.description && <div><span className="font-medium">Açıklama:</span><p className="text-muted-foreground mt-1 whitespace-pre-wrap">{detailItem.description}</p></div>}
               {detailItem.owner_id && <div><span className="font-medium">Sahip:</span> {getOwnerName(detailItem.owner_id) ?? detailItem.owner_id}</div>}
-              {detailItem.blocked_by && <div><span className="font-medium">Blocked By:</span> {getBlockedByTitle(detailItem.blocked_by) ?? detailItem.blocked_by}</div>}
+              {detailItem.blocked_by && <div><span className="font-medium">Engelleniyor:</span> {getBlockedByTitle(detailItem.blocked_by) ?? detailItem.blocked_by}</div>}
               <div className="flex gap-3">
                 <ScoreBadge rice={computeFeatureRice(detailItem)} ice={computeFeatureIce(detailItem)} />
               </div>
               <div className="flex items-center gap-2"><span className="font-medium">Oy:</span> {detailItem.votes ?? 0}</div>
-              {detailItem.created_at && <div className="text-xs text-muted-foreground">Olusturulma: {format(new Date(detailItem.created_at), "PPp")}</div>}
+              {detailItem.created_at && <div className="text-xs text-muted-foreground">Oluşturulma: {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !filtered.length
-        ? (data?.length ? <Card><CardContent className="p-8 text-center text-muted-foreground">Filtreye uyan feature bulunamadi.</CardContent></Card> : <EmptyState icon={Lightbulb} title="Henuz feature yok" desc="Roadmap'inizi olusturmak icin ozellik fikirlerinizi ekleyin, onceliklendirin ve release'lere baglayin." onNew={openCreate} />)
+        ? (data?.length ? <Card><CardContent className="p-8 text-center text-muted-foreground">Filtreye uyan özellik bulunamadı.</CardContent></Card> : <EmptyState icon={Lightbulb} title="Henüz özellik yok" desc="Roadmap'inizi oluşturmak için özellik fikirlerinizi ekleyin, önceliklendirin ve sürümlere bağlayın." onNew={openCreate} />)
         : <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {filtered.map(f => {
               const rice = computeFeatureRice(f);
@@ -482,7 +482,7 @@ function FeaturesTab() {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      <Badge className={tone[f.priority]}>{f.priority}</Badge>
+                      <Badge className={tone[f.priority]}>{({low:"Düşük",medium:"Orta",high:"Yüksek",urgent:"Acil"} as Record<string,string>)[f.priority] ?? f.priority}</Badge>
                       <Badge className={tone[f.status]}>{FEATURE_STATUS_LABELS[f.status] ?? f.status}</Badge>
                       {f.moscow && <Badge className={tone[f.moscow]}>{MOSCOW_LABELS[f.moscow] ?? f.moscow}</Badge>}
                     </div>
@@ -495,7 +495,7 @@ function FeaturesTab() {
                           <Button variant="ghost" size="icon" className="h-5 w-5" onClick={e => { e.stopPropagation(); handleVote(f, -1); }}><ThumbsDown className="h-3 w-3" /></Button>
                         </span>
                         {f.owner_id && <span>{getOwnerName(f.owner_id) ?? "Sahip"}</span>}
-                        {f.blocked_by && <span className="text-amber-400">Blocked</span>}
+                        {f.blocked_by && <span className="text-amber-400">Engelli</span>}
                       </div>
                       <ScoreBadge rice={rice} ice={ice} />
                     </div>
@@ -523,18 +523,18 @@ function FeedbackTab() {
   const openEdit = (f: AnyRow) => { setEditItem(f); setForm({ title: f.title ?? "", body: f.body ?? "", category: f.category ?? "feature_request", status: f.status ?? "new", submitter_name: f.submitter_name ?? "", submitter_email: f.submitter_email ?? "", votes: f.votes ?? 0 }); setOpen(true); };
 
   const submit = async () => {
-    if (!form.title.trim()) return toast.error("Baslik gerekli");
+    if (!form.title.trim()) return toast.error("Başlık gerekli");
     try {
       const payload: AnyRow = { ...form };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Feedback guncellendi" : "Feedback eklendi");
+      toast.success(editItem ? "Geri bildirim güncellendi" : "Geri bildirim eklendi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Feedback silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Geri bildirim silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
   };
 
   const handleVote = async (f: AnyRow, delta: number) => {
@@ -545,11 +545,11 @@ function FeedbackTab() {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Feedback</Button></DialogTrigger>
+          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Geri Bildirim</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Feedback Duzenle" : "Yeni Feedback"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Geri Bildirim Düzenle" : "Yeni Geri Bildirim"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Baslik</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
+              <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
               <div><Label>Icerik</Label><Textarea value={form.body} onChange={e => setForm({ ...form, body: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Gonderen</Label><Input value={form.submitter_name} onChange={e => setForm({ ...form, submitter_name: e.target.value })} /></div>
@@ -559,18 +559,18 @@ function FeedbackTab() {
                 <div><Label>Kategori</Label>
                   <Select value={form.category} onValueChange={v => setForm({ ...form, category: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{FEEDBACK_CATEGORY.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{FEEDBACK_CATEGORY.map(s => <SelectItem key={s} value={s}>{{ bug: "Hata", feature_request: "Özellik İsteği", praise: "Övgü", question: "Soru", complaint: "Şikayet" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div><Label>Durum</Label>
                   <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{FEEDBACK_STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{FEEDBACK_STATUS.map(s => <SelectItem key={s} value={s}>{{ new: "Yeni", triaged: "Sınıflandırıldı", planned: "Planlandı", done: "Tamamlandı", wont_do: "Yapılmayacak" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
               </div>
             </div>
-            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button></DialogFooter>
+            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>İptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -592,17 +592,17 @@ function FeedbackTab() {
                 <span className="font-mono">{detailItem.votes ?? 0}</span>
                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleVote(detailItem, -1)}><ThumbsDown className="h-3.5 w-3.5" /></Button>
               </div>
-              {detailItem.created_at && <div className="text-xs text-muted-foreground">Olusturulma: {format(new Date(detailItem.created_at), "PPp")}</div>}
+              {detailItem.created_at && <div className="text-xs text-muted-foreground">Oluşturulma: {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !data?.length
-        ? <EmptyState icon={MessageSquare} title="Feedback yok" desc="Musteri geri bildirimlerini toplayin, kategorize edin ve feature'lara baglayin." onNew={openCreate} />
+        ? <EmptyState icon={MessageSquare} title="Geri bildirim yok" desc="Müşteri geri bildirimlerini toplayın, kategorize edin ve özelliklere bağlayın." onNew={openCreate} />
         : <div className="space-y-2">
             {data.map(f => (
               <Card key={f.id} className="cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all" onClick={() => setDetailItem(f)}>
@@ -654,29 +654,29 @@ function ReleasesTab() {
       const payload: AnyRow = { ...form, product_id: form.product_id || null, release_date: form.release_date || null };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Release guncellendi" : "Release kaydedildi");
+      toast.success(editItem ? "Sürüm güncellendi" : "Sürüm kaydedildi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Release silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Sürüm silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
   };
 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Release</Button></DialogTrigger>
+          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Sürüm</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Release Duzenle" : "Yeni Release"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Sürüm Düzenle" : "Yeni Sürüm"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Versiyon</Label><Input placeholder="v1.2.0" value={form.version} onChange={e => setForm({ ...form, version: e.target.value })} /></div>
-                <div><Label>Isim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
+                <div><Label>İsim</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
               </div>
               <div className="grid grid-cols-3 gap-3">
-                <div><Label>Urun</Label>
+                <div><Label>Ürün</Label>
                   <Select value={form.product_id} onValueChange={v => setForm({ ...form, product_id: v })}>
                     <SelectTrigger><SelectValue placeholder="--" /></SelectTrigger>
                     <SelectContent>{products?.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
@@ -685,14 +685,14 @@ function ReleasesTab() {
                 <div><Label>Durum</Label>
                   <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{RELEASE_STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{RELEASE_STATUS.map(s => <SelectItem key={s} value={s}>{{ planned: "Planlandı", in_progress: "Devam Ediyor", released: "Yayınlandı", cancelled: "İptal Edildi" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div><Label>Tarih</Label><Input type="date" value={form.release_date} onChange={e => setForm({ ...form, release_date: e.target.value })} /></div>
               </div>
               <div><Label>Notlar</Label><Textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} /></div>
             </div>
-            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button></DialogFooter>
+            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>İptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -707,19 +707,19 @@ function ReleasesTab() {
             </SheetHeader>
             <div className="mt-4 space-y-3 text-sm">
               <Badge className={tone[detailItem.status]}>{detailItem.status}</Badge>
-              {detailItem.release_date && <div><span className="font-medium">Tarih:</span> {format(new Date(detailItem.release_date), "PP")}</div>}
+              {detailItem.release_date && <div><span className="font-medium">Tarih:</span> {format(new Date(detailItem.release_date), "PP", { locale: tr })}</div>}
               {detailItem.notes && <div><span className="font-medium">Notlar:</span><p className="text-muted-foreground mt-1 whitespace-pre-wrap">{detailItem.notes}</p></div>}
-              {detailItem.created_at && <div className="text-xs text-muted-foreground">Olusturulma: {format(new Date(detailItem.created_at), "PPp")}</div>}
+              {detailItem.created_at && <div className="text-xs text-muted-foreground">Oluşturulma: {format(new Date(detailItem.created_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !data?.length
-        ? <EmptyState icon={Rocket} title="Release yok" desc="Surum planlayin, changelog tutun ve feature'lari release'lere baglayin." onNew={openCreate} />
+        ? <EmptyState icon={Rocket} title="Sürüm yok" desc="Sürüm planlayın, changelog tutun ve özellikleri sürümlere bağlayın." onNew={openCreate} />
         : <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {data.map(r => (
               <Card key={r.id} className="cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all" onClick={() => setDetailItem(r)}>
@@ -727,7 +727,7 @@ function ReleasesTab() {
                   <div className="flex justify-between items-start gap-2">
                     <div>
                       <div className="font-medium flex items-center gap-1">{r.version} {r.name && <span className="text-muted-foreground font-normal">· {r.name}</span>} <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" /></div>
-                      {r.release_date && <div className="text-xs text-muted-foreground">{format(new Date(r.release_date), "PP")}</div>}
+                      {r.release_date && <div className="text-xs text-muted-foreground">{format(new Date(r.release_date), "PP", { locale: tr })}</div>}
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <Badge className={tone[r.status]}>{r.status}</Badge>
@@ -759,47 +759,47 @@ function IncidentsTab() {
   const openEdit = (i: AnyRow) => { setEditItem(i); setForm({ title: i.title ?? "", summary: i.summary ?? "", severity: i.severity ?? "sev3", status: i.status ?? "investigating", impact: i.impact ?? "" }); setOpen(true); };
 
   const submit = async () => {
-    if (!form.title.trim()) return toast.error("Baslik gerekli");
+    if (!form.title.trim()) return toast.error("Başlık gerekli");
     try {
       const payload: AnyRow = { ...form };
       if (editItem) payload.id = editItem.id;
       await upsert.mutateAsync(payload);
-      toast.success(editItem ? "Incident guncellendi" : "Incident kaydedildi");
+      toast.success(editItem ? "Olay güncellendi" : "Olay kaydedildi");
       setOpen(false);
     } catch (e: any) { toast.error(e.message); }
   };
 
   const handleDelete = async (id: string) => {
-    try { await del.mutateAsync(id); toast.success("Incident silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
+    try { await del.mutateAsync(id); toast.success("Olay silindi"); if (detailItem?.id === id) setDetailItem(null); } catch (e: any) { toast.error(e.message); }
   };
 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Incident</Button></DialogTrigger>
+          <DialogTrigger asChild><Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Yeni Olay</Button></DialogTrigger>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>{editItem ? "Incident Duzenle" : "Yeni Incident"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editItem ? "Olay Düzenle" : "Yeni Olay"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Baslik</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
-              <div><Label>Ozet</Label><Textarea value={form.summary} onChange={e => setForm({ ...form, summary: e.target.value })} /></div>
+              <div><Label>Başlık</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
+              <div><Label>Özet</Label><Textarea value={form.summary} onChange={e => setForm({ ...form, summary: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Siddet</Label>
                   <Select value={form.severity} onValueChange={v => setForm({ ...form, severity: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{SEVERITY.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{SEVERITY.map(s => <SelectItem key={s} value={s}>{{ sev1: "SEV1 — Kritik", sev2: "SEV2 — Yüksek", sev3: "SEV3 — Orta", sev4: "SEV4 — Düşük" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div><Label>Durum</Label>
                   <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{INCIDENT_STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    <SelectContent>{INCIDENT_STATUS.map(s => <SelectItem key={s} value={s}>{{ investigating: "Araştırılıyor", identified: "Tanımlandı", monitoring: "İzleniyor", resolved: "Çözüldü", postmortem: "Postmortem" }[s] ?? s}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
               </div>
               <div><Label>Etki</Label><Input value={form.impact} onChange={e => setForm({ ...form, impact: e.target.value })} /></div>
             </div>
-            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>Iptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Olustur"}</Button></DialogFooter>
+            <DialogFooter><Button variant="outline" onClick={() => setOpen(false)}>İptal</Button><Button onClick={submit} disabled={upsert.isPending}>{editItem ? "Kaydet" : "Oluştur"}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -810,24 +810,24 @@ function IncidentsTab() {
           {detailItem && <>
             <SheetHeader>
               <SheetTitle>{detailItem.title}</SheetTitle>
-              <SheetDescription>Incident Detayi</SheetDescription>
+              <SheetDescription>Olay Detayı</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-3 text-sm">
               <div className="flex gap-2"><Badge className={tone[detailItem.severity]}>{detailItem.severity}</Badge><Badge className={tone[detailItem.status]}>{detailItem.status}</Badge></div>
               {detailItem.summary && <div><span className="font-medium">Ozet:</span><p className="text-muted-foreground mt-1 whitespace-pre-wrap">{detailItem.summary}</p></div>}
               {detailItem.impact && <div><span className="font-medium">Etki:</span> {detailItem.impact}</div>}
-              {detailItem.started_at && <div><span className="font-medium">Baslangic:</span> {format(new Date(detailItem.started_at), "PPp")}</div>}
-              {detailItem.resolved_at && <div><span className="font-medium">Cozum:</span> {format(new Date(detailItem.resolved_at), "PPp")}</div>}
+              {detailItem.started_at && <div><span className="font-medium">Başlangıç:</span> {format(new Date(detailItem.started_at), "PPp", { locale: tr })}</div>}
+              {detailItem.resolved_at && <div><span className="font-medium">Çözüm:</span> {format(new Date(detailItem.resolved_at), "PPp", { locale: tr })}</div>}
             </div>
             <div className="mt-6 flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Duzenle</Button>
+              <Button size="sm" variant="outline" onClick={() => { openEdit(detailItem); setDetailItem(null); }}><Pencil className="h-3.5 w-3.5 mr-1" />Düzenle</Button>
             </div>
           </>}
         </SheetContent>
       </Sheet>
 
       {isLoading ? <Skeleton className="h-40" /> : !data?.length
-        ? <EmptyState icon={AlertOctagon} title="Incident yok" desc="Uretim olaylarini siddet, zaman cizelgesi ve postmortem ile takip edin." onNew={openCreate} />
+        ? <EmptyState icon={AlertOctagon} title="Olay yok" desc="Üretim olaylarını şiddet, zaman çizelgesi ve postmortem ile takip edin." onNew={openCreate} />
         : <div className="space-y-2">
             {data.map(i => (
               <Card key={i.id} className="cursor-pointer hover:ring-1 hover:ring-primary/30 transition-all" onClick={() => setDetailItem(i)}>
@@ -836,7 +836,7 @@ function IncidentsTab() {
                     <div className="font-medium flex items-center gap-1">{i.title} <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" /></div>
                     {i.summary && <p className="text-sm text-muted-foreground line-clamp-2">{i.summary}</p>}
                     {i.impact && <div className="text-xs text-muted-foreground mt-1">Etki: {i.impact}</div>}
-                    <div className="text-xs text-muted-foreground">Baslangic: {format(new Date(i.started_at), "PPp")}</div>
+                    <div className="text-xs text-muted-foreground">Başlangıç: {format(new Date(i.started_at), "PPp", { locale: tr })}</div>
                   </div>
                   <div className="flex flex-col gap-1 items-end shrink-0">
                     <div className="flex items-center gap-1">
@@ -857,7 +857,7 @@ function IncidentsTab() {
 /* ========================== Main Page ========================== */
 export default function Product() {
   return (
-    <DomainWorkspace domain="product" title="Product" subtitle="Urun, feature, feedback, release ve incident tek yerde.">
+    <DomainWorkspace domain="product" title="Ürün" subtitle="Ürün, özellik, geri bildirim, sürüm ve olay yönetimi tek yerde.">
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-semibold">Urun & Muhendislik</h1>
@@ -867,9 +867,9 @@ export default function Product() {
         <Tabs defaultValue="features">
           <TabsList>
             <TabsTrigger value="features">Roadmap</TabsTrigger>
-            <TabsTrigger value="feedback">Feedback</TabsTrigger>
-            <TabsTrigger value="releases">Releases</TabsTrigger>
-            <TabsTrigger value="incidents">Incidents</TabsTrigger>
+            <TabsTrigger value="feedback">Geri Bildirim</TabsTrigger>
+            <TabsTrigger value="releases">Sürümler</TabsTrigger>
+            <TabsTrigger value="incidents">Olaylar</TabsTrigger>
             <TabsTrigger value="products">Urunler</TabsTrigger>
           </TabsList>
           <TabsContent value="features" className="mt-4"><FeaturesTab /></TabsContent>

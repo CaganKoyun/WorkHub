@@ -29,7 +29,7 @@ type SortMode = 'recent' | 'name' | 'most_used';
 const SORT_OPTIONS: { value: SortMode; label: string }[] = [
   { value: 'recent', label: 'Son eklenen' },
   { value: 'name', label: 'Ad (A-Z)' },
-  { value: 'most_used', label: 'En cok kullanilan' },
+  { value: 'most_used', label: 'En çok kullanılan' },
 ];
 
 function formatRelativeDate(dateStr: string): string {
@@ -37,13 +37,13 @@ function formatRelativeDate(dateStr: string): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
-  if (diffMins < 1) return 'az once';
-  if (diffMins < 60) return `${diffMins} dk once`;
+  if (diffMins < 1) return 'az önce';
+  if (diffMins < 60) return `${diffMins} dk önce`;
   const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours} saat once`;
+  if (diffHours < 24) return `${diffHours} saat önce`;
   const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `${diffDays} gun once`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} hafta once`;
+  if (diffDays < 7) return `${diffDays} gün önce`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} hafta önce`;
   return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
@@ -54,10 +54,10 @@ function estimateResultCount(filters: ViewFilters): string {
   if (filters.assignee_ids?.length) filterCount += filters.assignee_ids.length;
   if (filters.project_ids?.length) filterCount += filters.project_ids.length;
   if (filters.search) filterCount += 2;
-  if (filterCount === 0) return 'Tum sonuclar';
+  if (filterCount === 0) return 'Tüm sonuçlar';
   // The more filters, the fewer estimated results
   const base = Math.max(3, 50 - filterCount * 8);
-  return `~${base} sonuc`;
+  return `~${base} sonuç`;
 }
 
 // ---- Create/edit dialog -------------------------------------------------
@@ -102,7 +102,7 @@ function EditDialog({ open, onOpenChange, initial }: {
     try {
       if (initial) await update.mutateAsync({ id: initial.id, ...payload });
       else await create.mutateAsync(payload);
-      toast.success(initial ? 'Gorunum guncellendi' : 'Gorunum olusturuldu');
+      toast.success(initial ? 'Görünüm güncellendi' : 'Görünüm oluşturuldu');
       onOpenChange(false);
     } catch (err: any) { toast.error(err.message); }
   };
@@ -110,14 +110,14 @@ function EditDialog({ open, onOpenChange, initial }: {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>{initial ? 'Gorunumu duzenle' : 'Yeni gorunum'}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{initial ? 'Görünümü düzenle' : 'Yeni görünüm'}</DialogTitle></DialogHeader>
         <form onSubmit={submit} className="space-y-3">
           <div className="grid gap-1.5">
             <Label>Ad</Label>
-            <Input value={name} onChange={e => setName(e.target.value)} autoFocus placeholder="Orn: Bu haftaki acil islerim" />
+            <Input value={name} onChange={e => setName(e.target.value)} autoFocus placeholder="Örn: Bu haftaki acil işlerim" />
           </div>
           <div className="grid gap-1.5">
-            <Label>Aciklama (opsiyonel)</Label>
+            <Label>Açıklama (opsiyonel)</Label>
             <Input value={description} onChange={e => setDescription(e.target.value)} />
           </div>
           <div className="grid gap-1.5">
@@ -154,7 +154,7 @@ function EditDialog({ open, onOpenChange, initial }: {
             </div>
 
             <div className="space-y-1.5">
-              <div className="text-[11px] text-muted-foreground">Oncelik</div>
+              <div className="text-[11px] text-muted-foreground">Öncelik</div>
               <div className="flex flex-wrap gap-1.5">
                 {PRIORITIES.map(p => (
                   <button
@@ -209,18 +209,18 @@ function EditDialog({ open, onOpenChange, initial }: {
 
             <div className="grid gap-1.5">
               <div className="text-[11px] text-muted-foreground">Metin arama</div>
-              <Input value={filters.search ?? ''} onChange={e => setFilters(f => ({ ...f, search: e.target.value }))} placeholder="Baslik / aciklama..." className="h-8 text-[12px]" />
+              <Input value={filters.search ?? ''} onChange={e => setFilters(f => ({ ...f, search: e.target.value }))} placeholder="Başlık / açıklama..." className="h-8 text-[12px]" />
             </div>
           </div>
 
           <label className="flex items-center gap-2 text-[12.5px] cursor-pointer pt-2">
             <input type="checkbox" checked={shared} onChange={e => setShared(e.target.checked)} className="h-4 w-4 accent-primary" />
-            <Users className="h-3.5 w-3.5 text-muted-foreground" /> Workspace ile paylas
+            <Users className="h-3.5 w-3.5 text-muted-foreground" /> Workspace ile paylaş
           </label>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Iptal</Button>
-            <Button type="submit" disabled={create.isPending || update.isPending}>{initial ? 'Kaydet' : 'Olustur'}</Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>İptal</Button>
+            <Button type="submit" disabled={create.isPending || update.isPending}>{initial ? 'Kaydet' : 'Oluştur'}</Button>
           </div>
         </form>
       </DialogContent>
@@ -236,7 +236,7 @@ function StatsBar({ total, mineCount, sharedCount, favCount }: {
   const stats = [
     { icon: LayoutList, label: 'Toplam', value: total, color: 'text-foreground' },
     { icon: Eye, label: 'Benim', value: mineCount, color: 'text-blue-500' },
-    { icon: Users, label: 'Paylasilan', value: sharedCount, color: 'text-emerald-500' },
+    { icon: Users, label: 'Paylaşılan', value: sharedCount, color: 'text-emerald-500' },
     { icon: Heart, label: 'Favori', value: favCount, color: 'text-amber-500' },
   ];
   return (
@@ -271,7 +271,7 @@ function ViewRow({ view, isFav, isMine, onDuplicate }: {
   if (view.filters.search) filterChips.push(`arama: "${view.filters.search}"`);
 
   const doDelete = async () => {
-    if (!confirm(`"${view.name}" gorunumunu sil?`)) return;
+    if (!confirm(`"${view.name}" görünümünü sil?`)) return;
     try { await del.mutateAsync(view.id); }
     catch (e: any) { toast.error(e.message); }
   };
@@ -280,7 +280,7 @@ function ViewRow({ view, isFav, isMine, onDuplicate }: {
     <div className="group flex items-start gap-3 px-4 py-3 border-b border-border/40 last:border-b-0 hover:bg-sidebar-accent/25 transition-colors">
       <button
         onClick={() => tog.mutate({ viewId: view.id, isFav })}
-        title={isFav ? 'Favoriden cikar' : 'Favoriye ekle'}
+        title={isFav ? 'Favoriden çıkar' : 'Favoriye ekle'}
         className="mt-0.5 text-muted-foreground hover:text-warning shrink-0"
       >
         <Star className={cn('h-3.5 w-3.5', isFav && 'fill-warning text-warning')} />
@@ -311,7 +311,7 @@ function ViewRow({ view, isFav, isMine, onDuplicate }: {
           </span>
           {view.updated_at !== view.created_at && (
             <span className="inline-flex items-center gap-1">
-              guncellendi: {formatRelativeDate(view.updated_at)}
+              güncellendi: {formatRelativeDate(view.updated_at)}
             </span>
           )}
           <span className="inline-flex items-center gap-1 text-primary/60">
@@ -322,7 +322,7 @@ function ViewRow({ view, isFav, isMine, onDuplicate }: {
       </Link>
       <div className="flex items-center gap-1 shrink-0">
         <Link to={viewToUrl(view)} className="inline-flex items-center gap-1 text-[11.5px] text-muted-foreground hover:text-foreground px-1.5 py-1 rounded hover:bg-secondary/50 transition-colors">
-          Ac <ArrowRight className="h-3 w-3" />
+          Aç <ArrowRight className="h-3 w-3" />
         </Link>
         <Button
           size="icon" variant="ghost"
@@ -334,7 +334,7 @@ function ViewRow({ view, isFav, isMine, onDuplicate }: {
         </Button>
         {isMine && (
           <>
-            <Button size="sm" variant="ghost" className="h-7 text-[11.5px] opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setEditOpen(true)}>Duzenle</Button>
+            <Button size="sm" variant="ghost" className="h-7 text-[11.5px] opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setEditOpen(true)}>Düzenle</Button>
             <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={doDelete}><Trash2 className="h-3 w-3" /></Button>
           </>
         )}
@@ -401,7 +401,7 @@ export default function SavedViews() {
         filters: { ...view.filters },
         is_shared: false,
       });
-      toast.success('Gorunum kopyalandi');
+      toast.success('Görünüm kopyalandı');
     } catch (err: any) {
       toast.error(err.message);
     }
@@ -409,12 +409,12 @@ export default function SavedViews() {
 
   const headerActions = (
     <Button size="sm" className="h-8 gap-1.5" onClick={() => setCreateOpen(true)}>
-      <Plus className="h-3.5 w-3.5" /> Yeni gorunum
+      <Plus className="h-3.5 w-3.5" /> Yeni görünüm
     </Button>
   );
 
   return (
-    <DomainWorkspace domain="tasks" title="Kaydedilmis Gorunumler" headerActions={headerActions}>
+    <DomainWorkspace domain="tasks" title="Kaydedilmiş Görünümler" headerActions={headerActions}>
       <div className="mx-auto max-w-4xl space-y-5 p-6">
 
         {/* Stats */}
@@ -429,7 +429,7 @@ export default function SavedViews() {
             <Input
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Gorunumlerde ara..."
+              placeholder="Görünümlerde ara..."
               className="h-8 pl-8 text-[12.5px]"
             />
           </div>
@@ -453,20 +453,20 @@ export default function SavedViews() {
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-secondary/50">
               <Bookmark className="h-7 w-7 text-muted-foreground/50" />
             </div>
-            <p className="text-[15px] font-medium text-foreground/80">Henuz kaydedilmis gorunum yok</p>
+            <p className="text-[15px] font-medium text-foreground/80">Henüz kaydedilmiş görünüm yok</p>
             <p className="mt-1.5 mx-auto max-w-sm text-[12.5px] text-muted-foreground">
-              Sik kullandigin filtre kombinasyonlarini kaydederek islerini daha hizli takip edebilirsin.
-              Gorunumlerini favorilere ekle veya ekibinle paylas.
+              Sık kullandığın filtre kombinasyonlarını kaydederek işlerini daha hızlı takip edebilirsin.
+              Görünümlerini favorilere ekle veya ekibinle paylaş.
             </p>
             <Button size="sm" className="mt-4 gap-1.5" onClick={() => setCreateOpen(true)}>
-              <Plus className="h-3.5 w-3.5" /> Ilk gorunumunu olustur
+              <Plus className="h-3.5 w-3.5" /> İlk görünümünü oluştur
             </Button>
           </div>
         ) : sorted.length === 0 && searchQuery.trim() ? (
           <div className="rounded-xl border border-dashed border-border/50 py-12 text-center">
             <Search className="mx-auto h-6 w-6 text-muted-foreground/40" />
             <p className="mt-2 text-[13px] text-muted-foreground">
-              "{searchQuery}" icin sonuc bulunamadi
+              "{searchQuery}" için sonuç bulunamadı
             </p>
           </div>
         ) : (
@@ -487,7 +487,7 @@ export default function SavedViews() {
             {mine.length > 0 && (
               <section>
                 <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                  <ChevronRight className="h-3 w-3" /> Benim gorunumlerim ({mine.length})
+                  <ChevronRight className="h-3 w-3" /> Benim görünümlerim ({mine.length})
                 </div>
                 <div className="rounded-lg border border-border/60 bg-secondary/10 overflow-hidden">
                   {mine.map(v => (
@@ -500,7 +500,7 @@ export default function SavedViews() {
             {shared.length > 0 && (
               <section>
                 <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1.5">
-                  <Users className="h-3 w-3" /> Ekip paylasimlari ({shared.length})
+                  <Users className="h-3 w-3" /> Ekip paylaşımları ({shared.length})
                 </div>
                 <div className="rounded-lg border border-border/60 bg-secondary/10 overflow-hidden">
                   {shared.map(v => (

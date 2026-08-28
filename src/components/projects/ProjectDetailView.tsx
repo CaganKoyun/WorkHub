@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   DndContext, DragEndEvent, DragOverlay, DragStartEvent,
   PointerSensor, useSensor, useSensors, closestCenter,
@@ -42,20 +42,30 @@ import { ProjectDashboardTab } from './tabs/ProjectDashboardTab';
 import { ProjectMessagesTab } from './tabs/ProjectMessagesTab';
 import { ProjectFilesTab } from './tabs/ProjectFilesTab';
 
-function TaskCard({ task, onOpen }: { task: Task; onOpen: () => void }) {
+function TaskCard({ task, onOpen, assigneeName }: { task: Task; onOpen: () => void; assigneeName?: string | null }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: task.id });
+  const isOverdue = task.due_date && task.status !== 'done' && new Date(task.due_date) < new Date();
+  const initials = assigneeName
+    ? assigneeName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : '';
   return (
     <div
       ref={setNodeRef}
       {...attributes}
       {...listeners}
       onClick={onOpen}
-      className={`p-2.5 rounded-md border border-border/70 bg-card hover:border-primary/50 cursor-grab active:cursor-grabbing transition-colors ${isDragging ? 'opacity-40' : ''}`}
+      className={`p-2.5 rounded-md border bg-card hover:border-primary/50 cursor-grab active:cursor-grabbing transition-colors ${isDragging ? 'opacity-40' : ''} ${isOverdue ? 'border-red-500/40' : 'border-border/70'}`}
     >
       <div className="flex items-center gap-1.5 mb-1.5">
         <TaskPriorityIcon priority={task.priority} size={12} />
         <span className="font-mono text-[10.5px] text-muted-foreground/80 tabular-nums">{task.tracking_id ?? 'WH-—'}</span>
         <TaskStatusIcon status={task.status} size={12} />
+        <div className="flex-1" />
+        <Avatar className="h-4 w-4">
+          <AvatarFallback className="bg-sidebar-accent text-[7px] font-semibold text-sidebar-accent-foreground">
+            {initials || '·'}
+          </AvatarFallback>
+        </Avatar>
       </div>
       <p className="text-[13px] font-medium leading-snug text-foreground">{task.title}</p>
       {task.tags.length > 0 && (
@@ -66,15 +76,16 @@ function TaskCard({ task, onOpen }: { task: Task; onOpen: () => void }) {
         </div>
       )}
       {task.due_date && (
-        <div className="mt-1.5 flex items-center gap-1 text-[10.5px] text-muted-foreground">
+        <div className={`mt-1.5 flex items-center gap-1 text-[10.5px] ${isOverdue ? 'text-red-400 font-medium' : 'text-muted-foreground'}`}>
           <CalendarIcon className="h-3 w-3" /> {task.due_date}
+          {isOverdue && <span className="text-[9px] ml-1">gecikmiş</span>}
         </div>
       )}
     </div>
   );
 }
 
-function KanbanColumn({ status, tasks, onOpen }: { status: TaskStatus; tasks: Task[]; onOpen: (t: Task) => void }) {
+function KanbanColumn({ status, tasks, onOpen, profileMap }: { status: TaskStatus; tasks: Task[]; onOpen: (t: Task) => void; profileMap: Map<string, { name: string | null; avatar: string | null }> }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   return (
     <div
@@ -86,7 +97,7 @@ function KanbanColumn({ status, tasks, onOpen }: { status: TaskStatus; tasks: Ta
         <span className="text-[12px] font-medium text-foreground">{TASK_STATUS_LABELS[status]}</span>
         <span className="text-[11px] font-mono tabular-nums text-muted-foreground/70">{tasks.length}</span>
       </div>
-      {tasks.map(t => <TaskCard key={t.id} task={t} onOpen={() => onOpen(t)} />)}
+      {tasks.map(t => <TaskCard key={t.id} task={t} onOpen={() => onOpen(t)} assigneeName={t.assignee_id ? profileMap.get(t.assignee_id)?.name : null} />)}
     </div>
   );
 }
@@ -113,6 +124,18 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
   const [memberDialogOpen, setMemberDialogOpen] = useState(false);
   const [newMemberId, setNewMemberId] = useState('');
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const taskId = searchParams.get('task');
+    if (taskId && tasks) {
+      const found = tasks.find(t => t.id === taskId);
+      if (found) {
+        setOpenTask(found);
+        setSearchParams(prev => { prev.delete('task'); return prev; }, { replace: true });
+      }
+    }
+  }, [searchParams, tasks, setSearchParams]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -209,7 +232,7 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
         <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="overview"><LayoutDashboard className="h-3.5 w-3.5 mr-1" />Genel</TabsTrigger>
           <TabsTrigger value="list"><List className="h-3.5 w-3.5 mr-1" />Liste</TabsTrigger>
-          <TabsTrigger value="board"><KanbanSquare className="h-3.5 w-3.5 mr-1" />Board</TabsTrigger>
+          <TabsTrigger value="board"><KanbanSquare className="h-3.5 w-3.5 mr-1" />Pano</TabsTrigger>
           <TabsTrigger value="timeline"><GanttChart className="h-3.5 w-3.5 mr-1" />Zaman</TabsTrigger>
           <TabsTrigger value="calendar"><CalendarDays className="h-3.5 w-3.5 mr-1" />Takvim</TabsTrigger>
           <TabsTrigger value="dashboard"><LayoutDashboard className="h-3.5 w-3.5 mr-1" />Panel</TabsTrigger>
@@ -232,7 +255,7 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               {TASK_STATUS_ORDER.map(s => (
-                <KanbanColumn key={s} status={s} tasks={groupedTasks[s]} onOpen={setOpenTask} />
+                <KanbanColumn key={s} status={s} tasks={groupedTasks[s]} onOpen={setOpenTask} profileMap={profileMap} />
               ))}
             </div>
             <DragOverlay>
@@ -308,7 +331,7 @@ export function ProjectDetailView({ projectId }: { projectId: string }) {
                 <Avatar className="h-9 w-9"><AvatarFallback>{m.profile?.name?.[0] ?? '?'}</AvatarFallback></Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{m.profile?.name ?? 'Kullanıcı'}</p>
-                  <p className="text-xs text-muted-foreground">{m.role}</p>
+                  <p className="text-xs text-muted-foreground">{({owner:"Sahip",admin:"Yönetici",manager:"Müdür",member:"Üye",viewer:"İzleyici",guest:"Misafir"} as Record<string,string>)[m.role] ?? m.role}</p>
                 </div>
                 {canManage && m.role !== 'owner' && (
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeMember.mutate({ id: m.id, project_id: projectId })}>

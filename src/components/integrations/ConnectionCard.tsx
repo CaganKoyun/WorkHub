@@ -34,17 +34,17 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
   const isConnected = !!connection;
   const stateBadge = connection && (
     connection.state === "ready" ? (
-      <Badge variant="outline" className="border-success/40 text-success gap-1"><CheckCircle2 className="h-3 w-3" /> Connected</Badge>
+      <Badge variant="outline" className="border-success/40 text-success gap-1"><CheckCircle2 className="h-3 w-3" /> Bağlı</Badge>
     ) : connection.state === "authenticating" ? (
-      <Badge variant="outline" className="border-warning/40 text-warning gap-1"><Loader2 className="h-3 w-3 animate-spin" /> Auth pending</Badge>
+      <Badge variant="outline" className="border-warning/40 text-warning gap-1"><Loader2 className="h-3 w-3 animate-spin" /> Yetkilendirme bekleniyor</Badge>
     ) : (
-      <Badge variant="outline" className="border-destructive/40 text-destructive gap-1"><AlertCircle className="h-3 w-3" /> Failed</Badge>
+      <Badge variant="outline" className="border-destructive/40 text-destructive gap-1"><AlertCircle className="h-3 w-3" /> Başarısız</Badge>
     )
   );
 
   const handleConnect = async () => {
     if (!mcpUrl) {
-      toast.error("MCP URL missing: This integration doesn't publish an MCP URL yet. Use Custom MCP to add it manually.");
+      toast.error("MCP URL eksik: Bu entegrasyon henüz MCP URL yayınlamıyor. Özel MCP ile manuel ekleyebilirsiniz.");
       return;
     }
     try {
@@ -58,15 +58,15 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
       });
       setOpen(false);
       if (res?.probe?.ok) {
-        toast.success(`${entry.name} connected -- ${res.probe.tools?.length ?? 0} tools available.`);
+        toast.success(`${entry.name} bağlandı — ${res.probe.tools?.length ?? 0} araç kullanılabilir.`);
       } else if (res?.probe?.authUrl) {
-        toast("Sign in required -- Complete OAuth in the popup -- this window will refresh automatically.");
+        toast("Oturum açma gerekli — Açılır pencerede OAuth'u tamamlayın — sayfa otomatik yenilenecek.");
         oauth.open(res.probe.authUrl);
       } else {
-        toast.error("Connection failed: " + (res?.probe?.error || "Unknown error"));
+        toast.error("Bağlantı başarısız: " + (res?.probe?.error || "Bilinmeyen hata"));
       }
     } catch (e: any) {
-      toast.error("Connect failed: " + e.message);
+      toast.error("Bağlantı hatası: " + e.message);
     }
   };
 
@@ -80,7 +80,7 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-[13px] font-semibold text-foreground truncate">{entry.name}</h3>
-              {entry.featured && <Badge variant="secondary" className="text-[9px] h-4 px-1.5">Featured</Badge>}
+              {entry.featured && <Badge variant="secondary" className="text-[9px] h-4 px-1.5">Öne Çıkan</Badge>}
             </div>
             <p className="text-[11px] text-muted-foreground line-clamp-2 mt-0.5">{entry.description}</p>
           </div>
@@ -90,33 +90,33 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
           <div className="flex items-center gap-1.5">
             {stateBadge}
             {connection?.scope === "personal" && (
-              <Badge variant="outline" className="gap-1 text-[10px]"><User className="h-2.5 w-2.5" /> Personal</Badge>
+              <Badge variant="outline" className="gap-1 text-[10px]"><User className="h-2.5 w-2.5" /> Kişisel</Badge>
             )}
             {connection?.scope === "workspace" && (
-              <Badge variant="outline" className="gap-1 text-[10px]"><Building2 className="h-2.5 w-2.5" /> Workspace</Badge>
+              <Badge variant="outline" className="gap-1 text-[10px]"><Building2 className="h-2.5 w-2.5" /> Çalışma Alanı</Badge>
             )}
           </div>
           <div className="flex items-center gap-1">
             {entry.docs_url && (
               <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-                <a href={entry.docs_url} target="_blank" rel="noreferrer" title="Docs"><ExternalLink className="h-3.5 w-3.5" /></a>
+                <a href={entry.docs_url} target="_blank" rel="noreferrer" title="Belgeler"><ExternalLink className="h-3.5 w-3.5" /></a>
               </Button>
             )}
             {isConnected ? (
               <>
                 {connection?.state === "failed" && (
                   <Button size="sm" variant="outline" className="h-7 text-[11px]" onClick={() => retry.mutate(connection.id)}>
-                    Retry
+                    Tekrarla
                   </Button>
                 )}
                 <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive"
-                        onClick={() => disconnect.mutate(connection!.id)} title="Disconnect">
+                        onClick={() => disconnect.mutate(connection!.id)} title="Bağlantıyı Kes">
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </>
             ) : (
               <Button size="sm" className="h-7 text-[11px] gap-1" onClick={() => setOpen(true)}>
-                <LinkIcon className="h-3 w-3" /> Connect
+                <LinkIcon className="h-3 w-3" /> Bağla
               </Button>
             )}
           </div>
@@ -126,7 +126,7 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Connect {entry.name}</DialogTitle>
+            <DialogTitle>{entry.name} bağla</DialogTitle>
             <DialogDescription>
               MCP bağlantısı kur. Sağlayıcı OAuth istiyorsa auth URL açılır; bearer token varsa aşağıya yapıştır.
             </DialogDescription>
@@ -137,28 +137,28 @@ export function ConnectionCard({ entry, connection, isAdmin }: Props) {
               <Input value={mcpUrl} onChange={e => setMcpUrl(e.target.value)} placeholder="https://mcp.example.com/mcp" />
             </div>
             <div className="space-y-1.5">
-              <Label>Scope</Label>
+              <Label>Kapsam</Label>
               <RadioGroup value={scope} onValueChange={(v) => setScope(v as any)} className="flex gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <RadioGroupItem value="personal" />
-                  <span className="text-[13px]">Personal (only me)</span>
+                  <span className="text-[13px]">Kişisel (sadece ben)</span>
                 </label>
                 <label className={`flex items-center gap-2 ${isAdmin ? "cursor-pointer" : "opacity-40 cursor-not-allowed"}`}>
                   <RadioGroupItem value="workspace" disabled={!isAdmin} />
-                  <span className="text-[13px]">Workspace (everyone){!isAdmin && " · admin only"}</span>
+                  <span className="text-[13px]">Çalışma Alanı (herkes){!isAdmin && " · sadece yönetici"}</span>
                 </label>
               </RadioGroup>
             </div>
             <div className="space-y-1.5">
-              <Label>Bearer token <span className="text-muted-foreground text-[11px]">(optional)</span></Label>
-              <Input type="password" value={bearer} onChange={e => setBearer(e.target.value)} placeholder="If provider requires a static token" />
+              <Label>Bearer token <span className="text-muted-foreground text-[11px]">(opsiyonel)</span></Label>
+              <Input type="password" value={bearer} onChange={e => setBearer(e.target.value)} placeholder="Sağlayıcı statik token gerektiriyorsa" />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="ghost" onClick={() => setOpen(false)}>İptal</Button>
             <Button onClick={handleConnect} disabled={connect.isPending}>
               {connect.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />}
-              Connect
+              Bağla
             </Button>
           </DialogFooter>
         </DialogContent>

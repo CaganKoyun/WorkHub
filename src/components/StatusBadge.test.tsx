@@ -22,7 +22,7 @@ describe('StatusBadge', () => {
   it.each(statuses)('renders label for %s', (status) => {
     render(<StatusBadge status={status} />);
     // Kabuki: label metnini yakala (case-insensitive, boşluk toleranslı)
-    const rendered = screen.getByText(/new|assigned|in progress|testing|resolved|closed/i);
+    const rendered = screen.getByText(/Yeni|Atandı|Devam Ediyor|Test Ediliyor|Çözüldü|Kapatıldı/i);
     expect(rendered).toBeInTheDocument();
   });
 

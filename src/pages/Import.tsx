@@ -35,9 +35,9 @@ interface ImportSummary {
 }
 
 const ENTITY_TYPES: { key: EntityType; label: string; desc: string }[] = [
-  { key: 'tasks',    label: 'Tasks',        desc: 'Gorev, issue, bug' },
-  { key: 'projects', label: 'Projects',     desc: 'Proje kayitlari' },
-  { key: 'contacts', label: 'CRM Contacts', desc: 'Musteri kontaklari' },
+  { key: 'tasks',    label: 'Görevler',     desc: 'Görev, issue, bug' },
+  { key: 'projects', label: 'Projeler',     desc: 'Proje kayıtları' },
+  { key: 'contacts', label: 'CRM Kişileri', desc: 'Müşteri kontakları' },
 ];
 
 function fieldsFor(et: EntityType): ImportFieldDef[] {
@@ -142,6 +142,7 @@ export default function Import() {
   const companyCache = useMemo(() => new Map<string, string>(), []);
 
   const resolveCompany = async (name: string): Promise<string | null> => {
+    if (!user) return null;
     if (!name || !currentWorkspace) return null;
     const key = name.toLowerCase().trim();
     if (companyCache.has(key)) return companyCache.get(key)!;
@@ -162,8 +163,8 @@ export default function Import() {
         workspace_id: currentWorkspace.id,
         name: name.trim(),
         lifecycle: 'lead' as any,
-        created_by: user!.id,
-        owner_id: user!.id,
+        created_by: user.id,
+        owner_id: user.id,
       } as any)
       .select('id')
       .single();
@@ -173,10 +174,11 @@ export default function Import() {
   };
 
   const runImport = async () => {
+    if (!user) return;
     if (!csv) { toast.error('Dosya sec'); return; }
     if (entityType === 'tasks' && !projectId) { toast.error('Hedef proje sec'); return; }
     if (colMap[rKey] === NONE || !colMap[rKey]) {
-      toast.error(`${rKey === 'full_name' ? 'Full name' : rKey === 'name' ? 'Name' : 'Title'} kolonu eslestirilmeli`);
+      toast.error(`${rKey === 'full_name' ? 'Ad Soyad' : rKey === 'name' ? 'Ad' : 'Başlık'} kolonu eşleştirilmeli`);
       return;
     }
 
@@ -252,13 +254,13 @@ export default function Import() {
         }
       } catch (e: any) {
         failed++;
-        if (errors.length < 8) errors.push(`Satir ${r + 2}: ${e.message ?? 'unknown error'}`);
+        if (errors.length < 8) errors.push(`Satir ${r + 2}: ${e.message ?? 'bilinmeyen hata'}`);
       }
     }
 
     setRunning(false);
     setSummary({ imported, skipped, failed, errors });
-    toast.success(`${imported} ${entityType === 'tasks' ? 'task' : entityType === 'projects' ? 'proje' : 'kontak'} ice alindi`);
+    toast.success(`${imported} ${entityType === 'tasks' ? 'görev' : entityType === 'projects' ? 'proje' : 'kişi'} içe alındı`);
   };
 
   const needsProject = entityType === 'tasks';
@@ -267,10 +269,10 @@ export default function Import() {
     <AppLayout>
     <div className="mx-auto max-w-3xl space-y-6 p-6">
       <div>
-        <h1 className="text-[20px] font-semibold tracking-tight">Import Wizard</h1>
+        <h1 className="text-[20px] font-semibold tracking-tight">İçe Aktarma Sihirbazı</h1>
         <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-          Linear, Asana, Jira, Trello, ClickUp, Monday veya Notion'dan CSV export'unuzu ice aktarin.
-          Kolonlari otomatik eslestirmeye calisiyorum; onaylayip import'a baslatin.
+          Linear, Asana, Jira, Trello, ClickUp, Monday veya Notion'dan CSV export'unuzu içe aktarın.
+          Kolonları otomatik eşleştirmeye çalışıyorum; onaylayıp import'a başlatın.
         </p>
       </div>
 
@@ -336,12 +338,12 @@ export default function Import() {
             <Skeleton className="h-8" />
           ) : (projects?.length ?? 0) === 0 ? (
             <p className="text-[13px] text-muted-foreground">
-              Henuz proje yok. Once bir proje olustur, sonra tekrar don.
+              Henüz proje yok. Önce bir proje oluştur, sonra tekrar dön.
               <Button variant="link" className="px-1 h-auto" onClick={() => nav('/projects/new')}>Yeni proje →</Button>
             </p>
           ) : (
             <Select value={projectId} onValueChange={setProjectId}>
-              <SelectTrigger><SelectValue placeholder="Proje sec" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Proje seç" /></SelectTrigger>
               <SelectContent>
                 {(projects ?? []).map(p => (
                   <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
@@ -365,9 +367,9 @@ export default function Import() {
                 variant="outline"
                 className="h-7 text-[12px]"
                 onClick={() => applyLinearPreset()}
-                title="Linear'in CSV export basliklarini otomatik eslestir"
+                title="Linear'ın CSV export başlıklarını otomatik eşleştir"
               >
-                Linear preset
+                Linear şablonu
               </Button>
             )}
           </div>
@@ -436,7 +438,7 @@ export default function Import() {
             >
               {running
                 ? <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Ice aktariliyor…</>
-                : `${csv.rows.length} satiri import et`
+                : `${csv.rows.length} satırı içe aktar`
               }
             </Button>
           </div>
@@ -451,16 +453,16 @@ export default function Import() {
         )}>
           <div className="flex items-center gap-2 mb-2">
             {summary.failed > 0 ? <AlertTriangle className="h-4 w-4 text-destructive" /> : <CheckCircle2 className="h-4 w-4 text-[hsl(var(--status-done))]" />}
-            <h3 className="text-[14px] font-semibold">Import ozet</h3>
+            <h3 className="text-[14px] font-semibold">İçe aktarma özeti</h3>
           </div>
           <div className="grid grid-cols-3 gap-4 text-[13px]">
-            <div><span className="text-muted-foreground">Import edilen:</span> <span className="font-mono font-semibold text-[hsl(var(--status-done))]">{summary.imported}</span></div>
+            <div><span className="text-muted-foreground">İçe alınan:</span> <span className="font-mono font-semibold text-[hsl(var(--status-done))]">{summary.imported}</span></div>
             <div><span className="text-muted-foreground">Atlanan:</span> <span className="font-mono">{summary.skipped}</span></div>
-            <div><span className="text-muted-foreground">Hatali:</span> <span className="font-mono text-destructive">{summary.failed}</span></div>
+            <div><span className="text-muted-foreground">Hatalı:</span> <span className="font-mono text-destructive">{summary.failed}</span></div>
           </div>
           {summary.errors.length > 0 && (
             <details className="mt-3">
-              <summary className="text-[12px] text-muted-foreground cursor-pointer">Hatalari goster</summary>
+              <summary className="text-[12px] text-muted-foreground cursor-pointer">Hataları göster</summary>
               <ul className="mt-2 space-y-1 text-[11.5px] font-mono">
                 {summary.errors.map((e, i) => <li key={i} className="text-destructive">{e}</li>)}
               </ul>
@@ -468,7 +470,7 @@ export default function Import() {
           )}
           {summary.imported > 0 && entityType === 'tasks' && (
             <Button size="sm" variant="link" className="mt-3 h-auto p-0" onClick={() => nav(`/projects/${projectId}`)}>
-              Projeyi ac →
+              Projeyi aç →
             </Button>
           )}
           {summary.imported > 0 && entityType === 'projects' && (

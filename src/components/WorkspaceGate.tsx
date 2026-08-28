@@ -16,7 +16,7 @@ export function WorkspaceGate({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">
-        Loading workspace…
+        Çalışma alanı yükleniyor…
       </div>
     );
   }

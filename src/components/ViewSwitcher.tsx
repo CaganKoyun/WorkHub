@@ -13,12 +13,12 @@ const ICONS: Record<ViewMode, React.ElementType> = {
 };
 
 const LABELS: Record<ViewMode, string> = {
-  list: "List",
-  board: "Board",
-  table: "Table",
-  timeline: "Timeline",
-  calendar: "Calendar",
-  grid: "Grid",
+  list: "Liste",
+  board: "Pano",
+  table: "Tablo",
+  timeline: "Zaman Çizelgesi",
+  calendar: "Takvim",
+  grid: "Izgara",
 };
 
 export function ViewSwitcher({

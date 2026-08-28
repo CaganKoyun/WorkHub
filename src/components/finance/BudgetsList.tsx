@@ -110,7 +110,7 @@ function NewBudgetDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
   const create = useCreateFinBudget();
 
   async function submit() {
-    if (!name.trim() || !amount) { toast.error("Isim ve tutar gerekli"); return; }
+    if (!name.trim() || !amount) { toast.error("İsim ve tutar gerekli"); return; }
     try {
       await create.mutateAsync({
         name: name.trim(), period,
@@ -121,7 +121,7 @@ function NewBudgetDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
         department: department || null,
         alert_threshold_pct: Number(threshold) || 90,
       });
-      toast.success("Butce olusturuldu");
+      toast.success("Bütçe oluşturuldu");
       onOpenChange(false); setName(''); setAmount(''); setCategoryId(''); setProjectId(''); setDepartment('');
     } catch (err: unknown) {
       toast.error((err as Error)?.message ?? "Hata");

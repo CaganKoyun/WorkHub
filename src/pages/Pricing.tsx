@@ -32,12 +32,12 @@ const tiers = [
     features: [
       "Sınırsız kullanıcı",
       "Goals & OKRs",
-      "Decision System of Record",
-      "Finance & runway tracking",
-      "Gantt timeline",
-      "Custom fields & workflows",
+      "Karar Kayıt Sistemi (DSoR)",
+      "Finans ve nakit takibi",
+      "Gantt zaman çizelgesi",
+      "Özel alanlar ve iş akışları",
       "Otomasyon kuralları",
-      "Chief of Staff AI",
+      "Yapay Zekâ Asistanı",
       "10 GB dosya depolama",
       "E-posta desteği (24 saat)",
     ],
@@ -52,12 +52,12 @@ const tiers = [
     features: [
       "Pro'daki her şey",
       "SSO / SAML",
-      "Audit log genişletilmiş",
+      "Genişletilmiş denetim günlüğü",
       "Özel SLA",
-      "Dedicated success manager",
-      "On-premise seçeneği",
+      "Özel müşteri başarı yöneticisi",
+      "Yerinde kurulum seçeneği",
       "Sınırsız depolama",
-      "API rate limit artırımı",
+      "API hız limiti artırımı",
     ],
   },
 ];
@@ -72,7 +72,7 @@ function LandingNav() {
         <Link to="/pricing" className="text-foreground font-medium">Fiyatlandırma</Link>
         <Link to="/compare" className="text-muted-foreground hover:text-foreground">Karşılaştır</Link>
         <Link to="/security" className="text-muted-foreground hover:text-foreground">Güvenlik</Link>
-        <Link to="/changelog" className="text-muted-foreground hover:text-foreground">Changelog</Link>
+        <Link to="/changelog" className="text-muted-foreground hover:text-foreground">Değişiklik Günlüğü</Link>
         <Link to="/auth">
           <Button size="sm" className="h-8">Giriş yap</Button>
         </Link>

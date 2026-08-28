@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
@@ -53,13 +54,13 @@ function ProfileTab() {
     setUploadingAvatar(true);
     const filePath = `${user.id}/avatar.${fileExt}`;
     const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file, { upsert: true });
-    if (uploadError) { toast.error("Yukleme basarisiz: " + uploadError.message); setUploadingAvatar(false); return; }
+    if (uploadError) { toast.error("Yükleme başarısız: " + uploadError.message); setUploadingAvatar(false); return; }
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
     const avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;
     const { error: updateError } = await supabase.from("profiles").update({ avatar_url: avatarUrl }).eq("user_id", user.id);
     setUploadingAvatar(false);
     if (updateError) toast.error(updateError.message);
-    else { toast.success("Avatar guncellendi"); await refreshProfile(); }
+    else { toast.success("Avatar güncellendi"); await refreshProfile(); }
   };
 
   useEffect(() => {
@@ -71,19 +72,24 @@ function ProfileTab() {
   const handleSaveProfile = async () => {
     if (!user) return;
     setSaving(true);
-    const { error } = await supabase.from("profiles").update({ full_name: fullName, job_title: jobTitle }).eq("user_id", user.id);
-    setSaving(false);
-    if (error) toast.error(error.message);
-    else { toast.success("Profil guncellendi"); await refreshProfile(); }
+    try {
+      const { error } = await supabase.from("profiles").update({ full_name: fullName, job_title: jobTitle }).eq("user_id", user.id);
+      if (error) toast.error(error.message);
+      else { toast.success("Profil güncellendi"); await refreshProfile(); }
+    } catch (err: any) {
+      toast.error("Profil güncellenemedi: " + err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleChangePassword = async () => {
-    if (!newPassword || newPassword.length < 6) { toast.error("Sifre en az 6 karakter olmali."); return; }
+    if (!newPassword || newPassword.length < 6) { toast.error("Şifre en az 6 karakter olmalı."); return; }
     setChangingPassword(true);
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     setChangingPassword(false);
     if (error) toast.error(error.message);
-    else { toast.success("Sifre guncellendi"); setNewPassword(""); }
+    else { toast.success("Şifre güncellendi"); setNewPassword(""); }
   };
 
   return (
@@ -102,18 +108,18 @@ function ProfileTab() {
             <input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploadingAvatar} />
           </div>
           <div>
-            <p className="text-[13px] font-medium">{fullName || "Your Name"}</p>
+            <p className="text-[13px] font-medium">{fullName || "İsimsiz"}</p>
             <p className="text-[12px] text-muted-foreground">{user?.email}</p>
           </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 max-w-lg">
           <div className="space-y-1">
             <Label className="text-[12px]">Ad Soyad</Label>
-            <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Doe" className="h-8 text-[13px]" />
+            <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Ahmet Yılmaz" className="h-8 text-[13px]" />
           </div>
           <div className="space-y-1">
             <Label className="text-[12px]">Unvan</Label>
-            <Input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="Software Engineer" className="h-8 text-[13px]" />
+            <Input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="Yazılım Mühendisi" className="h-8 text-[13px]" />
           </div>
         </div>
         <Button onClick={handleSaveProfile} disabled={saving} size="sm" className="h-7 text-[12px] mt-3">
@@ -122,13 +128,13 @@ function ProfileTab() {
       </div>
 
       <div className="px-4 md:px-6 py-4">
-        <p className="text-[12px] text-muted-foreground font-medium mb-3">Sifre Degistir</p>
+        <p className="text-[12px] text-muted-foreground font-medium mb-3">Şifre Değiştir</p>
         <div className="max-w-xs space-y-1">
-          <Label className="text-[12px]">Yeni Sifre</Label>
+          <Label className="text-[12px]">Yeni Şifre</Label>
           <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="••••••••" className="h-8 text-[13px]" />
         </div>
         <Button onClick={handleChangePassword} disabled={changingPassword} variant="outline" size="sm" className="h-7 text-[12px] mt-3">
-          {changingPassword && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />} Sifreyi Guncelle
+          {changingPassword && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />} Şifreyi Güncelle
         </Button>
       </div>
     </div>
@@ -147,7 +153,7 @@ function CompanyTab() {
   useEffect(() => {
     if (!user) return;
     supabase.from("company_settings").select("*").eq("user_id", user.id).maybeSingle().then(({ data, error }) => {
-      if (error) { toast.error("Sirket ayarlari yuklenemedi: " + error.message); }
+      if (error) { toast.error("Şirket ayarlari yuklenemedi: " + error.message); }
       else if (data) { setForm({ company_name: data.company_name || "", company_website: data.company_website || "", industry: data.industry || "", company_size: data.company_size || "", address: data.address || "", phone: data.phone || "" }); setExistingId(data.id); }
       setLoading(false);
     });
@@ -158,10 +164,10 @@ function CompanyTab() {
     setSaving(true);
     if (existingId) {
       const { error } = await supabase.from("company_settings").update(form).eq("id", existingId);
-      if (error) toast.error(error.message); else toast.success("Sirket ayarlari kaydedildi");
+      if (error) toast.error(error.message); else toast.success("Şirket ayarlari kaydedildi");
     } else {
       const { data, error } = await supabase.from("company_settings").insert({ ...form, user_id: user.id }).select().single();
-      if (error) toast.error(error.message); else { setExistingId(data.id); toast.success("Sirket ayarlari olusturuldu"); }
+      if (error) toast.error(error.message); else { setExistingId(data.id); toast.success("Şirket ayarları oluşturuldu"); }
     }
     setSaving(false);
   };
@@ -172,16 +178,16 @@ function CompanyTab() {
 
   return (
     <div className="px-4 md:px-6 py-4">
-      <p className="text-[12px] text-muted-foreground font-medium mb-3">Sirket Bilgileri</p>
+      <p className="text-[12px] text-muted-foreground font-medium mb-3">Şirket Bilgileri</p>
       <div className="grid gap-3 sm:grid-cols-2 max-w-lg">
-        <div className="space-y-1"><Label className="text-[12px]">Sirket Adi</Label><Input value={form.company_name} onChange={(e) => update("company_name", e.target.value)} placeholder="Acme Inc." className="h-8 text-[13px]" /></div>
+        <div className="space-y-1"><Label className="text-[12px]">Şirket Adi</Label><Input value={form.company_name} onChange={(e) => update("company_name", e.target.value)} placeholder="Örnek A.Ş." className="h-8 text-[13px]" /></div>
         <div className="space-y-1"><Label className="text-[12px]">Web Sitesi</Label><Input value={form.company_website} onChange={(e) => update("company_website", e.target.value)} placeholder="https://acme.com" className="h-8 text-[13px]" /></div>
         <div className="space-y-1"><Label className="text-[12px]">Sektor</Label>
-          <Select value={form.industry} onValueChange={(v) => update("industry", v)}><SelectTrigger className="h-8 text-[13px]"><SelectValue placeholder="Secin" /></SelectTrigger><SelectContent>{["Technology","Healthcare","Finance","Education","Retail","Manufacturing","Other"].map(i => <SelectItem key={i} value={i.toLowerCase()}>{i}</SelectItem>)}</SelectContent></Select></div>
-        <div className="space-y-1"><Label className="text-[12px]">Sirket Buyuklugu</Label>
+          <Select value={form.industry} onValueChange={(v) => update("industry", v)}><SelectTrigger className="h-8 text-[13px]"><SelectValue placeholder="Secin" /></SelectTrigger><SelectContent>{[{v:"technology",l:"Teknoloji"},{v:"healthcare",l:"Sağlık"},{v:"finance",l:"Finans"},{v:"education",l:"Eğitim"},{v:"retail",l:"Perakende"},{v:"manufacturing",l:"Üretim"},{v:"other",l:"Diğer"}].map(i => <SelectItem key={i.v} value={i.v}>{i.l}</SelectItem>)}</SelectContent></Select></div>
+        <div className="space-y-1"><Label className="text-[12px]">Şirket Buyuklugu</Label>
           <Select value={form.company_size} onValueChange={(v) => update("company_size", v)}><SelectTrigger className="h-8 text-[13px]"><SelectValue placeholder="Secin" /></SelectTrigger><SelectContent>{["1-10","11-50","51-200","201-500","501-1000","1000+"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
-        <div className="space-y-1 sm:col-span-2"><Label className="text-[12px]">Adres</Label><Input value={form.address} onChange={(e) => update("address", e.target.value)} placeholder="123 Main St" className="h-8 text-[13px]" /></div>
-        <div className="space-y-1"><Label className="text-[12px]">Telefon</Label><Input value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+1 (555) 000-0000" className="h-8 text-[13px]" /></div>
+        <div className="space-y-1 sm:col-span-2"><Label className="text-[12px]">Adres</Label><Input value={form.address} onChange={(e) => update("address", e.target.value)} placeholder="Örnek Mah. No: 1" className="h-8 text-[13px]" /></div>
+        <div className="space-y-1"><Label className="text-[12px]">Telefon</Label><Input value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+90 (5XX) 000 0000" className="h-8 text-[13px]" /></div>
       </div>
       <Button onClick={handleSave} disabled={saving} size="sm" className="h-7 text-[12px] mt-3">
         {saving && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />} Kaydet
@@ -194,21 +200,31 @@ function CompanyTab() {
 
 function TeamTab() {
   const { user } = useAuth();
+  const { currentWorkspace: workspace } = useWorkspace();
   const [members, setMembers] = useState<any[]>([]);
   const [invitations, setInvitations] = useState<any[]>([]);
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<string>("user");
+  const [inviteRole, setInviteRole] = useState<string>("member");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
 
   const fetchData = async () => {
+    if (!workspace) { setLoading(false); return; }
     const [teamRes, invitationsRes] = await Promise.all([
-      supabase.rpc("get_team_members"),
-      supabase.from("invitations").select("*").eq("status", "pending"),
+      supabase.from("workspace_members")
+        .select("id,user_id,role,is_active,profiles:user_id(full_name,avatar_url,job_title)")
+        .eq("workspace_id", workspace.id),
+      supabase.from("workspace_invitations").select("*").eq("status", "pending"),
     ]);
-    if (teamRes.error) toast.error("Takim yuklenemedi: " + teamRes.error.message);
-    if (invitationsRes.error) toast.error("Davetiyeler yuklenemedi: " + invitationsRes.error.message);
-    setMembers(teamRes.data || []);
+    if (teamRes.error) toast.error("Takım yüklenemedi: " + teamRes.error.message);
+    if (invitationsRes.error) toast.error("Davetiyeler yüklenemedi: " + invitationsRes.error.message);
+    const mapped = (teamRes.data || []).map((m: any) => ({
+      ...m,
+      full_name: m.profiles?.full_name ?? null,
+      avatar_url: m.profiles?.avatar_url ?? null,
+      job_title: m.profiles?.job_title ?? null,
+    }));
+    setMembers(mapped);
     setInvitations(invitationsRes.data || []);
     setLoading(false);
   };
@@ -216,18 +232,37 @@ function TeamTab() {
   useEffect(() => { fetchData(); }, []);
 
   const handleInvite = async () => {
-    if (!user || !inviteEmail) return;
+    if (!user || !workspace) return;
+    const trimmed = inviteEmail.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      toast.error("Geçerli bir e-posta adresi girin.");
+      return;
+    }
     setSending(true);
-    const { error } = await supabase.from("invitations").insert({ email: inviteEmail, role: inviteRole as any, invited_by: user.id });
+    const { error } = await supabase.from("workspace_invitations").insert({ workspace_id: workspace.id, email: trimmed, role: inviteRole as any, invited_by: user.id });
     setSending(false);
     if (error) toast.error(error.message);
-    else { toast.success(`${inviteEmail} davet edildi`); setInviteEmail(""); fetchData(); }
+    else { toast.success(`${trimmed} davet edildi`); setInviteEmail(""); fetchData(); }
   };
 
   const handleRevoke = async (id: string) => {
-    const { error } = await supabase.from("invitations").delete().eq("id", id);
+    const { error } = await supabase.from("workspace_invitations").delete().eq("id", id);
     if (error) toast.error(error.message);
     else { toast.success("Davet iptal edildi"); fetchData(); }
+  };
+
+  const handleRoleChange = async (memberId: string, newRole: string) => {
+    if (!workspace) return;
+    const { error } = await supabase.from("workspace_members").update({ role: newRole as never }).eq("id", memberId);
+    if (error) toast.error(error.message);
+    else { toast.success("Rol güncellendi"); fetchData(); }
+  };
+
+  const handleRemoveMember = async (memberId: string) => {
+    if (!confirm("Bu üyeyi çalışma alanından çıkarmak istediğinize emin misiniz?")) return;
+    const { error } = await supabase.from("workspace_members").delete().eq("id", memberId);
+    if (error) toast.error(error.message);
+    else { toast.success("Üye çıkarıldı"); fetchData(); }
   };
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /></div>;
@@ -235,12 +270,12 @@ function TeamTab() {
   return (
     <div className="divide-y divide-border">
       <div className="px-4 md:px-6 py-4">
-        <p className="text-[12px] text-muted-foreground font-medium mb-3">Takim Uyesi Davet Et</p>
+        <p className="text-[12px] text-muted-foreground font-medium mb-3">Takım Üyesi Davet Et</p>
         <div className="flex gap-2 max-w-lg">
-          <Input placeholder="colleague@company.com" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} className="h-8 text-[13px] flex-1" />
+          <Input placeholder="ekip.arkadasi@sirket.com" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} className="h-8 text-[13px] flex-1" />
           <Select value={inviteRole} onValueChange={setInviteRole}>
             <SelectTrigger className="w-[100px] h-8 text-[12px]"><SelectValue /></SelectTrigger>
-            <SelectContent><SelectItem value="user">User</SelectItem><SelectItem value="moderator">Moderator</SelectItem><SelectItem value="admin">Admin</SelectItem></SelectContent>
+            <SelectContent><SelectItem value="member">Uye</SelectItem><SelectItem value="manager">Yonetici</SelectItem><SelectItem value="admin">Admin</SelectItem></SelectContent>
           </Select>
           <Button onClick={handleInvite} disabled={sending || !inviteEmail} size="sm" className="h-8 text-[12px] gap-1">
             {sending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />} Davet Et
@@ -257,7 +292,7 @@ function TeamTab() {
                 <div className="flex items-center gap-2">
                   <Mail className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className="text-[13px]">{inv.email}</span>
-                  <Badge variant="outline" className="text-[10px] h-4 px-1">{inv.role}</Badge>
+                  <Badge variant="outline" className="text-[10px] h-4 px-1">{({owner:"Sahip",admin:"Yönetici",manager:"Müdür",member:"Üye",viewer:"İzleyici",guest:"Misafir"} as Record<string,string>)[inv.role] ?? inv.role}</Badge>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => handleRevoke(inv.id)} className="h-6 w-6 p-0">
                   <Trash2 className="h-3 w-3" />
@@ -269,26 +304,52 @@ function TeamTab() {
       )}
 
       <div className="px-4 md:px-6 py-4">
-        <p className="text-[12px] text-muted-foreground font-medium mb-3">Takim Uyeleri · {members.length}</p>
+        <p className="text-[12px] text-muted-foreground font-medium mb-3">Takım Üyeleri · {members.length}</p>
         <div className="space-y-1">
-          {members.map((m: any) => (
-            <div key={m.user_id} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-muted/30">
-              <div className="flex items-center gap-2">
-                <Avatar className="h-5 w-5">
-                  <AvatarImage src={m.avatar_url || ""} />
-                  <AvatarFallback className="text-2xs">{(m.full_name || "?").split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)}</AvatarFallback>
-                </Avatar>
-                <span className="text-[13px] font-medium">{m.full_name || "Unnamed"}</span>
-                <span className="text-[12px] text-muted-foreground">{m.job_title || ""}</span>
+          {members.map((m: any) => {
+            const isSelf = m.user_id === user?.id;
+            const initials = (m.full_name || "?").split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
+            return (
+              <div key={m.user_id} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-5 w-5">
+                    <AvatarImage src={m.avatar_url || ""} />
+                    <AvatarFallback className="text-2xs">{initials}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-[13px] font-medium">{m.full_name || "İsimsiz"}</span>
+                  <span className="text-[12px] text-muted-foreground">{m.job_title || ""}</span>
+                  {isSelf && <Badge variant="secondary" className="text-[10px] h-4 px-1">Sen</Badge>}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {isSelf ? (
+                    <Badge variant="outline" className="text-[10px] h-4 px-1 gap-0.5">
+                      <Shield className="h-2.5 w-2.5" />{({owner:"Sahip",admin:"Yönetici",manager:"Müdür",member:"Üye",viewer:"İzleyici",guest:"Misafir"} as Record<string,string>)[m.role] ?? m.role}
+                    </Badge>
+                  ) : (
+                    <>
+                      <Select value={m.role} onValueChange={v => handleRoleChange(m.id, v)}>
+                        <SelectTrigger className="w-[100px] h-6 text-[11px]">
+                          <div className="flex items-center gap-1">
+                            <Shield className="h-2.5 w-2.5" />
+                            <SelectValue />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="member">Üye</SelectItem>
+                          <SelectItem value="manager">Yönetici</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="owner">Sahip</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button variant="ghost" size="sm" onClick={() => handleRemoveMember(m.id)} className="h-6 w-6 p-0 text-destructive opacity-60 hover:opacity-100">
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <Badge variant="outline" className="text-[10px] h-4 px-1 gap-0.5">
-                  <Shield className="h-2.5 w-2.5" />{m.role}
-                </Badge>
-                {m.user_id === user?.id && <Badge variant="secondary" className="text-[10px] h-4 px-1">Sen</Badge>}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
@@ -331,11 +392,11 @@ function EmailTab() {
   const items = [
     { key: "email_on_new_bug" as const, label: "Yeni Hata Bildirimi" },
     { key: "email_on_assignment" as const, label: "Size Atanan Hatalar" },
-    { key: "email_on_status_change" as const, label: "Durum Degisiklikleri" },
+    { key: "email_on_status_change" as const, label: "Durum Değişiklikleri" },
     { key: "email_on_comment" as const, label: "Yeni Yorumlar" },
-    { key: "email_on_sla_breach" as const, label: "SLA Ihlal Uyarisi" },
-    { key: "daily_digest" as const, label: "Gunluk Ozet" },
-    { key: "review_reminder" as const, label: "Karar Inceleme Hatirlatmasi" },
+    { key: "email_on_sla_breach" as const, label: "SLA İhlal Uyarısı" },
+    { key: "daily_digest" as const, label: "Günlük Özet" },
+    { key: "review_reminder" as const, label: "Karar İnceleme Hatırlatması" },
   ];
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /></div>;
@@ -344,7 +405,7 @@ function EmailTab() {
     <div className="divide-y divide-border">
       <div className="px-4 md:px-6 py-3 flex items-start gap-2 bg-muted/30">
         <AlertTriangle className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />
-        <p className="text-[12px] text-muted-foreground">E-posta teslimi henuz baglandi. Tercihler, e-posta saglayicisi yapilandirildiginda etkin olacaktir.</p>
+        <p className="text-[12px] text-muted-foreground">E-posta teslimi henüz bağlanmadı. Tercihler, e-posta sağlayıcısı yapılandırıldığında etkin olacaktır.</p>
       </div>
       <div className="px-4 md:px-6 py-4">
         <p className="text-[12px] text-muted-foreground font-medium mb-3">E-posta Bildirimleri</p>
@@ -381,24 +442,24 @@ function GeneralTab() {
   return (
     <div className="divide-y divide-border">
       <div className="px-4 md:px-6 py-4">
-        <p className="text-[12px] text-muted-foreground font-medium mb-3">Gorunum</p>
+        <p className="text-[12px] text-muted-foreground font-medium mb-3">Görünüm</p>
         <div className="flex items-center justify-between max-w-lg">
           <span className="text-[13px]">Tema</span>
           <Select value={theme} onValueChange={toggleTheme}>
             <SelectTrigger className="w-[100px] h-7 text-[12px]"><SelectValue /></SelectTrigger>
-            <SelectContent><SelectItem value="light">Acik</SelectItem><SelectItem value="dark">Koyu</SelectItem></SelectContent>
+            <SelectContent><SelectItem value="light">Açık</SelectItem><SelectItem value="dark">Koyu</SelectItem></SelectContent>
           </Select>
         </div>
       </div>
 
       <div className="px-4 md:px-6 py-4">
-        <p className="text-[12px] text-destructive font-medium mb-3">Tehlikeli Bolge</p>
+        <p className="text-[12px] text-destructive font-medium mb-3">Tehlikeli Bölge</p>
         <div className="flex items-center justify-between max-w-lg border border-destructive/20 rounded-md p-3">
           <div>
-            <p className="text-[13px] font-medium">Hesabi Sil</p>
-            <p className="text-[12px] text-muted-foreground">Hesabinizi ve tum verilerinizi kalici olarak silin.</p>
+            <p className="text-[13px] font-medium">Hesabı Sil</p>
+            <p className="text-[12px] text-muted-foreground">Hesabınızı ve tüm verilerinizi kalıcı olarak silin.</p>
           </div>
-          <Button variant="destructive" size="sm" disabled className="h-7 text-[12px]">Yakinda</Button>
+          <Button variant="destructive" size="sm" disabled className="h-7 text-[12px]">Yakında</Button>
         </div>
       </div>
     </div>
@@ -423,10 +484,10 @@ export default function Settings() {
                   <User className="h-3.5 w-3.5" /> Profil
                 </TabsTrigger>
                 <TabsTrigger value="company" className="justify-start gap-1.5 text-[12px] h-7 px-2 data-[state=active]:bg-muted w-full">
-                  <Building2 className="h-3.5 w-3.5" /> Sirket
+                  <Building2 className="h-3.5 w-3.5" /> Şirket
                 </TabsTrigger>
                 <TabsTrigger value="team" className="justify-start gap-1.5 text-[12px] h-7 px-2 data-[state=active]:bg-muted w-full">
-                  <Users className="h-3.5 w-3.5" /> Takim
+                  <Users className="h-3.5 w-3.5" /> Takım
                 </TabsTrigger>
                 <TabsTrigger value="email" className="justify-start gap-1.5 text-[12px] h-7 px-2 data-[state=active]:bg-muted w-full">
                   <Bell className="h-3.5 w-3.5" /> Bildirimler

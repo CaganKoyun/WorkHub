@@ -431,17 +431,17 @@ function initSparkHQ(root: HTMLElement) {
        wrong:["SPK-231 crash fix backend refactor bekliyor"],mile:["v2.4 Release","4 gun"],
        members:[m("Burak Cavdur","Mobile Lead",8,3),m("Can Yildirim","iOS Dev",5,0),m("ipek Aydin","Android Dev",6,1)],
        tasks:[t("Android build final","Burak C.","Yarin",true),t("iOS TestFlight","Can Y.","Bugun",false,true),t("Store metadata","ipek A.","Persembe")]}),
-     room("backend","Backend Squad",[56,0,44,30],"warn",{mission:"OCPI v2 canlida",pct:58,note:"Refactor uzadi",
+     room("backend","Backend Squad",[56,0,44,30],"warn",{mission:"OCPI v2 canlida",pct:58,note:"Refactor uzadı",
        wrong:["Refactor mobil crash fix'ini blokluyor"],mile:["Webhook refactor","2 gun"],
        members:[m("Diren Gundogdu","Backend Lead",7,1),m("Mert Acar","Backend Dev",6,0)],
        tasks:[t("OCPI webhook refactor","Diren G.","Yarin",true),t("Fatura servisi testleri","Mert A.","Cuma")]}),
      room("design","Design Studio",[0,36,44,30],"ok",{mission:"Sarj akisi v3 testte",pct:80,note:"Test Persembe",wrong:[],mile:["Usability test","2 gun"],
        members:[m("Zeynep Tan","Product Designer",4,0),m("Arda Koc","UI Designer",3,0)],
-       tasks:[t("Sarj akisi v3 prototip","Zeynep T.","Persembe"),t("Token temizligi","Arda K.","Bitti",false,true)]}),
-     room("qa","QA Lab",[56,36,44,30],"ok",{mission:"Tam regresyon",pct:60,note:"%60 tamam",wrong:[],mile:["Regresyon bitisi","3 gun"],
+       tasks:[t("Sarj akisi v3 prototip","Zeynep T.","Persembe"),t("Token temizliği","Arda K.","Bitti",false,true)]}),
+     room("qa","QA Lab",[56,36,44,30],"ok",{mission:"Tam regresyon",pct:60,note:"%60 tamam",wrong:[],mile:["Regresyon bitişi","3 gun"],
        members:[m("Baran Ozturk","QA Engineer",5,0)],
        tasks:[t("Regresyon kosusu","Baran O.","Persembe")]}),
-     room("platform","Platform",[0,72,100,28],"ahead",{mission:"Altyapi maliyeti -%15",pct:90,note:"Hedefin onunde",wrong:[],mile:["CDN gecisi","tamamlandi"],
+     room("platform","Platform",[0,72,100,28],"ahead",{mission:"Altyapi maliyeti -%15",pct:90,note:"Hedefin onunde",wrong:[],mile:["CDN gecisi","tamamlandı"],
        members:[m("Efe Duran","DevOps",4,0)],
        tasks:[t("Monitoring alarmlari","Efe D.","Cuma"),t("CDN gecisi","Efe D.","Bitti",false,true)]}),
    ]},
@@ -450,7 +450,7 @@ function initSparkHQ(root: HTMLElement) {
        wrong:["Kreatif uretimi launch filmine bagimli"],mile:["Kampanya seti","3 gun"],
        members:[m("Sevval Beyhan","Growth Lead",5,0),m("Emre Gur","Performance",6,1)],
        tasks:[t("Meta kampanya kurulumu","Emre G.","Persembe"),t("Kreatif brief revizyonu","Sevval B.","Yarin",true)]}),
-     room("product-room","Product",[56,0,44,30],"ahead",{mission:"Launch feature set",pct:84,note:"Planin onunde",wrong:[],mile:["Feature freeze","tamamlandi"],
+     room("product-room","Product",[56,0,44,30],"ahead",{mission:"Launch feature set",pct:84,note:"Planin onunde",wrong:[],mile:["Feature freeze","tamamlandı"],
        members:[m("Ela Sarp","PM",6,0),m("Ozan Kaya","APM",4,0)],
        tasks:[t("Launch feature QA","Ela S.","Cuma")]}),
      room("content","Content & PR",[0,36,44,30],"ok",{mission:"Basin kiti + video",pct:66,note:"Son revizyonda",
@@ -470,18 +470,18 @@ function initSparkHQ(root: HTMLElement) {
        members:[m("Kaan Erol","Data Analyst",4,0)],
        tasks:[t("Funnel dashboard","Kaan E.","Cuma")]}),
    ]},
-   {id:"satis",name:"Satis",sub:"₺680K pipeline",rooms:[
-     room("enterprise","Enterprise Sales",[0,0,44,44],"ok",{mission:"Q3 hedefi ₺2.4M",pct:55,note:"Fleet A.S. imzada",
-       wrong:["Sozlesme onayi lobide bekliyor"],mile:["Fleet A.S. imza","bu hafta"],
+   {id:"satis",name:"Satış",sub:"₺680K pipeline",rooms:[
+     room("enterprise","Kurumsal Satış",[0,0,44,44],"ok",{mission:"Q3 hedefi ₺2.4M",pct:55,note:"Fleet A.S. imzada",
+       wrong:["Sözleşme onayı lobide bekliyor"],mile:["Fleet A.S. imza","bu hafta"],
        members:[m("Kerem Vural","Sales Lead",6,0),m("Asli Nur","AE",5,0)],
        tasks:[t("Fleet A.S. takibi","Kerem V.","Yarin",true),t("Marina Otopark demo","Asli N.","Yarin 14:00")]}),
-     room("cs","Customer Success",[56,0,44,44],"ok",{mission:"Onboarding < 7 gun",pct:70,note:"Yildiz Enerji 3/7",wrong:[],mile:["Yildiz canli","4 gun"],
+     room("cs","Müşteri Başarısı",[56,0,44,44],"ok",{mission:"Onboarding < 7 gun",pct:70,note:"Yıldız Enerji 3/7",wrong:[],mile:["Yıldız canli","4 gun"],
        members:[m("Berk Has","CS Manager",5,0)],
-       tasks:[t("Yildiz Enerji onboarding","Berk H.","Cuma")]}),
+       tasks:[t("Yıldız Enerji onboarding","Berk H.","Cuma")]}),
      room("revops","RevOps & CRM",[0,50,100,50],"warn",{mission:"Pipeline hijyeni %95",pct:40,note:"14 bayat kayit",
-       wrong:["Tahmin dogrulugu dusuk"],mile:["Q3 temizligi","bu hafta"],
+       wrong:["Tahmin doğruluğu düşük"],mile:["Q3 temizliği","bu hafta"],
        members:[m("Selen Er","RevOps Analyst",4,1)],
-       tasks:[t("Q3 pipeline temizligi","Selen E.","Cuma",true)]}),
+       tasks:[t("Q3 pipeline temizliği","Selen E.","Cuma",true)]}),
    ]},
    {id:"finans",name:"Finans",sub:"Runway 14 ay",rooms:[
      room("revenue","Revenue Room",[0,0,44,44],"ok",{mission:"MRR ₺4.1M · ↑%14",pct:74,note:"Buyume saglikli",wrong:[],mile:["Q3 hedefi","yolunda"],
@@ -490,7 +490,7 @@ function initSparkHQ(root: HTMLElement) {
      room("muhasebe","Muhasebe",[56,0,44,44],"ok",{mission:"Temmuz kapanisi",pct:60,note:"Mutabakatlar tamam",wrong:[],mile:["Ay kapanisi","4 gun"],
        members:[m("Nazli Ekin","Muhasebe Uzmani",4,0)],
        tasks:[t("Temmuz kapanisi","Nazli E.","15 Agu")]}),
-     room("procurement","Satin Alma & Legal",[0,50,100,50],"warn",{mission:"Sozlesme yenilemeleri",pct:50,note:"AWS onay bekliyor",
+     room("procurement","Satın Alma & Legal",[0,50,100,50],"warn",{mission:"Sözleşme yenilemeleri",pct:50,note:"AWS onay bekliyor",
        wrong:["Onay gecikirse kesinti riski"],mile:["AWS yenileme","3 gun"],
        members:[m("Cem Tok","Operations",3,1)],
        tasks:[t("AWS faturasi onayi","Cem T.","Yarin",true)]}),
@@ -513,17 +513,17 @@ function initSparkHQ(root: HTMLElement) {
     revops:["ok","warn","warn","warn"],procurement:["ok","ok","ok","warn"],
     inbox:["warn","warn","risk","risk"]};
   const DELAY: Record<string,number[]>={launchops:[0,0,2,4],gmarketing:[0,0,0,2]};
-  const NOTES: (string|null)[]=[null,"Car · Backend refactor uzadi → Backend Squad DiKKAT'e dustu.",
+  const NOTES: (string|null)[]=[null,"Car · Backend refactor uzadı → Backend Squad DiKKAT'e düştü.",
    "Per · Android release kaydi → Launch Ops RiSKTE. Zincir: Backend → Mobile → Launch.",
-   "Bugun · Gecikme 4 gune cikti; kreatifler bekledigi icin Growth Marketing de RiSKTE."];
+   "Bugun · Gecikme 4 güne çıktı; kreatifler bekledigi icin Growth Marketing de RiSKTE."];
 
   const PDETAIL: Record<string,{st:string;today:string;working:string[];waiting:[string,string][];goals:[string,number][];recent:string[]}>={
-   "Cagan Koyun":{st:"warn",today:"3 toplanti · 6 gorev · 2 onay",
+   "Cagan Koyun":{st:"warn",today:"3 toplanti · 6 görev · 2 onay",
      working:["Launch filmi onayi","Yatirimci sunumu","is Bankasi partnership"],
      waiting:[["Launch filmini onayla","risk"],["Growth butcesini onayla","risk"],["Fleet sozlesmesini imzala","warn"]],
      goals:[["Launch Spark",68],["is Bankasi'ni kapat",45]],
      recent:["Kanal butcesini onayladi","Basin kitine yorum yapti"]},
-   "Burak Cavdur":{st:"risk",today:"1 toplanti · 8 gorev · 3 gecikmis",
+   "Burak Cavdur":{st:"risk",today:"1 toplanti · 8 görev · 3 gecikmis",
      working:["Android build final","SPK-231 crash","Store metadata"],
      waiting:[["Backend refactor'in bitmesi","risk"]],
      goals:[["v2.4 Store'da",72]],
@@ -589,7 +589,7 @@ function initSparkHQ(root: HTMLElement) {
       floorAccess:{},ownRooms:[],
       avatar:{skin:"#F4C28B",hair:"#2C1810",hairStyle:"short",acc:"glasses",accColor:"#333",shirt:"#1a1a2e",badge:"👑"}},
     admin:{label:"Admin (Onur)",person:"Onur Celik",homeFloor:null,homeRoom:null,
-      greeting:"Gunaydin Onur.",roleSub:"Tum katlar sana acik.",
+      greeting:"Gunaydin Onur.",roleSub:"Tum katlar sana açık.",
       briefing:["Sirket geneli yolunda, 1 kritik zincir var.","🔴 Launch 4 gun geride — Backend → Mobile → Launch",
         "📊 Runway 14 ay · MRR ₺4.1M","3 onay kuyrugunda bekliyor"],
       floorAccess:{},ownRooms:[],
@@ -603,7 +603,7 @@ function initSparkHQ(root: HTMLElement) {
     member:{label:"Uye (Burak)",person:"Burak Cavdur",homeFloor:"urun",homeRoom:"mobile",
       greeting:"Gunaydin Burak.",roleSub:"Mobile Squad masanda oturuyorsun.",
       briefing:["🔴 Dikkatini bekleyen: Android build final — yarin, launch'i blokluyor",
-        "Bugun: 3 gorev · 1 toplanti","Seni bekleyenler: Backend refactor (Diren)",
+        "Bugun: 3 görev · 1 toplanti","Seni bekleyenler: Backend refactor (Diren)",
         "Ekibin: Mobile Squad · YOLUNDA · v2.4 %72"],
       floorAccess:{growth:"pulse",satis:"pulse",finans:"shape",lobi:"pulse"},ownRooms:["mobile"],
       avatar:{skin:"#D4A574",hair:"#1a1a1a",hairStyle:"curly",acc:"headset",accColor:"var(--accent)",shirt:"#065f46",badge:"💻"}},
@@ -620,7 +620,7 @@ function initSparkHQ(root: HTMLElement) {
   function pdOf(mm: Member) {
     if(PDETAIL[mm.name])return PDETAIL[mm.name];
     return{st:mm.late>=3?"risk":mm.late>=1?"warn":"ok",
-      today:`${mm.g} gorev`+(mm.late?` · ${mm.late} gecikmis`:""),
+      today:`${mm.g} görev`+(mm.late?` · ${mm.late} gecikmis`:""),
       working:[] as string[],waiting:[] as [string,string][],goals:[] as [string,number][],recent:[] as string[]};
   }
 
@@ -981,7 +981,7 @@ function initSparkHQ(root: HTMLElement) {
         if(wasCamDrag)return;
         if(drag && drag.moved) return;
         const v=floorVis(fid);
-        if(v==="shape"){showDoor(FLOORS.find(f2=>f2.id===fid)!.name,"Bu kat yalnizca ilgili ekibe acik.","Kat liderinden erisim iste.");return}
+        if(v==="shape"){showDoor(FLOORS.find(f2=>f2.id===fid)!.name,"Bu kat yalnızca ilgili ekibe açık.","Kat liderinden erişim iste.");return}
         goFloor(fid);
       });
       el.addEventListener("mouseenter",e=>showTooltipFloor(e as MouseEvent,fid));
@@ -1058,7 +1058,7 @@ function initSparkHQ(root: HTMLElement) {
       if(state.floor === fid) goHQ();
       else renderHQ();
       fakeAct(`"${f.name}" kati silindi`);
-    }, {note: `<b>${f.name}</b> kati ve icindeki tum odalar kalici olarak silinecek. Bu islem geri alinamaz.`, okLabel:"Kati Sil", danger: true});
+    }, {note: `<b>${f.name}</b> kati ve icindeki tum odalar kalici olarak silinecek. Bu işlem geri alınamaz.`, okLabel:"Kati Sil", danger: true});
   }
 
   function addRoom() {
@@ -1208,7 +1208,7 @@ function initSparkHQ(root: HTMLElement) {
       const vis=(el as HTMLElement).dataset.vis!;
       el.addEventListener("click",e=>{
         if((e.target as Element).closest(".person-g"))return;
-        if(vis==="shape"){showDoor(f.rooms.find(x=>x.id===rid)!.name,"Bu alan yalnizca ilgili ekibe acik.","Erisim iste");return}
+        if(vis==="shape"){showDoor(f.rooms.find(x=>x.id===rid)!.name,"Bu alan yalnızca ilgili ekibe açık.","Erişim iste");return}
         if(vis==="pulse"){showDoorPulse(rid);return}
         showPopupRoom(rid,e as MouseEvent);
       });
@@ -1289,7 +1289,7 @@ function initSparkHQ(root: HTMLElement) {
 
   function showPopupRoom(rid: string,e: MouseEvent){
     const rv=roomVis(state.floor!,rid);
-    if(rv==="shape"){showDoor(F().rooms.find(x=>x.id===rid)!.name,"Bu alan yalnizca ilgili ekibe acik.","Erisim iste");return}
+    if(rv==="shape"){showDoor(F().rooms.find(x=>x.id===rid)!.name,"Bu alan yalnızca ilgili ekibe açık.","Erişim iste");return}
     if(rv==="pulse"){showDoorPulse(rid);return}
     closePopup();
     const r=F().rooms.find(x=>x.id===rid)!,st=rSt(r);
@@ -1314,7 +1314,7 @@ function initSparkHQ(root: HTMLElement) {
       </div>
       <div class="pop-foot">
         <button class="btn-lime" data-act="enter-room">Gir</button>
-        <button class="btn-ghost" data-act="ask-ai">Ask AI</button>
+        <button class="btn-ghost" data-act="ask-ai">AI'a Sor</button>
       </div>`;
     pop.querySelector("[data-act=close-popup]")?.addEventListener("click",closePopup);
     pop.querySelectorAll(".pop-av").forEach(el=>el.addEventListener("click",ev=>{
@@ -1349,15 +1349,15 @@ function initSparkHQ(root: HTMLElement) {
       <div class="pop-foot">
         <button class="btn-lime" data-act="enter-person">Masasina Git</button>
         <button class="btn-ghost" data-act="msg">Mesaj</button>
-        ${state.role==="owner"?`<button class="btn-ghost" data-act="empathy" style="font-size:11px">👁 Gozunden Gor</button>`:""}
+        ${state.role==="owner"?`<button class="btn-ghost" data-act="empathy" style="font-size:11px">👁 Gözünden Gör</button>`:""}
       </div>`;
     pop.querySelector("[data-act=close-popup]")?.addEventListener("click",closePopup);
     pop.querySelector("[data-act=enter-person]")?.addEventListener("click",()=>{closePopup();openSheet(rid,pname)});
-    pop.querySelector("[data-act=msg]")?.addEventListener("click",()=>fakeAct("Mesaj gonderildi"));
+    pop.querySelector("[data-act=msg]")?.addEventListener("click",()=>fakeAct("Mesaj gönderildi"));
     pop.querySelector("[data-act=empathy]")?.addEventListener("click",()=>{
       closePopup();const targetRole=Object.entries(ROLE_PROFILES).find(([,p])=>p.person===pname);
       if(targetRole){state.empathy=targetRole[0];renderEmpathy();goHQ();playEntrance()}
-      else fakeAct("Bu kisi icin empati modu — prototipte yalnizca tanimli roller destekleniyor")});
+      else fakeAct("Bu kisi icin empati modu — prototipte yalnızca tanimli roller destekleniyor")});
     posPopup(e);pop.classList.add("show");renderCrumbs();
   }
 
@@ -1415,22 +1415,22 @@ function initSparkHQ(root: HTMLElement) {
         ${pd.waiting.length?`<div class="sh-sec"><h6>Bekleyenler</h6>${pd.waiting.map(([w,k])=>`<div class="li"><span class="ldot" style="background:var(--${k})"></span>${w}</div>`).join("")}</div>`:""}
         ${pd.goals.length?`<div class="sh-sec"><h6>Hedefler</h6>${pd.goals.map(([g,p])=>`<div class="goalline">${g}<span class="gbar" style="max-width:100px"><i style="width:${p}%"></i></span><span class="gp" style="font-variant-numeric:tabular-nums">%${p}</span></div>`).join("")}</div>`:""}
         ${pd.recent.length?`<div class="sh-sec"><h6>Son hareketler</h6>${pd.recent.map(x=>`<div class="li"><span class="ldot" style="background:var(--hover)"></span><span style="color:var(--muted)">${x}</span></div>`).join("")}</div>`:""}
-        <div class="sh-sec"><h6>Gorevleri</h6>
+        <div class="sh-sec"><h6>Görevleri</h6>
           ${(r.tasks||[]).filter(tk=>tk.who.startsWith(mm.name.split(" ")[0])).map(tk=>`
             <div class="li"><span class="ldot" style="background:${tk.done?"var(--ok)":tk.urgent?"var(--risk)":"var(--accent)"}"></span>
-            <span>${tk.tt}<div class="lmeta">${tk.day}${tk.urgent?" · acil":""}</div></span></div>`).join("")||`<div style="font-size:12px;color:var(--dim)">Listelenen gorev yok.</div>`}
+            <span>${tk.tt}<div class="lmeta">${tk.day}${tk.urgent?" · acil":""}</div></span></div>`).join("")||`<div style="font-size:12px;color:var(--dim)">Listelenen görev yok.</div>`}
         </div>`;
       acts.innerHTML=`<button class="btn-lime" data-act="msg">Mesaj</button>
-        <button class="btn-ghost" data-act="assign">Gorev Ata</button>
+        <button class="btn-ghost" data-act="assign">Görev Ata</button>
         <button class="btn-ghost" data-act="week">Haftasini Gor</button>
-        ${state.role==="owner"?`<button class="btn-ghost" data-act="empathy" style="font-size:11px">👁 Gozunden Gor</button>`:""}`;
+        ${state.role==="owner"?`<button class="btn-ghost" data-act="empathy" style="font-size:11px">👁 Gözünden Gör</button>`:""}`;
       acts.querySelectorAll("[data-act]").forEach(b=>{
         const act=(b as HTMLElement).dataset.act!;
         if(act==="empathy"){b.addEventListener("click",()=>{
           const targetRole=Object.entries(ROLE_PROFILES).find(([,p])=>p.person===mm.name);
           if(targetRole){closeSheet();state.empathy=targetRole[0];renderEmpathy();goHQ();playEntrance()}
-          else fakeAct("Bu kisi icin empati modu desteklenmiyor")});return}
-        b.addEventListener("click",()=>fakeAct(act==="msg"?"Mesaj gonderildi":act==="assign"?"Gorev atandi":"Hafta gorunumu acildi"));
+          else fakeAct("Bu kişi için empati modu desteklenmiyor")});return}
+        b.addEventListener("click",()=>fakeAct(act==="msg"?"Mesaj gönderildi":act==="assign"?"Görev atandı":"Hafta görünümü açıldı"));
       });
       back.onclick=()=>{state.person=null;renderSheet();renderCrumbs()};
       return;
@@ -1463,19 +1463,19 @@ function initSparkHQ(root: HTMLElement) {
           <button class="btn-ghost" style="padding:4px 10px;font-size:11px" data-act="approve">Onayla</button></div>`).join("")}</div>`:""}`;
     acts.innerHTML=`<button class="btn-lime" data-act="work-list">isleri Gor</button>
       <button class="btn-ghost" data-act="meeting">Toplanti</button>
-      <button class="btn-ghost" data-act="ask-sheet">Ask AI</button>`;
+      <button class="btn-ghost" data-act="ask-sheet">AI'a Sor</button>`;
     body.querySelectorAll("[data-person]").forEach(el=>el.addEventListener("click",()=>{
       state.person=(el as HTMLElement).dataset.person!;renderSheet();renderCrumbs();
     }));
-    body.querySelectorAll("[data-act=approve]").forEach(b=>b.addEventListener("click",()=>fakeAct("Onaylandi")));
-    acts.querySelector("[data-act=work-list]")?.addEventListener("click",()=>fakeAct("is listesi"));
-    acts.querySelector("[data-act=meeting]")?.addEventListener("click",()=>fakeAct("Toplanti baslatildi"));
+    body.querySelectorAll("[data-act=approve]").forEach(b=>b.addEventListener("click",()=>fakeAct("Onaylandı")));
+    acts.querySelector("[data-act=work-list]")?.addEventListener("click",()=>fakeAct("İş listesi"));
+    acts.querySelector("[data-act=meeting]")?.addEventListener("click",()=>fakeAct("Toplantı başlatıldı"));
     acts.querySelector("[data-act=ask-sheet]")?.addEventListener("click",openAsk);
   }
 
   function fakeAct(msg: string){
     const n=$("#shqReplayNote");if(!n)return;
-    n.textContent=msg+" — prototipte temsili";n.classList.add("show");
+    n.textContent=msg+" — yakında aktif olacak";n.classList.add("show");
     clearTimeout((n as any)._t);(n as any)._t=setTimeout(()=>{n.classList.remove("show");renderReplayNote()},1600);
   }
 
@@ -1596,31 +1596,31 @@ function initSparkHQ(root: HTMLElement) {
   function renderReplayNote(){
     const n=$("#shqReplayNote");if(!n)return;
     const note=NOTES[state.time];
-    if(note&&state.time!==0){n.textContent="Ne degisti? · "+note;n.classList.add("show")}
+    if(note&&state.time!==0){n.textContent="Ne değişti? · "+note;n.classList.add("show")}
     else n.classList.remove("show");
   }
 
   const ASK_QA_OWNER: Record<string,[string,string][]>={
-   hq:[["Sirket bugun nasil?","Bir kirmizi zincir var: Backend refactor → Android release → Launch Ops, launch 4 gun geride. Onun disinda Satis ve Finans yolunda; lobide 5 karar seni bekliyor."],
+   hq:[["Şirket bugün nasıl?","Bir kirmizi zincir var: Backend refactor → Android release → Launch Ops, launch 4 gun geride. Onun disinda Satış ve Finans yolunda; lobide 5 karar seni bekliyor."],
        ["En acil ne?","Growth butce onayi — 3 gundur bekliyor ve launch kreatiflerini blokluyor. 2 dakikanizi alir."],
-       ["Dunden beri ne degisti?","Growth Marketing de RiSKTE'ye dustu; gecikme 3'ten 4 gune cikti. Kaynak ayni: Android release."]],
+       ["Dünden beri ne değişti?","Growth Marketing de RiSKTE'ye düştü; gecikme 3'ten 4 güne çıktı. Kaynak ayni: Android release."]],
    growth:[["Growth neden riskte?","Kritik yol: Android release gecikti → Launch Ops 4 gun geride → kreatifler launch filmini bekledigi icin Growth Marketing de kaydi."],
        ["Launch'i kim blokluyor?","iki kisi uzerinde dugumleniyor: Burak (Android build final, yarin) ve sen (launch filmi onayi + Growth butcesi)."]],
-   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gosteriyor."],
+   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gösteriyor."],
        ["Kim yardima ihtiyac duyuyor?","Kirmizi halkali kisiler gecikmis isi olanlar."]]};
   const ASK_QA_MEMBER: Record<string,[string,string][]>={
-   hq:[["Sirket bugun nasil?","Urun kati yolunda; senin kritik isin Android build (yarin). Sirket genelinde Growth kati kirmizi gorunuyor — detayi kat liderinde."],
-       ["Benim gunum nasil?","3 gorev, 1 toplanti. Android build final yarin bitirilmeli — launch'i blokluyor."],
-       ["Finans nasil?","Bu alana erisimin yok. istersen Onur'a soru iletebilirim ya da erisim istegi acabilirim."]],
+   hq:[["Şirket bugün nasıl?","Ürün katı yolunda; senin kritik isin Android build (yarin). Sirket genelinde Growth kati kirmizi gorunuyor — detayi kat liderinde."],
+       ["Benim gunum nasil?","3 görev, 1 toplanti. Android build final yarin bitirilmeli — launch'i blokluyor."],
+       ["Finans nasıl?","Bu alana erişimin yok. istersen Onur'a soru iletebilirim ya da erişim istegi açabilirim."]],
    room:[["Ekibim nasil?","Mobile Squad yolunda — v2.4 %72'de. Android build yarin bitirilmeli."],
        ["Kime sormaliyim?","Backend refactor icin Diren'e, store metadata icin ipek'e sor."]]};
   const ASK_QA_LEAD: Record<string,[string,string][]>={
-   hq:[["Sirket bugun nasil?","Growth katin riskte — 4 gun gecikme. Urun yolunda, Satis yolunda. Finans detayina erisimin yok."],
+   hq:[["Şirket bugün nasıl?","Growth katin riskte — 4 gun gecikme. Ürün yolunda, Satış yolunda. Finans detayına erişimin yok."],
        ["Katim nasil?","2 ekip riskte (Growth Marketing, Launch Ops), 1 ileride (Product), 3 yolunda. Kritik yol: Android release."],
-       ["Dunden beri ne degisti?","Gecikme 3'ten 4 gune cikti. Growth Marketing de RiSKTE'ye dustu."]],
+       ["Dünden beri ne değişti?","Gecikme 3'ten 4 güne çıktı. Growth Marketing de RiSKTE'ye düştü."]],
    growth:[["Launch'i kim blokluyor?","Burak (Android build final) ve Cagan (launch filmi onayi + butce). ikisi de yarin/bugun cozulebilir."],
        ["Kreatifler ne zaman hazir?","Launch filmi onayina bagli — Cagan'dan geldiginde kreatif uretimi baslar. Tahmini: 2-3 gun."]],
-   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gosteriyor."],
+   room:[["Bu ekip neden bu durumda?","Sheet'teki 'Ne ters gidiyor?' listesi kaynagi gösteriyor."],
        ["Kim yardima ihtiyac duyuyor?","Kirmizi halkali kisiler gecikmis isi olanlar."]]};
   function askQA(){
     const r=state.role;
@@ -1660,14 +1660,14 @@ function initSparkHQ(root: HTMLElement) {
       if(f.name.toLocaleLowerCase("tr").includes(lq)){
         const fv=floorVis(f.id);
         if(fv==="shape"){const th2=$("#shqAskThread");
-          if(th2){th2.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">O kata anahtarin yok. istersen erisim istegi acabilirim.</div>`;th2.scrollTop=th2.scrollHeight}
+          if(th2){th2.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">O kata anahtarın yok. istersen erişim istegi açabilirim.</div>`;th2.scrollTop=th2.scrollHeight}
           (e.target as HTMLInputElement).value="";return}
         closeAsk();goFloorAnywhere(f.id);(e.target as HTMLInputElement).value="";return}
       for(const r of f.rooms){
         if(r.name.toLocaleLowerCase("tr").includes(lq)){
           const rv3=roomVis(f.id,r.id);
           if(rv3==="shape"){const th2=$("#shqAskThread");
-            if(th2){th2.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">O alana anahtarin yok. istersen erisim istegi acabilirim.</div>`;th2.scrollTop=th2.scrollHeight}
+            if(th2){th2.innerHTML+=`<div class="ask-q">${q}</div><div class="ask-a">O alana anahtarın yok. istersen erişim istegi açabilirim.</div>`;th2.scrollTop=th2.scrollHeight}
             (e.target as HTMLInputElement).value="";return}
           closeAsk();goFloorAnywhere(f.id,()=>{if(rv3==="content")openSheet(r.id)});(e.target as HTMLInputElement).value="";return}
         for(const mm of r.members)
@@ -1716,7 +1716,7 @@ function initSparkHQ(root: HTMLElement) {
       </div>`;
     d.classList.add("show");
     d.querySelector("[data-act=request]")?.addEventListener("click",()=>{
-      fakeAct("Erisim istegi gonderildi — Lobi'deki Inbox'a dustu");closeDoor()});
+      fakeAct("Erişim isteği gönderildi — Lobi'deki Inbox'a düştü");closeDoor()});
     d.querySelector("[data-act=close]")?.addEventListener("click",closeDoor);
   }
   function showDoorPulse(rid: string){
@@ -1727,15 +1727,15 @@ function initSparkHQ(root: HTMLElement) {
       <div class="door-title">${r.name}</div>
       <div class="door-sub" style="text-align:left">
         <div style="margin-bottom:6px">${r.members.length} kisi · <span style="color:${stColor(st)};font-weight:700">${ST[rSt(r)].t}</span></div>
-        <div style="color:var(--dim);font-size:12px">icerik detaylarini gormek icin erisim gerekiyor.</div>
+        <div style="color:var(--dim);font-size:12px">içerik detaylarını görmek için erişim gerekiyor.</div>
       </div>
       <div class="door-actions">
-        <button class="btn-lime" data-act="request">Erisim iste</button>
+        <button class="btn-lime" data-act="request">Erişim iste</button>
         <button class="btn-ghost" data-act="close">Kapat</button>
       </div>`;
     d.classList.add("show");
     d.querySelector("[data-act=request]")?.addEventListener("click",()=>{
-      fakeAct("Erisim istegi gonderildi");closeDoor()});
+      fakeAct("Erişim isteği gönderildi");closeDoor()});
     d.querySelector("[data-act=close]")?.addEventListener("click",closeDoor);
   }
   function closeDoor(){$("#shqDoor")?.classList.remove("show")}
@@ -1997,9 +1997,9 @@ export default function SparkHQ() {
           </aside>
           <div id="shqReplay"></div>
           <div id="shqReplayNote"></div>
-          <button id="shqAskBtn">Ask HQ <kbd>&#8984;K</kbd></button>
+          <button id="shqAskBtn">HQ'ya Sor <kbd>&#8984;K</kbd></button>
           <div id="shqAskPanel">
-            <div className="ask-head"><b>Ask HQ</b><div className="ask-ctx" id="shqAskCtx"></div></div>
+            <div className="ask-head"><b>HQ'ya Sor</b><div className="ask-ctx" id="shqAskCtx"></div></div>
             <div className="ask-thread" id="shqAskThread"></div>
             <div className="ask-sugs" id="shqAskSugs"></div>
             <div className="ask-input"><input id="shqAskInput" placeholder="Sor ya da bir yere git..." /></div>

@@ -17,8 +17,11 @@ import { PublicDashboardManager } from "@/components/PublicDashboardManager";
 import { ReferralPanel } from "@/components/ReferralPanel";
 
 const ROLES = ["manager","member","viewer","guest"] as const;
+const ROLE_LABELS: Record<string, string> = { manager: "Yönetici", member: "Üye", viewer: "İzleyici", guest: "Misafir" };
 const MODULES = ["work","crm","finance","people","assets","goals","risks","decisions","approvals","analytics","admin","ai"];
+const MODULE_LABELS: Record<string, string> = { work: "İş", crm: "CRM", finance: "Finans", people: "Kişiler", assets: "Varlıklar", goals: "Hedefler", risks: "Riskler", decisions: "Kararlar", approvals: "Onaylar", analytics: "Analitik", admin: "Yönetim", ai: "Yapay Zekâ" };
 const ACTIONS = ["view","create","update","delete"];
+const ACTION_LABELS: Record<string, string> = { view: "Görüntüle", create: "Oluştur", update: "Güncelle", delete: "Sil" };
 
 export default function WorkspaceSettings() {
   const { currentWorkspace, role, refresh } = useWorkspace();
@@ -59,22 +62,24 @@ export default function WorkspaceSettings() {
     });
     setBusy(false);
     if (error) return toast.error(error.message);
-    setInviteEmail(""); toast.success("Invitation created"); load();
+    setInviteEmail(""); toast.success("Davet oluşturuldu"); load();
   };
 
   const revokeInvite = async (id: string) => {
-    await supabase.from("workspace_invitations").update({ status: "revoked" }).eq("id", id);
-    load();
+    const { error } = await supabase.from("workspace_invitations").update({ status: "revoked" }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Davet iptal edildi"); load();
   };
 
   const copyInviteLink = (token: string) => {
     const url = `${window.location.origin}/invite/${token}`;
-    navigator.clipboard.writeText(url); toast.success("Invite link copied");
+    navigator.clipboard.writeText(url); toast.success("Davet linki kopyalandı");
   };
 
   const updateMemberRole = async (id: string, newRole: string) => {
-    await supabase.from("workspace_members").update({ role: newRole as any }).eq("id", id);
-    toast.success("Role updated"); load();
+    const { error } = await supabase.from("workspace_members").update({ role: newRole as any }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Rol güncellendi"); load();
   };
 
   // F3 onay limitleri: boş = limitsiz değil, "tutarlı onay yetkisi yok" demek
@@ -91,21 +96,24 @@ export default function WorkspaceSettings() {
   };
 
   const removeMember = async (id: string) => {
-    if (!confirm("Remove this member from the workspace?")) return;
-    await supabase.from("workspace_members").delete().eq("id", id);
-    toast.success("Member removed"); load();
+    if (!confirm("Bu üyeyi çalışma alanından çıkarmak istediğinize emin misiniz?")) return;
+    const { error } = await supabase.from("workspace_members").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Üye çıkarıldı"); load();
   };
 
   const togglePerm = async (r: string, module: string, action: string, allowed: boolean) => {
     if (!currentWorkspace) return;
     const existing = perms.find(p => p.role === r && p.module === module && p.action === action);
+    let error;
     if (existing) {
-      await supabase.from("workspace_permissions").update({ allowed }).eq("id", existing.id);
+      ({ error } = await supabase.from("workspace_permissions").update({ allowed }).eq("id", existing.id));
     } else {
-      await supabase.from("workspace_permissions").insert({
+      ({ error } = await supabase.from("workspace_permissions").insert({
         workspace_id: currentWorkspace.id, role: r as any, module, action, allowed,
-      });
+      }));
     }
+    if (error) return toast.error(error.message);
     load();
   };
 
@@ -118,7 +126,7 @@ export default function WorkspaceSettings() {
     if (!currentWorkspace) return;
     const { error } = await supabase.from("workspaces").update({ name }).eq("id", currentWorkspace.id);
     if (error) return toast.error(error.message);
-    toast.success("Saved"); refresh();
+    toast.success("Kaydedildi"); refresh();
   };
 
   if (!currentWorkspace) return null;
@@ -127,27 +135,27 @@ export default function WorkspaceSettings() {
     <AppLayout>
       <div className="p-6 max-w-6xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Calisma Alani Ayarlari</h1>
-          <p className="text-sm text-muted-foreground">Sirket, uyeler, davetler ve izinleri yonetin.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Çalışma Alanı Ayarları</h1>
+          <p className="text-sm text-muted-foreground">Şirket, üyeler, davetler ve izinleri yönetin.</p>
         </div>
 
         <Tabs defaultValue="general">
           <TabsList>
             <TabsTrigger value="general">Genel</TabsTrigger>
-            <TabsTrigger value="members">Uyeler</TabsTrigger>
+            <TabsTrigger value="members">Üyeler</TabsTrigger>
             <TabsTrigger value="invitations">Davetler</TabsTrigger>
-            <TabsTrigger value="permissions">Izinler</TabsTrigger>
+            <TabsTrigger value="permissions">İzinler</TabsTrigger>
             <TabsTrigger value="signals">Sinyaller</TabsTrigger>
-            <TabsTrigger value="dashboards">Herkese Acik Panolar</TabsTrigger>
+            <TabsTrigger value="dashboards">Herkese Açık Panolar</TabsTrigger>
             <TabsTrigger value="referrals">Davet Et Kazan</TabsTrigger>
           </TabsList>
 
           <TabsContent value="general" className="mt-4">
             <Card className="p-6 space-y-4 max-w-xl">
-              <div><Label>Calisma alani adi</Label><Input value={name} onChange={e=>setName(e.target.value)} disabled={!canAdmin} /></div>
+              <div><Label>Çalışma alanı adı</Label><Input value={name} onChange={e=>setName(e.target.value)} disabled={!canAdmin} /></div>
               <div><Label>Plan</Label><div className="text-sm mt-1"><Badge variant="secondary">{currentWorkspace.plan}</Badge></div></div>
-              <div><Label>Varsayilan para birimi</Label><div className="text-sm mt-1">{currentWorkspace.default_currency}</div></div>
-              {canAdmin && <Button onClick={saveName}>Degisiklikleri kaydet</Button>}
+              <div><Label>Varsayılan para birimi</Label><div className="text-sm mt-1">{currentWorkspace.default_currency}</div></div>
+              {canAdmin && <Button onClick={saveName}>Değişiklikleri kaydet</Button>}
             </Card>
           </TabsContent>
 
@@ -159,7 +167,7 @@ export default function WorkspaceSettings() {
                     {m.profiles?.full_name?.[0]?.toUpperCase() ?? "?"}
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm font-medium">{m.profiles?.full_name ?? "Unknown"}</div>
+                    <div className="text-sm font-medium">{m.profiles?.full_name ?? "Bilinmeyen"}</div>
                     <div className="text-xs text-muted-foreground">{m.job_title ?? m.department ?? ""}</div>
                   </div>
                   {canAdmin && m.role !== "owner" && !["owner","admin"].includes(m.role) && (
@@ -176,8 +184,8 @@ export default function WorkspaceSettings() {
                   {canAdmin && m.role !== "owner" ? (
                     <select value={m.role} onChange={e=>updateMemberRole(m.id, e.target.value)}
                       className="h-8 rounded-md border border-input bg-background px-2 text-xs">
-                      <option value="admin">Admin</option><option value="manager">Manager</option>
-                      <option value="member">Member</option><option value="viewer">Viewer</option><option value="guest">Guest</option>
+                      <option value="admin">Admin</option><option value="manager">Yönetici</option>
+                      <option value="member">Üye</option><option value="viewer">İzleyici</option><option value="guest">Misafir</option>
                     </select>
                   ) : (<Badge>{m.role}</Badge>)}
                   {canAdmin && m.user_id !== user?.id && m.role !== "owner" && (
@@ -194,23 +202,23 @@ export default function WorkspaceSettings() {
                 <Input placeholder="email@company.com" value={inviteEmail} onChange={e=>setInviteEmail(e.target.value)} />
                 <select value={inviteRole} onChange={e=>setInviteRole(e.target.value)}
                   className="h-10 rounded-md border border-input bg-background px-2 text-sm">
-                  <option value="admin">Admin</option><option value="manager">Manager</option>
-                  <option value="member">Member</option><option value="viewer">Viewer</option>
+                  <option value="admin">Admin</option><option value="manager">Yönetici</option>
+                  <option value="member">Üye</option><option value="viewer">İzleyici</option>
                 </select>
                 <Button onClick={sendInvite} disabled={busy}>
-                  {busy && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Invite
+                  {busy && <Loader2 className="h-4 w-4 mr-2 animate-spin" />} Davet Et
                 </Button>
               </Card>
             )}
             <Card className="divide-y">
-              {invites.length === 0 && <div className="p-4 text-sm text-muted-foreground">No invitations yet.</div>}
+              {invites.length === 0 && <div className="p-4 text-sm text-muted-foreground">Henüz davet yok.</div>}
               {invites.map(i => (
                 <div key={i.id} className="p-4 flex items-center gap-3">
                   <div className="flex-1">
                     <div className="text-sm font-medium">{i.email}</div>
-                    <div className="text-xs text-muted-foreground">Role: {i.role} · Status: {i.status}</div>
+                    <div className="text-xs text-muted-foreground">Rol: {i.role} · Durum: {i.status}</div>
                   </div>
-                  <Button variant="ghost" size="icon" title="Copy invite link" onClick={()=>copyInviteLink(i.token)}>
+                  <Button variant="ghost" size="icon" title="Davet linkini kopyala" onClick={()=>copyInviteLink(i.token)}>
                     <Copy className="h-4 w-4" />
                   </Button>
                   {canAdmin && i.status === "pending" && (
@@ -224,16 +232,16 @@ export default function WorkspaceSettings() {
           <TabsContent value="permissions" className="mt-4">
             <Card className="p-4 overflow-x-auto">
               <div className="text-xs text-muted-foreground mb-3">
-                Owners and admins have full access and cannot be restricted here. Toggle what other roles can do per module.
+                Owner ve admin rolleri tam erişime sahiptir ve burada kısıtlanamaz. Diğer rollerin modül bazında neler yapabileceğini ayarlayın.
               </div>
               <table className="text-xs w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left p-2">Module</th>
+                    <th className="text-left p-2">Modül</th>
                     {ROLES.flatMap(r => ACTIONS.map(a => (
                       <th key={r+a} className="text-center p-2 whitespace-nowrap">
-                        <div className="capitalize font-medium">{r}</div>
-                        <div className="text-muted-foreground">{a}</div>
+                        <div className="font-medium">{ROLE_LABELS[r] ?? r}</div>
+                        <div className="text-muted-foreground">{ACTION_LABELS[a] ?? a}</div>
                       </th>
                     )))}
                   </tr>
@@ -241,7 +249,7 @@ export default function WorkspaceSettings() {
                 <tbody>
                   {MODULES.map(m => (
                     <tr key={m} className="border-b">
-                      <td className="p-2 font-medium capitalize">{m}</td>
+                      <td className="p-2 font-medium">{MODULE_LABELS[m] ?? m}</td>
                       {ROLES.flatMap(r => ACTIONS.map(a => (
                         <td key={r+a+m} className="text-center p-2">
                           <Checkbox
@@ -266,7 +274,7 @@ export default function WorkspaceSettings() {
             {canAdmin ? (
               <PublicDashboardManager />
             ) : (
-              <p className="text-sm text-muted-foreground py-4">Public dashboard yonetimi icin admin yetkisi gerekli.</p>
+              <p className="text-sm text-muted-foreground py-4">Herkese açık pano yönetimi için admin yetkisi gerekli.</p>
             )}
           </TabsContent>
 

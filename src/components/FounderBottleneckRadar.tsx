@@ -27,7 +27,7 @@ export function FounderBottleneckRadar() {
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold">Founder Bottleneck</p>
+              <p className="text-sm font-semibold">Kurucu Darboğazı</p>
               <Badge variant="outline" className="text-[10px] uppercase tracking-wide">
                 {count} iş
               </Badge>

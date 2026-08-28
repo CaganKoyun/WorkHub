@@ -11,7 +11,7 @@ const sections = [
   },
   {
     icon: Shield,
-    title: "Row Level Security",
+    title: "Satır Seviyesi Güvenlik (RLS)",
     body: "Her veritabanı sorgusu Postgres RLS politikalarıyla korunur. Kullanıcılar yalnızca kendi workspace verilerine erişebilir — API seviyesinde değil, veritabanı seviyesinde zorunlu.",
   },
   {
@@ -21,7 +21,7 @@ const sections = [
   },
   {
     icon: Eye,
-    title: "Audit log",
+    title: "Denetim Günlüğü",
     body: "Tüm kritik işlemler (CRUD, üye değişiklikleri, onay kararları) değiştirilemez audit log'a yazılır. Enterprise planında 1 yıl saklama.",
   },
   {

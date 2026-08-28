@@ -23,11 +23,11 @@ export { navItems };
 export type { NavItem } from "./nav-config";
 
 const createOptions = [
-  { label: "New issue",   path: "/tasks?new=1",   hint: "C" },
-  { label: "New project", path: "/projects/new",  hint: "P" },
-  { label: "New bug",     path: "/bugs/new",      hint: "B" },
-  { label: "New approval",path: "/inbox?new=1",   hint: "A" },
-  { label: "New asset",   path: "/assets/new",    hint: "S" },
+  { label: "Yeni görev",  path: "/tasks?new=1",   hint: "C" },
+  { label: "Yeni proje",  path: "/projects/new",  hint: "P" },
+  { label: "Yeni bug",    path: "/bugs/new",      hint: "B" },
+  { label: "Yeni onay",   path: "/inbox?new=1",   hint: "A" },
+  { label: "Yeni varlık", path: "/assets/new",    hint: "S" },
 ];
 
 function NewIssueButton() {
@@ -46,7 +46,7 @@ function NewIssueButton() {
           <span className="grid h-4 w-4 place-items-center rounded-sm bg-primary/90 text-primary-foreground">
             <Plus className="h-3 w-3" strokeWidth={2.5} />
           </span>
-          <span className="flex-1 text-left">New issue</span>
+          <span className="flex-1 text-left">Yeni görev</span>
           <kbd className="kbd">C</kbd>
         </button>
       </DropdownMenuTrigger>
@@ -62,7 +62,7 @@ function NewIssueButton() {
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate("/ai-chat")}>
-          Chief of Staff'a sor…
+          Yapay Zekâ Asistanı'na sor…
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -74,12 +74,12 @@ function SearchTrigger({ onOpen }: { onOpen: () => void }) {
     <button
       type="button"
       onClick={onOpen}
-      aria-label="Search"
+      aria-label="Ara"
       className={cn(
         "grid h-8 w-8 place-items-center rounded-md border border-sidebar-border/70 bg-sidebar-accent/50",
         "text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       )}
-      title="Search (⌘K)"
+      title="Ara (⌘K)"
     >
       <Search className="h-3.5 w-3.5" />
     </button>
@@ -259,7 +259,7 @@ export function SidebarContent({
               {initials}
             </AvatarFallback>
           </Avatar>
-          <span className="min-w-0 flex-1 truncate">{profile?.full_name || "User"}</span>
+          <span className="min-w-0 flex-1 truncate">{profile?.full_name || "Kullanıcı"}</span>
           <ChevronDown className="h-3 w-3 opacity-60" />
         </Link>
         <button

@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Play, Square, Plus, Timer, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
+import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 interface Props {
@@ -127,7 +128,7 @@ export function TaskTimer({ taskId }: Props) {
                 {e.duration_seconds != null ? formatHMS(e.duration_seconds) : '● live'}
               </span>
               <span className="text-muted-foreground truncate flex-1">
-                {format(new Date(e.started_at), 'MMM d, HH:mm')}
+                {format(new Date(e.started_at), 'd MMM, HH:mm', { locale: tr })}
                 {e.note && <span className="ml-2 text-foreground/80">· {e.note}</span>}
               </span>
               <button

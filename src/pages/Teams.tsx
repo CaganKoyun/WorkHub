@@ -23,6 +23,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { Plus, Users as UsersIcon, Mail, X, UserMinus, Crown } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { tr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { DomainWorkspace } from "@/components/DomainWorkspace";
 
@@ -52,7 +53,7 @@ function TeamCreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-2">
             <Label>Ad</Label>
-            <Input value={name} onChange={e => setName(e.target.value)} placeholder="Engineering, Design, Sales…" autoFocus />
+            <Input value={name} onChange={e => setName(e.target.value)} placeholder="Mühendislik, Tasarım, Satış…" autoFocus />
           </div>
           <div className="space-y-2">
             <Label>Açıklama</Label>
@@ -129,11 +130,12 @@ function InviteDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o:
 }
 
 function MemberRow({
-  member, profileMap, teams,
+  member, profileMap, teams, canManage,
 }: {
   member: WorkspaceMember;
   profileMap: Map<string, { name: string | null; avatar: string | null }>;
   teams: { id: string; name: string; color: string }[];
+  canManage: boolean;
 }) {
   const updateRole = useUpdateMemberRole();
   const assignTeam = useAssignMemberToTeam();
@@ -160,6 +162,7 @@ function MemberRow({
       <Select
         value={member.team_id ?? 'none'}
         onValueChange={(v) => assignTeam.mutate({ member_id: member.id, team_id: v === 'none' ? null : v })}
+        disabled={!canManage}
       >
         <SelectTrigger className="w-36 h-7 text-[11.5px]">
           {team ? (
@@ -184,7 +187,7 @@ function MemberRow({
       <Select
         value={member.role}
         onValueChange={(v) => updateRole.mutate({ id: member.id, role: v as WorkspaceRole })}
-        disabled={member.role === 'owner'}
+        disabled={!canManage || member.role === 'owner'}
       >
         <SelectTrigger className="w-28 h-7 text-[11.5px]">
           <SelectValue />
@@ -199,7 +202,7 @@ function MemberRow({
       </Select>
       <Button
         variant="ghost" size="icon" className="h-7 w-7 opacity-60 hover:opacity-100"
-        disabled={member.role === 'owner'}
+        disabled={!canManage || member.role === 'owner'}
         onClick={() => {
           if (confirm(`${profile?.name ?? 'kullanıcıyı'} workspace'ten çıkar?`)) {
             deactivate.mutate(member.id);
@@ -269,7 +272,7 @@ export default function Teams() {
           <EmptyState
             icon={UsersIcon}
             title="Henuz ekip yok"
-            description="Ekipleri organize etmek icin ilk ekibinizi olusturun."
+            description="Ekipleri organize etmek için ilk ekibinizi oluşturun."
             action={{ label: "Yeni ekip", onClick: () => setTeamOpen(true) }}
           />
         ) : (
@@ -300,12 +303,12 @@ export default function Teams() {
       {/* Members */}
       <section>
         <h2 className="mb-2 flex items-center justify-between text-[11.5px] font-semibold uppercase tracking-wider text-muted-foreground">
-          <span>Workspace üyeleri</span>
+          <span>Çalışma alanı üyeleri</span>
           <span className="font-mono normal-case tabular-nums text-muted-foreground/70">{members?.length ?? 0}</span>
         </h2>
         <div className="rounded-md border border-border/60 overflow-hidden">
           {(members ?? []).map(m => (
-            <MemberRow key={m.id} member={m} profileMap={profileMap} teams={teams ?? []} />
+            <MemberRow key={m.id} member={m} profileMap={profileMap} teams={teams ?? []} canManage={canManage} />
           ))}
           {(members?.length ?? 0) === 0 && (
             <p className="py-8 text-center text-[13px] text-muted-foreground">Üye yok.</p>
@@ -330,7 +333,7 @@ export default function Teams() {
                   "border-border bg-secondary/40 text-muted-foreground",
                 )}>{ROLE_LABELS[inv.role]}</span>
                 <span className="text-[11px] text-muted-foreground tabular-nums">
-                  {format(new Date(inv.expires_at), 'MMM d')} sona erer
+                  {format(new Date(inv.expires_at), 'd MMM', { locale: tr })} sona erer
                 </span>
                 <Button
                   variant="ghost" size="icon" className="h-6 w-6 opacity-60 hover:opacity-100"

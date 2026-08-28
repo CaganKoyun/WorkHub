@@ -4,12 +4,17 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { StatusBadge } from "@/components/StatusBadge";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, Send } from "lucide-react";
+import { ArrowLeft, Loader2, Send, User } from "lucide-react";
 import type { Enums } from "@/integrations/supabase/types";
+import { Constants } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
+import { tr } from "date-fns/locale";
+import { useAllProfiles } from "@/lib/projects-hooks";
 import {
   useBug,
   useBugComments,
@@ -29,12 +34,18 @@ export default function BugDetail() {
 
   const { data: bug, isLoading } = useBug(id);
   const { data: comments = [] } = useBugComments(id);
+  const { data: allProfiles } = useAllProfiles();
 
   const commentUserIds = useMemo(
     () => [...new Set(comments.map((c) => c.user_id))],
     [comments]
   );
   const { data: profiles = {} } = useBugCommentProfiles(commentUserIds);
+
+  const profileMap = useMemo(
+    () => new Map((allProfiles ?? []).map(p => [p.user_id, p.full_name])),
+    [allProfiles],
+  );
 
   const updateBug = useUpdateBug();
   const addComment = useAddBugComment();
@@ -50,9 +61,35 @@ export default function BugDetail() {
         old_value: bug.status,
         new_value: newStatus,
       });
-      toast.success(`Durum guncellendi: ${newStatus.replace("_", " ")}`);
+      toast.success(`Durum güncellendi: ${newStatus.replace("_", " ")}`);
     } catch (error: any) {
-      toast.error("Durum guncellenemedi: " + error.message);
+      toast.error("Durum güncellenemedi: " + error.message);
+    }
+  };
+
+  const updateAssignee = async (uid: string) => {
+    if (!bug) return;
+    try {
+      await updateBug.mutateAsync({ id: bug.id, assignee_id: uid === '__none__' ? null : uid });
+      toast.success("Atanan güncellendi");
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const updateSeverity = async (sev: string) => {
+    if (!bug) return;
+    try {
+      await updateBug.mutateAsync({ id: bug.id, severity: sev as any });
+      await logActivity.mutateAsync({
+        bug_id: bug.id,
+        action: "severity_change",
+        old_value: bug.severity,
+        new_value: sev,
+      });
+      toast.success("Önem derecesi güncellendi");
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
@@ -80,9 +117,9 @@ export default function BugDetail() {
     return (
       <AppLayout>
         <div className="flex flex-col items-center justify-center h-full gap-3">
-          <p className="text-[13px] text-muted-foreground">Bug not found</p>
-          <Button variant="outline" size="sm" onClick={() => navigate("/")} className="h-7 text-[12px]">
-            Back to Dashboard
+          <p className="text-[13px] text-muted-foreground">Bug bulunamadı</p>
+          <Button variant="outline" size="sm" onClick={() => navigate("/bugs")} className="h-7 text-[12px]">
+            Bug listesine dön
           </Button>
         </div>
       </AppLayout>
@@ -113,13 +150,13 @@ export default function BugDetail() {
 
               {/* Description */}
               <div className="px-4 md:px-6 py-4 border-b border-border">
-                <p className="text-[12px] text-muted-foreground mb-2 font-medium">Description</p>
-                <p className="text-[13px] whitespace-pre-wrap leading-relaxed">{bug.description || "No description"}</p>
+                <p className="text-[12px] text-muted-foreground mb-2 font-medium">Açıklama</p>
+                <p className="text-[13px] whitespace-pre-wrap leading-relaxed">{bug.description || "Açıklama eklenmemiş"}</p>
               </div>
 
               {bug.steps_to_reproduce && (
                 <div className="px-4 md:px-6 py-4 border-b border-border">
-                  <p className="text-[12px] text-muted-foreground mb-2 font-medium">Steps to Reproduce</p>
+                  <p className="text-[12px] text-muted-foreground mb-2 font-medium">Yeniden Üretme Adımları</p>
                   <p className="text-[13px] whitespace-pre-wrap leading-relaxed">{bug.steps_to_reproduce}</p>
                 </div>
               )}
@@ -128,13 +165,13 @@ export default function BugDetail() {
                 <div className="grid grid-cols-1 md:grid-cols-2 border-b border-border">
                   {bug.expected_behavior && (
                     <div className="px-4 md:px-6 py-4 md:border-r border-border">
-                      <p className="text-[12px] text-muted-foreground mb-2 font-medium">Expected</p>
+                      <p className="text-[12px] text-muted-foreground mb-2 font-medium">Beklenen Davranış</p>
                       <p className="text-[13px]">{bug.expected_behavior}</p>
                     </div>
                   )}
                   {bug.actual_behavior && (
                     <div className="px-4 md:px-6 py-4">
-                      <p className="text-[12px] text-muted-foreground mb-2 font-medium">Actual</p>
+                      <p className="text-[12px] text-muted-foreground mb-2 font-medium">Gerçekleşen Davranış</p>
                       <p className="text-[13px]">{bug.actual_behavior}</p>
                     </div>
                   )}
@@ -143,7 +180,7 @@ export default function BugDetail() {
 
               {/* Comments */}
               <div className="px-4 md:px-6 py-4">
-                <p className="text-[12px] text-muted-foreground mb-3 font-medium">Activity · {comments.length}</p>
+                <p className="text-[12px] text-muted-foreground mb-3 font-medium">Aktivite · {comments.length}</p>
                 <div className="space-y-3">
                   {comments.map((c) => (
                     <div key={c.id} className="flex gap-3">
@@ -154,9 +191,9 @@ export default function BugDetail() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-[13px] font-medium">{profiles[c.user_id] || "User"}</span>
+                          <span className="text-[13px] font-medium">{profiles[c.user_id] || "Kullanıcı"}</span>
                           <span className="text-[11px] text-muted-foreground">
-                            {formatDistanceToNow(new Date(c.created_at), { addSuffix: true })}
+                            {formatDistanceToNow(new Date(c.created_at), { addSuffix: true, locale: tr })}
                           </span>
                         </div>
                         <p className="text-[13px] mt-0.5 leading-relaxed">{c.content}</p>
@@ -167,7 +204,7 @@ export default function BugDetail() {
 
                 <div className="mt-4 flex gap-2">
                   <Textarea
-                    placeholder="Leave a comment..."
+                    placeholder="Yorum yaz..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     rows={2}
@@ -190,7 +227,7 @@ export default function BugDetail() {
             <div className="w-full lg:w-64 shrink-0">
               {/* Status workflow */}
               <div className="px-4 py-3 border-b border-border">
-                <p className="text-[12px] text-muted-foreground mb-2 font-medium">Status</p>
+                <p className="text-[12px] text-muted-foreground mb-2 font-medium">Durum</p>
                 <div className="flex flex-wrap gap-1">
                   {statusFlow.map((status) => (
                     <Button
@@ -207,19 +244,57 @@ export default function BugDetail() {
                 </div>
               </div>
 
+              {/* Severity */}
+              <div className="px-4 py-3 border-b border-border">
+                <p className="text-[12px] text-muted-foreground mb-2 font-medium">Önem</p>
+                <Select value={bug.severity} onValueChange={updateSeverity}>
+                  <SelectTrigger className="h-7 text-[12px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Constants.public.Enums.bug_severity.map(s => (
+                      <SelectItem key={s} value={s}>
+                        {s.charAt(0).toUpperCase() + s.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Assignee */}
+              <div className="px-4 py-3 border-b border-border">
+                <p className="text-[12px] text-muted-foreground mb-2 font-medium">Atanan</p>
+                <Select value={bug.assignee_id ?? '__none__'} onValueChange={updateAssignee}>
+                  <SelectTrigger className="h-7 text-[12px]">
+                    <div className="flex items-center gap-1.5">
+                      <User className="h-3 w-3 text-muted-foreground" />
+                      <span>{bug.assignee_id ? (profileMap.get(bug.assignee_id) ?? 'Kullanıcı') : 'Atanmamış'}</span>
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">Atanmamış</SelectItem>
+                    {(allProfiles ?? []).map(p => (
+                      <SelectItem key={p.user_id} value={p.user_id}>
+                        {p.full_name ?? 'Kullanıcı'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Properties */}
               <div className="px-4 py-3 space-y-3 text-[13px]">
                 <div>
-                  <p className="text-[12px] text-muted-foreground mb-0.5">Environment</p>
+                  <p className="text-[12px] text-muted-foreground mb-0.5">Ortam</p>
                   <p>{bug.environment || "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-muted-foreground mb-0.5">Created</p>
-                  <p>{formatDistanceToNow(new Date(bug.created_at), { addSuffix: true })}</p>
+                  <p className="text-[12px] text-muted-foreground mb-0.5">Oluşturulma</p>
+                  <p>{formatDistanceToNow(new Date(bug.created_at), { addSuffix: true, locale: tr })}</p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-muted-foreground mb-0.5">Updated</p>
-                  <p>{formatDistanceToNow(new Date(bug.updated_at), { addSuffix: true })}</p>
+                  <p className="text-[12px] text-muted-foreground mb-0.5">Güncelleme</p>
+                  <p>{formatDistanceToNow(new Date(bug.updated_at), { addSuffix: true, locale: tr })}</p>
                 </div>
               </div>
             </div>

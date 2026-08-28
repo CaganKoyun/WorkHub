@@ -73,8 +73,8 @@ export default function Roadmap() {
       <div className="flex items-center justify-center p-12">
         <div className="text-center space-y-3">
           <AlertTriangle className="mx-auto h-10 w-10 text-muted-foreground/40" />
-          <p className="text-sm font-medium">Could not load roadmap</p>
-          <p className="text-xs text-muted-foreground">Please try refreshing the page.</p>
+          <p className="text-sm font-medium">Yol haritası yüklenemedi</p>
+          <p className="text-xs text-muted-foreground">Lütfen sayfayı yenileyin.</p>
         </div>
       </div>
     );
@@ -96,7 +96,7 @@ export default function Roadmap() {
         <EmptyState
           icon={FolderKanban}
           title="Henuz proje yok"
-          description="Roadmap'i doldurmak icin ilk projenizi olusturun."
+          description="Roadmap'i doldurmak için ilk projenizi oluşturun."
           action={{ label: "Yeni proje", onClick: () => window.location.assign("/projects/new") }}
         />
       ) : (

@@ -199,7 +199,7 @@ export function MyTasksView() {
           Toplam
         </div>
         <span className="text-2xl font-bold">{stats.total}</span>
-        <span className="text-xs text-muted-foreground ml-1">task</span>
+        <span className="text-xs text-muted-foreground ml-1">görev</span>
       </div>
       <div className="rounded-lg border border-border/60 bg-card p-3">
         <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
@@ -245,7 +245,7 @@ export function MyTasksView() {
                 key={t.id}
                 task={t}
                 projectName={project?.name}
-                href={`/projects/${t.project_id}`}
+                href={`/projects/${t.project_id}?task=${t.id}`}
                 rightSlot={
                   <Button
                     size="sm" variant="outline" className="h-6 shrink-0 text-[11px] px-2"
@@ -288,7 +288,7 @@ export function MyTasksView() {
                     key={t.id}
                     task={t}
                     projectName={project?.name}
-                    href={`/projects/${t.project_id}`}
+                    href={`/projects/${t.project_id}?task=${t.id}`}
                   />
                 );
               })}
@@ -320,7 +320,7 @@ export function MyTasksView() {
                 return (
                   <Link
                     key={t.id}
-                    to={`/projects/${t.project_id}`}
+                    to={`/projects/${t.project_id}?task=${t.id}`}
                     className="block rounded-md border border-border/60 bg-card p-2.5 hover:bg-accent/40 transition-colors"
                   >
                     <p className="text-sm font-medium truncate">{t.title}</p>
@@ -436,7 +436,7 @@ export function MyTasksView() {
             )}
             onClick={() => setViewMode('mine')}
           >
-            Benim Tasklerim
+            Benim Görevlerim
           </button>
           <button
             className={cn(
@@ -445,7 +445,7 @@ export function MyTasksView() {
             )}
             onClick={() => setViewMode('all')}
           >
-            Tüm Taskler
+            Tüm Görevler
           </button>
         </div>
 

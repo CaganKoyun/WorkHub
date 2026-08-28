@@ -12,14 +12,14 @@ import { useWorkspacePermission } from "@/hooks/useWorkspacePermission";
 import { useOAuthPopup } from "@/lib/use-oauth-popup";
 
 const CATEGORIES = [
-  { key: "all", label: "All" },
+  { key: "all", label: "Tümü" },
   { key: "crm", label: "CRM" },
-  { key: "comms", label: "Comms" },
-  { key: "dev", label: "Dev" },
-  { key: "finance", label: "Finance" },
-  { key: "docs", label: "Docs" },
-  { key: "support", label: "Support" },
-  { key: "custom", label: "Custom MCP" },
+  { key: "comms", label: "İletişim" },
+  { key: "dev", label: "Geliştirme" },
+  { key: "finance", label: "Finans" },
+  { key: "docs", label: "Doküman" },
+  { key: "support", label: "Destek" },
+  { key: "custom", label: "Özel MCP" },
 ];
 
 export default function Integrations() {
@@ -46,16 +46,16 @@ export default function Integrations() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Plug className="h-5 w-5 text-primary" />
-              <h1 className="text-[22px] font-semibold tracking-tight text-foreground">Integrations</h1>
+              <h1 className="text-[22px] font-semibold tracking-tight text-foreground">Entegrasyonlar</h1>
             </div>
             <p className="text-[13px] text-muted-foreground max-w-xl">
-              MCP tabanlı entegrasyonlar. Hazır listeden seç ya da kendi MCP sunucunu bağla — bağlı araçları Chief of Staff otomatik keşfeder.
+              MCP tabanlı entegrasyonlar. Hazır listeden seç ya da kendi MCP sunucunu bağla — bağlı araçları Yapay Zekâ Asistanı otomatik keşfeder.
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="gap-1.5">
               <Sparkles className="h-3 w-3 text-primary" />
-              {tools?.length ?? 0} tools ready
+              {tools?.length ?? 0} araç hazır
             </Badge>
             <CustomMcpDialog isAdmin={isAdmin} />
           </div>
@@ -64,7 +64,7 @@ export default function Integrations() {
         {/* Connected list */}
         {(connections?.length ?? 0) > 0 && (
           <Card className="p-4">
-            <h2 className="text-[13px] font-semibold mb-3 text-foreground">Your connections</h2>
+            <h2 className="text-[13px] font-semibold mb-3 text-foreground">Bağlantılarınız</h2>
             <div className="space-y-2">
               {(connections ?? []).map(c => (
                 <div key={c.id} className="flex items-center gap-3 py-2 border-b border-border last:border-0">
@@ -80,17 +80,17 @@ export default function Integrations() {
                   </div>
                   <Badge variant="outline" className="text-[10px]">{c.scope}</Badge>
                   {c.state === "failed" && (
-                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => retry.mutate(c.id)} title="Retry">
+                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => retry.mutate(c.id)} title="Tekrar dene">
                       <RefreshCw className="h-3.5 w-3.5" />
                     </Button>
                   )}
                   {c.auth_url && c.state === "authenticating" && (
                     <Button size="sm" variant="outline" className="h-7 text-[11px]" onClick={() => oauth.open(c.auth_url!)}>
-                      Complete auth
+                      Yetkilendirmeyi tamamla
                     </Button>
                   )}
                   <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive"
-                          onClick={() => disconnect.mutate(c.id)} title="Disconnect">
+                          onClick={() => disconnect.mutate(c.id)} title="Bağlantıyı kes">
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>

@@ -70,7 +70,7 @@ function CreateDefDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
-        <DialogHeader><DialogTitle>Yeni custom field — {ENTITY_LABELS[entityType]}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>Yeni özel alan — {ENTITY_LABELS[entityType]}</DialogTitle></DialogHeader>
         <form onSubmit={submit} className="space-y-3">
           <div className="space-y-1.5">
             <Label>Ad</Label>
@@ -192,7 +192,7 @@ export default function CustomFields() {
               <Skeleton className="h-20" />
             ) : (grouped[t]?.length ?? 0) === 0 ? (
               <div className="rounded-md border border-border/60 py-10 text-center text-[13px] text-muted-foreground">
-                Bu tip için henüz custom alan yok.
+                Bu tip için henüz özel alan yok.
               </div>
             ) : (
               <div className="rounded-md border border-border/60 overflow-hidden">

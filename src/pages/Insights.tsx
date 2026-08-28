@@ -122,14 +122,16 @@ function useInsights(workspaceId: string | undefined, days: number) {
   });
 }
 
-function useBugInsights(days: number) {
+function useBugInsights(workspaceId: string | undefined, days: number) {
   return useQuery({
-    queryKey: ['bug-insights', days],
+    queryKey: ['bug-insights', workspaceId, days],
+    enabled: !!workspaceId,
     queryFn: async (): Promise<BugLite[]> => {
       const since = new Date(); since.setDate(since.getDate() - days);
       const { data, error } = await supabase
         .from('bugs')
         .select('id, status, severity, created_at, updated_at, project_id')
+        .eq('workspace_id', workspaceId!)
         .gte('created_at', since.toISOString())
         .limit(5000);
       if (error) throw error;
@@ -174,7 +176,7 @@ function buildCsv(
     const avg = completed.reduce((s, t) => {
       return s + (new Date(t.completed_at!).getTime() - new Date(t.created_at).getTime());
     }, 0) / completed.length / 86_400_000;
-    rows.push(['Ort. Tamamlanma Suresi (gun)', avg.toFixed(1)]);
+    rows.push(['Ort. Tamamlanma Süresi (gün)', avg.toFixed(1)]);
   }
   if (pulse) {
     rows.push(['Aktif Projeler', String(pulse.activeProjects)]);
@@ -182,7 +184,7 @@ function buildCsv(
     rows.push(['Kritik Buglar', String(pulse.criticalBugs)]);
   }
   rows.push([]);
-  rows.push(['Bug ID', 'Durum', 'Ciddiyet', 'Olusturulma']);
+  rows.push(['Bug ID', 'Durum', 'Ciddiyet', 'Oluşturulma']);
   for (const b of bugs) {
     rows.push([b.id, b.status, b.severity, b.created_at.slice(0, 10)]);
   }
@@ -203,20 +205,45 @@ function downloadCsv(content: string, filename: string) {
 
 export default function Insights() {
   const [rangeKey, setRangeKey] = useState<RangeKey>('90');
+  const [projectFilter, setProjectFilter] = useState<string>('all');
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('all');
   const days = rangeKey === 'custom' ? 90 : Number(rangeKey);
 
   const { currentWorkspace } = useWorkspace();
-  const { data: tasks, isLoading, isError } = useInsights(currentWorkspace?.id, days);
+  const { data: rawTasks, isLoading, isError } = useInsights(currentWorkspace?.id, days);
   const { data: cycle } = useActiveCycle();
   const { data: profiles } = useAllProfiles();
   const { data: projects } = useProjects();
   const { data: goals } = useGoals();
   const { data: pulse } = useCompanyPulse();
-  const { data: bugs } = useBugInsights(days);
+  const { data: rawBugs } = useBugInsights(currentWorkspace?.id, days);
+
+  const tasks = useMemo(() => {
+    let r = rawTasks ?? [];
+    if (projectFilter !== 'all') r = r.filter(t => t.project_id === projectFilter);
+    if (assigneeFilter !== 'all') r = r.filter(t => t.assignee_id === assigneeFilter);
+    return r;
+  }, [rawTasks, projectFilter, assigneeFilter]);
+
+  const bugs = useMemo(() => {
+    let r = rawBugs ?? [];
+    if (projectFilter !== 'all') r = r.filter(b => b.project_id === projectFilter);
+    return r;
+  }, [rawBugs, projectFilter]);
+
+  const nameMap = useMemo(
+    () => new Map((profiles ?? []).map(p => [p.user_id, p.full_name ?? 'Kullanıcı'])),
+    [profiles],
+  );
+
+  const uniqueAssignees = useMemo(() => {
+    const ids = new Set((rawTasks ?? []).map(t => t.assignee_id).filter(Boolean) as string[]);
+    return Array.from(ids).map(id => ({ id, name: nameMap.get(id) ?? 'Kullanıcı' })).sort((a, b) => a.name.localeCompare(b.name));
+  }, [rawTasks, nameMap]);
 
   /* ── computed data ── */
 
-  const completedTasks = useMemo(() => tasks?.filter(t => t.status === 'done') ?? [], [tasks]);
+  const completedTasks = useMemo(() => tasks.filter(t => t.status === 'done'), [tasks]);
 
   const avgCompletionDays = useMemo(() => {
     const done = completedTasks.filter(t => t.completed_at);
@@ -288,10 +315,10 @@ export default function Insights() {
     const open = tasks.filter(t => t.status !== 'done' && t.status !== 'canceled');
     const counts = new Map<string | null, number>();
     for (const t of open) counts.set(t.assignee_id, (counts.get(t.assignee_id) ?? 0) + 1);
-    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'Isimsiz']));
+    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'İsimsiz']));
     return [...counts.entries()]
       .map(([id, count]) => ({
-        name: id ? (byId.get(id) ?? 'Bilinmiyor') : 'Atanmadi',
+        name: id ? (byId.get(id) ?? 'Bilinmiyor') : 'Atanmadı',
         count,
       }))
       .sort((a, b) => b.count - a.count)
@@ -349,7 +376,7 @@ export default function Insights() {
       const d = new Date(now); d.setDate(d.getDate() - i * 7);
       bucketKeys.push(isoWeekBucket(d));
     }
-    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'Isimsiz']));
+    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'İsimsiz']));
     // count completed per assignee per week
     const counts = new Map<string, Map<string, number>>();
     for (const t of tasks) {
@@ -400,10 +427,10 @@ export default function Insights() {
   // Department / assignee comparison
   const departmentComparison = useMemo(() => {
     if (!tasks) return [];
-    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'Isimsiz']));
+    const byId = new Map((profiles ?? []).map(p => [p.user_id, p.full_name || 'İsimsiz']));
     const map = new Map<string, { total: number; done: number }>();
     for (const t of tasks) {
-      const name = t.assignee_id ? (byId.get(t.assignee_id) ?? 'Bilinmiyor') : 'Atanmadi';
+      const name = t.assignee_id ? (byId.get(t.assignee_id) ?? 'Bilinmiyor') : 'Atanmadı';
       if (!map.has(name)) map.set(name, { total: 0, done: 0 });
       const e = map.get(name)!;
       e.total++;
@@ -423,7 +450,7 @@ export default function Insights() {
 
   /* ── loading / error states ── */
 
-  if (isLoading || (!isError && !tasks)) {
+  if (isLoading || (!isError && !rawTasks)) {
     return (
       <div className="p-6">
         <Skeleton className="h-8 w-40" />
@@ -442,8 +469,8 @@ export default function Insights() {
       <div className="flex items-center justify-center p-12">
         <div className="text-center space-y-3">
           <AlertTriangle className="mx-auto h-10 w-10 text-muted-foreground/40" />
-          <p className="text-sm font-medium">Could not load insights</p>
-          <p className="text-xs text-muted-foreground">Please try refreshing the page.</p>
+          <p className="text-sm font-medium">İçgörüler yüklenemedi</p>
+          <p className="text-xs text-muted-foreground">Lütfen sayfayı yenileyin.</p>
         </div>
       </div>
     );
@@ -454,20 +481,42 @@ export default function Insights() {
       {/* ── header row ── */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-semibold tracking-tight">Insights</h1>
+          <h1 className="text-[22px] font-semibold tracking-tight">İçgörüler</h1>
           <p className="mt-1 text-[13px] text-muted-foreground">
-            Son {days} gundeki is akisi sagligi ve yonetici ozeti.
+            Son {days} gündeki iş akışı sağlığı ve yönetici özeti.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Select value={projectFilter} onValueChange={setProjectFilter}>
+            <SelectTrigger className="h-8 w-[140px] text-xs">
+              <SelectValue placeholder="Proje" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tüm projeler</SelectItem>
+              {(projects ?? []).map(p => (
+                <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={assigneeFilter} onValueChange={setAssigneeFilter}>
+            <SelectTrigger className="h-8 w-[140px] text-xs">
+              <SelectValue placeholder="Kişi" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tüm kişiler</SelectItem>
+              {uniqueAssignees.map(a => (
+                <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={rangeKey} onValueChange={(v) => setRangeKey(v as RangeKey)}>
             <SelectTrigger className="h-8 w-[140px] text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="30">Son 30 gun</SelectItem>
-              <SelectItem value="60">Son 60 gun</SelectItem>
-              <SelectItem value="90">Son 90 gun</SelectItem>
+              <SelectItem value="30">Son 30 gün</SelectItem>
+              <SelectItem value="60">Son 60 gün</SelectItem>
+              <SelectItem value="90">Son 90 gün</SelectItem>
             </SelectContent>
           </Select>
           <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs" onClick={handleExport}>
@@ -475,7 +524,7 @@ export default function Insights() {
             CSV
           </Button>
           <span className="rounded-full border border-border bg-secondary px-2.5 py-1 font-mono text-[11px] tabular-nums text-muted-foreground">
-            {tasks.length} task
+            {tasks.length} görev
           </span>
         </div>
       </div>
@@ -483,15 +532,15 @@ export default function Insights() {
       {/* ── stat cards ── */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="Tamamlanan Task"
+          title="Tamamlanan Görev"
           value={completedTasks.length}
-          subtitle={`Toplam ${tasks.length} task`}
+          subtitle={`Toplam ${tasks.length} görev`}
           icon={CheckCircle2}
         />
         <StatCard
           title="Ort. Tamamlanma"
-          value={avgCompletionDays ? `${avgCompletionDays} gun` : '-'}
-          subtitle="Olusturmadan tamamlanmaya"
+          value={avgCompletionDays ? `${avgCompletionDays} gün` : '-'}
+          subtitle="Oluşturmadan tamamlanmaya"
           icon={Clock}
         />
         <StatCard
@@ -501,7 +550,7 @@ export default function Insights() {
           icon={FolderOpen}
         />
         <StatCard
-          title="Acik Buglar"
+          title="Açık Buglar"
           value={pulse?.openBugs ?? '-'}
           subtitle={`${pulse?.criticalBugs ?? 0} kritik`}
           icon={Bug}
@@ -511,7 +560,7 @@ export default function Insights() {
       {/* ── chart grid ── */}
       <div className="grid gap-4 lg:grid-cols-2">
         {/* 1. Weekly throughput */}
-        <Tile title={`Haftalik throughput (${throughput.length} hafta)`} icon={Activity}>
+        <Tile title={`Haftalık iş tamamlama (${throughput.length} hafta)`} icon={Activity}>
           {throughput.length === 0 ? (
             <InlineEmpty text="Yeterli veri yok." />
           ) : (
@@ -528,9 +577,9 @@ export default function Insights() {
         </Tile>
 
         {/* 2. Priority mix */}
-        <Tile title="Acik is -- oncelik dagilimi" icon={Flame}>
+        <Tile title="Açık iş -- öncelik dağılımı" icon={Flame}>
           {priorityMix.length === 0 ? (
-            <InlineEmpty text="Acik is yok." />
+            <InlineEmpty text="Açık iş yok." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -545,9 +594,9 @@ export default function Insights() {
         </Tile>
 
         {/* 3. Burndown */}
-        <Tile title={cycle ? `Aktif cycle burndown -- ${cycle.name}` : 'Aktif cycle burndown'} icon={Target}>
+        <Tile title={cycle ? `Aktif sprint yakması — ${cycle.name}` : 'Aktif sprint yakması'} icon={Target}>
           {burndown.length === 0 ? (
-            <InlineEmpty text={cycle ? 'Bu cycle icin task yok.' : 'Aktif cycle bulunmuyor.'} />
+            <InlineEmpty text={cycle ? 'Bu sprint için görev yok.' : 'Aktif sprint bulunmuyor.'} />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={burndown}>
@@ -563,9 +612,9 @@ export default function Insights() {
         </Tile>
 
         {/* 4. Workload by assignee */}
-        <Tile title="Yuk -- atanan basina acik is" icon={Users}>
+        <Tile title="Yük -- atanan başına açık iş" icon={Users}>
           {workload.length === 0 ? (
-            <InlineEmpty text="Acik is yok." />
+            <InlineEmpty text="Açık iş yok." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={workload} layout="vertical" margin={{ left: 8 }}>
@@ -573,14 +622,14 @@ export default function Insights() {
                 <XAxis type="number" tick={AXIS_TICK} tickLine={false} axisLine={false} />
                 <YAxis type="category" dataKey="name" tick={AXIS_TICK} tickLine={false} axisLine={false} width={110} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} name="Acik" />
+                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} name="Açık" />
               </BarChart>
             </ResponsiveContainer>
           )}
         </Tile>
 
         {/* 5. Bug trend */}
-        <Tile title="Bug trendi -- acilan vs kapanan" icon={Bug}>
+        <Tile title="Bug trendi — açılan ve kapanan" icon={Bug}>
           {bugTrend.length === 0 ? (
             <InlineEmpty text="Bug verisi yok." />
           ) : (
@@ -590,7 +639,7 @@ export default function Insights() {
                 <XAxis dataKey="week" tick={AXIS_TICK} tickLine={false} axisLine={false} />
                 <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} width={28} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Line type="monotone" dataKey="opened" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} name="Acilan" />
+                <Line type="monotone" dataKey="opened" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} name="Açılan" />
                 <Line type="monotone" dataKey="closed" stroke="hsl(var(--success))" strokeWidth={2} dot={false} name="Kapanan" />
                 <Legend iconType="line" wrapperStyle={{ fontSize: 11 }} />
               </LineChart>
@@ -623,7 +672,7 @@ export default function Insights() {
         </Tile>
 
         {/* 7. Team velocity */}
-        <Tile title="Takim hizi -- haftalik tamamlanan" icon={TrendingUp} className="lg:col-span-2">
+        <Tile title="Takım hızı -- haftalık tamamlanan" icon={TrendingUp} className="lg:col-span-2">
           {teamVelocity.data.length === 0 || teamVelocity.assignees.length === 0 ? (
             <InlineEmpty text="Yeterli veri yok." />
           ) : (
@@ -643,7 +692,7 @@ export default function Insights() {
         </Tile>
 
         {/* 8. Department workload comparison */}
-        <Tile title="Atanan bazinda is karsilastirmasi" icon={BarChart3}>
+        <Tile title="Atanan bazında iş karşılaştırması" icon={BarChart3}>
           {departmentComparison.length === 0 ? (
             <InlineEmpty text="Veri yok." />
           ) : (
@@ -655,14 +704,14 @@ export default function Insights() {
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
                 <Legend iconType="square" wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="done" fill="hsl(var(--success))" radius={[0, 2, 2, 0]} stackId="dept" name="Tamamlanan" />
-                <Bar dataKey="open" fill="hsl(var(--primary))" radius={[0, 2, 2, 0]} stackId="dept" name="Acik" />
+                <Bar dataKey="open" fill="hsl(var(--primary))" radius={[0, 2, 2, 0]} stackId="dept" name="Açık" />
               </BarChart>
             </ResponsiveContainer>
           )}
         </Tile>
 
         {/* 9. Project health heatmap */}
-        <Tile title="Proje sagligi haritasi" icon={Activity}>
+        <Tile title="Proje sağlığı haritası" icon={Activity}>
           {projectHealth.length === 0 ? (
             <InlineEmpty text="Aktif proje yok." />
           ) : (
@@ -672,7 +721,7 @@ export default function Insights() {
                   <tr className="text-muted-foreground">
                     <th className="text-left font-semibold py-1.5 pr-3">Proje</th>
                     <th className="text-center font-semibold py-1.5 px-2">Tamamlanma %</th>
-                    <th className="text-center font-semibold py-1.5 px-2">Acik %</th>
+                    <th className="text-center font-semibold py-1.5 px-2">Açık %</th>
                     <th className="text-center font-semibold py-1.5 px-2">Bug</th>
                   </tr>
                 </thead>

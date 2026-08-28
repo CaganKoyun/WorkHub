@@ -63,9 +63,9 @@ const TABS = [
   { id: 'customers', label: 'Müşteriler' },
   { id: 'quotes', label: 'Teklifler' },
   { id: 'contracts', label: 'Sözleşmeler' },
-  { id: 'forecast', label: 'Forecast' },
+  { id: 'forecast', label: 'Tahmin' },
   { id: 'revenue', label: 'Gelir Analizi' },
-  { id: 'import', label: 'Ice Aktar' },
+  { id: 'import', label: 'İçe Aktar' },
 ] as const;
 
 /* ------------------------------------------------------------------ */
@@ -82,10 +82,10 @@ function SummaryStatsBar() {
     }).format(n);
 
   const stats = [
-    { icon: Building2, label: 'Sirketler', value: data?.totalCompanies ?? 0, isCurrency: false },
-    { icon: Users, label: 'Kisiler', value: data?.totalCustomers ?? 0, isCurrency: false },
-    { icon: Target, label: 'Acik Firsatlar', value: data?.openOppCount ?? 0, isCurrency: false },
-    { icon: DollarSign, label: 'Pipeline Degeri', value: data?.openPipeline ?? 0, isCurrency: true },
+    { icon: Building2, label: 'Şirketler', value: data?.totalCompanies ?? 0, isCurrency: false },
+    { icon: Users, label: 'Kişiler', value: data?.totalCustomers ?? 0, isCurrency: false },
+    { icon: Target, label: 'Açık Fırsatlar', value: data?.openOppCount ?? 0, isCurrency: false },
+    { icon: DollarSign, label: 'Pipeline Değeri', value: data?.openPipeline ?? 0, isCurrency: true },
   ];
 
   return (
@@ -173,7 +173,7 @@ function RevenueAnalytics() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Musteri Sayisi</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">Müşteri Sayısı</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{customerMetrics.count}</p>
@@ -186,13 +186,13 @@ function RevenueAnalytics() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <TrendingUp className="h-4 w-4" />
-            Aylik Gelir Trendi (Kapanan Firsatlar)
+            Aylık Gelir Trendi (Kapanan Fırsatlar)
           </CardTitle>
         </CardHeader>
         <CardContent>
           {!forecast || forecast.length === 0 ? (
             <p className="text-sm text-muted-foreground py-8 text-center">
-              Henuz veri bulunmuyor.
+              Henüz veri bulunmuyor.
             </p>
           ) : (
             <div className="space-y-2">
@@ -223,19 +223,19 @@ function RevenueAnalytics() {
       {/* Per-customer MRR table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Musteri Bazinda MRR/ARR</CardTitle>
+          <CardTitle className="text-base">Müşteri Bazında MRR/ARR</CardTitle>
         </CardHeader>
         <CardContent>
           {!customers || customers.length === 0 ? (
             <p className="text-sm text-muted-foreground py-4 text-center">
-              Henuz musteri bulunmuyor.
+              Henüz müşteri bulunmuyor.
             </p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Musteri ID</TableHead>
+                    <TableHead>Müşteri ID</TableHead>
                     <TableHead>Saglik</TableHead>
                     <TableHead className="text-right">MRR</TableHead>
                     <TableHead className="text-right">ARR</TableHead>
@@ -255,7 +255,7 @@ function RevenueAnalytics() {
                                 : 'secondary'
                           }
                         >
-                          {c.health}
+                          {({healthy:"Sağlıklı",at_risk:"Riskli",critical:"Kritik",churned:"Kayıp"} as Record<string,string>)[c.health] ?? c.health}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">{fmt(Number(c.mrr ?? 0))}</TableCell>
@@ -303,7 +303,7 @@ function CsvImport() {
       try {
         const rows = await parseCsvFile(file);
         if (rows.length === 0) {
-          setError('Dosya bos veya gecersiz.');
+          setError('Dosya boş veya geçersiz.');
           return;
         }
         setParsedRows(rows);
@@ -319,7 +319,7 @@ function CsvImport() {
         }
         setColumnMap(autoMap);
       } catch {
-        setError('Dosya okunamadi.');
+        setError('Dosya okunamadı.');
       }
     },
     [targetFields],
@@ -370,7 +370,7 @@ function CsvImport() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Upload className="h-4 w-4" />
-            CSV / Excel Iceri Aktar
+            CSV / Excel İçeri Aktar
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -392,13 +392,13 @@ function CsvImport() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="companies">Sirketler</SelectItem>
-                  <SelectItem value="contacts">Kisiler</SelectItem>
+                  <SelectItem value="companies">Şirketler</SelectItem>
+                  <SelectItem value="contacts">Kişiler</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5 flex-1">
-              <Label>CSV Dosyasi</Label>
+              <Label>CSV Dosyası</Label>
               <Input
                 type="file"
                 accept=".csv,.txt"
@@ -419,7 +419,7 @@ function CsvImport() {
             <div className="flex items-center gap-2 text-sm">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
               <span>
-                {result.ok} kayit basariyla eklendi
+                {result.ok} kayıt başarıyla eklendi
                 {result.fail > 0 && `, ${result.fail} hata`}
               </span>
             </div>
@@ -431,7 +431,7 @@ function CsvImport() {
       {csvHeaders.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Sutun Eslestirme</CardTitle>
+            <CardTitle className="text-base">Sütun Eşleştirme</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {targetFields.map((field) => (
@@ -448,10 +448,10 @@ function CsvImport() {
                   }
                 >
                   <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Sec..." />
+                    <SelectValue placeholder="Seç..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="__none__">-- Secilmedi --</SelectItem>
+                    <SelectItem value="__none__">-- Seçilmedi --</SelectItem>
                     {csvHeaders.map((h) => (
                       <SelectItem key={h} value={h}>
                         {h}
@@ -471,7 +471,7 @@ function CsvImport() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <FileSpreadsheet className="h-4 w-4" />
-              On Izleme (ilk 3 satir)
+              Ön İzleme (ilk 3 satır)
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -500,11 +500,11 @@ function CsvImport() {
 
             <div className="mt-4 flex items-center justify-between">
               <span className="text-sm text-muted-foreground">
-                Toplam {parsedRows.length} satir
+                Toplam {parsedRows.length} satır
               </span>
               <Button onClick={handleImport} disabled={importing}>
                 {importing && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                {importing ? 'Aktariliyor...' : `${parsedRows.length} Kayit Aktar`}
+                {importing ? 'Aktarılıyor...' : `${parsedRows.length} Kayıt Aktar`}
               </Button>
             </div>
           </CardContent>
@@ -524,8 +524,8 @@ export default function Crm() {
   return (
     <DomainWorkspace
       domain="crm"
-      title="CRM & Revenue"
-      subtitle="Lead'den musteriye tum satis ve gelir dongusu."
+      title="CRM & Gelir"
+      subtitle="Lead'den müşteriye tüm satış ve gelir döngüsü."
     >
       <div className="mb-4"><IntegrationsPanel domain="crm" compact /></div>
       <SummaryStatsBar />

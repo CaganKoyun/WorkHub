@@ -227,7 +227,7 @@ export default function Docs() {
         <div className="flex items-center justify-between gap-2 px-3 pt-3 pb-2">
           <div className="flex items-center gap-1.5 text-[13px] font-medium">
             <BookOpen className="h-3.5 w-3.5 text-muted-foreground" />
-            Docs
+            Dokümanlar
           </div>
           <Button
             size="sm" variant="ghost" className="h-6 gap-1 px-1.5 text-[11.5px]"

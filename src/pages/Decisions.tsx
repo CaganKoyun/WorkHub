@@ -168,8 +168,8 @@ function ReviewCard({ d }: { d: Decision }) {
 function exportDecisionsCsv(decisions: Decision[]) {
   exportToCsv(
     `kararlar-${new Date().toISOString().slice(0, 10)}.csv`,
-    ["baslik", "durum", "karar", "gerekce", "bahis", "guven", "kapi_tipi",
-     "karar_tarihi", "yeniden_acilis", "sonuc", "gerceklesen", "onaydan_turedi"],
+    ["başlık", "durum", "karar", "gerekçe", "bahis", "güven", "kapı_tipi",
+     "karar_tarihi", "yeniden_açılış", "sonuç", "gerçekleşen", "onaydan_türedi"],
     decisions.map((d) => [
       d.title,
       STATUS_LABELS[d.status] ?? d.status,

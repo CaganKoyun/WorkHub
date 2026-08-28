@@ -30,7 +30,7 @@ export function NotifPreferences() {
       <div className="overflow-hidden rounded-md border border-border/60 bg-secondary/10">
         <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-4 border-b border-border/60 bg-background/40 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
           <span>Olay</span>
-          <span className="inline-flex items-center gap-1"><Bell className="h-3 w-3" /> App</span>
+          <span className="inline-flex items-center gap-1"><Bell className="h-3 w-3" /> Uygulama</span>
           <span className="inline-flex items-center gap-1"><Mail className="h-3 w-3" /> E-posta</span>
         </div>
         {isLoading ? (

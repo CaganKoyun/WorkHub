@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useCycles, useCreateCycle, useUpdateCycle, useCycleProgress } from '@/lib/cycles-hooks';
 import { useCycleTasks } from '@/lib/tasks-hooks';
+import { useAllProfiles } from '@/lib/projects-hooks';
 import { CYCLE_STATUS_LABELS, type Cycle, type CycleStatus } from '@/lib/cycles-types';
 import {
   TASK_STATUS_LABELS,
@@ -33,15 +34,20 @@ import {
   Loader2,
   Eye,
   AlertCircle,
+  Users,
 } from 'lucide-react';
 import { format, formatDistanceToNowStrict, differenceInDays, eachDayOfInterval, isBefore, isAfter, parseISO } from 'date-fns';
+import { tr } from 'date-fns/locale';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import {
   AreaChart,
   Area,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   ResponsiveContainer,
   CartesianGrid,
   ReferenceLine,
@@ -132,22 +138,22 @@ function CycleCard({ cycle, isSelected, onSelect }: { cycle: Cycle; isSelected: 
       <div className="mt-3 flex items-center gap-3 text-[11.5px] text-muted-foreground">
         <span className="inline-flex items-center gap-1">
           <Calendar className="h-3 w-3" />
-          {format(start, 'MMM d')} &rarr; {format(end, 'MMM d')}
+          {format(start, 'd MMM', { locale: tr })} &rarr; {format(end, 'd MMM', { locale: tr })}
         </span>
         {cycle.status === 'active' && daysLeft > 0 && (
           <span className="text-[hsl(var(--status-in-progress))]">
-            {daysLeft} gun kaldi
+            {daysLeft} gün kaldı
           </span>
         )}
         {cycle.status === 'planned' && (
-          <span>{formatDistanceToNowStrict(start, { addSuffix: true })}</span>
+          <span>{formatDistanceToNowStrict(start, { addSuffix: true, locale: tr })}</span>
         )}
       </div>
 
       <div className="mt-3">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[11px] text-muted-foreground">
-            {total} gorev
+            {total} görev
           </span>
           <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
             {done}/{total} <span className="opacity-60">({pct}%)</span>
@@ -212,7 +218,7 @@ function BurndownChart({ cycle, tasks }: { cycle: Cycle; tasks: Task[] }) {
   if (chartData.length === 0) {
     return (
       <div className="flex items-center justify-center h-48 text-[12px] text-muted-foreground">
-        Burndown icin yeterli veri yok
+        Burndown için yeterli veri yok
       </div>
     );
   }
@@ -232,7 +238,7 @@ function BurndownChart({ cycle, tasks }: { cycle: Cycle; tasks: Task[] }) {
           className="text-muted-foreground"
           allowDecimals={false}
         />
-        <Tooltip
+        <RechartsTooltip
           contentStyle={{
             backgroundColor: 'hsl(var(--card))',
             border: '1px solid hsl(var(--border))',
@@ -267,7 +273,7 @@ function BurndownChart({ cycle, tasks }: { cycle: Cycle; tasks: Task[] }) {
 /*  Task List (grouped by status)                                     */
 /* ------------------------------------------------------------------ */
 
-function CycleTaskList({ tasks, isLoading }: { tasks: Task[]; isLoading: boolean }) {
+function CycleTaskList({ tasks, isLoading, profileMap }: { tasks: Task[]; isLoading: boolean; profileMap: Map<string, string | null> }) {
   const [collapsedStatuses, setCollapsedStatuses] = useState<Set<TaskStatus>>(new Set());
 
   const grouped = useMemo(() => {
@@ -296,7 +302,7 @@ function CycleTaskList({ tasks, isLoading }: { tasks: Task[]; isLoading: boolean
     return (
       <div className="rounded-md border border-border/40 py-12 text-center">
         <AlertCircle className="mx-auto h-6 w-6 text-muted-foreground/30 mb-2" />
-        <p className="text-[12.5px] text-muted-foreground">Bu cycle'da henuz gorev yok.</p>
+        <p className="text-[12.5px] text-muted-foreground">Bu cycle'da henüz görev yok.</p>
       </div>
     );
   }
@@ -328,31 +334,56 @@ function CycleTaskList({ tasks, isLoading }: { tasks: Task[]; isLoading: boolean
             </button>
             {!isCollapsed && (
               <div className="ml-5 space-y-0.5">
-                {list.map(task => (
-                  <div
-                    key={task.id}
-                    className="flex items-center gap-3 rounded-md px-2.5 py-1.5 hover:bg-accent/40 transition-colors group/task"
-                  >
-                    <Icon className={`h-3.5 w-3.5 shrink-0 ${TASK_STATUS_COLOR[status]}`} />
-                    <span className="font-mono text-[10px] text-muted-foreground/50 shrink-0">
-                      {task.tracking_id}
-                    </span>
-                    <span className="text-[13px] text-foreground truncate flex-1">{task.title}</span>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {task.priority && (
-                        <span className="flex items-center gap-1 text-[10.5px] text-muted-foreground">
-                          <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_DOT[task.priority] ?? ''}`} />
-                          {TASK_PRIORITY_LABELS[task.priority]}
-                        </span>
-                      )}
-                      {task.story_points != null && (
-                        <span className="font-mono text-[10px] tabular-nums text-muted-foreground/60 bg-muted/60 rounded px-1 py-0.5">
-                          {task.story_points}p
-                        </span>
-                      )}
+                {list.map(task => {
+                  const assigneeName = task.assignee_id ? profileMap.get(task.assignee_id) : null;
+                  const initials = assigneeName
+                    ? assigneeName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+                    : '';
+                  const isOverdue = task.due_date && task.status !== 'done' &&
+                    new Date(task.due_date) < new Date();
+                  return (
+                    <div
+                      key={task.id}
+                      className="flex items-center gap-3 rounded-md px-2.5 py-1.5 hover:bg-accent/40 transition-colors group/task"
+                    >
+                      <Icon className={`h-3.5 w-3.5 shrink-0 ${TASK_STATUS_COLOR[status]}`} />
+                      <span className="font-mono text-[10px] text-muted-foreground/50 shrink-0">
+                        {task.tracking_id}
+                      </span>
+                      <span className="text-[13px] text-foreground truncate flex-1">{task.title}</span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {task.priority && (
+                          <span className="flex items-center gap-1 text-[10.5px] text-muted-foreground">
+                            <span className={`h-1.5 w-1.5 rounded-full ${PRIORITY_DOT[task.priority] ?? ''}`} />
+                            {TASK_PRIORITY_LABELS[task.priority]}
+                          </span>
+                        )}
+                        {task.story_points != null && (
+                          <span className="font-mono text-[10px] tabular-nums text-muted-foreground/60 bg-muted/60 rounded px-1 py-0.5">
+                            {task.story_points}p
+                          </span>
+                        )}
+                        {task.due_date && (
+                          <span className={`text-[10.5px] tabular-nums ${isOverdue ? 'text-red-400 font-medium' : 'text-muted-foreground'}`}>
+                            {format(new Date(task.due_date), 'd MMM', { locale: tr })}
+                          </span>
+                        )}
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Avatar className="h-5 w-5">
+                              <AvatarFallback className="bg-sidebar-accent text-[8px] font-semibold text-sidebar-accent-foreground">
+                                {initials || '·'}
+                              </AvatarFallback>
+                            </Avatar>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-[11px]">
+                            {assigneeName ?? 'Atanmamış'}
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -369,7 +400,29 @@ function CycleTaskList({ tasks, isLoading }: { tasks: Task[]; isLoading: boolean
 function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
   const { data: progress } = useCycleProgress(cycle.id);
   const { data: tasks = [], isLoading: tasksLoading } = useCycleTasks(cycle.id);
+  const { data: profiles } = useAllProfiles();
   const [editOpen, setEditOpen] = useState(false);
+
+  const profileMap = useMemo(
+    () => new Map((profiles ?? []).map(p => [p.user_id, p.full_name])),
+    [profiles],
+  );
+
+  const memberBreakdown = useMemo(() => {
+    const map = new Map<string, { name: string; total: number; done: number; overdue: number; inProgress: number }>();
+    const today = new Date();
+    tasks.forEach(t => {
+      const key = t.assignee_id ?? '__unassigned__';
+      const name = t.assignee_id ? (profileMap.get(t.assignee_id) ?? 'Kullanıcı') : 'Atanmamış';
+      const entry = map.get(key) ?? { name, total: 0, done: 0, overdue: 0, inProgress: 0 };
+      entry.total++;
+      if (t.status === 'done') entry.done++;
+      if (t.status === 'in_progress' || t.status === 'review') entry.inProgress++;
+      if (t.due_date && t.status !== 'done' && new Date(t.due_date) < today) entry.overdue++;
+      map.set(key, entry);
+    });
+    return Array.from(map.values()).sort((a, b) => b.overdue - a.overdue || b.total - a.total);
+  }, [tasks, profileMap]);
 
   const meta = STATUS_META[cycle.status];
   const total = progress?.total_tasks ?? 0;
@@ -426,31 +479,31 @@ function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
             )}
             <p className="mt-1.5 text-[12px] text-muted-foreground flex items-center gap-1.5">
               <Calendar className="h-3 w-3" />
-              {format(start, 'MMM d, yyyy')} &rarr; {format(end, 'MMM d, yyyy')}
+              {format(start, 'd MMM yyyy', { locale: tr })} &rarr; {format(end, 'd MMM yyyy', { locale: tr })}
               <span className="text-muted-foreground/50 mx-1">&middot;</span>
-              {totalDays} gun
+              {totalDays} gün
             </p>
           </div>
         </div>
         <Button size="sm" variant="outline" className="h-8 gap-1.5" onClick={() => setEditOpen(true)}>
-          <Pencil className="h-3 w-3" /> Duzenle
+          <Pencil className="h-3 w-3" /> Düzenle
         </Button>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard title="Ilerleme" value={`${pct}%`} subtitle={`${done}/${total} gorev`} icon={Target} />
-        <StatCard title="Kalan gun" value={cycle.status === 'completed' ? '-' : String(daysLeft)} subtitle={`${elapsedDays}/${totalDays} gecti`} icon={Calendar} />
+        <StatCard title="İlerleme" value={`${pct}%`} subtitle={`${done}/${total} görev`} icon={Target} />
+        <StatCard title="Kalan gün" value={cycle.status === 'completed' ? '-' : String(daysLeft)} subtitle={`${elapsedDays}/${totalDays} geçti`} icon={Calendar} />
         <StatCard
           title="Hiz"
           value={velocity > 0 ? `${velocity}` : '-'}
-          subtitle="gorev/gun"
+          subtitle="görev/gün"
           icon={TrendingUp}
         />
         <StatCard
           title="Devam eden"
           value={String(inProgressCount)}
-          subtitle={`${statusDistribution.in_progress} is + ${statusDistribution.review} inceleme`}
+          subtitle={`${statusDistribution.in_progress} iş + ${statusDistribution.review} inceleme`}
           icon={Play}
         />
       </div>
@@ -518,14 +571,62 @@ function CycleDetail({ cycle, onBack }: { cycle: Cycle; onBack: () => void }) {
         </div>
       </div>
 
+      {/* Member breakdown - who's behind */}
+      {memberBreakdown.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="h-4 w-4 text-muted-foreground/60" />
+            <h3 className="text-[13px] font-semibold text-foreground">Kişi bazlı ilerleme</h3>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {memberBreakdown.map(m => {
+              const pctDone = m.total === 0 ? 0 : Math.round((m.done / m.total) * 100);
+              const initials = m.name === 'Atanmamış' ? '?' : m.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+              return (
+                <div
+                  key={m.name}
+                  className={cn(
+                    "rounded-lg border p-3 transition-colors",
+                    m.overdue > 0
+                      ? "border-red-500/30 bg-red-500/5"
+                      : "border-border/40 bg-card"
+                  )}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Avatar className="h-6 w-6">
+                      <AvatarFallback className={cn(
+                        "text-[9px] font-semibold",
+                        m.name === 'Atanmamış' ? "bg-amber-500/20 text-warning" : "bg-sidebar-accent text-sidebar-accent-foreground"
+                      )}>
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-[13px] font-medium truncate">{m.name}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground mb-1.5">
+                    <span className="tabular-nums">{m.done}/{m.total} tamamlandı</span>
+                    {m.inProgress > 0 && <span className="text-blue-400 tabular-nums">{m.inProgress} devam eden</span>}
+                    {m.overdue > 0 && <span className="text-red-400 font-medium tabular-nums">{m.overdue} gecikmiş</span>}
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary/60">
+                    <div className="h-full rounded-full bg-emerald-500/70 transition-all" style={{ width: `${pctDone}%` }} />
+                  </div>
+                  <div className="mt-1 text-right text-[10px] tabular-nums text-muted-foreground/60">%{pctDone}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Task list */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[13px] font-semibold text-foreground">Gorevler</h3>
-          <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{tasks.length} gorev</span>
+          <h3 className="text-[13px] font-semibold text-foreground">Görevler</h3>
+          <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{tasks.length} görev</span>
         </div>
         <div className="rounded-lg border border-border/40 bg-card p-4">
-          <CycleTaskList tasks={tasks} isLoading={tasksLoading} />
+          <CycleTaskList tasks={tasks} isLoading={tasksLoading} profileMap={profileMap} />
         </div>
       </div>
 
@@ -569,7 +670,7 @@ function EditCycleDialog({ cycle, open, onOpenChange }: { cycle: Cycle; open: bo
         goal: goal.trim() || null,
         status,
       });
-      toast.success('Cycle guncellendi');
+      toast.success('Cycle güncellendi');
       onOpenChange(false);
     } catch (err: any) {
       toast.error(err.message);
@@ -579,7 +680,7 @@ function EditCycleDialog({ cycle, open, onOpenChange }: { cycle: Cycle; open: bo
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
-        <DialogHeader><DialogTitle>Cycle duzenle</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>Cycle düzenle</DialogTitle></DialogHeader>
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-2">
             <Label>Ad</Label>
@@ -587,17 +688,17 @@ function EditCycleDialog({ cycle, open, onOpenChange }: { cycle: Cycle; open: bo
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Baslangic</Label>
+              <Label>Başlangıç</Label>
               <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
             </div>
             <div className="space-y-2">
-              <Label>Bitis</Label>
+              <Label>Bitiş</Label>
               <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
             </div>
           </div>
           <div className="space-y-2">
             <Label>Hedef (opsiyonel)</Label>
-            <Input value={goal} onChange={e => setGoal(e.target.value)} placeholder="Bu cycle'da ne basaracagiz?" />
+            <Input value={goal} onChange={e => setGoal(e.target.value)} placeholder="Bu cycle'da ne başaracağız?" />
           </div>
           <div className="space-y-2">
             <Label>Durum</Label>
@@ -613,7 +714,7 @@ function EditCycleDialog({ cycle, open, onOpenChange }: { cycle: Cycle; open: bo
           </div>
           <div className="flex gap-2 pt-2">
             <Button type="submit" disabled={update.isPending}>Kaydet</Button>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Iptal</Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>İptal</Button>
           </div>
         </form>
       </DialogContent>
@@ -650,7 +751,7 @@ function CreateCycleDialog({ open, onOpenChange, nextNumber }: {
         goal: goal.trim() || null,
         number: nextNumber,
       });
-      toast.success('Cycle olusturuldu');
+      toast.success('Cycle oluşturuldu');
       setName(''); setGoal('');
       onOpenChange(false);
     } catch (err: any) {
@@ -669,21 +770,21 @@ function CreateCycleDialog({ open, onOpenChange, nextNumber }: {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Baslangic</Label>
+              <Label>Başlangıç</Label>
               <Input type="date" value={start} onChange={e => setStart(e.target.value)} required />
             </div>
             <div className="space-y-2">
-              <Label>Bitis</Label>
+              <Label>Bitiş</Label>
               <Input type="date" value={end} onChange={e => setEnd(e.target.value)} required />
             </div>
           </div>
           <div className="space-y-2">
             <Label>Hedef (opsiyonel)</Label>
-            <Input value={goal} onChange={e => setGoal(e.target.value)} placeholder="Bu cycle'da ne basaracagiz?" />
+            <Input value={goal} onChange={e => setGoal(e.target.value)} placeholder="Bu cycle'da ne başaracağız?" />
           </div>
           <div className="flex gap-2 pt-2">
-            <Button type="submit" disabled={create.isPending}>Olustur</Button>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Iptal</Button>
+            <Button type="submit" disabled={create.isPending}>Oluştur</Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>İptal</Button>
           </div>
         </form>
       </DialogContent>
@@ -725,9 +826,9 @@ export default function Cycles() {
     <div className="mx-auto max-w-6xl p-6">
       <div className="flex items-baseline justify-between mb-6">
         <div>
-          <h1 className="text-[20px] font-semibold tracking-tight">Cycles</h1>
+          <h1 className="text-[20px] font-semibold tracking-tight">Döngüler</h1>
           <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-            Zaman-kutulu is dilimleri. Bir cycle ekiplerin bir hafta / iki hafta boyunca odaklandigi seydir.
+            Zaman-kutulu iş dilimleri. Bir cycle ekiplerin bir hafta / iki hafta boyunca odaklandığı şeydir.
           </p>
         </div>
         <Button size="sm" onClick={() => setCreateOpen(true)} className="h-8 gap-1.5">
@@ -740,9 +841,9 @@ export default function Cycles() {
       ) : (cycles?.length ?? 0) === 0 ? (
         <EmptyState
           icon={Clock}
-          title="Henuz cycle yok"
-          description="Ilk cycle'i olustur, ekip odagini baslat."
-          action={{ label: "Ilk cycle'i olustur", onClick: () => setCreateOpen(true) }}
+          title="Henüz cycle yok"
+          description="İlk cycle'ı oluştur, ekip odağını başlat."
+          action={{ label: "İlk cycle'ı oluştur", onClick: () => setCreateOpen(true) }}
         />
       ) : selectedCycle ? (
         <CycleDetail

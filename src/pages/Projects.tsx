@@ -5,7 +5,7 @@ export default function Projects() {
   return (
     <DomainWorkspace
       domain="projects"
-      title="Projects"
+      title="Projeler"
       subtitle="Program yönetimi çalışma alanı: proje sağlığı, gecikmeler, kapasite."
     >
       <ProjectsListView />

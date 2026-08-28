@@ -5,8 +5,8 @@ export default function Employees() {
   return (
     <DomainWorkspace
       domain="employees"
-      title="Employees"
-      subtitle="People çalışma alanı: kadro, departmanlar, onboarding."
+      title="Çalışanlar"
+      subtitle="İnsan kaynakları çalışma alanı: kadro, departmanlar, işe alıştırma."
     >
       <EmployeesListView />
     </DomainWorkspace>

@@ -18,7 +18,7 @@ export function CustomersListView() {
   async function setHealth(id: string, health: CrmCustomerHealth) {
     try {
       await update.mutateAsync({ id, health });
-      toast.success("Saglik guncellendi");
+      toast.success("Sağlık güncellendi");
     } catch (err: unknown) {
       toast.error((err as Error)?.message ?? "Hata");
     }

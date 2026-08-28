@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   ArrowRight, CheckCircle2, LayoutGrid, Users, Target, Sparkles,
-  BarChart3, Workflow, Plus, Search, Circle, CheckSquare, Play,
+  BarChart3, Workflow, Plus, Search, Circle, CheckSquare,
 } from "lucide-react";
 import { SparkLogo } from "@/components/SparkLogo";
 
@@ -79,7 +79,7 @@ const Landing = () => {
               Güvenlik
             </Link>
             <Link to="/changelog" className="rounded-md px-3 py-1.5 text-[13.5px] font-medium text-muted-foreground transition-colors hover:text-foreground">
-              Changelog
+              Değişiklik Günlüğü
             </Link>
           </div>
 
@@ -126,10 +126,9 @@ const Landing = () => {
             </Link>
             <a
               href="#features"
-              className="glass-panel inline-flex h-11 items-center rounded-md px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary/70"
+              className="glass-panel inline-flex h-11 items-center gap-2 rounded-md px-6 text-[14.5px] font-medium transition-colors hover:bg-secondary/70"
             >
-              <Play className="h-4 w-4" />
-              Demo izle
+              Özellikleri keşfet
             </a>
           </div>
 
@@ -159,7 +158,7 @@ const Landing = () => {
               {/* sidebar */}
               <div className="hidden w-[176px] shrink-0 flex-col gap-2 bg-sidebar px-3 py-3 md:flex">
                 <div className="flex h-7 items-center justify-center gap-1.5 rounded-full bg-primary text-[11.5px] font-medium text-primary-foreground">
-                  <Plus className="h-3 w-3" /> Create
+                  <Plus className="h-3 w-3" /> Oluştur
                 </div>
                 <div className="mt-2 space-y-1">
                   {modules.slice(0, 7).map((m, i) => (
@@ -186,7 +185,7 @@ const Landing = () => {
                   </div>
                 </div>
                 <div className="flex h-10 items-center gap-1 border-b border-border px-4">
-                  {["Genel Bakış", "Board", "Liste", "Zaman Çizelgesi", "Dashboard"].map((t, i) => (
+                  {["Genel Bakış", "Pano", "Liste", "Zaman Çizelgesi", "Kontrol Paneli"].map((t, i) => (
                     <span key={t} className="asana-tab !h-10 !px-2.5 !text-[12px]" data-active={i === 1}>
                       {t}
                     </span>
@@ -409,7 +408,7 @@ const Landing = () => {
             <a href="#features" className="transition-colors hover:text-foreground">Ürün</a>
             <Link to="/pricing" className="transition-colors hover:text-foreground">Fiyatlandırma</Link>
             <Link to="/security" className="transition-colors hover:text-foreground">Güvenlik</Link>
-            <Link to="/changelog" className="transition-colors hover:text-foreground">Changelog</Link>
+            <Link to="/changelog" className="transition-colors hover:text-foreground">Değişiklik Günlüğü</Link>
           </div>
           <span className="text-[12.5px] text-muted-foreground">&copy; {new Date().getFullYear()} Spark WorkHub</span>
         </div>

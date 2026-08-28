@@ -89,14 +89,14 @@ export function AppUpdateNotification() {
       <div className="flex items-center gap-3 p-3">
         <RefreshCw className="h-4 w-4 text-primary shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-medium">Yeni surum mevcut</p>
-          <p className="text-[11px] text-muted-foreground">Sayfayi yenileyerek guncelle.</p>
+          <p className="text-[13px] font-medium">Yeni sürüm mevcut</p>
+          <p className="text-[11px] text-muted-foreground">Sayfayı yenileyerek güncelle.</p>
         </div>
         <button
           onClick={() => window.location.reload()}
           className="shrink-0 rounded-md bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
         >
-          Guncelle
+          Güncelle
         </button>
       </div>
     </div>

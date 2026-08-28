@@ -26,7 +26,7 @@ export function WorkspaceSwitcher() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">
         <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground">
-          Workspaces
+          Çalışma Alanları
         </DropdownMenuLabel>
         {workspaces.map(w => (
           <DropdownMenuItem key={w.id} onClick={() => switchWorkspace(w.id)} className="justify-between">
@@ -36,11 +36,11 @@ export function WorkspaceSwitcher() {
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate("/onboarding?new=1")}>
-          <Plus className="h-3.5 w-3.5 mr-2" /> Create workspace
+          <Plus className="h-3.5 w-3.5 mr-2" /> Çalışma alanı oluştur
         </DropdownMenuItem>
         {(role === "owner" || role === "admin") && (
           <DropdownMenuItem onClick={() => navigate("/workspace/settings")}>
-            Workspace settings
+            Çalışma alanı ayarları
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>

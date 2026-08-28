@@ -1,7 +1,8 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, MutationCache } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -82,7 +83,15 @@ import CompareMonday from "./pages/compare/CompareMonday";
 import SparkHQ from "./pages/SparkHQ";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  mutationCache: new MutationCache({
+    onError: (error, _variables, _context, mutation) => {
+      if (mutation.options.onError) return;
+      const msg = error instanceof Error ? error.message : "Bilinmeyen hata";
+      toast.error("İşlem başarısız: " + msg);
+    },
+  }),
+});
 
 const App = () => (
   <ErrorBoundary>

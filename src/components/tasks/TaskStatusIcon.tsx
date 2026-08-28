@@ -10,7 +10,7 @@ import type { TaskStatus } from "@/lib/tasks-types";
  * - backlog: dashed ring (used when a task has no status yet — future)
  * - canceled: X inside ring (future)
  */
-type StatusKey = TaskStatus | "backlog" | "canceled";
+type StatusKey = TaskStatus | "canceled" | "cancelled";
 
 export function TaskStatusIcon({
   status,
@@ -82,7 +82,7 @@ export function TaskStatusIcon({
         </>
       )}
 
-      {status === "canceled" && (
+      {(status === "cancelled" || status === "canceled") && (
         <>
           <circle {...common} stroke="hsl(var(--status-canceled))" />
           <path

@@ -66,7 +66,7 @@ function groupByTeam(board: LeaderboardRow[]): { team: string; xp: number; membe
   for (const r of board) {
     // Use first word of the name as a crude team proxy
     const parts = (r.full_name ?? '').trim().split(/\s+/);
-    const team = parts.length > 1 ? `Takim ${parts[0][0]?.toUpperCase() ?? '?'}` : 'Diger';
+    const team = parts.length > 1 ? `Takım ${parts[0][0]?.toUpperCase() ?? '?'}` : 'Diger';
     const prev = map.get(team) ?? { xp: 0, members: 0, topMember: null, topXp: 0 };
     prev.xp += r.total_xp;
     prev.members += 1;
@@ -133,7 +133,7 @@ function computeExtraAchievements(
 
   return [
     {
-      id: 'team_player', label: 'Takim Oyuncusu', description: '3+ farkli projede gorev al',
+      id: 'team_player', label: 'Takım Oyuncusu', description: '3+ farkli projede görev al',
       category: 'isbirligi', earned: projectCount >= 3,
       progress: projectCount < 3 ? { current: projectCount, target: 3 } : undefined,
     },
@@ -193,11 +193,11 @@ function LevelBar({ row, events }: { row: LeaderboardRow; events: XpEvent[] }) {
       </div>
       <Progress value={pct} className="h-2" />
       <div className="flex items-center justify-between mt-1.5 text-[10.5px] text-muted-foreground">
-        <span>{pct}% tamamlandi</span>
+        <span>{pct}% tamamlandı</span>
         {estDays !== null ? (
-          <span>Tahmini ~{estDays} gun sonra Level {row.level + 1}</span>
+          <span>Tahmini ~{estDays} gün sonra Level {row.level + 1}</span>
         ) : (
-          <span>Sonraki level icin {remaining} XP gerekli</span>
+          <span>Sonraki level için {remaining} XP gerekli</span>
         )}
       </div>
     </div>
@@ -311,7 +311,7 @@ function WeeklySummaryCard({ events }: { events: XpEvent[] }) {
   return (
     <div className="rounded-md border border-border/60 bg-secondary/10 p-3">
       <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-        <Lightbulb className="h-3 w-3" /> Haftalik Ozet
+        <Lightbulb className="h-3 w-3" /> Haftalık Özet
       </div>
       <div className="grid grid-cols-3 gap-3 text-center">
         <div>
@@ -435,7 +435,7 @@ export default function Leaderboard() {
       {/* Achievements by category */}
       <section>
         <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-          <Medal className="h-3 w-3" /> Basarimlar ({earnedCount}/{allAchievements.length})
+          <Medal className="h-3 w-3" /> Başarımlar ({earnedCount}/{allAchievements.length})
         </div>
 
         {Object.entries(CATEGORY_LABELS).map(([catKey, catLabel]) => {
@@ -520,7 +520,7 @@ export default function Leaderboard() {
               <User className="h-3.5 w-3.5" /> Bireysel
             </TabsTrigger>
             <TabsTrigger value="team" className="text-[12px] gap-1">
-              <Users className="h-3.5 w-3.5" /> Takim
+              <Users className="h-3.5 w-3.5" /> Takım
             </TabsTrigger>
           </TabsList>
 
@@ -558,7 +558,7 @@ export default function Leaderboard() {
             ) : teamBoard.length === 0 ? (
               <div className="rounded-md border border-dashed border-border/60 py-14 text-center">
                 <Users className="mx-auto h-8 w-8 text-muted-foreground/40" />
-                <p className="mt-2 text-[13px] text-muted-foreground">Takim verisi bulunamadi.</p>
+                <p className="mt-2 text-[13px] text-muted-foreground">Takım verisi bulunamadı.</p>
               </div>
             ) : (
               <div className="rounded-md border border-border/60 bg-secondary/10 overflow-hidden">

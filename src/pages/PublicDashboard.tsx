@@ -73,12 +73,12 @@ export default function PublicDashboard() {
       if (rpcErr) throw rpcErr;
       const parsed = result as unknown as DashboardData | { error: string };
       if ("error" in parsed) {
-        setError("Dashboard bulunamadi veya suresi dolmus.");
+        setError("Dashboard bulunamadı veya süresi dolmuş.");
       } else {
         setData(parsed);
       }
     } catch {
-      setError("Dashboard yuklenemedi.");
+      setError("Dashboard yüklenemedi.");
     } finally {
       setLoading(false);
     }
@@ -105,7 +105,7 @@ export default function PublicDashboard() {
         <div className="text-center space-y-4">
           <ShieldOff className="h-12 w-12 text-muted-foreground mx-auto" />
           <h1 className="text-xl font-semibold">{error ?? "Dashboard bulunamadi"}</h1>
-          <p className="text-sm text-muted-foreground">Link gecersiz, suresi dolmus veya devre disi birakilmis olabilir.</p>
+          <p className="text-sm text-muted-foreground">Link geçersiz, süresi dolmuş veya devre dışı bırakılmış olabilir.</p>
         </div>
       </div>
     );
@@ -154,13 +154,13 @@ export default function PublicDashboard() {
             subtitle={`${data.total_projects} toplam`} icon={FolderKanban}
           />
           <PulseCard
-            title="Acik Gorevler" value={data.open_tasks}
-            subtitle={data.overdue_tasks > 0 ? `${data.overdue_tasks} gecikmis` : "gecikme yok"}
+            title="Açık Görevler" value={data.open_tasks}
+            subtitle={data.overdue_tasks > 0 ? `${data.overdue_tasks} gecikmiş` : "gecikme yok"}
             tone={data.overdue_tasks > 0 ? "warning" : "default"}
             icon={CheckSquare}
           />
           <PulseCard
-            title="Acik Buglar" value={data.open_bugs}
+            title="Açık Buglar" value={data.open_bugs}
             subtitle={data.critical_bugs > 0 ? `${data.critical_bugs} kritik` : "kritik yok"}
             tone={data.critical_bugs > 0 ? "danger" : "default"}
             icon={Bug}
@@ -171,18 +171,18 @@ export default function PublicDashboard() {
             tone="success" icon={Target}
           />
           <PulseCard
-            title="Calisanlar" value={data.total_employees}
+            title="Çalışanlar" value={data.total_employees}
             icon={Users}
           />
           <PulseCard
-            title="Company Health" value={`${healthScore}%`}
+            title="Şirket Sağlığı" value={`${healthScore}%`}
             tone={healthScore < 60 ? "danger" : healthScore < 80 ? "warning" : "success"}
             icon={AlertTriangle}
           />
         </div>
 
         <div className="text-center text-[11px] text-muted-foreground">
-          Son guncelleme: {new Date(data.generated_at).toLocaleString("tr-TR")}
+          Son güncelleme: {new Date(data.generated_at).toLocaleString("tr-TR")}
           <span className="mx-2">·</span>
           Powered by Spark WorkHub
         </div>

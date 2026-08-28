@@ -69,6 +69,9 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) { toast.error('Başlık gerekli'); return; }
+    if (title.trim().length < 3) { toast.error('Başlık en az 3 karakter olmalı'); return; }
+    if (estimated && (isNaN(Number(estimated)) || Number(estimated) < 0 || Number(estimated) > 10000)) { toast.error('Tahmini saat 0-10000 arası olmalı'); return; }
+    if (points && (isNaN(Number(points)) || Number(points) < 0 || Number(points) > 100)) { toast.error('Story points 0-100 arası olmalı'); return; }
     const payload = {
       title: title.trim(),
       description: description || null,
@@ -100,7 +103,7 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label>Başlık *</Label>
-            <Input value={title} onChange={e => setTitle(e.target.value)} required autoFocus />
+            <Input value={title} onChange={e => setTitle(e.target.value)} required autoFocus placeholder="Örn: Kullanıcı giriş sayfasını yeniden tasarla" />
           </div>
           <div className="space-y-2">
             <Label>Açıklama</Label>
@@ -173,11 +176,11 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Cycle</Label>
+              <Label>Sprint</Label>
               <Select value={cycleId} onValueChange={setCycleId}>
                 <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">Cycle yok</SelectItem>
+                  <SelectItem value="none">Sprint yok</SelectItem>
                   {(cycles ?? []).map(c => (
                     <SelectItem key={c.id} value={c.id}>
                       <span className="font-mono text-[11px] text-muted-foreground mr-1.5">#{c.number}</span>
@@ -188,7 +191,7 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Story points</Label>
+              <Label>Puan</Label>
               <Input type="number" step="0.5" min="0" value={points} onChange={e => setPoints(e.target.value)} placeholder="3" />
             </div>
           </div>
@@ -223,7 +226,7 @@ export function TaskFormDialog({ open, onOpenChange, projectId, task, members, d
             )}
             {recurrenceOn && (
               <p className="text-[11px] text-muted-foreground pt-1">
-                Task "Tamamlandı" olarak işaretlendiğinde bir sonraki tekrarı otomatik oluşur.
+                Görev "Tamamlandı" olarak işaretlendiğinde bir sonraki tekrarı otomatik oluşur.
               </p>
             )}
           </div>

@@ -5,7 +5,7 @@ export default function Tasks() {
   return (
     <DomainWorkspace
       domain="tasks"
-      title="My Tasks"
+      title="Görevlerim"
       subtitle="Kişisel çalışma alanı: bugünün planı, bloklanan işler, öncelikler."
     >
       <MyTasksView />

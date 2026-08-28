@@ -109,7 +109,7 @@ function KanbanCard({
   const hasMeta = counts && (counts.subtasks || counts.comments || counts.attachments);
   return (
     <Link
-      to={`/projects/${task.project_id}`}
+      to={`/projects/${task.project_id}?task=${task.id}`}
       draggable
       onDragStart={(e) => {
         e.dataTransfer.setData('text/task-id', task.id);

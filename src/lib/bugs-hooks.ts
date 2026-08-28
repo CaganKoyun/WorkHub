@@ -96,6 +96,8 @@ export function useCreateBug() {
             | "expected_behavior"
             | "actual_behavior"
             | "environment"
+            | "assignee_id"
+            | "project_id"
           >
         >
     ) => {
@@ -109,6 +111,8 @@ export function useCreateBug() {
           expected_behavior: input.expected_behavior ?? null,
           actual_behavior: input.actual_behavior ?? null,
           environment: input.environment ?? null,
+          assignee_id: input.assignee_id ?? null,
+          project_id: input.project_id ?? null,
           reporter_id: user!.id,
         })
         .select("tracking_id")

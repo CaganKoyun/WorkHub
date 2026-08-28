@@ -175,7 +175,7 @@ function DailyBriefing({ pulse, trends }: {
               </div>
             )}
             {alerts.length === 0 && wins.length === 0 && (
-              <p className="text-[13px] text-muted-foreground">Her sey yolunda. Tebrikler!</p>
+              <p className="text-[13px] text-muted-foreground">Her şey yolunda. Tebrikler!</p>
             )}
           </div>
         </div>
@@ -187,7 +187,7 @@ function DailyBriefing({ pulse, trends }: {
 function WeeklyVelocity({ trends }: { trends: ReturnType<typeof useWeekTrend>["data"] }) {
   if (!trends) return null;
   const items = [
-    { label: "Gorev", current: trends.tasksCompleted, prev: trends.tasksCompletedPrev, icon: ListTodo },
+    { label: "Görev", current: trends.tasksCompleted, prev: trends.tasksCompletedPrev, icon: ListTodo },
     { label: "Bug", current: trends.bugsFixed, prev: trends.bugsFixedPrev, icon: Bug },
     { label: "Karar", current: trends.decisionsRecorded, prev: trends.decisionsRecordedPrev, icon: Gavel },
   ];
@@ -195,8 +195,8 @@ function WeeklyVelocity({ trends }: { trends: ReturnType<typeof useWeekTrend>["d
     <section>
       <div className="flex items-center gap-2 mb-3">
         <Activity className="h-4 w-4 text-primary" />
-        <h2 className="text-sm font-semibold uppercase tracking-wide">Haftalik Hiz</h2>
-        <span className="text-[10.5px] text-muted-foreground">(son 7 gun vs onceki 7 gun)</span>
+        <h2 className="text-sm font-semibold uppercase tracking-wide">Haftalık Hız</h2>
+        <span className="text-[10.5px] text-muted-foreground">(son 7 gün vs önceki 7 gün)</span>
       </div>
       <div className="grid grid-cols-3 gap-3">
         {items.map(item => {
@@ -224,8 +224,8 @@ function RecentActivityFeed() {
   if (isLoading) return <Skeleton className="h-40" />;
   if (!items || items.length === 0) return null;
 
-  const typeConfig = {
-    task: { icon: CheckSquare, label: "Gorev", color: "text-info" },
+  const typeConfig: Record<string, { icon: React.ElementType; label: string; color: string }> = {
+    task: { icon: CheckSquare, label: "Görev", color: "text-info" },
     bug: { icon: Bug, label: "Bug", color: "text-destructive" },
     decision: { icon: Gavel, label: "Karar", color: "text-warning" },
   };
@@ -240,7 +240,7 @@ function RecentActivityFeed() {
         <CardContent className="p-0">
           <ul className="divide-y divide-border">
             {items.map(item => {
-              const cfg = typeConfig[item.type];
+              const cfg = typeConfig[item.type] ?? { icon: CheckSquare, label: item.type, color: "text-muted-foreground" };
               const Icon = cfg.icon;
               return (
                 <li key={`${item.type}-${item.id}`} className="flex items-center gap-3 px-4 py-2.5">
@@ -280,7 +280,7 @@ export default function FounderHome() {
   const firstName = profile?.full_name?.split(" ")[0] ?? "Founder";
   const now = new Date();
   const hour = now.getHours();
-  const greeting = hour < 12 ? "Gunaydin" : hour < 18 ? "Iyi gunler" : "Iyi aksamlar";
+  const greeting = hour < 12 ? "Günaydın" : hour < 18 ? "İyi günler" : "İyi akşamlar";
 
   return (
     <AppLayout>
@@ -298,9 +298,9 @@ export default function FounderHome() {
         {isError && (
           <EmptyState
             icon={AlertTriangle}
-            title="Could not load workspace data"
-            description="There was a problem fetching your workspace metrics. Please try refreshing."
-            action={{ label: "Refresh", onClick: () => window.location.reload() }}
+            title="Çalışma alanı verileri yüklenemedi"
+            description="Metrikler alınırken bir sorun oluştu. Lütfen sayfayı yenileyin."
+            action={{ label: "Yenile", onClick: () => window.location.reload() }}
             compact
           />
         )}
@@ -311,11 +311,11 @@ export default function FounderHome() {
         {/* Weekly Velocity */}
         <WeeklyVelocity trends={trends} />
 
-        {/* Company Pulse */}
+        {/* Şirket Nabzı */}
         <section>
           <div className="flex items-center gap-2 mb-3">
             <Zap className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold uppercase tracking-wide">Company Pulse</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-wide">Şirket Nabzı</h2>
           </div>
           {isLoading ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -329,29 +329,29 @@ export default function FounderHome() {
                 provenance={prov("Spark WorkHub Projects")}
               />
               <MetricCard
-                title="Acik Gorevler" value={pulse.openTasks}
-                subtitle={pulse.overdueTasks > 0 ? `${pulse.overdueTasks} gecikmis` : "gecikme yok"}
+                title="Açık Görevler" value={pulse.openTasks}
+                subtitle={pulse.overdueTasks > 0 ? `${pulse.overdueTasks} gecikmiş` : "gecikme yok"}
                 tone={pulse.overdueTasks > 0 ? "warning" : "default"}
                 icon={CheckSquare} to="/tasks"
                 provenance={prov("Spark WorkHub Work")}
               />
               <MetricCard
                 title="Kritik Buglar" value={pulse.criticalBugs}
-                subtitle={`${pulse.openBugs} acik toplam`}
+                subtitle={`${pulse.openBugs} açık toplam`}
                 tone={pulse.criticalBugs > 0 ? "danger" : "default"}
                 icon={Bug} to="/bugs"
                 provenance={prov("Spark WorkHub Bugs")}
               />
               <MetricCard
                 title="Bekleyen Onaylar" value={pulse.pendingApprovals}
-                subtitle={pulse.urgentApprovals > 0 ? `${pulse.urgentApprovals} acil` : "Founder inbox"}
+                subtitle={pulse.urgentApprovals > 0 ? `${pulse.urgentApprovals} acil` : "Founder İnbox"}
                 tone={pulse.urgentApprovals > 0 ? "danger" : pulse.pendingApprovals > 0 ? "warning" : "default"}
                 icon={Inbox} to="/inbox"
                 provenance={prov("Founder Inbox")}
               />
               <PulseCashCard />
               <MetricCard
-                title="Calisanlar" value={pulse.totalEmployees} icon={Users} to="/employees"
+                title="Çalışanlar" value={pulse.totalEmployees} icon={Users} to="/employees"
                 provenance={prov("Spark WorkHub People")}
               />
               <MetricCard
@@ -361,17 +361,17 @@ export default function FounderHome() {
                 provenance={prov("Spark WorkHub Goals")}
               />
               <MetricCard
-                title="Acik Riskler" value={pulse.openRisks}
+                title="Açık Riskler" value={pulse.openRisks}
                 subtitle={pulse.criticalRisks > 0 ? `${pulse.criticalRisks} kritik` : "kritik yok"}
                 tone={pulse.criticalRisks > 0 ? "danger" : "default"}
                 icon={ShieldAlert} to="/risks"
                 provenance={prov("Spark WorkHub Risks")}
               />
               <MetricCard
-                title="Company Health" value={healthScore(pulse) + "%"}
-                subtitle="hesaplanmis" icon={AlertTriangle}
+                title="Şirket Sağlığı" value={healthScore(pulse) + "%"}
+                subtitle="hesaplanmış" icon={AlertTriangle}
                 tone={healthScore(pulse) < 60 ? "danger" : healthScore(pulse) < 80 ? "warning" : "success"}
-                provenance="Pulse metriklerinden turetildi"
+                provenance="Pulse metriklerinden türetildi"
               />
             </div>
           )}
@@ -382,7 +382,7 @@ export default function FounderHome() {
 
         {/* Silent Decision Radar */}
         <section className="space-y-3">
-          <h2 className="text-sm font-medium text-muted-foreground">Sessiz Karar Radari</h2>
+          <h2 className="text-sm font-medium text-muted-foreground">Sessiz Karar Radarı</h2>
           <SilentDecisionRadar limit={3} />
         </section>
 
@@ -395,12 +395,12 @@ export default function FounderHome() {
         {/* Recent Activity Feed */}
         <RecentActivityFeed />
 
-        {/* Attention Required */}
+        {/* Dikkat Gerekli */}
         <section>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-warning" />
-              <h2 className="text-sm font-semibold uppercase tracking-wide">Attention Required</h2>
+              <h2 className="text-sm font-semibold uppercase tracking-wide">Dikkat Gerekli</h2>
             </div>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/inbox">
@@ -412,7 +412,7 @@ export default function FounderHome() {
             <CardContent className="p-0">
               {(!attention || attention.length === 0) ? (
                 <div className="p-8 text-center text-sm text-muted-foreground">
-                  Su an bekleyen kritik bir aksiyon yok.
+                  Şu an bekleyen kritik bir aksiyon yok.
                 </div>
               ) : (
                 <ul className="divide-y divide-border">
@@ -446,7 +446,7 @@ export default function FounderHome() {
 
         {/* Quick Actions */}
         <section>
-          <h2 className="text-sm font-semibold uppercase tracking-wide mb-3">Hizli Erisim</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-wide mb-3">Hızlı Erişim</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <QuickAction to="/projects/new" title="Yeni Proje" />
             <QuickAction to="/bugs/new" title="Bug Bildir" />

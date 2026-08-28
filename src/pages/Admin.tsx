@@ -104,7 +104,7 @@ export default function Admin() {
               icon={Mail}
               label="Bekleyen e-posta"
               value={summary.email_queue_pending}
-              hint="Kuyrukta pending"
+              hint="Kuyrukta bekleyen"
               tone={summary.email_queue_pending > 20 ? 'warn' : 'neutral'}
             />
           </>
@@ -183,16 +183,7 @@ export default function Admin() {
         </div>
       )}
 
-      {/* Stripe hint */}
-      <div className="mt-6 rounded-md border border-border/60 bg-secondary/10 p-4 text-[12px] text-muted-foreground">
-        <div className="mb-1 text-[11px] uppercase tracking-wider">Ödeme (Stripe)</div>
-        <p className="leading-relaxed">
-          Plan değişiklikleri şu anda yerel olarak uygulanıyor. Prod için Stripe müşteri
-          + subscription oluşturan bir Edge Function ekle ve <code className="rounded border border-border bg-background px-1 font-mono text-[10.5px]">stripe_customer_id</code> /
-          <code className="mx-1 rounded border border-border bg-background px-1 font-mono text-[10.5px]">stripe_subscription_id</code>
-          alanlarını webhook'la güncelle. Kurulum tamamlanınca burada portal linki gösterilecek.
-        </p>
-      </div>
+      {/* Stripe hint — hidden from end users, dev-only */}
 
       {/* Quick links */}
       <div className="mt-6 flex flex-wrap gap-2 text-[12.5px]">
@@ -200,7 +191,7 @@ export default function Admin() {
           Üyeler ve davetler <ArrowRight className="h-3 w-3" />
         </Link>
         <Link to="/audit" className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary/40 px-3 py-1.5 hover:bg-secondary">
-          Audit log <ArrowRight className="h-3 w-3" />
+          Denetim kaydi <ArrowRight className="h-3 w-3" />
         </Link>
         <Link to="/notification-settings" className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary/40 px-3 py-1.5 hover:bg-secondary">
           Bildirim ayarları <ArrowRight className="h-3 w-3" />

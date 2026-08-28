@@ -45,6 +45,10 @@ export function ProjectFormView({ mode }: { mode: 'create' | 'edit' }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) { toast.error('Proje adı gerekli'); return; }
+    if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+      toast.error('Bitiş tarihi başlangıçtan önce olamaz');
+      return;
+    }
     const payload = {
       name: name.trim(),
       description,
@@ -76,12 +80,12 @@ export function ProjectFormView({ mode }: { mode: 'create' | 'edit' }) {
 
       <div className="space-y-2">
         <Label>Ad *</Label>
-        <Input value={name} onChange={e => setName(e.target.value)} required />
+        <Input value={name} onChange={e => setName(e.target.value)} required placeholder="Proje adını girin" />
       </div>
 
       <div className="space-y-2">
         <Label>Açıklama</Label>
-        <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={4} />
+        <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={4} placeholder="Projenin kısa açıklaması" />
       </div>
 
       <div className="grid grid-cols-2 gap-3">

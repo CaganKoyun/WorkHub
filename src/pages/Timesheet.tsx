@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { useMyTimeEntries, useDeleteTimeEntry, useAddManualEntry, formatHMS, formatSeconds } from '@/lib/time-tracking-hooks';
 import { useWorkspaceIssues } from '@/lib/tasks-hooks';
@@ -35,6 +36,7 @@ import {
   CircleDollarSign,
 } from 'lucide-react';
 import { format, startOfWeek, endOfWeek, addWeeks, isSameDay } from 'date-fns';
+import { tr } from 'date-fns/locale';
 import type { TimeEntry } from '@/lib/time-tracking-hooks';
 
 const DAY_LABELS = ['Pzt', 'Sal', 'Car', 'Per', 'Cum', 'Cmt', 'Paz'];
@@ -141,7 +143,7 @@ export default function Timesheet() {
           <ChevronRight className="mr-1 h-3 w-3 rotate-180" /> Onceki hafta
         </Button>
         <div className="text-[13px] font-medium">
-          {format(rangeStart, 'MMM d')} &ndash; {format(rangeEnd, 'MMM d, yyyy')}
+          {format(rangeStart, 'd MMM', { locale: tr })} &ndash; {format(rangeEnd, 'd MMM yyyy', { locale: tr })}
           <span className="ml-2 font-mono tabular-nums text-muted-foreground">{formatSeconds(weekTotal)}</span>
         </div>
         <Button size="sm" variant="ghost" onClick={() => setWeekOffset(w => w + 1)} className="h-7 text-[12px]" disabled={weekOffset >= 0}>
@@ -234,9 +236,9 @@ export default function Timesheet() {
       ) : weekTotal === 0 ? (
         <div className="rounded-md border border-border/60 py-16 text-center">
           <Timer className="mx-auto mb-3 h-8 w-8 text-muted-foreground/40" />
-          <p className="text-[13px] font-medium text-muted-foreground">Bu hafta henuz kayit yok</p>
+          <p className="text-[13px] font-medium text-muted-foreground">Bu hafta henüz kayıt yok</p>
           <p className="mt-1 text-[12px] text-muted-foreground/70">
-            Bir goreve gidip zamanlayici baslatin veya asagidaki butonu kullanarak manuel kayit ekleyin.
+            Bir göreve gidip zamanlayıcı başlatın veya aşağıdaki butonu kullanarak manuel kayit ekleyin.
           </p>
           <Button size="sm" variant="outline" onClick={() => setAddOpen(true)} className="mt-4 h-7 text-[12px]">
             <Plus className="mr-1 h-3 w-3" /> Manuel Kayit Ekle
@@ -281,7 +283,7 @@ export default function Timesheet() {
                         <div key={d.date.toISOString()}>
                           <div className="flex items-center justify-between border-b border-border/40 bg-secondary/20 px-3 py-1">
                             <span className="text-[11px] text-muted-foreground">
-                              {format(d.date, 'EEEE, MMM d')}
+                              {format(d.date, 'EEEE, d MMM', { locale: tr })}
                             </span>
                             <span className="font-mono text-[10.5px] tabular-nums text-muted-foreground">
                               {formatSeconds(dayTotal)}
@@ -302,7 +304,7 @@ export default function Timesheet() {
                                     {task.title}
                                   </Link>
                                 ) : (
-                                  <span className="flex-1 truncate text-muted-foreground">(silinmis gorev)</span>
+                                  <span className="flex-1 truncate text-muted-foreground">(silinmiş görev)</span>
                                 )}
                                 {e.billable && (
                                   <Badge variant="default" className="shrink-0 text-[9.5px] px-1.5 py-0">
@@ -376,6 +378,10 @@ function ManualEntryDialog({ open, onOpenChange, tasks, onSubmit, isPending }: M
     if (!taskId || !date || !startTime || !endTime) return;
     const started_at = new Date(`${date}T${startTime}:00`).toISOString();
     const ended_at = new Date(`${date}T${endTime}:00`).toISOString();
+    if (ended_at <= started_at) {
+      toast.error("Bitiş saati başlangıçtan sonra olmalıdır.");
+      return;
+    }
     onSubmit({ task_id: taskId, started_at, ended_at, note: note || undefined });
   };
 
@@ -391,14 +397,14 @@ function ManualEntryDialog({ open, onOpenChange, tasks, onSubmit, isPending }: M
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) resetForm(); }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Manuel Sure Kaydi</DialogTitle>
+          <DialogTitle>Manuel Süre Kaydı</DialogTitle>
         </DialogHeader>
         <div className="space-y-3 pt-2">
           <div className="space-y-1">
-            <Label className="text-[12px]">Gorev</Label>
+            <Label className="text-[12px]">Görev</Label>
             <Select value={taskId} onValueChange={setTaskId}>
               <SelectTrigger className="h-8 text-[12.5px]">
-                <SelectValue placeholder="Gorev secin..." />
+                <SelectValue placeholder="Görev seçin..." />
               </SelectTrigger>
               <SelectContent>
                 {tasks.map(t => (
@@ -418,11 +424,11 @@ function ManualEntryDialog({ open, onOpenChange, tasks, onSubmit, isPending }: M
 
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
-              <Label className="text-[12px]">Baslangic Saati</Label>
+              <Label className="text-[12px]">Başlangıç Saati</Label>
               <Input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} className="h-8 text-[12.5px]" />
             </div>
             <div className="space-y-1">
-              <Label className="text-[12px]">Bitis Saati</Label>
+              <Label className="text-[12px]">Bitiş Saati</Label>
               <Input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} className="h-8 text-[12.5px]" />
             </div>
           </div>

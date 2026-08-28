@@ -23,7 +23,7 @@ const entries: ChangelogEntry[] = [
     date: "6 Ağustos 2026",
     version: "v1.2.0",
     items: [
-      { kind: "feature", text: "Decision System of Record — reviewed_by alanı ve reviewer gösterimi" },
+      { kind: "feature", text: "Karar Kayıt Sistemi (DSoR) — reviewed_by alanı ve gözden geçiren gösterimi" },
       { kind: "feature", text: "Bildirim merkezi genişletildi: onay bildirimleri, push entegrasyonu, tam sayfa /notifications" },
       { kind: "fix", text: "Bildirim kind uyumsuzluğu düzeltildi (dot → underscore)" },
       { kind: "improvement", text: "Marka güncellemesi: Spark WorkHub, Graphite × Lime tasarım sistemi" },
@@ -45,30 +45,30 @@ const entries: ChangelogEntry[] = [
     items: [
       { kind: "feature", text: "Gamification: XP, streak, leaderboard, başarımlar" },
       { kind: "feature", text: "PWA: offline shell, push notifications, installable" },
-      { kind: "feature", text: "AI Agent: domain-expert çalıştırma motoru" },
-      { kind: "feature", text: "Whiteboards: Excalidraw-lite çizim aracı" },
-      { kind: "feature", text: "Chat: Slack-lite kanallar ve thread'ler" },
-      { kind: "feature", text: "Docs/Wiki: Notion-lite sayfa editörü" },
+      { kind: "feature", text: "Yapay Zekâ Ajanı: alan uzmanı çalıştırma motoru" },
+      { kind: "feature", text: "Beyaz Tahta: çizim ve diyagram aracı" },
+      { kind: "feature", text: "Sohbet: kanallar ve ileti dizileri" },
+      { kind: "feature", text: "Dokümanlar/Wiki: sayfa editörü" },
     ],
   },
   {
     date: "28 Temmuz 2026",
     version: "v0.9.0",
     items: [
-      { kind: "feature", text: "Company Graph: decisions, approvals, goals, risks arası bağlantı" },
-      { kind: "feature", text: "CRM: pipeline, contacts, quotes, contracts" },
-      { kind: "feature", text: "Finance: cash tracking, budget, P&L" },
-      { kind: "feature", text: "Service Desk: ticket yönetimi" },
-      { kind: "feature", text: "Portfolios: program yönetimi" },
+      { kind: "feature", text: "Şirket Grafiği: kararlar, onaylar, hedefler, riskler arası bağlantı" },
+      { kind: "feature", text: "CRM: satış hattı, kişiler, teklifler, sözleşmeler" },
+      { kind: "feature", text: "Finans: nakit takibi, bütçe, kâr/zarar" },
+      { kind: "feature", text: "Servis Masası: destek talebi yönetimi" },
+      { kind: "feature", text: "Portföyler: program yönetimi" },
     ],
   },
   {
     date: "1 Temmuz 2026",
     version: "v0.1.0",
     items: [
-      { kind: "feature", text: "İlk release: projects, tasks, bugs, issues, kanban, sprints, teams" },
-      { kind: "feature", text: "Command palette (Cmd+K), sub-tasks, dependencies" },
-      { kind: "feature", text: "Custom fields, time tracking, CSV import" },
+      { kind: "feature", text: "İlk sürüm: projeler, görevler, hatalar, kanban, sprint'ler, ekipler" },
+      { kind: "feature", text: "Komut paleti (Cmd+K), alt görevler, bağımlılıklar" },
+      { kind: "feature", text: "Özel alanlar, zaman takibi, CSV içe aktarma" },
     ],
   },
 ];
@@ -80,7 +80,7 @@ export default function Changelog() {
 
       <div className="mx-auto max-w-3xl px-6 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold tracking-tight">Changelog</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Değişiklik Günlüğü</h1>
           <p className="mt-3 text-[15px] text-muted-foreground">
             Spark WorkHub'daki yenilikler, düzeltmeler ve iyileştirmeler.
           </p>

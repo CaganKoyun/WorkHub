@@ -8,20 +8,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, User } from "lucide-react";
 import { Constants } from "@/integrations/supabase/types";
 import type { Enums } from "@/integrations/supabase/types";
 import { useCreateBug } from "@/lib/bugs-hooks";
+import { useAllProfiles } from "@/lib/projects-hooks";
+import { useProjects } from "@/lib/projects-hooks";
 
 export default function BugCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const createBug = useCreateBug();
+  const { data: allProfiles } = useAllProfiles();
+  const { data: projects } = useProjects();
 
   const [form, setForm] = useState({
     title: "", description: "", steps_to_reproduce: "",
     expected_behavior: "", actual_behavior: "",
     severity: "medium" as Enums<"bug_severity">, environment: "",
+    assignee_id: "__none__", project_id: "__none__",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,17 +38,23 @@ export default function BugCreate() {
       expected_behavior: form.expected_behavior.trim(),
       actual_behavior: form.actual_behavior.trim(),
       severity: form.severity, environment: form.environment.trim(),
+      assignee_id: form.assignee_id === "__none__" ? undefined : form.assignee_id,
+      project_id: form.project_id === "__none__" ? undefined : form.project_id,
     };
     if (!trimmed.title || !trimmed.description) {
-      toast.error("Baslik ve aciklama zorunludur");
+      toast.error("Başlık ve açıklama zorunludur");
+      return;
+    }
+    if (trimmed.title.length < 3) {
+      toast.error("Başlık en az 3 karakter olmalı");
       return;
     }
     try {
       const data = await createBug.mutateAsync(trimmed);
       toast.success(`Hata bildirildi! Takip ID: ${data.tracking_id}`);
-      navigate("/");
+      navigate("/bugs");
     } catch (error: any) {
-      toast.error("Hata olusturulamadi: " + error.message);
+      toast.error("Hata oluşturulamadı: " + error.message);
     }
   };
 
@@ -63,9 +74,9 @@ export default function BugCreate() {
         <div className="flex-1 overflow-auto">
           <form onSubmit={handleSubmit} className="max-w-2xl">
             <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
-              <Label className="text-[12px] text-muted-foreground">Baslik *</Label>
+              <Label className="text-[12px] text-muted-foreground">Başlık *</Label>
               <Input
-                placeholder="Hatanin kisa ozeti"
+                placeholder="Hatanın kısa özeti"
                 value={form.title}
                 onChange={(e) => update("title", e.target.value)}
                 required maxLength={200}
@@ -74,9 +85,9 @@ export default function BugCreate() {
             </div>
 
             <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
-              <Label className="text-[12px] text-muted-foreground">Aciklama *</Label>
+              <Label className="text-[12px] text-muted-foreground">Açıklama *</Label>
               <Textarea
-                placeholder="Sorunun detayli aciklamasi"
+                placeholder="Sorunun detaylı açıklaması"
                 value={form.description}
                 onChange={(e) => update("description", e.target.value)}
                 required rows={4} maxLength={5000}
@@ -85,9 +96,9 @@ export default function BugCreate() {
             </div>
 
             <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
-              <Label className="text-[12px] text-muted-foreground">Tekrar Adimlari</Label>
+              <Label className="text-[12px] text-muted-foreground">Tekrar Adımları</Label>
               <Textarea
-                placeholder="1. Go to...&#10;2. Click on...&#10;3. Observe..."
+                placeholder={"1. Şuraya git...\n2. Şuna tıkla...\n3. Gözlemle..."}
                 value={form.steps_to_reproduce}
                 onChange={(e) => update("steps_to_reproduce", e.target.value)}
                 rows={3} maxLength={5000}
@@ -97,9 +108,9 @@ export default function BugCreate() {
 
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="px-4 md:px-6 py-4 border-b border-border md:border-r space-y-1">
-                <Label className="text-[12px] text-muted-foreground">Beklenen Davranis</Label>
+                <Label className="text-[12px] text-muted-foreground">Beklenen Davranış</Label>
                 <Textarea
-                  placeholder="Ne olmasi gerekiyordu?"
+                  placeholder="Ne olması gerekiyordu?"
                   value={form.expected_behavior}
                   onChange={(e) => update("expected_behavior", e.target.value)}
                   rows={2} maxLength={2000}
@@ -107,7 +118,7 @@ export default function BugCreate() {
                 />
               </div>
               <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
-                <Label className="text-[12px] text-muted-foreground">Gerceklesen Davranis</Label>
+                <Label className="text-[12px] text-muted-foreground">Gerçekleşen Davranış</Label>
                 <Textarea
                   placeholder="Bunun yerine ne oldu?"
                   value={form.actual_behavior}
@@ -135,7 +146,7 @@ export default function BugCreate() {
               <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
                 <Label className="text-[12px] text-muted-foreground">Ortam</Label>
                 <Input
-                  placeholder="orn. Chrome 120, macOS 14"
+                  placeholder="örn. Chrome 120, macOS 14"
                   value={form.environment}
                   onChange={(e) => update("environment", e.target.value)}
                   maxLength={200}
@@ -144,9 +155,47 @@ export default function BugCreate() {
               </div>
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              <div className="px-4 md:px-6 py-4 border-b border-border md:border-r space-y-1">
+                <Label className="text-[12px] text-muted-foreground">Atanan Kişi</Label>
+                <Select value={form.assignee_id} onValueChange={(v) => update("assignee_id", v)}>
+                  <SelectTrigger className="h-8 text-[13px]">
+                    <div className="flex items-center gap-1.5">
+                      <User className="h-3 w-3 text-muted-foreground" />
+                      <SelectValue placeholder="Atanmamış" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">Atanmamış</SelectItem>
+                    {(allProfiles ?? []).map(p => (
+                      <SelectItem key={p.user_id} value={p.user_id}>
+                        {p.full_name ?? 'Kullanıcı'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="px-4 md:px-6 py-4 border-b border-border space-y-1">
+                <Label className="text-[12px] text-muted-foreground">Proje</Label>
+                <Select value={form.project_id} onValueChange={(v) => update("project_id", v)}>
+                  <SelectTrigger className="h-8 text-[13px]">
+                    <SelectValue placeholder="Proje seç" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">Proje yok</SelectItem>
+                    {(projects ?? []).map(p => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {p.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <div className="px-4 md:px-6 py-4 flex gap-2">
               <Button type="button" variant="ghost" onClick={() => navigate(-1)} size="sm" className="h-8 text-[13px]">
-                Iptal
+                İptal
               </Button>
               <Button type="submit" disabled={createBug.isPending} size="sm" className="h-8 text-[13px]">
                 {createBug.isPending && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
